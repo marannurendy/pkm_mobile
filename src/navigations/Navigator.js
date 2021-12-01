@@ -1,0 +1,546 @@
+import React from 'react'
+import { Image, StyleSheet, View, Text, Alert } from 'react-native'
+import { createStackNavigator } from '@react-navigation/stack'
+import { NavigationContainer, useNavigation } from '@react-navigation/native'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { createDrawerNavigator, DrawerItem, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import db from '../database/Database'
+import Login from '../screens/Login'
+import Sync from '../screens/Sync'
+import Menu from '../screens/Menu'
+import Meeting from '../screens/Meeting'
+import Sign from '../screens/Sign'
+import TarikUp from '../screens/Tarikup'
+import MeetingPAR from '../screens/Meeting_par'
+import FormPar from '../screens/FormPar'
+import FrontHome from '../screens/Home'
+import handleSurveiClick from '../screens/Survei'
+import ReportLPM from '../screens/Report'
+import SplashScreen from '../screens/Splashscreen'
+import IndividualMeeting from '../screens/IndividualMeeting'
+import UpCollection from '../screens/UpCollection'
+import Meetingnew from '../screens/MeetingNew'
+import UmiCornerLanding from '../screens/UmiCorner'
+import UMiCornerPage from '../screens/UMiCornerPage'
+import UmiList from '../screens/UmiList'
+import DetailUmiList from '../screens/DetailUmiList'
+import SignNew from '../screens/SignNew'
+import SignAdd from '../screens/SignatureAdd'
+import MeetingDay from '../screens/MeetingDay'
+import MeetingMenu from '../screens/MeetingMenu'
+import GroupCollection from '../screens/groupCollection'
+
+import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
+
+
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function LogoTitle() {
+    return (
+        <Image source={require('../images/mekaar.png')} style={styles.imageHeader} />
+    );
+}
+
+function PKMmenu() {
+    return (
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>PKM</Text>
+        </View>
+    )
+}
+
+function MeetingPage() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>Form PKM</Text>
+        </View>
+    )
+}
+
+function MeetingnewPage() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>Form PKM</Text>
+        </View>
+    )
+}
+
+function ApprovalSign() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>Tanda Tangan</Text>
+        </View>
+    )
+}
+
+function TarikUangTanggungjawab() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>Tarik Uang Pertanggungjawaban</Text>
+        </View>
+    )
+}
+
+function PKM_PAR() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>PKM Individual</Text>
+        </View>
+    )
+}
+
+function Form_par() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>Form PKM Individual</Text>
+        </View>
+    )
+}
+
+function MenuPKM() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>PKM</Text>
+        </View>
+    )
+}
+
+function UmiCorner() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>UMi CORNER</Text>
+        </View>
+    )
+}
+
+function Home() {
+    return(
+        <Tab.Navigator 
+            activeColor="black"
+            barStyle={{ backgroundColor: '#fff' }}
+        >
+            <Tab.Screen
+                name="Home"
+                component={Sync}
+                options={{
+                    tabBarLabel: 'Home',
+                    tabBarIcon: ({ color }) => (
+                        <MaterialCommunityIcons name="home" color={'black'} size={26} />
+                    ),
+                }} />
+        </Tab.Navigator>
+    );
+}
+
+function Report() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>Report LPM</Text>
+        </View>
+    )
+}
+
+function UMiCornerHeader() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>UMi CORNER Input Referal</Text>
+        </View>
+    )
+}
+
+function UmiListHeader() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>Daftar Nasabah UMi Corner</Text>
+        </View>
+    )
+}
+
+function DetailUmiListHeader() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>Detail Nasabah UMi Corner</Text>
+        </View>
+    )
+}
+
+function SurveiPKU() {
+    return(
+        <View>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: '#fff' }}>PKM Bermakna</Text>
+        </View>
+    )
+}
+
+function CustomDrawerContent(props) {
+    const navigation = useNavigation();
+
+    const LogOutButton = () => {
+        AsyncStorage.removeItem('userData')
+        navigation.replace('Login')
+    }
+
+    const LogOuthandler = () => {
+        Alert.alert(
+            "Logout Alert",
+            "Apakah anda yakin ingin keluar ?",
+            [
+              { text: "OK", onPress: () => LogOutButton()}
+            ],
+            { cancelable: true }
+        );
+    }
+
+    return (
+      <DrawerContentScrollView {...props}>
+        <DrawerItemList {...props} />
+        <DrawerItem label="About"/>
+        <DrawerItem label="Log Out" onPress={() => LogOuthandler()} />
+      </DrawerContentScrollView>
+    );
+  }
+
+function HalamanDepan() {
+    return(
+        <Drawer.Navigator drawerContent={props => <CustomDrawerContent {...props} />}>
+            <Drawer.Screen name="Front Home" component = {FrontHome} options={{ headerShown: false }} />
+        </Drawer.Navigator>
+    )
+}
+
+export default function AppNavigator() {
+    
+    return (
+      <NavigationContainer>
+          <Stack.Navigator>
+              <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              <Stack.Screen name="FrontHome" component={HalamanDepan} options={{ headerShown: false }} />
+              <Stack.Screen name="MeetingMenu" component={MeetingMenu} options={{ headerShown: false }} />
+              <Stack.Screen name="GroupCollection" component={GroupCollection} options={{ headerShown: false }} />
+              <Stack.Screen 
+                name="DetailUmiList"
+                component={DetailUmiList}
+                options={{
+                    headerShown: true,
+                    headerTitleStyle: {
+                        fontWeight: 'bold'
+                    },
+                    headerTitle: props => <DetailUmiListHeader />
+                }} 
+                />
+              <Stack.Screen 
+                name="UmiList"
+                component={UmiList}
+                options={{
+                    headerShown: true,
+                    headerTitleStyle: {
+                        fontWeight: 'bold'
+                    },
+                    headerTitle: props => <UmiListHeader />
+                }} 
+                />
+              <Stack.Screen 
+                name ="UmiCornerLanding" 
+                component={UmiCornerLanding} 
+                options={{ 
+                    headerShown: true,
+                    headerTitleStyle: {
+                        fontWeight: 'bold'
+                    },
+                    headerTitle: props => <UmiCorner />
+                }} 
+                />
+
+              <Stack.Screen 
+                name="Menu" 
+                component={Menu} 
+                options={{ 
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <PKMmenu />
+                }}
+                />
+              <Stack.Screen 
+                name="Survei"
+                component={handleSurveiClick} 
+                options={{ 
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <SurveiPKU />
+                }}
+                />
+
+              <Stack.Screen 
+                name="Report" 
+                component={ReportLPM} 
+                options={{ 
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <Report />
+                }}
+                />
+
+                <Stack.Screen 
+                    name="UMiCornerPage" 
+                    component={UMiCornerPage} 
+                    options={{ 
+                        headerShown: true,
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                        headerTitle: props => <UMiCornerHeader />
+                    }}
+                    />
+
+              <Stack.Screen
+                name="Home"
+                component={Home}
+                options={{
+                    headerLeft: null,
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerTitle: props => <LogoTitle />
+                }}
+                />
+
+                {/* <Stack.Screen
+                name="MenuPage"
+                component={MenuPage}
+                options={{
+                    headerShown: false,
+                    headerLeft: null,
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerTitle: props => <GroupName />
+                }}
+                /> */}
+                
+                <Stack.Screen 
+                name="Meeting" 
+                component={Meeting}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <MeetingPage />
+                }} />
+
+                <Stack.Screen 
+                name="Meetingnew" 
+                component={Meetingnew}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <MeetingnewPage />
+                }} />
+
+                <Stack.Screen 
+                name="Sign" 
+                component={Sign}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <ApprovalSign />
+                }} />
+
+                <Stack.Screen 
+                name="SignNew" 
+                component={SignNew}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <ApprovalSign />
+                }} />
+
+                <Stack.Screen name="SignAdd" component={SignAdd} options={{headerShown: false}} />
+
+                <Stack.Screen 
+                name="TarikUp" 
+                component={TarikUp}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <TarikUangTanggungjawab />
+                }} />
+
+                <Stack.Screen 
+                name="UpCollection" 
+                component={UpCollection}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <TarikUangTanggungjawab />
+                }} />
+
+                <Stack.Screen 
+                name="MeetingPAR" 
+                component={MeetingPAR}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <PKM_PAR />
+                }} />
+
+                <Stack.Screen 
+                name="IndividualMeeting" 
+                component={IndividualMeeting}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <PKM_PAR />
+                }} />
+
+                <Stack.Screen 
+                name="FormPar" 
+                component={FormPar}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        backgroundColor: '#0D67B2'
+                    },
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerBackTitleStyle: {
+                        color: '#fff'
+                    },
+                    headerTitle: props => <Form_par />
+                }} />
+                <Stack.Screen 
+                name="Sync" 
+                component={MeetingDay} 
+                options={{
+                    headerShown: false,
+                    // headerStyle: {
+                    //     backgroundColor: '#0D67B2'
+                    // },
+                    // headerTitleStyle: {
+                    //     fontWeight: 'bold',
+                    // },
+                    // headerBackTitleStyle: {
+                    //     color: '#fff'
+                    // },
+                    // headerTitle: props => <MenuPKM />
+                }}
+                />
+
+                {/* INISIASI */}
+
+                <Stack.Screen name="Inisiasi" component={Inisasi} options={{ headerShown: false }} />
+                <Stack.Screen name="Sosialisasi" component={Sosialisasi} options={{ headerShown: false }} />
+                <Stack.Screen name="Floating" component={Floating} options={{ headerShown: false }} />
+                <Stack.Screen name="UjiKelayakan" component={UjiKelayakan} options={{ headerShown: false }} />
+                <Stack.Screen name="FormUjiKelayakan" component={FormUjiKelayakan} options={{ headerShown: false }} />
+                <Stack.Screen name="DataDiri" component={DataDiri} options={{ headerShown: false }} />
+                <Stack.Screen name="ProdukPembiayaan" component={ProdukPembiayaan} options={{ headerShown: false }} />
+
+          </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
+
+  const styles = StyleSheet.create({
+      imageHeader: {
+          width: 127,
+          height: 40,
+      },
+      groupTitle: {
+          alignItems: 'center',
+      },
+      textStyle: {
+          fontWeight: 'bold',
+          fontSize: 18,
+      } 
+  })

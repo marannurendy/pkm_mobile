@@ -1,0 +1,445 @@
+import React, { useState, useEffect, useRef } from 'react'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import ActionButton from 'react-native-action-button'
+import { scale, verticalScale } from 'react-native-size-matters'
+
+import db from '../../database/Database'
+
+const Inisasi = () => {
+
+    const dimension = Dimensions.get('screen')
+    const navigation = useNavigation()
+
+    let [branchId, setBranchId] = useState()
+    let [branchName, setBranchName] = useState()
+    let [uname, setUname] = useState()
+    let [aoName, setAoName] = useState()
+    let [menuShow, setMenuShow] = useState(0)
+    let [menuToggle, setMenuToggle] = useState(false)
+
+    //data
+    let [data, setData] = useState([])
+
+    useEffect(() => {
+        AsyncStorage.getItem('userData', (error, result) => {
+            let dt = JSON.parse(result)
+
+            setBranchId(dt.kodeCabang)
+            setBranchName(dt.namaCabang)
+            setUname(dt.userName)
+            setAoName(dt.AOname)
+        })
+
+
+        let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
+
+        db.transaction(
+            tx => {
+                tx.executeSql(GetInisiasi, [], (tx, results) => {
+                    console.log(JSON.stringify(results.rows._array))
+                    let dataLength = results.rows.length
+                    // console.log(dataLength)
+
+                    var arrayHelper = []
+                    for(let a = 0; a < dataLength; a ++) {
+                        let data = results.rows.item(a)
+                        arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
+                        // console.log("this")
+                        // console.log(data.COUNT(namaCalonNasabah))
+                    }
+                    console.log(arrayHelper)
+                    setData(arrayHelper)
+                }
+                )
+            }
+        )
+
+        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
+        //     console.log(result)
+        // })
+    }, [])
+
+    const menuHandler = () => {
+        setMenuShow(0)
+    }
+
+    const sosPressHandler = () => {
+        setMenuShow(1)
+    }
+
+    const ukPressHandler = () => {
+        setMenuShow(2)
+    }
+
+    const verifPressHandler = () => {
+        setMenuShow(3)
+    }
+
+    const ppPressHandler = () => {
+        setMenuShow(4)
+    }
+
+    // LIST VIEW SOSIALISASI
+    const renderItemSos = ({ item }) => (
+        <ItemSos data={item} />    
+    )
+    const pressHandlerSos = (groupid, groupName, branchId, Username) => {
+        navigation.navigate("MeetingMenu", {groupid: groupid})
+    }
+    const ItemSos = ({ data }) => (
+        <TouchableOpacity 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+        >
+            <View style={{alignItems: 'flex-start'}}>
+                <ListMessageSos groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
+            </View>
+        </TouchableOpacity>
+    )
+    const ListMessageSos = ({ groupName, date, totalNasabah }) => {
+        return(
+            <View style={{ flex: 1, margin: 20}}>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
+                <Text>{date}</Text>
+                <Text>Total Nasabah : {totalNasabah}</Text>
+            </View>
+        )
+    }
+    // END LIST VIEW SOSIALISASI
+
+    // LIST VIEW UJI KELAYAKAN
+    const renderItemUk = ({ item }) => (
+        <ItemUk data={item} />    
+    )
+
+    const ItemUk = ({ data }) => (
+        <TouchableOpacity 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}}
+            onPress={() => navigation.navigate('UjiKelayakan', {groupName: data.groupName})}
+        >
+            <View style={{alignItems: 'flex-start'}}>
+                <ListMessageUk groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
+            </View>
+        </TouchableOpacity>
+    )
+    const ListMessageUk = ({ groupName, date, totalNasabah }) => {
+        return(
+            <View style={{ flex: 1, margin: 20}}>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
+                <Text>{date}</Text>
+            </View>
+        )
+    }
+    // END LIST VIEW UJI KELAYAKAN
+
+    // LIST VIEW VERIFIKASI
+    const renderItemVerif = ({ item }) => (
+        <ItemVerif data={item} />    
+    )
+    const pressHandlerVerif = (groupid, groupName, branchId, Username) => {
+        navigation.navigate("MeetingMenu", {groupid: groupid})
+    }
+    const ItemVerif = ({ data }) => (
+        <TouchableOpacity 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+        >
+            <View style={{alignItems: 'flex-start'}}>
+                <ListMessageVerif groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
+            </View>
+        </TouchableOpacity>
+    )
+    const ListMessageVerif = ({ groupName, date, totalNasabah }) => {
+        return(
+            <View style={{ flex: 1, margin: 20}}>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
+                <Text>{date}</Text>
+            </View>
+        )
+    }
+    // END LIST VIEW VERIFIKASI
+
+    return(
+        <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
+            <View
+            style={{
+                flexDirection: "row",
+                justifyContent: 'space-between',
+                marginTop: 10,
+                alignItems: "center",
+            }}
+            >
+                <View style={{height: menuShow === 0 ? dimension.height/2.5 : dimension.height/4, marginHorizontal: 10, borderRadius: 20, marginTop: 30, flex: 1}}>
+                    <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover"}} imageStyle={{borderRadius: 20}}>
+
+                        <TouchableOpacity onPress={() => navigation.replace('FrontHome')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
+                            <View>
+                                <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
+                            </View>
+                            <Text style={{flex: 1, textAlign: 'center', borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>INISIASI</Text>
+                        </TouchableOpacity>
+
+                        <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5, marginHorizontal: 20}}>{branchName}</Text>
+                        <Text numberOfLines={2} style={{fontSize: 13, fontWeight: 'bold', color: '#FFF', marginHorizontal: 20}}>{branchId} - {branchName}</Text>
+                        <Text style={{fontSize: 15, fontWeight: 'bold', color: '#FFF', marginHorizontal: 20}}>{uname} - {aoName}</Text>
+
+                        {/* <View style={{flex: 1, borderBottomRightRadius: 20, borderBottomLeftRadius: 20, marginVertical: 20, marginHorizontal: 20, backgroundColor: '#BCC8C6'}}> */}
+                        {menuShow === 0 ? (
+                            <View style={{flex: 1, borderRadius: 10, marginVertical: 20, marginHorizontal: 20, backgroundColor: '#FFFCFA', padding: 10}}>
+                                <Text style={{fontWeight: 'bold'}}>Status Proses Pengajuan</Text>
+
+                                <View style={{flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 5, paddingVertical: 10, flex: 1}}>
+                                    <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#003049', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
+                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>0</Text>
+                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>Sosialisasi</Text>
+                                    </View>
+
+                                    <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#D62828', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
+                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>0</Text>
+                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>UK</Text>
+                                    </View>
+
+                                    <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#F77F00', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
+                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>0</Text>
+                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>Verifikasi</Text>
+                                    </View>
+
+                                    <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#17BEBB', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
+                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>0</Text>
+                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>PP</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        ) : (
+                            <View></View>
+                        )}
+                        
+                    </ImageBackground>
+                </View>
+            </View>
+
+            {menuShow === 0 ? (
+                <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
+                    <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>MENU</Text>
+
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
+                        <TouchableOpacity onPress={() => sosPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#003049', padding: 20}}>
+                            <FontAwesome5 name="share-alt-square" size={50} color="#FFFCFA" />
+                            <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sosialisasi</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => ukPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#D62828', padding: 20}}>
+                            <FontAwesome5 name="clipboard-check" size={50} color="#FFFCFA" />
+                            <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Uji Kelayakan</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
+                        <TouchableOpacity onPress={() => verifPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                            <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
+                            <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Verifikasi</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => ppPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#17BEBB', padding: 20}}>
+                            <FontAwesome5 name="get-pocket" size={50} color="#FFFCFA" />
+                            <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Persiapan Pencairan</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            ) : menuShow === 1 ? (
+                <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
+                    <View style={{alignItems: 'flex-end', marginTop: 20, marginHorizontal: 20}}>
+                        <TouchableOpacity onPress={() => menuHandler()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, width: dimension.width/3}}>
+                            <Text style={{flex: 1, textAlign: 'center', margin: 5, borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>Sosialisasi</Text>
+                        <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
+                            <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
+                            <TextInput placeholder={"Cari Kelompok"} style={{flex: 1, padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                        </View>
+                    </View>
+
+                    <SafeAreaView style={{flex: 1}}>
+                        <View style={{ justifyContent:  'space-between'}}>
+                            <FlatList
+                                // contentContainerStyle={styles.listStyle}
+                                // refreshing={refreshing}
+                                // onRefresh={() => _onRefresh()}
+                                data={data}
+                                keyExtractor={(item, index) => index.toString()}
+                                enabledGestureInteraction={true}
+                                // onEndReachedThreshold={0.1}
+                                // onEndReached={() => handleEndReach()}
+                                renderItem={renderItemSos}
+                                // style={{height: '88.6%'}}
+                            /> 
+                        </View>
+                    </SafeAreaView>
+
+                    <ActionButton buttonColor="#003049">
+                        <ActionButton.Item buttonColor='#D62828' title="Prospek Baru" onPress={() => navigation.navigate('Sosialisasi')}>
+                            <FontAwesome5 name="user-plus" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                        <ActionButton.Item buttonColor='#F77F00' title="Prospek Lama" onPress={() => {}}>
+                            <FontAwesome5 name="user-edit" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                    </ActionButton>
+
+                </View>
+            ) : menuShow === 2 ? (
+                <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
+                    <View style={{alignItems: 'flex-end', marginTop: 20, marginHorizontal: 20}}>
+                        <TouchableOpacity onPress={() => menuHandler()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, width: dimension.width/3}}>
+                            <Text style={{flex: 1, textAlign: 'center', margin: 5, borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>Uji Kelayakan</Text>
+                        <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
+                            <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
+                            <TextInput placeholder={"Cari Kelompok"} style={{flex: 1, padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                        </View>
+                    </View>
+
+                    <SafeAreaView style={{flex: 1}}>
+                        <View style={{ justifyContent:  'space-between'}}>
+                            <FlatList
+                                // contentContainerStyle={styles.listStyle}
+                                // refreshing={refreshing}
+                                // onRefresh={() => _onRefresh()}
+                                data={data}
+                                keyExtractor={(item, index) => index.toString()}
+                                enabledGestureInteraction={true}
+                                // onEndReachedThreshold={0.1}
+                                // onEndReached={() => handleEndReach()}
+                                renderItem={renderItemUk}
+                                // style={{height: '88.6%'}}
+                            /> 
+                        </View>
+                    </SafeAreaView>
+                </View>
+            ) : menuShow === 3 ? (
+                <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
+                    <View style={{alignItems: 'flex-end', marginTop: 20, marginHorizontal: 20}}>
+                        <TouchableOpacity onPress={() => menuHandler()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, width: dimension.width/3}}>
+                            <Text style={{flex: 1, textAlign: 'center', margin: 5, borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>Verifikasi</Text>
+                        <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
+                            <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
+                            <TextInput placeholder={"Cari Kelompok"} style={{flex: 1, padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                        </View>
+                    </View>
+
+                    <SafeAreaView style={{flex: 1}}>
+                        <View style={{ justifyContent:  'space-between'}}>
+                            <FlatList
+                                // contentContainerStyle={styles.listStyle}
+                                // refreshing={refreshing}
+                                // onRefresh={() => _onRefresh()}
+                                data={data}
+                                keyExtractor={(item, index) => index.toString()}
+                                enabledGestureInteraction={true}
+                                // onEndReachedThreshold={0.1}
+                                // onEndReached={() => handleEndReach()}
+                                renderItem={renderItemVerif}
+                                // style={{height: '88.6%'}}
+                            /> 
+                        </View>
+                    </SafeAreaView>
+                </View>
+            ) : (
+                <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
+                    <View style={{alignItems: 'flex-end', marginTop: 20, marginHorizontal: 20}}>
+                        <TouchableOpacity onPress={() => menuHandler()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, width: dimension.width/3}}>
+                            <Text style={{flex: 1, textAlign: 'center', margin: 5, borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>Persiapan Pembiayaan</Text>
+                    </View>
+
+                    <View style={{flex: 1, justifyContent: 'center'}}>
+                        <View style={{width: '100%', height: dimension.height/2.5}}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{height: dimension.height/6}} >
+                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                    <FontAwesome5 name={'users'} size={50} color={'#FFF'} />
+                                    <View style={{flex: 1}}>
+                                        <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>Kelompok</Text>
+                                    </View>
+                                </View>
+
+                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                    <FontAwesome5 name={'calendar'} size={50} color={'#FFF'} />
+                                    <View style={{flex: 1}}>
+                                        <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 1</Text>
+                                    </View>
+                                </View>
+
+                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                    <FontAwesome5 name={'calendar-alt'} size={50} color={'#FFF'} />
+                                    <View style={{flex: 1}}>
+                                        <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 2</Text>
+                                    </View>
+                                </View>
+
+                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                    <FontAwesome5 name={'calendar-check'} size={50} color={'#FFF'} />
+                                    <View style={{flex: 1}}>
+                                        <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 3</Text>
+                                    </View>
+                                </View>
+
+                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                    <FontAwesome5 name={'money-check'} size={50} color={'#FFF'} />
+                                    <View style={{flex: 1}}>
+                                        <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>Persetujuan Pembiayaan</Text>
+                                    </View>
+                                </View>
+                            </ScrollView>
+                        </View>
+                    </View>
+
+                    {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{borderWidth: 1, height: dimension.height/6}} > */}
+
+                        
+
+                    {/* </ScrollView> */}
+
+                </View>
+            )
+            }
+
+        </View>
+    )
+}
+
+export default Inisasi
+
+const styles = StyleSheet.create({
+    button: {
+        width: 60,
+        height: 60,
+        borderRadius: 60 / 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowRadius: 10,
+        shadowColor: '#003049',
+        shadowOpacity: 0.3,
+        shadowOffset: { height: 10 },
+    },
+    menu: {
+        backgroundColor: '#003049'
+    },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
+})

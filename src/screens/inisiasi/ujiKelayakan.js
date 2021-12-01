@@ -1,0 +1,233 @@
+import React, { useEffect, useState } from 'react'
+import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+
+import db from '../../database/Database'
+
+const UjiKelayakan = ({route}) => {
+
+    const { groupName } = route.params
+    const dimension = Dimensions.get('screen')
+    const navigation = useNavigation()
+    
+    let [ currentDate, setCurrentDate ] = useState()
+
+    let [data, setData] = useState()
+
+    // let [data, setData] = useState([
+    //     {
+    //         namaNasabah : "Sriyati Rahayu",
+    //         idNasabah : "1",
+    //         status : "1",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Sri Rezeki",
+    //         idNasabah : "2",
+    //         status : "1",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Umariyah",
+    //         idNasabah : "3",
+    //         status : "1",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Uun Widayanti",
+    //         idNasabah : "3",
+    //         status : "2",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Vina Rosayanti",
+    //         idNasabah : "4",
+    //         status : "3",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Vivien Anggraini",
+    //         idNasabah : "4",
+    //         status : "1",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Wanti Riana",
+    //         idNasabah : "5",
+    //         status : "2",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Baiq Rachmawati",
+    //         idNasabah : "6",
+    //         status : "1",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Sudi Harjanti",
+    //         idNasabah : "7",
+    //         status : "1",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Aminah Rosmaini",
+    //         idNasabah : "8",
+    //         status : "1",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Bellanisa Zainudin",
+    //         idNasabah : "9",
+    //         status : "2",
+    //         groupName : "Gang Kelinci"
+    //     },
+    //     {
+    //         namaNasabah : "Nadine Chandrawinata",
+    //         idNasabah : "10",
+    //         status : "1",
+    //         groupName : "Gang Kelinci"
+    //     }
+    // ])
+
+    useEffect(() => {
+        GetInfo()
+
+        let GetListMemberUk = `SELECT * FROM Sosialisasi_Database WHERE lokasiSosialisasi ='` + groupName + `'`
+
+        db.transaction(
+            tx => {
+                tx.executeSql(GetListMemberUk, [], (tx, results) => {
+                    // console.log(JSON.stringify(results.rows._array))
+                    let dataLength = results.rows.length
+                    // console.log(dataLength)
+
+                    var listData = []
+                    for(let a = 0; a < dataLength; a++) {
+                        let masterList = results.rows.item(a)
+                        listData.push({"namaNasabah": masterList.namaCalonNasabah, "status": masterList.type, "groupName": masterList.lokasiSosialisasi})
+                    }
+
+                    setData(listData)
+                })
+            }
+        )
+    }, [])
+
+    const GetInfo = async () => {
+        const tanggal = await AsyncStorage.getItem('TransactionDate')
+        setCurrentDate(tanggal)
+    }
+
+    //LIST VIEW
+    const renderItem = ({ item }) => (
+        <Item data={item} />
+    )
+
+    const Item = ({ data }) => (
+        <TouchableOpacity 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#FFF', flex: 1, borderWidth: 1, marginHorizontal: 15}} 
+            onPress={() => navigation.navigate('FormUjiKelayakan', {groupName: data.groupName, namaNasabah: data.namaNasabah})}
+        >
+            <View style={{alignItems: 'flex-start'}}>
+                <ListMessage namaNasabah={data.namaNasabah} status={data.status} />
+            </View>
+        </TouchableOpacity>
+    )
+
+    const ListMessage = ({ namaNasabah, status }) => {
+        return(
+            <View style={{ width: "85%", margin: 20, flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View>
+                    <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, marginBottom: 5, color: '#545851'}} >{namaNasabah}</Text>
+                </View>
+                <View>
+                    {status === '1' ? (
+                        <View></View>
+                    ) : status === '2' ? (
+                        <View>
+                            <FontAwesome5 name={'file-import'} size={25} color={'#D62828'} />
+                        </View>
+                    ) : (
+                        <View>
+                            <FontAwesome5 name={'file-contract'} size={25} color={'#D62828'} />
+                        </View>
+                    )}
+                </View>
+                
+            </View>
+        )
+    }
+    // END LIST VIEW
+
+    return(
+        <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
+            <View style={{
+                flexDirection: "row",
+                justifyContent: 'space-between',
+                marginTop: 40,
+                alignItems: "center",
+                paddingHorizontal: 20,
+            }}>
+                <TouchableOpacity onPress={() => navigation.replace('Inisiasi')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                    <View>
+                        <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
+                    </View>
+                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>INISIASI</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>
+                <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover", justifyContent: 'center'}} imageStyle={{borderRadius: 20}}>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Uji Kelayakan</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 20, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{groupName}</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 20, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{currentDate}</Text>
+                </ImageBackground>
+            </View>
+
+            <View style={{flex: 1, borderTopRightRadius: 20, borderTopLeftRadius: 20, marginTop: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
+                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Daftar Prospek</Text>
+                {/* <View style={{borderWidth: 1}}>
+                    <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
+                    <TextInput placeholder={"Cari Kelompok"} style={{padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                </View> */}
+                <View style={{borderWidth: 1, marginHorizontal: 10, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 20}}>
+                    <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
+                    <TextInput placeholder={"Cari Kelompok"} style={{padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                </View>
+                <SafeAreaView style={{flex: 1}}>
+
+                    {data === undefined ? (
+                        <View style={styles.loading}>
+                            <ActivityIndicator size="large" color="#00ff00" />
+                        </View>
+                    ) : (
+                        <View style={{ justifyContent:  'space-between', marginTop: 20 }}>
+                            <FlatList
+                                // contentContainerStyle={styles.listStyle}
+                                // refreshing={refreshing}
+                                // onRefresh={() => _onRefresh()}
+                                data={data}
+                                keyExtractor={(item, index) => index.toString()}
+                                enabledGestureInteraction={true}
+                                // onEndReachedThreshold={0.1}
+                                // onEndReached={() => handleEndReach()}
+                                renderItem={renderItem}
+                                // style={{height: '88.6%'}}
+                            />
+                        </View>
+                    )}
+                    
+                </SafeAreaView>
+            </View>
+        </View>
+    )
+}
+
+export default UjiKelayakan
+
+const styles = StyleSheet.create({
+    
+})
