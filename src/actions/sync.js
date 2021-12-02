@@ -183,7 +183,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + responseJson[i].CompSavingsBal
                     + "','"
-                    + username
+                    + params.username
                     + "')";
 
                     if (i != responseJson.length - 1) query = query + ",";
@@ -238,7 +238,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + responseJson[i].InstallmentAmount
                     + "','"
-                    + username
+                    + params.username
                     + "')";
 
                     if (i != responseJson.length - 1) query = query + ",";
