@@ -18,6 +18,7 @@ import db from '../database/Database';
 // import { Text } from 'native-base';
 // import { ScrollView } from 'react-native-gesture-handler';
 import { FlatList } from 'react-native';
+import FrontHomeSync from './HomeSync';
 const window = Dimensions.get('window');
 
 export default function FrontHome() {
@@ -553,6 +554,18 @@ export default function FrontHome() {
         }
         
 
+    }
+
+    if (!buttonDis) {
+        return (
+            <FrontHomeSync 
+                username={username}
+                aoname={aoname}
+                namacabang={namacabang}
+                // cabangid={cabangid}
+                cabangid={90001}
+            />
+        )
     }
 
     return(
