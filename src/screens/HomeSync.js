@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, TextInput, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, TextInput, ScrollView, ToastAndroid, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { scale, verticalScale } from 'react-native-size-matters'
+import { scale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import 'moment/locale/id';
 import { ApiSyncInisiasi } from '../../dataconfig/index'
+import { getSyncData } from './../actions/sync';
+import 'moment/locale/id';
 
 const colors = {
     HITAM: '#000',
@@ -39,37 +40,13 @@ export default function FrontHomeSync(props) {
             title: 'Tidak'
         }
     ];
-    // const dataProspekResponse = [
-    //     {
-    //         id: 1,
-    //         name: 'Muhamad Yusup Hamdani'
-    //     },
-    //     {
-    //         id: 2,
-    //         name: 'Rahmayanti'
-    //     },
-    //     {
-    //         id: 3,
-    //         name: 'Rengganis Samudera Asa'
-    //     },
-    //     {
-    //         id: 4,
-    //         name: 'Abibanyu Harsa'
-    //     }
-    // ];
 
     const [selectedIndexFilterProspek, setSelectedIndexFilterProspek] = useState(1);
     const [selectedItemsProspek, setSelectedItemsProspek] = useState([]);
     const [keyword, setKeyword] = useState('');
     const [dataProspekResponse, setDataProspekResponse] = useState([]);
     const [fetching, setFetching] = useState(false);
-
-    const handleOnPress = prospek => {
-        if (selectedItemsProspek.length) {
-            return selectItemsProspek(prospek);
-        }
-        if (__DEV__) console.log('pressed');
-    };
+    const [submitted, setSubmitted] = useState(false);
 
     const getSelectedProspek = propspek => selectedItemsProspek.includes(propspek.ID_Prospek);
 
@@ -118,6 +95,36 @@ export default function FrontHomeSync(props) {
             if (__DEV__) console.log('fetchData $get /inisiasi/GetListClient error:', error);
             setFetching(false);
         }
+    }
+
+    const doSubmit = () => {
+        if (__DEV__) console.log('doSubmit loaded');
+        if (submitted) return true;
+
+        setSubmitted(true);
+        const params = { 
+            username: props.username,
+            cabangid: props.cabangid
+        };
+        getSyncData(params).then((responseJson) => {
+            if (__DEV__) console.log('doSubmit getSyncData response:', responseJson);
+
+            Alert.alert(
+                "Sukses",
+                "Sync berhasil dilakukan",
+                [
+                    { text: "OK", onPress: () => {
+                        props.onSuccess();
+                    }}
+                ],
+                { cancelable: false }
+            )
+            setSubmitted(false);
+        }).catch((error) => {
+            if (__DEV__) console.log('doSubmit getSyncData error:', error);
+            ToastAndroid.show(JSON.stringify(error), ToastAndroid.SHORT);
+            setSubmitted(false);
+        })
     }
 
     const renderHeaderMenu = () => (
@@ -371,20 +378,20 @@ export default function FrontHomeSync(props) {
         >
             <View style={{flex: 1}} />
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmit()}
             >
                 <View
                     style={
                         {
                             padding: 12,
-                            backgroundColor: colors.DEFAULT,
+                            backgroundColor: submitted ? 'gray' : colors.DEFAULT,
                             borderRadius: 45,
                             borderWidth: 8,
                             borderColor: 'whitesmoke'
                         }
                     }
                 >
-                    <Icon name="retweet" size={32} color={colors.PUTIH} />
+                    <Icon name="download" size={32} color={colors.PUTIH} />
                 </View>
             </TouchableOpacity>
             <View style={{flex: 1}} />

@@ -559,11 +559,13 @@ export default function FrontHome() {
     if (!buttonDis) {
         return (
             <FrontHomeSync 
-                username={username}
+                // username={username}
+                // cabangid={cabangid}
+                username={'AO12-90091'} /* DATA DUMMY */
+                cabangid={90091} /* DATA DUMMY */
                 aoname={aoname}
                 namacabang={namacabang}
-                // cabangid={cabangid}
-                cabangid={90001}
+                onSuccess={() => setButtonDis(true)}
             />
         )
     }
