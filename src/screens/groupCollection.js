@@ -18,13 +18,16 @@ const GroupCollection = ({route}) => {
     let [groupInfo, setGroupInfo] = useState()
     let [isLoaded, setLoaded] = useState(false)
     let [memberList, setMemberList] = useState([])
+    let [attendList, setAttendList] = useState([])
+
+    let [listData, setListData] = useState([])
 
 
     const { groupid, GroupName } = route.params
 
     useEffect(() => {
         fetchData()
-    })
+    }, [])
 
     const fetchData = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
@@ -79,11 +82,38 @@ const GroupCollection = ({route}) => {
             }
         }))
 
+        const SelectAttendStatus = (memberList) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(memberList, [], (tx, results) => {
+                            let dataLength = results.rows.length
+                            var dataAbsent = []
+                            for(let a = 0; a < dataLength; a++) {
+                                let data = results.rows.item(a)
+                                dataAbsent.push({'attendStatus': data.attendStatus})
+                            }
+
+                            resolve (dataAbsent)
+                        })
+                    },function(error) {
+                        reject(error)
+                    }
+                )
+            } catch( error ) {
+                reject(error)
+            }
+        }))
+
         const DataGroupInfo = await SelectGroupInfo(groupDetail)
         const DataMemberList = await SelectMemberList(memberList)
+        const DataAttendStatus = await SelectAttendStatus(memberList)
 
         setGroupInfo(DataGroupInfo)
         setMemberList(DataMemberList)
+        setAttendList(DataAttendStatus)
+
+        setListData(DataMemberList)
         // setJumlahTagih(number(DataGroupInfo.JumlahTagihan))
         setLoaded(true)
     }
@@ -114,14 +144,35 @@ const GroupCollection = ({route}) => {
         </TouchableOpacity>
     )
 
-    const ListMessage = ({ memberName, clientid, productid, jumlahAngsuran }) => {
+    const attendanceHandler = (idAbsent, index, clientid) => {
+        let newArr = [...attendList]
+        newArr[index] = idAbsent
 
+        setAttendList(newArr)
+    }
+
+    const searchHandler = (value, data) => {
+        let newData = [];
+        console.log(value)
+        if (value) {
+            newData = data.filter(function(item) {
+                const itemData = item.ClientName.toUpperCase();
+                const textData = value.toUpperCase();
+                return itemData.includes(textData);
+            })
+            console.log("yang ini ==> " + newData)
+            setMemberList([...newData]);
+        } else {
+            console.log("that")
+            setMemberList([...listData]);
+        }
+    }
+
+    const ListMessage = ({ memberName, clientid, productid, jumlahAngsuran }) => {
         function getIndex(clientid) {
             return memberList.findIndex(obj => obj.ClientID === clientid);
         }
-
-        // var indexTarget = memberList.findIndex(clientid)
-        console.log(getIndex(clientid))
+        var index = getIndex(clientid)
 
         return(
             <View style={{margin: 20}}>
@@ -150,20 +201,54 @@ const GroupCollection = ({route}) => {
                     <Text style={{fontWeight: 'bold', fontSize: 15}}>Kehadiran Nasabah</Text>
 
                     <View>
-                        {/* <View style={styles.RadioStyle}>
+                        <View style={styles.RadioStyle}>
                             <RadioButton 
-                            value= "1"
-                            status={ this.state.Angsuran[indexTarget].attendance === '1' ? 'checked' : 'unchecked'}
-                            onPress={() => this.attendanceHandler('1', idx, accountID)} />
+                                value= "1"
+                                status={ attendList[index] === '1' ? 'checked' : 'unchecked'}
+                                onPress={() => attendanceHandler('1', index, clientid)} 
+                            />
                             <Text>1. Hadir, Bayar</Text>
                         </View>
                         <View style={styles.RadioStyle}>
                             <RadioButton 
-                            value= "2"
-                            status={ this.state.Angsuran[indexTarget].attendance === '2' ? 'checked' : 'unchecked'}
-                            onPress={() => this.attendanceHandler('2', idx, accountID)} />
+                                value= "2"
+                                status={ attendList[index] === '2' ? 'checked' : 'unchecked'}
+                                onPress={() => attendanceHandler('2', index, clientid)} 
+                            />
                             <Text>2. Tidak Hadir, Bayar</Text>
-                        </View> */}
+                        </View>
+                        <View style={styles.RadioStyle}>
+                            <RadioButton 
+                                value= "3"
+                                status={ attendList[index] === '3' ? 'checked' : 'unchecked'}
+                                onPress={() => attendanceHandler('3', index, clientid)} 
+                            />
+                            <Text>3. Hadir, Tidak Bayar</Text>
+                        </View>
+                        <View style={styles.RadioStyle}>
+                            <RadioButton 
+                                value= "4"
+                                status={ attendList[index] === '4' ? 'checked' : 'unchecked'}
+                                onPress={() => attendanceHandler('4', index, clientid)} 
+                            />
+                            <Text>4. Tidak Hadir, Tidak Bayar</Text>
+                        </View>
+                        <View style={styles.RadioStyle}>
+                            <RadioButton 
+                                value= "5"
+                                status={ attendList[index] === '5' ? 'checked' : 'unchecked'}
+                                onPress={() => attendanceHandler('5', index, clientid)} 
+                            />
+                            <Text>5. Hadir, Tanggung Renteng</Text>
+                        </View>
+                        <View style={styles.RadioStyle}>
+                            <RadioButton
+                                value= "6"
+                                status={ attendList[index] === '6' ? 'checked' : 'unchecked'}
+                                onPress={() => attendanceHandler('6', index, clientid)} 
+                            />
+                            <Text>6. Tidak Hadir, Tanggung Renteng</Text>
+                        </View>
                     </View>
                 </View>
 
@@ -220,7 +305,13 @@ const GroupCollection = ({route}) => {
 
             <View style={{marginHorizontal: 20, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
                 <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
-                <TextInput placeholder={"Cari Nama Nasabah"} style={{flex: 1, padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                <TextInput 
+                    placeholder={"Cari Nama Nasabah"} 
+                    style={{flex: 1, padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}
+                    onChangeText={(value) => {
+                        searchHandler(value, memberList)
+                    }}
+                />
             </View>
 
             <SafeAreaView style={{flex: 1, marginTop: 20}}>

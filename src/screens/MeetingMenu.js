@@ -6,14 +6,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import db from '../database/Database'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { flex } from 'styled-system'
-import { Group } from '@react-native-community/art'
 
 const MeetingMenu = ({route}) => {
 
     const navigation = useNavigation()
     const dimension = Dimensions.get('screen')
 
-    const { groupid, groupName } = route.params
+    const { groupid } = route.params
 
     let [currentDate, setCurrentDate] = useState()
     let [branchid, setBranchid] = useState()
@@ -23,7 +22,6 @@ const MeetingMenu = ({route}) => {
     // let [jumlahTagih, setJumlahTagih] = useState()
 
     useEffect(() => {
-        console.log("this ==> " + groupName)
         GetInfo()
     }, [])
 
@@ -73,10 +71,6 @@ const MeetingMenu = ({route}) => {
         // setJumlahTagih(number(DataGroupInfo.JumlahTagihan))
         setLoaded(true)
     } 
-
-    const movedScreenTest = () => {
-        navigation.navigate("Meeting", {id : groupid, group : groupName})
-    }
 
     return (
         <ImageBackground source={require("../../assets/Image/Background.png")} style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -144,7 +138,7 @@ const MeetingMenu = ({route}) => {
                     <Text style={{fontSize: 30, fontWeight: 'bold'}}>MENU</Text>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10}}>
-                        <TouchableOpacity onPress={() => movedScreenTest()} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: '#32908F'}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('GroupCollection', {groupid: groupid})} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: '#32908F'}}>
                             <FontAwesome5 name="users" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
                                 <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FAFAF8'}}>PKM</Text> 
