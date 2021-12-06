@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar, TextInput, ScrollView, ToastAndroid, Alert } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { scale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import { ApiSyncInisiasi } from '../../dataconfig/index'
 import { getSyncData } from './../actions/sync';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import 'moment/locale/id';
 
 const colors = {
@@ -127,6 +128,23 @@ export default function FrontHomeSync(props) {
         })
     }
 
+    const doSubmitProspek = () => {
+        if (__DEV__) console.log('doSubmitProspek loaded');
+        if (__DEV__) console.log('doSubmitProspek selectedItemsProspek:', selectedItemsProspek);
+
+        Alert.alert(
+            "Sukses",
+            "Data prospek berhasil disimpan",
+            [
+                { 
+                    text: "OK",
+                    onPress: () => {}
+                }
+            ],
+            { cancelable: false }
+        );
+    }
+
     const renderHeaderMenu = () => (
         <View
             style={styles.containerHeader}
@@ -179,7 +197,7 @@ export default function FrontHomeSync(props) {
                         }
                     ]
                 }>
-                    {selectedIndexFilterProspek === index ? <Icon name="circle" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
+                    {selectedIndexFilterProspek === index ? <FontAwesomeIcon name="circle" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
                 </View>
                 <Text style={{ fontSize: 16, color: colors.HITAM }}>{item.title}</Text>
             </View>
@@ -232,7 +250,7 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            <Icon name="search" size={18} color={colors.HITAM} />
+            <FontAwesomeIcon name="search" size={18} color={colors.HITAM} />
             <TextInput 
                 style={
                     {
@@ -271,7 +289,7 @@ export default function FrontHomeSync(props) {
                         }
                     ]
                 }>
-                    {getSelectedProspek(item) ? <Icon name="check" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
+                    {getSelectedProspek(item) ? <FontAwesomeIcon name="check" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
                 </View>
                 <Text>{item.Nama}</Text>
             </View>
@@ -284,7 +302,7 @@ export default function FrontHomeSync(props) {
                 {
                     flexDirection: 'row',
                     marginHorizontal: 12,
-                    marginBottom: 8
+                    marginBottom: 16
                 }
             }
         >
@@ -325,7 +343,7 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            <Icon name="database" size={32} color={colors.DEFAULT} />
+            <FontAwesomeIcon name="database" size={32} color={colors.DEFAULT} />
             <Text
                 style={
                     {
@@ -339,24 +357,59 @@ export default function FrontHomeSync(props) {
         </View>
     )
 
-    const renderProspekResult = () => (
+    const renderProspekResultButton = () => (
         <View
             style={
                 {
-                    borderWidth: 1,
-                    borderColor: colors.HITAM,
-                    borderRadius: 4,
-                    marginTop: 8,
-                    height: 240
+                    flexDirection: "row",
+                    marginVertical: 16
                 }
             }
         >
-            {renderProspekResultSearch()}
-            {renderProspekResultAldel()}
-            <ScrollView>
-                {dataProspekResponse.length > 0 ? renderProspekResultList() : renderProspekResultEmpty()}
-            </ScrollView>
+            <TouchableOpacity
+                onPress={() => selectedItemsProspek.length === 0 ? null : doSubmitProspek()}
+                style={
+                    {
+                        backgroundColor: selectedItemsProspek.length === 0 ? 'gray' : colors.DEFAULT,
+                        padding: 8,
+                        borderRadius: 6
+                    }
+                }
+            >
+                <Text 
+                style={
+                    {
+                        color: colors.PUTIH        
+                    }
+                }>
+                    Simpan
+                </Text>
+            </TouchableOpacity>
+            <View style={{ flex: 1 }} />
         </View>
+    )
+
+    const renderProspekResult = () => (
+        <>
+            <View
+                style={
+                    {
+                        borderWidth: 1,
+                        borderColor: colors.HITAM,
+                        borderRadius: 4,
+                        marginTop: 8,
+                        height: 260
+                    }
+                }
+            >
+                {renderProspekResultSearch()}
+                {renderProspekResultAldel()}
+                <ScrollView>
+                    {dataProspekResponse.length > 0 ? renderProspekResultList() : renderProspekResultEmpty()}
+                </ScrollView>
+            </View>
+            {renderProspekResultButton()}
+        </>
     )
 
     const renderProspek = () => (
@@ -364,7 +417,7 @@ export default function FrontHomeSync(props) {
             {renderProspekFilter()}
             {renderProspekButton()}
             {renderProspekResult()}
-            <Text>{JSON.stringify(selectedItemsProspek)}</Text>
+            {/* <Text>{JSON.stringify(selectedItemsProspek)}</Text> */}
         </>
     )
 
@@ -378,20 +431,21 @@ export default function FrontHomeSync(props) {
         >
             <View style={{flex: 1}} />
             <TouchableOpacity
+                // onPress={() => submitted || selectedItemsProspek.length === 0 ? null : doSubmit()}
                 onPress={() => doSubmit()}
             >
                 <View
                     style={
                         {
                             padding: 12,
-                            backgroundColor: submitted ? 'gray' : colors.DEFAULT,
+                            backgroundColor: submitted || selectedItemsProspek.length === 0 ? 'gray' : colors.DEFAULT,
                             borderRadius: 45,
                             borderWidth: 8,
                             borderColor: 'whitesmoke'
                         }
                     }
                 >
-                    <Icon name="download" size={32} color={colors.PUTIH} />
+                    <MaterialCommunityIcons name="sync" color={colors.PUTIH} size={32} />
                 </View>
             </TouchableOpacity>
             <View style={{flex: 1}} />
