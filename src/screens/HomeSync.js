@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, TextInput, ScrollView, ToastAndroid, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, TextInput, ScrollView, ToastAndroid, Alert, SafeAreaView } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { scale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native';
@@ -8,20 +8,12 @@ import { ApiSyncInisiasi } from '../../dataconfig/index'
 import { getSyncData } from './../actions/sync';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import 'moment/locale/id';
+import SearchListView from '../components/SearchListView';
 
 const colors = {
     HITAM: '#000',
     PUTIH: '#FFF',
     DEFAULT: '#0D67B2'
-}
-
-const fontSize = {
-    H1: '32px',
-    H2: '24px',
-    H3: '20.8px',
-    H4: '16px',
-    H5: '12.8px',
-    H6: '11.2px'
 }
 
 export default function FrontHomeSync(props) {
@@ -44,28 +36,12 @@ export default function FrontHomeSync(props) {
 
     const [selectedIndexFilterProspek, setSelectedIndexFilterProspek] = useState(1);
     const [selectedItemsProspek, setSelectedItemsProspek] = useState([]);
-    const [keyword, setKeyword] = useState('');
     const [dataProspekResponse, setDataProspekResponse] = useState([]);
     const [fetching, setFetching] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [isVisibleModalSearchListView, setIsVisibleModalSearchListView] = useState(false);
 
-    const getSelectedProspek = propspek => selectedItemsProspek.includes(propspek.ID_Prospek);
-
-    const deSelectItemsProspek = () => setSelectedItemsProspek([]);
-
-    const alSelectItemsProspek = () => setSelectedItemsProspek(dataProspekResponse.map(x => x.ID_Prospek));
-
-    const selectItemsProspek = prospek => {
-        if (selectedItemsProspek.includes(prospek.ID_Prospek)) {
-            const newListItems = selectedItemsProspek.filter(
-                listItem => listItem !== prospek.ID_Prospek
-            );
-            return setSelectedItemsProspek([...newListItems]);
-        }
-        setSelectedItemsProspek([...selectedItemsProspek, prospek.ID_Prospek]);
-    };
-
-    const fetchData = () => {
+    const fetchData = (keyword = '') => {
         if (__DEV__) console.log('fetchData loaded');
 
         let search = undefined;
@@ -206,7 +182,6 @@ export default function FrontHomeSync(props) {
 
     const renderProspekButton = () => (
         <Text
-            onPress={() => fetchData()}
             style={
                 {
                     marginVertical: 8,
@@ -236,101 +211,52 @@ export default function FrontHomeSync(props) {
     )
 
     const renderProspekResultSearch = () => (
-        <View
-            style={
-                {
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    borderWidth: 1, 
-                    borderColor: colors.HITAM,
-                    borderRadius: 8,
-                    paddingHorizontal: 8,
-                    marginHorizontal: 12,
-                    marginVertical: 8
-                }
-            }
-        >
-            <FontAwesomeIcon name="search" size={18} color={colors.HITAM} />
-            <TextInput 
-                style={
-                    {
-                        flex: 1,
-                        marginLeft: 8
-                    }
-                }
-                placeholder='Cari nama prospek'
-                onChangeText={(text) => setKeyword(text)}
-                value={keyword}
-                returnKeyType="done"
-                onSubmitEditing={() => fetchData()}
-            />
-        </View>
-    )
-
-    const renderProspekResultList = () => dataProspekResponse.map((item, index) => (
         <TouchableOpacity
-            key={index}
-            onPress={() => selectItemsProspek(item)}
+            onPress={() => setIsVisibleModalSearchListView(true)}
         >
             <View
                 style={
                     {
                         flexDirection: 'row',
-                        marginBottom: 8,
-                        marginHorizontal: 12
+                        alignItems: 'center',
+                        borderWidth: 1, 
+                        borderColor: colors.HITAM,
+                        borderRadius: 8,
+                        paddingHorizontal: 8,
+                        marginHorizontal: 12,
+                        marginVertical: 8
                     }
                 }
             >
-                <View style={
-                    [
-                        styles.checkbox,
+                <FontAwesomeIcon name="search" size={18} color={colors.HITAM} />
+                <Text
+                    style={
                         {
-                            backgroundColor: getSelectedProspek(item) ? colors.DEFAULT : colors.PUTIH
+                            paddingHorizontal: 8,
+                            paddingVertical: 8
                         }
-                    ]
-                }>
-                    {getSelectedProspek(item) ? <FontAwesomeIcon name="check" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
-                </View>
-                <Text>{item.Nama}</Text>
+                    }
+                >
+                    Cari nama prospek
+                </Text>
             </View>
         </TouchableOpacity>
-    ))
+        
+    )
 
-    const renderProspekResultAldel = () => dataProspekResponse.length > 0 && (
+    const renderProspekResultList = () => selectedItemsProspek.map((item, index) => (
         <View
+            key={index}
             style={
                 {
-                    flexDirection: 'row',
-                    marginHorizontal: 12,
-                    marginBottom: 16
+                    marginBottom: 8,
+                    marginHorizontal: 12
                 }
             }
         >
-            <Text
-                style={
-                    {
-                        color: colors.DEFAULT,
-                        textDecorationLine: 'underline'
-                    }
-                }
-                onPress={() => alSelectItemsProspek()}
-            >
-                Pilih semua
-            </Text>
-            <Text
-                style={
-                    {
-                        marginLeft: 8,
-                        color: 'red',
-                        textDecorationLine: 'underline'
-                    }
-                }
-                onPress={() => deSelectItemsProspek()}
-            >
-                Batalkan
-            </Text>
+            <Text>{JSON.parse(item).Nama}</Text>
         </View>
-    )
+    ))
 
     const renderProspekResultEmpty = () => (
         <View
@@ -403,7 +329,6 @@ export default function FrontHomeSync(props) {
                 }
             >
                 {renderProspekResultSearch()}
-                {renderProspekResultAldel()}
                 <ScrollView>
                     {dataProspekResponse.length > 0 ? renderProspekResultList() : renderProspekResultEmpty()}
                 </ScrollView>
@@ -417,7 +342,7 @@ export default function FrontHomeSync(props) {
             {renderProspekFilter()}
             {renderProspekButton()}
             {renderProspekResult()}
-            {/* <Text>{JSON.stringify(selectedItemsProspek)}</Text> */}
+            <Text>{JSON.stringify(selectedItemsProspek)}</Text>
         </>
     )
 
@@ -429,7 +354,7 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            <View style={{flex: 1}} />
+            <View style={{ flex: 1 }} />
             <TouchableOpacity
                 // onPress={() => submitted || selectedItemsProspek.length === 0 ? null : doSubmit()}
                 onPress={() => doSubmit()}
@@ -467,16 +392,31 @@ export default function FrontHomeSync(props) {
         </View>
     )
 
+    const renderModalSearchListView = () => (
+        <SearchListView 
+            visible={isVisibleModalSearchListView}
+            onDismiss={() => setIsVisibleModalSearchListView(!isVisibleModalSearchListView)}
+            datas={dataProspekResponse}
+            doSearch={(keyword) => fetchData(keyword)}
+            doSubmit={(data) => {
+                if (__DEV__) console.log('renderModalSearchListView data:', data);
+                setIsVisibleModalSearchListView(false);
+                setSelectedItemsProspek(data);
+            }}
+        />
+    )
+
     const renderSpace = () => (
         <View style={styles.greySpace} />
     )
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" hidden={false} backgroundColor="transparent" translucent={true} />
             {renderHeader()}
             {renderBody()}
-        </View>
+            {renderModalSearchListView()}
+        </SafeAreaView>
     )
 }
 
