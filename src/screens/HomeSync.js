@@ -112,7 +112,7 @@ export default function FrontHomeSync(props) {
 
             Alert.alert(
                 "Sukses",
-                "Sync berhasil dilakukan",
+                "Sync berhasil dilakukan, Anda akan memasuki menu utama",
                 [
                     { text: "OK", onPress: () => {
                         props.onSuccess();
