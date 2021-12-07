@@ -267,7 +267,7 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            <FontAwesomeIcon name="database" size={32} color={colors.DEFAULT} />
+            {/* <FontAwesomeIcon name="database" size={32} color={colors.DEFAULT} /> */}
             <Text
                 style={
                     {
@@ -276,7 +276,7 @@ export default function FrontHomeSync(props) {
                     }
                 }
             >
-                {fetching ? 'Loading...' : `Data tidak ditemukan\ncoba cari "Prospek" lain.`}
+                {fetching && 'Mohon tunggu...'}
             </Text>
         </View>
     )
@@ -320,23 +320,27 @@ export default function FrontHomeSync(props) {
             }
         >
             <View style={{ flex: 1 }} />
-            <TouchableOpacity
-                onPress={() => doSubmit()}
-            >
-                <View
-                    style={
-                        {
-                            padding: 12,
-                            backgroundColor: colors.DEFAULT,
-                            borderRadius: 45,
-                            borderWidth: 8,
-                            borderColor: 'whitesmoke'
-                        }
-                    }
+            {!submitted ? (
+                <TouchableOpacity
+                    onPress={() => doSubmit()}
                 >
-                    <MaterialCommunityIcons name="sync" color={colors.PUTIH} size={32} />
-                </View>
-            </TouchableOpacity>
+                    <View
+                        style={
+                            {
+                                padding: 12,
+                                backgroundColor: colors.DEFAULT,
+                                borderRadius: 45,
+                                borderWidth: 8,
+                                borderColor: 'whitesmoke'
+                            }
+                        }
+                    >
+                        <MaterialCommunityIcons name="sync" color={colors.PUTIH} size={32} />
+                    </View>
+                </TouchableOpacity>
+            ) : (
+                <Text>Sedang sync, mohon tunggu...</Text>
+            )}
             <View style={{flex: 1}} />
         </View>
     )
