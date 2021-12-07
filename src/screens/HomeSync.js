@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, TextInput, ScrollView, ToastAndroid, Alert, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, Alert, SafeAreaView } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { scale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import { getSyncData } from './../actions/sync';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import 'moment/locale/id';
 import SearchListView from '../components/SearchListView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const colors = {
     HITAM: '#000',
@@ -40,6 +41,19 @@ export default function FrontHomeSync(props) {
     const [fetching, setFetching] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [isVisibleModalSearchListView, setIsVisibleModalSearchListView] = useState(false);
+
+    useEffect(() => {
+        syncData();
+    }, []);
+
+    function syncData() {
+        moment.locale('id');
+        var now = moment().format('YYYY-MM-DD');
+
+        AsyncStorage.getItem('SyncDate', (error, syncDate) => {
+            if (syncDate === now) props.onSuccess();
+        });
+    }
 
     const fetchData = (keyword = '') => {
         if (__DEV__) console.log('fetchData loaded');
@@ -150,7 +164,10 @@ export default function FrontHomeSync(props) {
     const renderProspekList = () => dataFilterProspek.map((item, index) => (
         <TouchableOpacity
             key={index}
-            onPress={() => setSelectedIndexFilterProspek(index)}
+            onPress={() => {
+                setSelectedItemsProspek([]);
+                setSelectedIndexFilterProspek(index);
+            }}
         >
             <View
                 style={
@@ -209,6 +226,8 @@ export default function FrontHomeSync(props) {
     const renderProspekResultSearch = () => (
         <TouchableOpacity
             onPress={() => {
+                if ([2].includes(selectedIndexFilterProspek)) return true;
+                
                 fetchData();
             }}
         >
@@ -252,7 +271,7 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            <Text>{JSON.parse(item).Nama}</Text>
+            <Text>{index + 1}. {JSON.parse(item).Nama}</Text>
         </View>
     ))
 
@@ -365,6 +384,7 @@ export default function FrontHomeSync(props) {
             visible={isVisibleModalSearchListView}
             onDismiss={() => setIsVisibleModalSearchListView(!isVisibleModalSearchListView)}
             datas={dataProspekResponse}
+            selectedItems={selectedItemsProspek}
             doSearch={(keyword) => fetchData(keyword)}
             doSubmit={(data) => {
                 if (__DEV__) console.log('renderModalSearchListView data:', data);
