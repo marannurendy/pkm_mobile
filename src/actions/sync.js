@@ -690,25 +690,25 @@ export const getSyncData = (params) => new Promise((resolve) => {
     });
 
     const fetchWaterfall = async () => {
-        // const responseListGroup = await fetch(getListGroup);
-        // const jsonListGroup = await responseListGroup.json(responseListGroup);
-        // await insertListGroup(jsonListGroup);
-        // if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP DONE');
+        const responseListGroup = await fetch(getListGroup);
+        const jsonListGroup = await responseListGroup.json(responseListGroup);
+        await insertListGroup(jsonListGroup);
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP DONE');
 
-        // const responseListCollection = await fetch(getListCollection);
-        // const jsonCollection = await responseListCollection.json(responseListCollection);
-        // await insertListCollection(jsonCollection)
-        // if (__DEV__) console.log('ACTIONS GET SYNC DATA COLLECTION DONE');
+        const responseListCollection = await fetch(getListCollection);
+        const jsonCollection = await responseListCollection.json(responseListCollection);
+        await insertListCollection(jsonCollection)
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA COLLECTION DONE');
 
-        // const responseListUP = await fetch(queryUP);
-        // const jsonListUP = await responseListUP.json(responseListUP);
-        // await insertListUP(jsonListUP)
-        // if (__DEV__) console.log('ACTIONS GET SYNC DATA UP DONE');
+        const responseListUP = await fetch(queryUP);
+        const jsonListUP = await responseListUP.json(responseListUP);
+        await insertListUP(jsonListUP)
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA UP DONE');
 
-        // const responseListPAR = await fetch(getPKMIndividual);
-        // const jsongetPAR = await responseListPAR.json(responseListPAR);
-        // await insertListPAR(jsongetPAR);
-        // if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
+        const responseListPAR = await fetch(getPKMIndividual);
+        const jsongetPAR = await responseListPAR.json(responseListPAR);
+        await insertListPAR(jsongetPAR);
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
 
         if (![2].includes(params.prospekFilter)) {
             const responseGetSosialisasiMobile = await fetch(postGetSosialisasiMobile, {
