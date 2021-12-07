@@ -28,11 +28,12 @@ export default({
     visible,
     onDismiss,
     datas = [],
+    selectedItems = [],
     doSearch = null,
     doSubmit = null
 }) => {
     const [keyword, setKeyword] = useState('');
-    const [selectedItemsProspek, setSelectedItemsProspek] = useState([]);
+    const [selectedItemsProspek, setSelectedItemsProspek] = useState(selectedItems);
 
     const getSelectedProspek = propspek => selectedItemsProspek.includes(JSON.stringify(propspek));
 
@@ -47,7 +48,8 @@ export default({
     };
 
     useEffect(() => {
-    }, []);
+        setSelectedItemsProspek(selectedItems);
+    }, [selectedItems]);
 
     const header = () => (
         <View
