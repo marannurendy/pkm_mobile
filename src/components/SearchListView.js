@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     View,
@@ -45,6 +45,9 @@ export default({
         }
         setSelectedItemsProspek([...selectedItemsProspek, JSON.stringify(prospek)]);
     };
+
+    useEffect(() => {
+    }, []);
 
     const header = () => (
         <View

@@ -149,7 +149,7 @@ db.transaction(tx => {
             produk_Pembiayaan varchar, 
             jumlah_Pinjaman varchar,
             term_Pembiayaan varchar,
-            kategori_Tujuan-Pembiayaan varchar,
+            kategori_Tujuan_Pembiayaan varchar,
             tujuan_Pembiayaan varchar,
             type_Pencairan varchar,
             frekuensi_Pembayaran varchar,
