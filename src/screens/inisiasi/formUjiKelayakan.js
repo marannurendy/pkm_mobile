@@ -26,6 +26,8 @@ const FormUjiKelayakan = ({route}) => {
         setCurrentDate(tanggal)
     }
 
+    const submitHandler = () => null
+
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
             <View style={{

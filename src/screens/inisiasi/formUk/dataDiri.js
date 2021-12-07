@@ -116,6 +116,35 @@ const DataDiri = ({route}) => {
         {label: '10', value: '10'},
     ])
 
+    
+    /* START DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
+    const dataPilihan = [
+        {label: '1', value: '1'},
+        {label: '2', value: '2'},
+        {label: '3', value: '3'},
+        {label: '4', value: '4'},
+        {label: '5', value: '5'}
+    ];
+    const [openJenisKartuIdentitas, setOpenJenisKartuIdentitas] = useState(false);
+    const [valueJenisKartuIdentitas, setValueJenisKartuIdentitas] = useState(null);
+    const [itemsJenisKartuIdentitas, setItemsJenisKartuIdentitas] = useState([]);
+    const [openStatusPerkawinan, setOpenStatusPerkawinan] = useState(false);
+    const [valueStatusPerkawinan, setValueStatusPerkawinan] = useState(null);
+    const [itemsStatusPerkawinan, setItemsStatusPerkawinan] = useState([]);
+    const [openJumlahAnak, setOpenJumlahAnak] = useState(false);
+    const [valueJumlahAnak, setValueJumlahAnak] = useState(null);
+    const [itemsJumlahAnak, setItemsJumlahAnak] = useState(dataPilihan);
+    const [openJumlahTanggungan, setOpenJumlahTanggungan] = useState(false);
+    const [valueJumlahTanggungan, setValueJumlahTanggungan] = useState(null);
+    const [itemsJumlahTanggungan, setItemsJumlahTanggungan] = useState(dataPilihan);
+    const [openStatusRumahTinggal, setOpenStatusRumahTinggal] = useState(false);
+    const [valueStatusRumahTinggal, setValueStatusRumahTinggal] = useState(null);
+    const [itemsStatusRumahTinggal, setItemsStatusRumahTinggal] = useState([]);
+    const [openStatusHubunganKeluarga, setOpenStatusHubunganKeluarga] = useState(false);
+    const [valueStatusHubunganKeluarga, setValueStatusHubunganKeluarga] = useState(null);
+    const [itemsStatusHubunganKeluarga, setItemsStatusHubunganKeluarga] = useState([]);
+    /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
+
     useEffect(() => {
 
         (async () => {
@@ -178,8 +207,14 @@ const DataDiri = ({route}) => {
                 arrayMarriage.push({label: data.marriageStatusDetail, value: data.id})
             }
 
+            if (__DEV__) console.log('arrayIdentity:', arrayIdentity);
+            if (__DEV__) console.log('arrayMarriage:', arrayMarriage);
+
             setItems(arrayIdentity)
             setItemsMarriege(arrayMarriage)
+
+            setItemsJenisKartuIdentitas(arrayIdentity);
+            setItemsStatusPerkawinan(arrayMarriage);
             
           })();
     }, [])
@@ -352,6 +387,8 @@ const DataDiri = ({route}) => {
             console.log(error, "ERROR <<<<<<<<<<<<<")
         }
     };
+
+    submitHandler = () => null;
 
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -820,6 +857,21 @@ const DataDiri = ({route}) => {
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas</Text>
                             <DropDownPicker
+                                open={openJenisKartuIdentitas}
+                                value={valueJenisKartuIdentitas}
+                                items={itemsJenisKartuIdentitas}
+                                setOpen={setOpenJenisKartuIdentitas}
+                                setValue={setValueJenisKartuIdentitas}
+                                setItems={setItemsJenisKartuIdentitas}
+                                placeholder='Pilih Jenis Kartu Identitas'
+                                placeholderStyle={styles.dropdownPlaceholderStyle}
+                                dropDownContainerStyle={styles.dropdownContainerStyle}
+                                style={styles.dropdownStyle}
+                                labelStyle={styles.dropdownLabelStyle}
+                                onChangeValue={() => JenisKartuIdentitas(value)}
+                            />
+
+                            {/* <DropDownPicker
                                 open={open}
                                 value={value}
                                 items={items}
@@ -832,7 +884,7 @@ const DataDiri = ({route}) => {
                                 style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
                                 labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
                                 onChangeValue={() => JenisKartuIdentitas(value)}
-                            />
+                            /> */}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -895,6 +947,21 @@ const DataDiri = ({route}) => {
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Perkawinan</Text>
                             <DropDownPicker
+                                open={openStatusPerkawinan}
+                                value={valueStatusPerkawinan}
+                                items={itemsStatusPerkawinan}
+                                setOpen={setOpenStatusPerkawinan}
+                                setValue={setValueStatusPerkawinan}
+                                setItems={setItemsStatusPerkawinan}
+                                placeholder='Pilih Status Perkawinan'
+                                placeholderStyle={styles.dropdownPlaceholderStyle}
+                                dropDownContainerStyle={styles.dropdownContainerStyle}
+                                style={styles.dropdownStyle}
+                                labelStyle={styles.dropdownLabelStyle}
+                                onChangeValue={() => MarriageStatus(value)}
+                            />
+
+                            {/* <DropDownPicker
                                 open={open}
                                 value={statusPerkawinan}
                                 items={itemsMarrige}
@@ -907,7 +974,7 @@ const DataDiri = ({route}) => {
                                 style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
                                 labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
                                 onChangeValue={() => MarriageStatus(value)}
-                            />
+                            /> */}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1099,6 +1166,22 @@ const DataDiri = ({route}) => {
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Anak</Text>
                             <DropDownPicker
+                                open={openJumlahAnak}
+                                value={valueJumlahAnak}
+                                items={itemsJumlahAnak}
+                                setOpen={setOpenJumlahAnak}
+                                setValue={setValueJumlahAnak}
+                                setItems={setItemsJumlahAnak}
+                                placeholder='Pilih Jumlah Anak'
+                                placeholderStyle={styles.dropdownPlaceholderStyle}
+                                dropDownContainerStyle={styles.dropdownContainerStyle}
+                                style={styles.dropdownStyle}
+                                labelStyle={styles.dropdownLabelStyle}
+                                zIndex={6000}
+                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
+                            />
+
+                            {/* <DropDownPicker
                                 open={open}
                                 value={jumlahAnak}
                                 items={itemJumlahAnak}
@@ -1111,12 +1194,28 @@ const DataDiri = ({route}) => {
                                 style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
                                 labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
                                 onChangeValue={() => console.log('jumlahAnak')}
-                            />
+                            /> */}
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tanggungan</Text>
                             <DropDownPicker
+                                open={openJumlahTanggungan}
+                                value={valueJumlahTanggungan}
+                                items={itemsJumlahTanggungan}
+                                setOpen={setOpenJumlahTanggungan}
+                                setValue={setValueJumlahTanggungan}
+                                setItems={setItemsJumlahTanggungan}
+                                placeholder='Pilih Jumlah Tanggungan'
+                                placeholderStyle={styles.dropdownPlaceholderStyle}
+                                dropDownContainerStyle={styles.dropdownContainerStyle}
+                                style={styles.dropdownStyle}
+                                labelStyle={styles.dropdownLabelStyle}
+                                zIndex={5000}
+                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
+                            />
+
+                            {/* <DropDownPicker
                                 open={open}
                                 value={value}
                                 items={itemJumlahTanggungan}
@@ -1129,12 +1228,28 @@ const DataDiri = ({route}) => {
                                 style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
                                 labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
                                 onChangeValue={() => console.log('jumlahTanggungan')}
-                            />
+                            /> */}
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Rumah Tinggal</Text>
                             <DropDownPicker
+                                open={openStatusRumahTinggal}
+                                value={valueStatusRumahTinggal}
+                                items={itemsStatusRumahTinggal}
+                                setOpen={setOpenStatusRumahTinggal}
+                                setValue={setValueStatusRumahTinggal}
+                                setItems={setItemsStatusRumahTinggal}
+                                placeholder='Pilih Rumah Tinggal'
+                                placeholderStyle={styles.dropdownPlaceholderStyle}
+                                dropDownContainerStyle={styles.dropdownContainerStyle}
+                                style={styles.dropdownStyle}
+                                labelStyle={styles.dropdownLabelStyle}
+                                zIndex={4000}
+                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
+                            />
+
+                            {/* <DropDownPicker
                                 open={open}
                                 value={value}
                                 items={items}
@@ -1147,7 +1262,7 @@ const DataDiri = ({route}) => {
                                 style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
                                 labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
                                 onChangeValue={() => sumberDataHandler(value)}
-                            />
+                            /> */}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1233,6 +1348,21 @@ const DataDiri = ({route}) => {
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Hubungan Keluarga</Text>
                             <DropDownPicker
+                                open={openStatusHubunganKeluarga}
+                                value={valueStatusHubunganKeluarga}
+                                items={itemsStatusHubunganKeluarga}
+                                setOpen={setOpenStatusHubunganKeluarga}
+                                setValue={setValueStatusHubunganKeluarga}
+                                setItems={setItemsStatusHubunganKeluarga}
+                                placeholder='Pilih Status Hubungan Keluarga'
+                                placeholderStyle={styles.dropdownPlaceholderStyle}
+                                dropDownContainerStyle={styles.dropdownContainerStyle}
+                                style={styles.dropdownStyle}
+                                labelStyle={styles.dropdownLabelStyle}
+                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
+                            />
+
+                            {/* <DropDownPicker
                                 open={open}
                                 value={value}
                                 items={items}
@@ -1245,7 +1375,7 @@ const DataDiri = ({route}) => {
                                 style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
                                 labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
                                 onChangeValue={() => sumberDataHandler(value)}
-                            />
+                            /> */}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1374,4 +1504,37 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
+    dropdownPlaceholderStyle: {
+        fontWeight: 'bold',
+        fontSize: 17,
+        margin: 10, 
+        color: '#545851'
+    },
+    dropdownContainerStyle: {
+        marginLeft: 10,
+        marginTop: 5,
+        borderColor: "#003049",
+        width: dimension.width / 1.5,
+        borderWidth: 2
+    },
+    dropdownStyle: {
+        marginLeft: 10,
+        borderColor: "black",
+        width: dimension.width / 1.5, 
+        borderRadius: 10,
+        borderWidth: 1
+    },
+    dropdownLabelStyle: {
+        fontWeight: 'bold',
+        fontSize: 17,
+        margin: 10,
+        color: '#545851'
+    }
 })
+
+
+
+// placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
+// dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
+// style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
+// labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
