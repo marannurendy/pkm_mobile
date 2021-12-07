@@ -671,9 +671,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         }, function() {}
                     );
                 }
-
-                resolve('BERHASIL');
-                return;
             } catch (error) {
                 truncat(reject, 'SOSIALISASI MOBILE UK');
                 return;
@@ -686,7 +683,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (persetujuan_pembiayaan_kelompok.length > 0) {}
         if (persetujuan_pembiayaan_client_kelompok.length > 0) {}
         
-        resolve();
+        resolve('BERHASIL');
+        return;
     });
 
     const fetchWaterfall = async () => {
