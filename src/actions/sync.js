@@ -20,18 +20,28 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         return db.transaction(
             tx => {
-                tx.executeSql("DELETE FROM ListGroup")
-                tx.executeSql("DELETE FROM GroupList")
-                tx.executeSql("DELETE FROM UpAccountList")
-                tx.executeSql("DELETE FROM PAR_AccountList")
-                tx.executeSql("DELETE FROM AccountList")
-                tx.executeSql("DELETE FROM Totalpkm")
-                tx.executeSql("DELETE FROM pkmTransaction")
-                tx.executeSql("DELETE FROM parTransaction")
-                tx.executeSql("DELETE FROM DetailKehadiran")
-                tx.executeSql("DELETE FROM DetailUP")
-                tx.executeSql("DELETE FROM DetailPAR")
-                tx.executeSql("DELETE FROM Detailpkm")
+                tx.executeSql("DELETE FROM ListGroup");
+                tx.executeSql("DELETE FROM GroupList");
+                tx.executeSql("DELETE FROM UpAccountList");
+                tx.executeSql("DELETE FROM PAR_AccountList");
+                tx.executeSql("DELETE FROM AccountList");
+                tx.executeSql("DELETE FROM Totalpkm");
+                tx.executeSql("DELETE FROM pkmTransaction");
+                tx.executeSql("DELETE FROM parTransaction");
+                tx.executeSql("DELETE FROM DetailKehadiran");
+                tx.executeSql("DELETE FROM DetailUP");
+                tx.executeSql("DELETE FROM DetailPAR");
+                tx.executeSql("DELETE FROM Detailpkm");
+                tx.executeSql("DELETE FROM Sosialisasi_Database");
+                tx.executeSql("DELETE FROM Table_UK");
+                tx.executeSql("DELETE FROM Table_UK_Detail");
+                tx.executeSql("DELETE FROM Table_UK_Master");
+                tx.executeSql("DELETE FROM Table_UK_DataDiri");
+                tx.executeSql("DELETE FROM Table_UK_ProdukPembiayaan");
+                tx.executeSql("DELETE FROM Table_UK_KondisiRumah");
+                tx.executeSql("DELETE FROM Table_UK_SektorEkonomi");
+                tx.executeSql("DELETE FROM Table_UK_PendapatanNasabah");
+                tx.executeSql("DELETE FROM Table_UK_PermohonanPembiayaan");
             }, function(error) {
                 ToastAndroid.show("SOMETHING WENT WRONG: " + JSON.stringify(error), ToastAndroid.SHORT);
                 reject('GAGAL MEMPROSES DATA ' + source);
