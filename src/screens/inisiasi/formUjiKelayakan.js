@@ -94,7 +94,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <View style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKKondisiRumah', {groupName: groupName, namaNasabah: namaNasabah})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'home'} size={25} color={'#FFF'} />
                         </View>
@@ -110,9 +110,9 @@ const FormUjiKelayakan = ({route}) => {
                                 // onPress={() => pickerHandler(1)}
                             />
                         </View>
-                    </View>
+                    </TouchableOpacity>
 
-                    <View style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKSektorEkonomi', {groupName: groupName, namaNasabah: namaNasabah})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'sellsy'} size={25} color={'#FFF'} />
                         </View>
@@ -128,9 +128,9 @@ const FormUjiKelayakan = ({route}) => {
                                 // onPress={() => pickerHandler(1)}
                             />
                         </View>
-                    </View>
+                    </TouchableOpacity>
 
-                    <View style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKTingkatPendapatan', {groupName: groupName, namaNasabah: namaNasabah})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'chart-area'} size={25} color={'#FFF'} />
                         </View>
@@ -146,9 +146,9 @@ const FormUjiKelayakan = ({route}) => {
                                 // onPress={() => pickerHandler(1)}
                             />
                         </View>
-                    </View>
+                    </TouchableOpacity>
 
-                    <View style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {groupName: groupName, namaNasabah: namaNasabah})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'signature'} size={25} color={'#FFF'} />
                         </View>
@@ -164,7 +164,7 @@ const FormUjiKelayakan = ({route}) => {
                                 // onPress={() => pickerHandler(1)}
                             />
                         </View>
-                    </View>
+                    </TouchableOpacity>
 
                     <View style={{alignItems: 'center', marginBottom: 20}}>
                         <Button

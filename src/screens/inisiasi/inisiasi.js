@@ -126,6 +126,7 @@ const Inisasi = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            onPress={() => navigation.navigate('UjiKelayakan', {groupName: data.groupName})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />

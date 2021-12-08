@@ -33,8 +33,8 @@ const Sosialisasi = () => {
     let [value, setValue] = useState(null)
     let [nohp, setNohp] = useState()
     let [sisipan, setSisipan] = useState(false)
-    let [baru, setBaru] = useState(false)
-    let [statusNasabah, setStatusNasabah] = useState()
+    let [baru, setBaru] = useState(true)
+    let [statusNasabah, setStatusNasabah] = useState(2)
     
     let [lokasiSos, setLokasiSos] = useState()
     let [namaNasabah, setNamanasabah] = useState()

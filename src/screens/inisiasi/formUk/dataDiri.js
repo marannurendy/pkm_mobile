@@ -868,7 +868,7 @@ const DataDiri = ({route}) => {
                                 dropDownContainerStyle={styles.dropdownContainerStyle}
                                 style={styles.dropdownStyle}
                                 labelStyle={styles.dropdownLabelStyle}
-                                onChangeValue={() => JenisKartuIdentitas(value)}
+                                onChangeValue={() => JenisKartuIdentitas(valueJenisKartuIdentitas)}
                             />
 
                             {/* <DropDownPicker
@@ -958,7 +958,7 @@ const DataDiri = ({route}) => {
                                 dropDownContainerStyle={styles.dropdownContainerStyle}
                                 style={styles.dropdownStyle}
                                 labelStyle={styles.dropdownLabelStyle}
-                                onChangeValue={() => MarriageStatus(value)}
+                                onChangeValue={() => MarriageStatus(valueStatusPerkawinan)}
                             />
 
                             {/* <DropDownPicker
