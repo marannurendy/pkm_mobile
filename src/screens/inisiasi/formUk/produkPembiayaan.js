@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, TextInput, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -8,22 +8,23 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { styles } from './styles';
 
+const dimension = Dimensions.get('screen');
 const images = {
     banner: require("../../../../assets/Image/Banner.png")
 };
-
 const dataPilihan = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
-    {label: '5', value: '5'}
+    { label: '1', value: '1' },
+    { label: '2', value: '2' },
+    { label: '3', value: '3' },
+    { label: '4', value: '4' },
+    { label: '5', value: '5' }
 ];
+const withTextInput = dimension.width - (20 * 4) + 8;
 
 const ProdukPembiayaan = ({ route }) => {
     const { groupName, namaNasabah } = route.params;
     const navigation = useNavigation();
-    let [ currentDate, setCurrentDate ] = useState();
+    const [currentDate, setCurrentDate] = useState();
     const [openJenisPembiayaan, setOpenJenisPembiayaan] = useState(false);
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
     const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState(dataPilihan);
@@ -85,14 +86,14 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormSiklusPembiayaan = () => (
-        <View style={{ borderWidth: 1, borderColor: 'black', padding: 8, width: 200 }}>
-            <Text style={{ fontSize: 18 }}>SIKLUS PEMBIAYAAN</Text>
-            <Text style={{ fontWeight: 'bold' }}>Pertama</Text>
+        <View style={stylesheet.siklusContainer}>
+            <Text style={styles.FS18}>SIKLUS PEMBIAYAAN</Text>
+            <Text style={styles.FWBold}>Pertama</Text>
         </View>
     )
 
     const renderFormJenisPembiayaan = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Jenis Pembiayaan</Text>
             <DropDownPicker
                 open={openJenisPembiayaan}
@@ -109,7 +110,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormNamaProduk = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Nama Produk</Text>
             <DropDownPicker
                 open={openNamaProduk}
@@ -126,7 +127,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormProdukPembiayaan = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Produk Pembiayaan</Text>
             <DropDownPicker
                 open={openProdukPembiayaan}
@@ -143,7 +144,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormJumlahPinjaman = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Jumlah Pinjaman</Text>
             <DropDownPicker
                 open={openJumlahPinjaman}
@@ -160,7 +161,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormTermPembiayaan = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Term Pembiayaan</Text>
             <View style={styles.textInputContainer}>
                 <View style={styles.F1}>
@@ -180,7 +181,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormKategoriTujuanPembiayaan = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Kategori Tujuan Pembiayaan</Text>
             <DropDownPicker
                 open={openKategoriTujuanPembiayaan}
@@ -197,7 +198,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormTujuanPembiayaan = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Tujuan Pembiayaan</Text>
             <DropDownPicker
                 open={openTujuanPembiayaan}
@@ -214,7 +215,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormTypePencairan = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Type Pencairan</Text>
             <DropDownPicker
                 open={openTypePencairan}
@@ -231,7 +232,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderFormFrekuensiPembayaran = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text>Frekuensi Pembayaran</Text>
             <DropDownPicker
                 open={openFrekuensiPembayaran}
@@ -242,17 +243,16 @@ const ProdukPembiayaan = ({ route }) => {
                 setItems={setItemsFrekuensiPembayaran}
                 placeholder='Pilih Frekuensi Pembayaran'
                 onChangeValue={() => null}
-                zIndex={3000}
             />
         </View>
     )
 
     const renderFormRekeningBank = () => (
-        <View style={{ marginTop: 8 }}>
+        <View style={styles.MT8}>
             <Text style={{ width: 100 }}>Rekening Bank</Text>
-            <View style={{ flexDirection: 'row', marginTop: 4 }}>
+            <View style={[styles.FDRow, styles.MT4]}>
                 <BouncyCheckbox onPress={(isChecked) => __DEV__ && console.log('onPress')} />
-                <Text style={{ marginRight: 16 }}>Ada</Text>
+                <Text style={styles.MR16}>Ada</Text>
                 <BouncyCheckbox onPress={(isChecked) => __DEV__ && console.log('onPress')} />
                 <Text>Tidak Ada</Text>
             </View>
@@ -262,7 +262,7 @@ const ProdukPembiayaan = ({ route }) => {
     const renderFormNamaBank = () => (
         <View style={styles.formContainerText}>
             <Text style={{ width: 100 }}>Nama Bank</Text>
-            <View style={[styles.textInputContainer, { marginLeft: 8 }]}>
+            <View style={[styles.textInputContainer, styles.ML8]}>
                 <TextInput 
                     value={valueNamaBank} 
                     onChangeText={(text) => setValueNamaBank(text)}
@@ -276,7 +276,7 @@ const ProdukPembiayaan = ({ route }) => {
     const renderFormNoRekening = () => (
         <View style={styles.formContainerText}>
             <Text style={{ width: 100 }}>No. Rekening</Text>
-            <View style={[styles.textInputContainer, { marginLeft: 8 }]}>
+            <View style={[styles.textInputContainer, styles.ML8]}>
                 <TextInput 
                     value={valueNoRekening} 
                     onChangeText={(text) => setValueNoRekening(text)}
@@ -290,7 +290,7 @@ const ProdukPembiayaan = ({ route }) => {
     const renderFormPemilikRekening = () => (
         <View style={styles.formContainerText}>
             <Text style={{ width: 100 }}>Pemilik Rekening</Text>
-            <View style={[styles.textInputContainer, { marginLeft: 8 }]}>
+            <View style={[styles.textInputContainer, styles.ML8]}>
                 <TextInput 
                     value={valuePemilikRekening} 
                     onChangeText={(text) => setValuePemilikRekening(text)}
@@ -302,7 +302,7 @@ const ProdukPembiayaan = ({ route }) => {
     )
 
     const renderForm = () => (
-        <View style={{ flex: 1, padding: 16 }}>
+        <View style={[styles.F1, styles.P16]}>
             {renderFormSiklusPembiayaan()}
             {renderFormJenisPembiayaan()}
             {renderFormNamaProduk()}
@@ -332,7 +332,7 @@ const ProdukPembiayaan = ({ route }) => {
                     </View>
                 </TouchableOpacity>
             </View>
-            <View style={{ padding: 16 }}>
+            <View style={styles.P16}>
                 <TouchableOpacity
                     onPress={() => null}
                 >
@@ -361,5 +361,14 @@ const ProdukPembiayaan = ({ route }) => {
         </View>
     )
 }
+
+const stylesheet = StyleSheet.create({
+    siklusContainer: {
+        borderWidth: 1,
+        borderColor: 'black',
+        padding: 8,
+        width: 200
+    }
+});
 
 export default ProdukPembiayaan;

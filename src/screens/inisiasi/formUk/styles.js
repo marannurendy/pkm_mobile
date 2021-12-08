@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     buttonContainer: {
-        flexDirection:'row', 
-        padding: 16
+        flexDirection:'row',
+        marginVertical: 16
     },
     button: {
         borderRadius: 6, 
@@ -95,17 +95,89 @@ const styles = StyleSheet.create({
         alignContent: 'center', 
         alignItems: 'center'
     },
+    note: {
+        fontSize: 11,
+        color: 'gray', 
+        marginLeft: 16
+    },
+    spaceGray: {
+        borderWidth: 3,
+        borderColor: 'gray'
+    },
     F1 : {
         flex: 1
     },
-    P16: {
-        padding: 16
+    P2: {
+        padding: 2
+    },
+    P4: {
+        padding: 4
     },
     P8: {
         padding: 8
     },
-    P4: {
-        padding: 4
+    P16: {
+        padding: 16
+    },
+    MT2: {
+        marginTop: 2
+    },
+    MT4: {
+        marginTop: 4
+    },
+    MT8: {
+        marginTop: 8
+    },
+    MT16: {
+        marginTop: 16
+    },
+    MB2: {
+        marginBottom: 2
+    },
+    MB4: {
+        marginBottom: 4
+    },
+    MB8: {
+        marginBottom: 8
+    },
+    MB16: {
+        marginBottom: 16
+    },
+    MR2: {
+        marginRight: 2
+    },
+    MR4: {
+        marginRight: 4
+    },
+    MR8: {
+        marginRight: 8
+    },
+    MR16: {
+        marginRight: 16
+    },
+    ML2: {
+        marginLeft: 2
+    },
+    ML4: {
+        marginLeft: 4
+    },
+    ML8: {
+        marginLeft: 8
+    },
+    ML16: {
+        marginLeft: 16
+    },
+    FS18: {
+        fontSize: 18
+    },
+    FWBold: {
+        fontWeight: 'bold'
+    },
+    FWNormal: {
+        fontWeight: 'normal'
+    },
+    FDRow: {
+        flexDirection: 'row'
     }
 });
 

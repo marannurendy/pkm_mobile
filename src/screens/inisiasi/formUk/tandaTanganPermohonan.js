@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ImageBackground, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, TextInput, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -7,24 +7,38 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { styles } from './styles';
+import Sign from '../../../components/Sign';
 
 const dimension = Dimensions.get('screen');
 const images = {
     banner: require("../../../../assets/Image/Banner.png")
 };
-
 const dataPilihan = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
-    {label: '5', value: '5'}
+    { label: '1', value: '1' },
+    { label: '2', value: '2' },
+    { label: '3', value: '3' },
+    { label: '4', value: '4' },
+    { label: '5', value: '5' }
 ];
+const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const { groupName, namaNasabah } = route.params;
     const navigation = useNavigation();
-    const [ currentDate, setCurrentDate ] = useState();
+    const [currentDate, setCurrentDate] = useState();
+    const [openProdukPembiayaan, setOpenProdukPembiayaan] = useState(false);
+    const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState(null);
+    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState(dataPilihan);
+    const [valueJumlahPembiayaanYangDiajukan, setValueJumlahPembiayaanYangDiajukan] = useState('');
+    const [valueJangkaWaktu, setValueJangkaWaktu] = useState('');
+    const [openFrekuensiPembiayaan, setOpenFrekuensiPembiayaan] = useState(false);
+    const [valueFrekuensiPembiayaan, setValueFrekuensiPembiayaan] = useState(null);
+    const [itemsFrekuensiPembiayaan, setItemsFrekuensiPembiayaan] = useState(dataPilihan);
+    const [valueTandaTanganNasabah, setValueTandaTanganNasabah] = useState('');
+    const [valueTandaTanganSuamiPenjamin, setValueTandaTanganSuamiPenjamin] = useState('');
+    const [valueTandaTanganKetuaSubKemlompok, setValueTandaTanganKetuaSubKemlompok] = useState('');
+    const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKemlompok] = useState('');
+    const [scrollEnabled, setScrollEnabled] = useState(true);
 
     useEffect(() => {
         setInfo()
@@ -57,17 +71,181 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         </>
     )
 
+    const renderFormSiklusPembiayaan = () => (
+        <View style={stylesheet.siklusContainer}>
+            <Text style={styles.FS18}>SIKLUS PEMBIAYAAN</Text>
+            <Text style={styles.FWBold}>Pertama</Text>
+        </View>
+    )
+
+    const renderFormProdukPembiayaan = () => (
+        <View style={styles.MT8}>
+            <Text>Produk Pembiayaan</Text>
+            <DropDownPicker
+                open={openProdukPembiayaan}
+                value={valueProdukPembiayaan}
+                items={itemsProdukPembiayaan}
+                setOpen={setOpenProdukPembiayaan}
+                setValue={setValueProdukPembiayaan}
+                setItems={setItemsProdukPembiayaan}
+                placeholder='Pilih Produk Pembiayaan'
+                onChangeValue={() => null}
+            />
+        </View>
+    )
+
+    const renderFormJumlahPembiayaanYangDiajukan = () => (
+        <View style={styles.MT8}>
+            <Text>Jumlah Pembiayaan Yang Diajukan</Text>
+            <View style={[styles.textInputContainer, { width: withTextInput }]}>
+                <View style={styles.F1}>
+                    <TextInput 
+                        value={valueJumlahPembiayaanYangDiajukan} 
+                        onChangeText={(text) => setValueJumlahPembiayaanYangDiajukan(text)}
+                        placeholder='3000000'
+                        style={styles.F1}
+                    />
+                </View>
+                <View />
+            </View>
+        </View>
+    )
+
+    const renderFormJangkaWaktu = () => (
+        <View style={styles.MT8}>
+            <Text>Jangka Waktu</Text>
+            <View style={[styles.textInputContainer]}>
+                <View style={styles.F1}>
+                    <TextInput 
+                        value={valueJangkaWaktu} 
+                        onChangeText={(text) => setValueJangkaWaktu(text)}
+                        placeholder='25'
+                        style={styles.F1}
+                    />
+                </View>
+                <View />
+            </View>
+        </View>
+    )
+
+    const renderFormFrekuensiPembiayaan = () => (
+        <View style={styles.MT8}>
+            <Text>Frekuensi Pembiayaan</Text>
+            <DropDownPicker
+                open={openFrekuensiPembiayaan}
+                value={valueFrekuensiPembiayaan}
+                items={itemsFrekuensiPembiayaan}
+                setOpen={setOpenFrekuensiPembiayaan}
+                setValue={setValueFrekuensiPembiayaan}
+                setItems={setItemsFrekuensiPembiayaan}
+                placeholder='Frekuensi Pembiayaan'
+                onChangeValue={() => null}
+            />
+        </View>
+    )
+
+    const renderFormTandaTanganNasabah = () => (
+        <View style={styles.MT8}>
+            <Text>Tanda Tangan Nasabah (*)</Text>
+            <Sign 
+                signature={valueTandaTanganNasabah}
+                clearSignature={() => setValueTandaTanganNasabah('')}
+                onOK={(sign) => setValueTandaTanganNasabah(sign)}
+                onBegin={() => setScrollEnabled(false)}
+                onEnd={() => setScrollEnabled(true)}
+            />
+            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+        </View>
+    )
+
+    const renderFormTandaTanganSuamiPenjamin = () => (
+        <View style={styles.MT8}>
+            <Text>Tanda Tangan Suami/Penjamin (*)</Text>
+            <Sign 
+                signature={valueTandaTanganSuamiPenjamin}
+                clearSignature={() => setValueTandaTanganSuamiPenjamin('')}
+                onOK={(sign) => setValueTandaTanganSuamiPenjamin(sign)}
+                onBegin={() => setScrollEnabled(false)}
+                onEnd={() => setScrollEnabled(true)}
+            />
+            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+        </View>
+    )
+
+    const renderFormTandaTanganKetuaSubKelompok = () => (
+        <View style={styles.MT8}>
+            <Text>Tanda Tangan Ketua Sub Kelompok (*)</Text>
+            <Sign 
+                signature={valueTandaTanganKetuaSubKemlompok}
+                clearSignature={() => setValueTandaTanganKetuaSubKemlompok('')}
+                onOK={(sign) => setValueTandaTanganKetuaSubKemlompok(sign)}
+                onBegin={() => setScrollEnabled(false)}
+                onEnd={() => setScrollEnabled(true)}
+            />
+            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+        </View>
+    )
+
+    const renderFormTandaTanganKetuaKelompok = () => (
+        <View style={styles.MT8}>
+            <Text>Tanda Tangan Ketua Kelompok (*)</Text>
+            <Sign 
+                signature={valueTandaTanganKetuaKelompok}
+                clearSignature={() => setValueTandaTanganKetuaKemlompok('')}
+                onOK={(sign) => setValueTandaTanganKetuaKemlompok(sign)}
+                onBegin={() => setScrollEnabled(false)}
+                onEnd={() => setScrollEnabled(true)}
+            />
+            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+        </View>
+    )
+
     const renderForm = () => (
-        <View style={{ flex: 1, padding: 16 }}>
-            
+        <View style={[styles.F1, styles.P16]}>
+            {renderFormSiklusPembiayaan()}
+            {renderFormProdukPembiayaan()}
+            {renderFormJumlahPembiayaanYangDiajukan()}
+            {renderFormJangkaWaktu()}
+            {renderFormFrekuensiPembiayaan()}
+            {renderFormTandaTanganNasabah()}
+            {renderFormTandaTanganSuamiPenjamin()}
+            {renderFormTandaTanganKetuaSubKelompok()}
+            {renderFormTandaTanganKetuaKelompok()}
+            {renderButtonSaveDraft()}
+        </View>
+    )
+
+    const renderButtonSaveDraft = () => (
+        <View style={styles.buttonContainer}>
+            <View style={styles.F1} />
+            <TouchableOpacity
+                onPress={() => null}
+            >
+                <View style={styles.button}>
+                    <Text>Save Draft</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    const renderButtonSimpan = () => (
+        <View style={styles.P16}>
+            <TouchableOpacity
+                onPress={() => null}
+            >
+                <View style={styles.buttonSubmitContainer}>
+                    <Text style={styles.buttonSubmitText}>SIMPAN</Text>
+                </View>
+            </TouchableOpacity>
         </View>
     )
 
     const renderBody = () => (
         <View style={styles.bodyContainer}>
-            <Text style={styles.bodyTitle}>Tandatangan dan Permohonan</Text>
-            <ScrollView>
+            <Text style={styles.bodyTitle}>Produk Pembiayaan</Text>
+            <ScrollView scrollEnabled={scrollEnabled}>
                 {renderForm()}
+                {renderButtonSimpan()}
             </ScrollView>
         </View>
     )
@@ -79,5 +257,14 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         </View>
     )
 }
+
+const stylesheet = StyleSheet.create({
+    siklusContainer: {
+        borderWidth: 1,
+        borderColor: 'black',
+        padding: 8,
+        width: 200
+    }
+});
 
 export default InisiasiFormUKTandaTanganPermohonan;

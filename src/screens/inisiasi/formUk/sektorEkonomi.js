@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, StyleSheet, ImageBackground, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -12,19 +12,28 @@ const dimension = Dimensions.get('screen');
 const images = {
     banner: require("../../../../assets/Image/Banner.png")
 };
-
 const dataPilihan = [
-    {label: '1', value: '1'},
-    {label: '2', value: '2'},
-    {label: '3', value: '3'},
-    {label: '4', value: '4'},
-    {label: '5', value: '5'}
+    { label: '1', value: '1' },
+    { label: '2', value: '2' },
+    { label: '3', value: '3' },
+    { label: '4', value: '4' },
+    { label: '5', value: '5' }
 ];
+const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKSektorEkonomi = ({ route }) => {
     const { groupName, namaNasabah } = route.params;
     const navigation = useNavigation();
     const [ currentDate, setCurrentDate ] = useState();
+    const [openSektorEkonomi, setOpenSektorEkonomi] = useState(false);
+    const [valueSektorEkonomi, setValueSektorEkonomi] = useState(null);
+    const [itemsSektorEkonomi, setItemsSektorEkonomi] = useState(dataPilihan);
+    const [openSubSektorEkonomi, setOpenSubSektorEkonomi] = useState(false);
+    const [valueSubSektorEkonomi, setValueSubSektorEkonomi] = useState(null);
+    const [itemsSubSektorEkonomi, setItemsSubSektorEkonomi] = useState(dataPilihan);
+    const [openJenisUsaha, setOpenJenisUsaha] = useState(false);
+    const [valueJenisUsaha, setValueJenisUsaha] = useState(null);
+    const [itemsJenisUsaha, setItemsJenisUsaha] = useState(dataPilihan);
 
     useEffect(() => {
         setInfo()
@@ -57,9 +66,85 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
         </>
     )
 
+    const renderFormSektorEkonomi = () => (
+        <View style={styles.MT8}>
+            <Text>Sektor Ekonomi (*)</Text>
+            <DropDownPicker
+                open={openSektorEkonomi}
+                value={valueSektorEkonomi}
+                items={itemsSektorEkonomi}
+                setOpen={setOpenSektorEkonomi}
+                setValue={setValueSektorEkonomi}
+                setItems={setItemsSektorEkonomi}
+                placeholder='Pilih Sektor Ekonomi'
+                onChangeValue={() => null}
+            />
+        </View>
+    )
+
+    const renderFormSubSektorEkonomi = () => (
+        <View style={styles.MT8}>
+            <Text>Sub Sektor Ekonomi (*)</Text>
+            <DropDownPicker
+                open={openSubSektorEkonomi}
+                value={valueSubSektorEkonomi}
+                items={itemsSubSektorEkonomi}
+                setOpen={setOpenSubSektorEkonomi}
+                setValue={setValueSubSektorEkonomi}
+                setItems={setItemsSubSektorEkonomi}
+                placeholder='Pilih Sub Sektor Ekonomi'
+                onChangeValue={() => null}
+            />
+        </View>
+    )
+
+    const renderFormJenisUsaha = () => (
+        <View style={styles.MT8}>
+            <Text>Jenis Usaha (*)</Text>
+            <DropDownPicker
+                open={openJenisUsaha}
+                value={valueJenisUsaha}
+                items={itemsJenisUsaha}
+                setOpen={setOpenJenisUsaha}
+                setValue={setValueJenisUsaha}
+                setItems={setItemsJenisUsaha}
+                placeholder='Pilih Jenis Usaha'
+                onChangeValue={() => null}
+            />
+        </View>
+    )
+
+    const renderButtonSaveDraft = () => (
+        <View style={styles.buttonContainer}>
+            <View style={styles.F1} />
+            <TouchableOpacity
+                onPress={() => null}
+            >
+                <View style={styles.button}>
+                    <Text>Save Draft</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    const renderButtonSimpan = () => (
+        <View style={styles.P16}>
+            <TouchableOpacity
+                onPress={() => null}
+            >
+                <View style={styles.buttonSubmitContainer}>
+                    <Text style={styles.buttonSubmitText}>SIMPAN</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
     const renderForm = () => (
-        <View style={{ flex: 1, padding: 16 }}>
-            
+        <View style={[styles.F1, styles.P16]}>
+            {renderFormSektorEkonomi()}
+            {renderFormSubSektorEkonomi()}
+            {renderFormJenisUsaha()}
+            {renderButtonSaveDraft()}
         </View>
     )
 
@@ -68,6 +153,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
             <Text style={styles.bodyTitle}>Sektor Ekonomi</Text>
             <ScrollView>
                 {renderForm()}
+                {renderButtonSimpan()}
             </ScrollView>
         </View>
     )
