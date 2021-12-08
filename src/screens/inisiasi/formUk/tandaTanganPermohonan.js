@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, TextInput, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, TextInput, ScrollView, StyleSheet, Dimensions, Button, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -34,10 +34,10 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const [openFrekuensiPembiayaan, setOpenFrekuensiPembiayaan] = useState(false);
     const [valueFrekuensiPembiayaan, setValueFrekuensiPembiayaan] = useState(null);
     const [itemsFrekuensiPembiayaan, setItemsFrekuensiPembiayaan] = useState(dataPilihan);
-    const [valueTandaTanganNasabah, setValueTandaTanganNasabah] = useState('');
-    const [valueTandaTanganSuamiPenjamin, setValueTandaTanganSuamiPenjamin] = useState('');
-    const [valueTandaTanganKetuaSubKemlompok, setValueTandaTanganKetuaSubKemlompok] = useState('');
-    const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKemlompok] = useState('');
+    const [valueTandaTanganNasabah, setValueTandaTanganNasabah] = useState(null);
+    const [valueTandaTanganSuamiPenjamin, setValueTandaTanganSuamiPenjamin] = useState(null);
+    const [valueTandaTanganKetuaSubKemlompok, setValueTandaTanganKetuaSubKemlompok] = useState(null);
+    const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKemlompok] = useState(null);
     const [scrollEnabled, setScrollEnabled] = useState(true);
 
     useEffect(() => {
@@ -48,6 +48,17 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         setCurrentDate(tanggal)
     }
+
+    const onSelectSign = (key, data) => {
+        if (__DEV__) console.log('onSelectSign loaded');
+        if (__DEV__) console.log('onSelectSign key:', key);
+        if (__DEV__) console.log('onSelectSign data:', data);
+
+        if (key === 'tandaTanganNasabah') return setValueTandaTanganNasabah(data);
+        if (key === 'tandaTanganSuamiPenjamin') return setValueTandaTanganSuamiPenjamin(data);
+        if (key === 'tandaTanganKetuaSubKemlompok') return setValueTandaTanganKetuaSubKemlompok(data);
+        if (key === 'tandaTanganKetuaKemlompok') return setValueTandaTanganKetuaKemlompok(data);
+    };
 
     const renderHeader = () => (
         <>
@@ -147,56 +158,100 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const renderFormTandaTanganNasabah = () => (
         <View style={styles.MT8}>
             <Text>Tanda Tangan Nasabah (*)</Text>
-            <Sign 
+            <View style={stylesheet.boxTTD}>
+                {valueTandaTanganNasabah && (
+                    <Image
+                        resizeMode={"contain"}
+                        style={{ width: 335, height: 215 }}
+                        source={{ uri: valueTandaTanganNasabah }}
+                    />
+                )}
+                <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+                <Button title={valueTandaTanganNasabah ? "Ganti TTD" : "Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganNasabah', onSelectSign: onSelectSign })} />
+            </View>
+            {/* <Sign 
                 signature={valueTandaTanganNasabah}
                 clearSignature={() => setValueTandaTanganNasabah('')}
                 onOK={(sign) => setValueTandaTanganNasabah(sign)}
                 onBegin={() => setScrollEnabled(false)}
                 onEnd={() => setScrollEnabled(true)}
             />
-            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text> */}
         </View>
     )
 
     const renderFormTandaTanganSuamiPenjamin = () => (
         <View style={styles.MT8}>
             <Text>Tanda Tangan Suami/Penjamin (*)</Text>
-            <Sign 
+            <View style={stylesheet.boxTTD}>
+                {valueTandaTanganSuamiPenjamin && (
+                    <Image
+                        resizeMode={"contain"}
+                        style={{ width: 335, height: 215 }}
+                        source={{ uri: valueTandaTanganSuamiPenjamin }}
+                    />
+                )}
+                <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+                <Button title={valueTandaTanganSuamiPenjamin ? "Ganti TTD" : "Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganSuamiPenjamin', onSelectSign: onSelectSign })} />
+            </View>
+            {/* <Sign 
                 signature={valueTandaTanganSuamiPenjamin}
                 clearSignature={() => setValueTandaTanganSuamiPenjamin('')}
                 onOK={(sign) => setValueTandaTanganSuamiPenjamin(sign)}
                 onBegin={() => setScrollEnabled(false)}
                 onEnd={() => setScrollEnabled(true)}
             />
-            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text> */}
         </View>
     )
 
     const renderFormTandaTanganKetuaSubKelompok = () => (
         <View style={styles.MT8}>
             <Text>Tanda Tangan Ketua Sub Kelompok (*)</Text>
-            <Sign 
+            <View style={stylesheet.boxTTD}>
+                {valueTandaTanganKetuaSubKemlompok && (
+                    <Image
+                        resizeMode={"contain"}
+                        style={{ width: 335, height: 215 }}
+                        source={{ uri: valueTandaTanganKetuaSubKemlompok }}
+                    />
+                )}
+                <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+                <Button title={valueTandaTanganKetuaSubKemlompok ? "Ganti TTD" : "Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaSubKemlompok', onSelectSign: onSelectSign })} />
+            </View>
+            {/* <Sign 
                 signature={valueTandaTanganKetuaSubKemlompok}
                 clearSignature={() => setValueTandaTanganKetuaSubKemlompok('')}
                 onOK={(sign) => setValueTandaTanganKetuaSubKemlompok(sign)}
                 onBegin={() => setScrollEnabled(false)}
                 onEnd={() => setScrollEnabled(true)}
             />
-            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text> */}
         </View>
     )
 
     const renderFormTandaTanganKetuaKelompok = () => (
         <View style={styles.MT8}>
             <Text>Tanda Tangan Ketua Kelompok (*)</Text>
-            <Sign 
+            <View style={stylesheet.boxTTD}>
+                {valueTandaTanganKetuaKelompok && (
+                    <Image
+                        resizeMode={"contain"}
+                        style={{ width: 335, height: 215 }}
+                        source={{ uri: valueTandaTanganKetuaKelompok }}
+                    />
+                )}
+                <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+                <Button title={valueTandaTanganKetuaKelompok ? "Ganti TTD" : "Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaKemlompok', onSelectSign: onSelectSign })} />
+            </View>
+            {/* <Sign 
                 signature={valueTandaTanganKetuaKelompok}
                 clearSignature={() => setValueTandaTanganKetuaKemlompok('')}
                 onOK={(sign) => setValueTandaTanganKetuaKemlompok(sign)}
                 onBegin={() => setScrollEnabled(false)}
                 onEnd={() => setScrollEnabled(true)}
             />
-            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+            <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text> */}
         </View>
     )
 
@@ -264,6 +319,10 @@ const stylesheet = StyleSheet.create({
         borderColor: 'black',
         padding: 8,
         width: 200
+    },
+    boxTTD: {
+        borderRadius: 6,
+        borderWidth: 1
     }
 });
 

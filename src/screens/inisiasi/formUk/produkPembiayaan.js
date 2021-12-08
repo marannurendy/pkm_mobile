@@ -317,31 +317,33 @@ const ProdukPembiayaan = ({ route }) => {
             {renderFormNamaBank()}
             {renderFormNoRekening()}
             {renderFormPemilikRekening()}
+            {renderButtonSaveDraft()}
         </View>
     )
 
-    const renderButton = () => (
-        <>
-            <View style={styles.buttonContainer}>
-                <View style={styles.F1} />
-                <TouchableOpacity
-                    onPress={() => null}
-                >
-                    <View style={styles.button}>
-                        <Text>Save Draft</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.P16}>
-                <TouchableOpacity
-                    onPress={() => null}
-                >
-                    <View style={styles.buttonSubmitContainer}>
-                        <Text style={styles.buttonSubmitText}>SIMPAN</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-        </>
+    const renderButtonSaveDraft = () => (
+        <View style={styles.buttonContainer}>
+            <View style={styles.F1} />
+            <TouchableOpacity
+                onPress={() => null}
+            >
+                <View style={styles.button}>
+                    <Text>Save Draft</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    const renderButtonSimpan = () => (
+        <View style={styles.P16}>
+            <TouchableOpacity
+                onPress={() => null}
+            >
+                <View style={styles.buttonSubmitContainer}>
+                    <Text style={styles.buttonSubmitText}>SIMPAN</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
     )
 
     const renderBody = () => (
@@ -349,7 +351,7 @@ const ProdukPembiayaan = ({ route }) => {
             <Text style={styles.bodyTitle}>Produk Pembiayaan</Text>
             <ScrollView>
                 {renderForm()}
-                {renderButton()}
+                {renderButtonSimpan()}
             </ScrollView>
         </View>
     )

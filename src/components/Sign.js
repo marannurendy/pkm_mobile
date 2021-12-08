@@ -22,20 +22,9 @@ const Sign = ({signature, clearSignature, onOK, onBegin, onEnd }) => {
 
     const style = `.m-signature-pad--footer {display: none; margin: 0px;}`;
 
-    return (
-        <View style={styles.container}>
-            {signature && signature !== '' ? (
-                <>
-                    <Image
-                        resizeMode={"contain"}
-                        style={{ width: 335, height: 215 }}
-                        source={{ uri: signature }}
-                    />
-                    <View style={styles.row}>
-                        <Button title="Ganti" onPress={clearSignature} />
-                    </View>
-                </>
-            ) : (
+    const renderSignature = () => {
+        if (signature === '') {
+            return (
                 <>
                     <SignatureScreen 
                         ref={ref}
@@ -43,14 +32,32 @@ const Sign = ({signature, clearSignature, onOK, onBegin, onEnd }) => {
                         onBegin={onBegin}
                         onEnd={onEnd}
                         webStyle={style}
-                        descriptionText="asas"
                     />
                     <View style={styles.row}>
                         <Button title="Hapus" onPress={handleClear} />
                         <Button title="Simpan" onPress={handleConfirm} />
                     </View>
                 </>
-            )}
+            )
+        }
+
+        return (
+            <>
+                <Image
+                    resizeMode={"contain"}
+                    style={{ width: 335, height: 215 }}
+                    source={{ uri: signature }}
+                />
+                <View style={styles.row}>
+                    <Button title="Ganti" onPress={clearSignature} />
+                </View>
+            </>
+        )
+    }
+
+    return (
+        <View style={styles.container}>
+            {renderSignature()}
         </View>
     );
 };
