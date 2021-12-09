@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Dimensions, ImageBackground, TextInput, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { styles } from './styles';
+import { RadioButton } from 'react-native-paper';
+import db from '../../../database/Database';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -40,14 +40,114 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const [valueJumlahHariUsahPerbulanSuami, setValueJumlahHariUsahPerbulanSuami] = useState('');
     const [valuePendapatanBersihPerbulanSuami, setValuePendapatanBersihPerbulanSuami] = useState('');
     const [valuePendapatanBersihPermingguSuami, setValuePendapatanBersihPermingguSuami] = useState('');
+    const [valuePembiayaanDariLembaga, setValuePembiayaanDariLembaga] = useState('1');
 
     useEffect(() => {
-        setInfo()
+        setInfo();
+        getUKPendapatanNasabah();
     }, [])
 
     const setInfo = async () => {
-        const tanggal = await AsyncStorage.getItem('TransactionDate')
-        setCurrentDate(tanggal)
+        const tanggal = await AsyncStorage.getItem('TransactionDate');
+        setCurrentDate(tanggal);
+    }
+
+    const getUKPendapatanNasabah = () => {
+        let queryUKDataDiri = `SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '` + namaNasabah + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_PendapatanNasabah length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+                        if (data.pendapatan_Kotor_perhari !== null && typeof data.pendapatan_Kotor_perhari !== 'undefined') setValuePedapatanKotorPerhari(data.pendapatan_Kotor_perhari);
+                        if (data.pengeluaran_Keluarga_Perhari !== null && typeof data.pengeluaran_Keluarga_Perhari !== 'undefined') setValuePengeluaranKeluargaPerhari(data.pengeluaran_Keluarga_Perhari);
+                        if (data.pendapatan_Bersih_Perhari !== null && typeof data.pendapatan_Bersih_Perhari !== 'undefined') setValuePendapatanBersihPerhari(data.pendapatan_Bersih_Perhari);
+                        if (data.jumlah_Hari_Usaha_Perbulan !== null && typeof data.jumlah_Hari_Usaha_Perbulan !== 'undefined') setValueJumlahHariUsahPerbulan(data.jumlah_Hari_Usaha_Perbulan);
+                        if (data.pendapatan_Bersih_Perbulan !== null && typeof data.pendapatan_Bersih_Perbulan !== 'undefined') setValuePendapatanBersihPerbulan(data.pendapatan_Bersih_Perbulan);
+                        if (data.pendapatan_Bersih_Perminggu !== null && typeof data.pendapatan_Bersih_Perminggu !== 'undefined') setValuePendapatanBersihPerminggu(data.pendapatan_Bersih_Perminggu);
+                        if (data.pembiayaan_Dari_Lembaga !== null && typeof data.pembiayaan_Dari_Lembaga !== 'undefined') setValuePembiayaanDariLembaga(data.pembiayaan_Dari_Lembaga);
+                        if (data.Pembiayaan_Dari_LembagaLain !== null && typeof data.Pembiayaan_Dari_LembagaLain !== 'undefined') setValuePembiayaanLembagaLain(data.Pembiayaan_Dari_LembagaLain);
+                        if (data.Pembiayaan_Dari_LembagaLainFreetext !== null && typeof data.Pembiayaan_Dari_LembagaLainFreetext !== 'undefined') setIPembiayaanLembagaLainFreetext(data.Pembiayaan_Dari_LembagaLainFreetext);
+                        if (data.jumlah_Angsuran !== null && typeof data.jumlah_Angsuran !== 'undefined') setValueJumlahAngsuran(data.jumlah_Angsuran);
+                        if (data.pendapatanSuami_Kotor_Perhari !== null && typeof data.pendapatanSuami_Kotor_Perhari !== 'undefined') setValuePedapatanKotorPerhariSuami(data.pendapatanSuami_Kotor_Perhari);
+                        if (data.pendapatanSuami_Pengeluaran_Keluarga_Perhari !== null && typeof data.pendapatanSuami_Pengeluaran_Keluarga_Perhari !== 'undefined') setValuePengeluaranKeluargaPerhariSuami(data.pendapatanSuami_Pengeluaran_Keluarga_Perhari);
+                        if (data.pendapatanSuami_Pendapatan_Bersih_Perhari !== null && typeof data.pendapatanSuami_Pendapatan_Bersih_Perhari !== 'undefined') setValuePendapatanBersihPerhariSuami(data.pendapatanSuami_Pendapatan_Bersih_Perhari);
+                        if (data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan !== null && typeof data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan !== 'undefined') setValueJumlahHariUsahPerbulanSuami(data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan);
+                        if (data.pendapatanSuami_pendapatan_Bersih_Perbulan !== null && typeof data.pendapatanSuami_pendapatan_Bersih_Perbulan !== 'undefined') setValuePendapatanBersihPerbulanSuami(data.pendapatanSuami_pendapatan_Bersih_Perbulan);
+                        if (data.pendapatanSuami_pendapatan_Bersih_Perminggu !== null && typeof data.pendapatanSuami_pendapatan_Bersih_Perminggu !== 'undefined') setValuePendapatanBersihPermingguSuami(data.pendapatanSuami_pendapatan_Bersih_Perminggu);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_PendapatanNasabah error:', error.message);
+                })
+            }
+        )
+    }
+
+    const doSubmitDraft = () => {
+        if (__DEV__) console.log('doSubmitDraft loaded');
+        if (__DEV__) console.log('doSubmitDraft valuePedapatanKotorPerhari:', valuePedapatanKotorPerhari);
+        if (__DEV__) console.log('doSubmitDraft valuePengeluaranKeluargaPerhari:', valuePengeluaranKeluargaPerhari);
+        if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPerhari:', valuePendapatanBersihPerhari);
+        if (__DEV__) console.log('doSubmitDraft valueJumlahHariUsahPerbulan:', valueJumlahHariUsahPerbulan);
+        if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPerbulan:', valuePendapatanBersihPerbulan);
+        if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPerminggu:', valuePendapatanBersihPerminggu);
+        if (__DEV__) console.log('doSubmitDraft valuePembiayaanDariLembaga:', valuePembiayaanDariLembaga);
+        if (__DEV__) console.log('doSubmitDraft valuePembiayaanLembagaLain:', valuePembiayaanLembagaLain);
+        if (__DEV__) console.log('doSubmitDraft valuePembiayaanLembagaLainFreetext:', valuePembiayaanLembagaLainFreetext);
+        if (__DEV__) console.log('doSubmitDraft valueJumlahAngsuran:', valueJumlahAngsuran);
+        if (__DEV__) console.log('doSubmitDraft valuePedapatanKotorPerhariSuami:', valuePedapatanKotorPerhariSuami);
+        if (__DEV__) console.log('doSubmitDraft valuePengeluaranKeluargaPerhariSuami:', valuePengeluaranKeluargaPerhariSuami);
+        if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPerhariSuami:', valuePendapatanBersihPerhariSuami);
+        if (__DEV__) console.log('doSubmitDraft valueJumlahHariUsahPerbulanSuami:', valueJumlahHariUsahPerbulanSuami);
+        if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPerbulanSuami:', valuePendapatanBersihPerbulanSuami);
+        if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPermingguSuami:', valuePendapatanBersihPermingguSuami);
+
+        const find = 'SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu) values ("' + namaNasabah + '","' + valuePedapatanKotorPerhari + '","' + valuePengeluaranKeluargaPerhari + '","' + valuePendapatanBersihPerhari + '","' + valueJumlahHariUsahPerbulan + '","' + valuePendapatanBersihPerbulan + '","' + valuePendapatanBersihPerminggu + '","' + valuePembiayaanDariLembaga + '","' + valuePembiayaanLembagaLain + '","' + valuePembiayaanLembagaLainFreetext + '","' + valueJumlahAngsuran + '","' + valuePedapatanKotorPerhariSuami + '","' + valuePengeluaranKeluargaPerhariSuami + '","' + valuePendapatanBersihPerhariSuami + '","' + valueJumlahHariUsahPerbulanSuami + '","' + valuePendapatanBersihPerbulanSuami + '","' + valuePendapatanBersihPermingguSuami + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_PendapatanNasabah SET pendapatan_Kotor_perhari = "' + valuePedapatanKotorPerhari + '", pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhari + '", pendapatan_Bersih_Perhari = "' + valuePendapatanBersihPerhari + '", jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulan + '", pendapatan_Bersih_Perbulan = "' + valuePendapatanBersihPerbulan + '", pendapatan_Bersih_Perminggu = "' + valuePendapatanBersihPerminggu + '", pembiayaan_Dari_Lembaga = "' + valuePembiayaanDariLembaga + '", Pembiayaan_Dari_LembagaLain = "' + valuePembiayaanLembagaLain + '", Pembiayaan_Dari_LembagaLainFreetext = "' + valuePembiayaanLembagaLainFreetext + '", jumlah_Angsuran = "' + valueJumlahAngsuran + '", pendapatanSuami_Kotor_Perhari = "' + valuePedapatanKotorPerhariSuami + '", pendapatanSuami_Pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhariSuami + '", pendapatanSuami_Pendapatan_Bersih_Perhari = "' + valuePendapatanBersihPerhariSuami + '", pendapatanSuami_jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perbulan = "' + valuePendapatanBersihPerbulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perminggu = "' + valuePendapatanBersihPermingguSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_PendapatanNasabah", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_PendapatanNasabah RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_PendapatanNasabah ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                })
+            }
+        );
     }
 
     const renderHeader = () => (
@@ -178,20 +278,22 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderPembiayaanDariLembaga = () => (
         <View style={styles.MT8}>
             <Text>Pembiayaan dari Lembaga</Text>
-            <View style={styles.MT8}>
-                <View style={styles.FDRow}>
-                    <BouncyCheckbox onPress={(isChecked) => __DEV__ && console.log('onPress')} />
-                    <Text style={styles.MR8}>Tidak Ada</Text>
+            <RadioButton.Group onValueChange={newValue => setValuePembiayaanDariLembaga(newValue)} value={valuePembiayaanDariLembaga}>
+                <View style={[styles.FDRow]}>
+                    <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
+                        <RadioButton value="1" />
+                        <Text>Tidak Ada</Text>
+                    </View>
+                    <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
+                        <RadioButton value="2" />
+                        <Text>{`<= 2 Lembaga`}</Text>
+                    </View>
+                    <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
+                        <RadioButton value="3" />
+                        <Text>{`> 2 Lembaga`}</Text>
+                    </View>
                 </View>
-                <View style={[styles.FDRow, styles.MT8]}>
-                    <BouncyCheckbox onPress={(isChecked) => __DEV__ && console.log('onPress')} />
-                    <Text style={styles.MR8}>{`<= 2 Lembaga`}</Text>
-                </View>
-                <View style={[styles.FDRow, styles.MT8]}>
-                    <BouncyCheckbox onPress={(isChecked) => __DEV__ && console.log('onPress')} />
-                    <Text>{`> 2 Lembaga`}</Text>
-                </View>
-            </View>
+            </RadioButton.Group>
         </View>
     )
 
@@ -378,7 +480,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         <View style={styles.buttonContainer}>
             <View style={styles.F1} />
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
                     <Text>Save Draft</Text>

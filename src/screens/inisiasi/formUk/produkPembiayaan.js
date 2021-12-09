@@ -5,8 +5,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
-import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { styles } from './styles';
+import { RadioButton } from 'react-native-paper';
+import db from '../../../database/Database';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -27,40 +28,134 @@ const ProdukPembiayaan = ({ route }) => {
     const [currentDate, setCurrentDate] = useState();
     const [openJenisPembiayaan, setOpenJenisPembiayaan] = useState(false);
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
-    const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState(dataPilihan);
+    const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState([{ label: 'Produk Reguler', value: '1' }]);
     const [openNamaProduk, setOpenNamaProduk] = useState(false);
     const [valueNamaProduk, setValueNamaProduk] = useState(null);
-    const [itemsNamaProduk, setItemsNamaProduk] = useState(dataPilihan);
+    const [itemsNamaProduk, setItemsNamaProduk] = useState([{ label: 'Meekar', value: '1' }]);
     const [openProdukPembiayaan, setOpenProdukPembiayaan] = useState(false);
     const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState(null);
-    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState(dataPilihan);
+    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState([{ label: 'S125', value: '1' }]);
     const [openJumlahPinjaman, setOpenJumlahPinjaman] = useState(false);
     const [valueJumlahPinjaman, setValueJumlahPinjaman] = useState(null);
-    const [itemsJumlahPinjaman, setItemsJumlahPinjaman] = useState(dataPilihan);
+    const [itemsJumlahPinjaman, setItemsJumlahPinjaman] = useState([{ label: '2000000', value: '1' }]);
     const [openKategoriTujuanPembiayaan, setOpenKategoriTujuanPembiayaan] = useState(false);
     const [valueKategoriTujuanPembiayaan, setValueKategoriTujuanPembiayaan] = useState(null);
-    const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState(dataPilihan);
+    const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }]);
     const [openTujuanPembiayaan, setOpenTujuanPembiayaan] = useState(false);
     const [valueTujuanPembiayaan, setValueTujuanPembiayaan] = useState(null);
-    const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState(dataPilihan);
+    const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }]);
     const [openTypePencairan, setOpenTypePencairan] = useState(false);
     const [valueTypePencairan, setValueTypePencairan] = useState(null);
-    const [itemsTypePencairan, setItemsTypePencairan] = useState(dataPilihan);
+    const [itemsTypePencairan, setItemsTypePencairan] = useState([{ label: 'Cash', value: '1' }]);
     const [openFrekuensiPembayaran, setOpenFrekuensiPembayaran] = useState(false);
     const [valueFrekuensiPembayaran, setValueFrekuensiPembayaran] = useState(null);
-    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState(dataPilihan);
+    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState([{ label: 'Mingguan', value: '1' }]);
     const [valueTermPembiayaan, setValueTermPembiayaan] = useState(null);
     const [valueNamaBank, setValueNamaBank] = useState('');
     const [valueNoRekening, setValueNoRekening] = useState('');
     const [valuePemilikRekening, setValuePemilikRekening] = useState('');
+    const [valueRekeningBank, setValueRekeningBank] = useState(false);
 
     useEffect(() => {
-        setInfo()
+        setInfo();
+        getUKProdukPembiayaan();
     }, [])
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         setCurrentDate(tanggal)
+    }
+
+    const getUKProdukPembiayaan = () => {
+        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '` + namaNasabah + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+                        if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') setValueJenisPembiayaan(data.jenis_Pembiayaan);
+                        if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') setValueNamaProduk(data.nama_Produk);
+                        if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
+                        if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPinjaman(data.jumlah_Pinjaman);
+                        if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueTermPembiayaan(data.term_Pembiayaan);
+                        if (data.kategori_Tujuan_Pembiayaan !== null && typeof data.kategori_Tujuan_Pembiayaan !== 'undefined') setValueKategoriTujuanPembiayaan(data.kategori_Tujuan_Pembiayaan);
+                        if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
+                        if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
+                        if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
+                        if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' ? true : false);
+                        if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
+                        if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
+                        if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan error:', error.message);
+                })
+            }
+        )
+    }
+
+    const doSubmitDraft = () => {
+        if (__DEV__) console.log('doSubmitDraft loaded');
+        if (__DEV__) console.log('doSubmitDraft valueJenisPembiayaan:', valueJenisPembiayaan);
+        if (__DEV__) console.log('doSubmitDraft valueNamaProduk:', valueNamaProduk);
+        if (__DEV__) console.log('doSubmitDraft valueProdukPembiayaan:', valueProdukPembiayaan);
+        if (__DEV__) console.log('doSubmitDraft valueJumlahPinjaman:', valueJumlahPinjaman);
+        if (__DEV__) console.log('doSubmitDraft valueTermPembiayaan:', valueTermPembiayaan);
+        if (__DEV__) console.log('doSubmitDraft valueKategoriTujuanPembiayaan:', valueKategoriTujuanPembiayaan);
+        if (__DEV__) console.log('doSubmitDraft valueTujuanPembiayaan:', valueTujuanPembiayaan);
+        if (__DEV__) console.log('doSubmitDraft valueTypePencairan:', valueTypePencairan);
+        if (__DEV__) console.log('doSubmitDraft valueFrekuensiPembayaran:', valueFrekuensiPembayaran);
+        if (__DEV__) console.log('doSubmitDraft valueRekeningBank:', valueRekeningBank);
+        if (__DEV__) console.log('doSubmitDraft valueNamaBank:', valueNamaBank);
+        if (__DEV__) console.log('doSubmitDraft valueNoRekening:', valueNoRekening);
+        if (__DEV__) console.log('doSubmitDraft valuePemilikRekening:', valuePemilikRekening);
+
+        const find = 'SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening) values ("' + namaNasabah + '","' + valueJenisPembiayaan + '","' + valueNamaProduk + '","' + valueProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + valueKategoriTujuanPembiayaan + '","' + valueTujuanPembiayaan + '","' + valueTypePencairan + '","' + valueFrekuensiPembayaran + '","' + valueRekeningBank + '","' + valueNamaBank + '","' + valueNoRekening + '","' + valuePemilikRekening + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_ProdukPembiayaan SET jenis_Pembiayaan = "' + valueJenisPembiayaan + '", nama_Produk = "' + valueNamaProduk + '", produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pinjaman = "' + valueJumlahPinjaman + '", term_Pembiayaan = "' + valueTermPembiayaan + '", kategori_Tujuan_Pembiayaan = "' + valueKategoriTujuanPembiayaan + '", tujuan_Pembiayaan = "' + valueTujuanPembiayaan + '", type_Pencairan = "' + valueTypePencairan + '", frekuensi_Pembayaran = "' + valueFrekuensiPembayaran + '", status_Rekening_Bank = "' + valueRekeningBank + '", nama_Bank = "' + valueNamaBank + '", no_Rekening = "' + valueNoRekening + '", pemilik_Rekening = "' + valuePemilikRekening + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_ProdukPembiayaan", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                })
+            }
+        );
     }
 
     const renderHeader = () => (
@@ -243,6 +338,7 @@ const ProdukPembiayaan = ({ route }) => {
                 setItems={setItemsFrekuensiPembayaran}
                 placeholder='Pilih Frekuensi Pembayaran'
                 onChangeValue={() => null}
+                zIndex={3000}
             />
         </View>
     )
@@ -250,16 +346,22 @@ const ProdukPembiayaan = ({ route }) => {
     const renderFormRekeningBank = () => (
         <View style={styles.MT8}>
             <Text style={{ width: 100 }}>Rekening Bank</Text>
-            <View style={[styles.FDRow, styles.MT4]}>
-                <BouncyCheckbox onPress={(isChecked) => __DEV__ && console.log('onPress')} />
-                <Text style={styles.MR16}>Ada</Text>
-                <BouncyCheckbox onPress={(isChecked) => __DEV__ && console.log('onPress')} />
-                <Text>Tidak Ada</Text>
-            </View>
+            <RadioButton.Group onValueChange={newValue => setValueRekeningBank(newValue)} value={valueRekeningBank}>
+                <View style={[styles.FDRow]}>
+                    <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
+                        <RadioButton value={true} />
+                        <Text>Ada</Text>
+                    </View>
+                    <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
+                        <RadioButton value={false} />
+                        <Text>Tidak Ada</Text>
+                    </View>
+                </View>
+            </RadioButton.Group>
         </View>
     )
 
-    const renderFormNamaBank = () => (
+    const renderFormNamaBank = () => valueRekeningBank && (
         <View style={styles.formContainerText}>
             <Text style={{ width: 100 }}>Nama Bank</Text>
             <View style={[styles.textInputContainer, styles.ML8]}>
@@ -273,7 +375,7 @@ const ProdukPembiayaan = ({ route }) => {
         </View>
     )
 
-    const renderFormNoRekening = () => (
+    const renderFormNoRekening = () => valueRekeningBank && (
         <View style={styles.formContainerText}>
             <Text style={{ width: 100 }}>No. Rekening</Text>
             <View style={[styles.textInputContainer, styles.ML8]}>
@@ -287,7 +389,7 @@ const ProdukPembiayaan = ({ route }) => {
         </View>
     )
 
-    const renderFormPemilikRekening = () => (
+    const renderFormPemilikRekening = () => valueRekeningBank && (
         <View style={styles.formContainerText}>
             <Text style={{ width: 100 }}>Pemilik Rekening</Text>
             <View style={[styles.textInputContainer, styles.ML8]}>
@@ -325,7 +427,7 @@ const ProdukPembiayaan = ({ route }) => {
         <View style={styles.buttonContainer}>
             <View style={styles.F1} />
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
                     <Text>Save Draft</Text>

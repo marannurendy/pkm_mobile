@@ -10,8 +10,9 @@ import DropDownPicker from 'react-native-dropdown-picker'
 import PhoneInput from 'react-native-phone-input'
 import { Camera } from 'expo-camera'
 import { Button } from 'react-native-elements'
-import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { showMessage } from "react-native-flash-message"
+import { Checkbox } from 'react-native-paper';
+
 
 import db from '../../../database/Database'
 
@@ -31,7 +32,7 @@ const DataDiri = ({route}) => {
     let [fotokartuIdentitas, setFotoKartuIdentitas] = useState()
     let [jenisKartuIdentitas, setJenisKartuIdentitas] = useState()
     let [nomorIdentitas, setNomorIdentitas] = useState()
-    let [namaCalonNasabah, setNamaCalonNasabah] = useState()
+    let [namaCalonNasabah, setNamaCalonNasabah] = useState(namaNasabah)
     let [tempatLahir, setTempatLahir] = useState()
     let [tanggalLahir, setTanggalLahir] = useState()
     let [statusPerkawinan, setStatusPerkawinan] = useState()
@@ -48,9 +49,9 @@ const DataDiri = ({route}) => {
     let [nomorKartuKeluarga, setNomorKartuKeluarga] = useState()
 
     //STATE DATA DIRI PRIBADI
-    let [fullName, setFullName] = useState()
+    let [fullName, setFullName] = useState(namaNasabah)
     let [namaAyah, setNamaAyah] = useState()
-    let [noTelfon, setNoTelfon] = useState()
+    let [noTelfon, setNoTelfon] = useState('62251')
     let [jumlahAnak, setJuma] = useState()
     let [jumlahTanggungan, setJumlahTanggungnan] = useState()
     let [statusRumahTinggal, setStatusRumahTinggal] = useState()
@@ -59,7 +60,7 @@ const DataDiri = ({route}) => {
     //STATE DATA SUAMI
     let [namaSuami, setNamaSuami] = useState()
     let [fotoKartuIdentitasSuami, setFotoKartuIdentitasSuami] = useState()
-    let [statusSuami, setStatusSuami] = useState()
+    let [statusSuami, setStatusSuami] = useState(false)
 
     //STATE DATA PENJAMIN
     let [statusHubunganKeluarga, setStatusHubunganKeluarga] = useState()
@@ -139,49 +140,73 @@ const DataDiri = ({route}) => {
     const [itemsJumlahTanggungan, setItemsJumlahTanggungan] = useState(dataPilihan);
     const [openStatusRumahTinggal, setOpenStatusRumahTinggal] = useState(false);
     const [valueStatusRumahTinggal, setValueStatusRumahTinggal] = useState(null);
-    const [itemsStatusRumahTinggal, setItemsStatusRumahTinggal] = useState([]);
+    const [itemsStatusRumahTinggal, setItemsStatusRumahTinggal] = useState([
+        {
+            label: 'Milik Sendiri',
+            value: '1'
+        }
+    ]);
     const [openStatusHubunganKeluarga, setOpenStatusHubunganKeluarga] = useState(false);
     const [valueStatusHubunganKeluarga, setValueStatusHubunganKeluarga] = useState(null);
-    const [itemsStatusHubunganKeluarga, setItemsStatusHubunganKeluarga] = useState([]);
+    const [itemsStatusHubunganKeluarga, setItemsStatusHubunganKeluarga] = useState([
+        {
+            label: 'Suami',
+            value: '1'
+        }
+    ]);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
-
         (async () => {
-
-            let GetInisiasi = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = '` + namaNasabah + `';`
-            const getDataDraft = () => {
+            /* START DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
+            let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = '` + namaNasabah + `';`
+            const getUKDataDiri = () => {
                 db.transaction(
                     tx => {
-                        tx.executeSql(GetInisiasi, [], (tx, results) => {
-                            let dataLength = results.rows.length
-                            // console.log(dataLength)
-                            if(dataLength > 0) {
-                                let data = results.rows.item(0)
-                                data.nomor_Identitas !== "undefined" ? console.log("this") : console.log("that")
-                                data.foto_Kartu_Identitas !== "undefined" ? setFotoKartuIdentitas(data.foto_Kartu_Identitas) : setFotoKartuIdentitas()
-                                data.jenis_Kartu_Identitas !== "undefined" ? setJenisKartuIdentitas(data.jenis_Kartu_Identitas) : setJenisKartuIdentitas()
-                                data.nomor_Identitas !== "undefined" ? setNomorIdentitas(data.nomor_Identitas) : setNomorIdentitas()
-                                data.nama_lengkap !== "undefined" ? setNamaCalonNasabah(data.nama_lengkap) : setNamaCalonNasabah()
-                                data.tempat_lahir !== "undefined" ? setTempatLahir(data.tempat_lahir) : setTempatLahir()
-                                data.tanggal_Lahir !== "undefined" ? setTanggalLahir(data.tanggal_Lahir) : setTanggalLahir()
-                                data.status_Perkawinan !== "undefined" ? setStatusPerkawinan(data.status_Perkawinan) : setStatusPerkawinan()
-                                data.alamat_Identitas !== "undefined" ? setAlamatIdentitas(data.alamat_Identitas) : setAlamatIdentitas()
-                                data.alamat_Domisili !== "undefined" ? setAlamatDomisili(data.alamat_Domisili) : setAlamatIdentitas()
-                                data.foto_Surat_Keterangan_Domisili !== "undefined" ? setFotoSuratKeteranganDomisili(data.foto_Surat_Keterangan_Domisili) : setFotoSuratKeteranganDomisili()
-                                data.provinsi !== "undefined" ? setDataProvinsi(data.provinsi) : setDataProvinsi()
-                                data.kabupaten !== "undefined" ? setDataKabupaten(data.kabupaten) : setDataKabupaten()
-                                data.kecamatan !== "undefined" ? setDataKecamatan(data.kecamatan) : setDataKecamatan()
-                                data.kelurahan !== "undefined" ? setDataKelurahan(data.kelurahan) : setDataKelurahan()
+                        tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                            let dataLength = results.rows.length;
+                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
+                            if (dataLength > 0) {
+                                
+                                let data = results.rows.item(0);
+                                if (__DEV__) console.log('tx.executeSql data:', data);
+                                if (data.foto_Kartu_Identitas !== null && typeof data.foto_Kartu_Identitas !== 'undefined') setFotoKartuIdentitas(data.foto_Kartu_Identitas);
+                                if (data.jenis_Kartu_Identitas !== null && typeof data.jenis_Kartu_Identitas !== 'undefined') setValueJenisKartuIdentitas(data.jenis_Kartu_Identitas);
+                                if (data.nomor_Identitas !== null && typeof data.nomor_Identitas !== 'undefined') setNomorIdentitas(data.nomor_Identitas);
+                                if (data.nama_lengkap !== null && typeof data.nama_lengkap !== 'undefined') setNamaCalonNasabah(data.nama_lengkap);
+                                if (data.tempat_lahir !== null && typeof data.tempat_lahir !== 'undefined') setTempatLahir(data.tempat_lahir);
+                                if (data.tanggal_Lahir !== null && typeof data.tanggal_Lahir !== 'undefined') setTanggalLahir(data.tanggal_Lahir);
+                                if (data.status_Perkawinan !== null && typeof data.status_Perkawinan !== 'undefined') setValueStatusPerkawinan(data.status_Perkawinan);
+                                if (data.alamat_Identitas !== null && typeof data.alamat_Identitas !== 'undefined') setAlamatIdentitas(data.alamat_Identitas);
+                                if (data.alamat_Domisili !== null && typeof data.alamat_Domisili !== 'undefined') setAlamatDomisili(data.alamat_Domisili);
+                                if (data.foto_Surat_Keterangan_Domisili !== null && typeof data.foto_Surat_Keterangan_Domisili !== 'undefined') setFotoSuratKeteranganDomisili(data.foto_Surat_Keterangan_Domisili);
+                                if (data.provinsi !== null && typeof data.provinsi !== 'undefined') setDataProvinsi(data.provinsi);
+                                if (data.kabupaten !== null && typeof data.kabupaten !== 'undefined') setDataKabupaten(data.kabupaten);
+                                if (data.kecamatan !== null && typeof data.kecamatan !== 'undefined') setDataKecamatan(data.kecamatan);
+                                if (data.kelurahan !== null && typeof data.kelurahan !== 'undefined') setDataKelurahan(data.kelurahan);
+                                if (data.foto_kk !== null && typeof data.foto_kk !== 'undefined') setFotoKartuKeluarga(data.foto_kk);
+                                if (data.no_kk !== null && typeof data.no_kk !== 'undefined') setNomorKartuKeluarga(data.no_kk);
+                                if (data.nama_ayah !== null && typeof data.nama_ayah !== 'undefined') setNamaAyah(data.nama_ayah);
+                                if (data.no_tlp_nasabah !== null && typeof data.no_tlp_nasabah !== 'undefined') setNoTelfon(data.no_tlp_nasabah);
+                                if (data.jumlah_anak !== null && typeof data.jumlah_anak !== 'undefined') setValueJumlahAnak(data.jumlah_anak);
+                                if (data.jumlah_tanggungan !== null && typeof data.jumlah_tanggungan !== 'undefined') setValueJumlahTanggungan(data.jumlah_tanggungan);
+                                if (data.status_rumah_tinggal !== null && typeof data.status_rumah_tinggal !== 'undefined') setValueStatusRumahTinggal(data.status_rumah_tinggal);
+                                if (data.lama_tinggal !== null && typeof data.lama_tinggal !== 'undefined') setLamaTinggal(data.lama_tinggal);
+                                if (data.nama_suami !== null && typeof data.nama_suami !== 'undefined') setNamaSuami(data.nama_suami);
+                                if (data.foto_ktp_suami !== null && typeof data.foto_ktp_suami !== 'undefined') setFotoKartuIdentitasSuami(data.foto_ktp_suami);
+                                if (data.suami_diluar_kota !== null && typeof data.suami_diluar_kota !== 'undefined') setStatusSuami(data.suami_diluar_kota === 'true' ? true : false);
+                                if (data.status_hubungan_keluarga !== null && typeof data.status_hubungan_keluarga !== 'undefined') setValueStatusHubunganKeluarga(data.status_hubungan_keluarga);
+                                if (data.nama_penjamin !== null && typeof data.nama_penjamin !== 'undefined') setNamaPenjamin(data.nama_penjamin);
+                                if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined') setFotoDataPenjamin(data.foto_ktp_penjamin);
                             }
-                        }, function(error){
-                            console.log("error")
-                            console.log('Transaction ERROR: ' + error.message);
+                        }, function(error) {
+                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
                         })
                     }
                 )
             }
-            getDataDraft()
+            getUKDataDiri()
+            /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
             const { status } = await Camera.requestPermissionsAsync();
             setHasPermission(status === 'granted');
@@ -255,6 +280,304 @@ const DataDiri = ({route}) => {
 
     const sumberDataHandler = (text) => {
         setSumberDana(text)
+    }
+
+    const doSubmitDataPenjamin = () => {
+        if (__DEV__) console.log('doSubmitDataPenjamin loaded');
+        if (__DEV__) console.log('doSubmitDataPenjamin valueStatusHubunganKeluarga:', valueStatusHubunganKeluarga);
+        if (__DEV__) console.log('doSubmitDataPenjamin namaPenjamin:', namaPenjamin);
+        if (__DEV__) console.log('doSubmitDataPenjamin fotoDataPenjamin:', fotoDataPenjamin);
+
+        if (!valueStatusHubunganKeluarga || typeof valueStatusHubunganKeluarga === 'undefined' || valueStatusHubunganKeluarga === '') return alert('Status Hubungan Keluarga (*) tidak boleh kosong');
+        if (!namaPenjamin || typeof namaPenjamin === 'undefined' || namaPenjamin === '') return alert('Nama Penjamin (*) tidak boleh kosong');
+        if (!fotoDataPenjamin || typeof fotoDataPenjamin === 'undefined' || fotoDataPenjamin === '') return alert('Foto Kartu Identitas Penjamin (*) tidak boleh kosong');
+
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin) values ("' + namaNasabah + '","' + namaPenjamin + '","' + fotoKartuIdentitasSuami + '","' + fotoDataPenjamin + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_DataDiri SET status_hubungan_keluarga = "' + valueStatusHubunganKeluarga + '", nama_penjamin = "' + namaPenjamin + '", foto_ktp_penjamin = "' + fotoDataPenjamin + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
+                })
+            }
+        );
+    }
+
+    const doSubmitDataSuami = () => {
+        if (__DEV__) console.log('doSubmitDataSuami loaded');
+        if (__DEV__) console.log('doSubmitDataSuami namaSuami:', namaSuami);
+        if (__DEV__) console.log('doSubmitDataSuami fotoKartuIdentitasSuami:', fotoKartuIdentitasSuami);
+        if (__DEV__) console.log('doSubmitDataSuami statusSuami:', statusSuami);
+
+        if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '') return alert('Nama Suami (*) tidak boleh kosong');
+        if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === '') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
+
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_suami, foto_ktp_suami, suami_diluar_kota) values ("' + namaNasabah + '","' + namaSuami + '","' + fotoKartuIdentitasSuami + '","' + statusSuami + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_DataDiri SET nama_suami = "' + namaSuami + '", foto_ktp_suami = "' + fotoKartuIdentitasSuami + '", suami_diluar_kota = "' + statusSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
+                })
+            }
+        );
+    }
+
+    const doSubmitDataDiriPribadi = () => {
+        if (__DEV__) console.log('doSubmitDataDiriPribadi loaded');
+        if (__DEV__) console.log('doSubmitDataDiriPribadi fullName:', fullName);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi namaAyah:', namaAyah);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi noTelfon:', noTelfon);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi valueJumlahAnak:', valueJumlahAnak);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi valueJumlahTanggungan:', valueJumlahTanggungan);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi valueStatusRumahTinggal:', valueStatusRumahTinggal);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi lamaTinggal:', lamaTinggal);
+
+        if (!fullName || typeof fullName === 'undefined' || fullName === '') return alert('Nama Lengkap (*) tidak boleh kosong');
+        if (!namaAyah || typeof namaAyah === 'undefined' || namaAyah ==='') return alert('Nama Ayah (*) tidak boleh kosong');
+        if (!noTelfon || typeof noTelfon === 'undefined' || noTelfon ==='') return alert('No. Telp/HP Nasabah (*) tidak boleh kosong');
+        if (!valueJumlahAnak || typeof valueJumlahAnak === 'undefined' || valueJumlahAnak ==='') return alert('Jumlah Anak (*) tidak boleh kosong');
+        if (!valueJumlahTanggungan || typeof valueJumlahTanggungan === 'undefined' || valueJumlahTanggungan ==='') return alert('Jumlah Tanggungan (*) tidak boleh kosong');
+        if (!valueStatusRumahTinggal || typeof valueStatusRumahTinggal === 'undefined' || valueStatusRumahTinggal ==='') return alert('Status Rumah Tangga (*) tidak boleh kosong');
+        if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
+
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal) values ("' + namaNasabah + '","' + namaAyah + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
+                })
+            }
+        );
+    }
+
+    const doSubmitKK = () => {
+        if (__DEV__) console.log('doSubmitKK loaded');
+        if (__DEV__) console.log('doSubmitKK fotoKartuKeluarga:', fotoKartuKeluarga);
+        if (__DEV__) console.log('doSubmitKK nomorKartuKeluarga:', nomorKartuKeluarga);
+
+        if (!fotoKartuKeluarga || typeof fotoKartuKeluarga === 'undefined' || fotoKartuKeluarga === '') return alert('Foto Kartu Keluarga (*) tidak boleh kosong');
+        if (!nomorKartuKeluarga || typeof nomorKartuKeluarga === 'undefined' || nomorKartuKeluarga ==='') return alert('Nomor Kartu Keluarga (*) tidak boleh kosong');
+
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, foto_kk, no_kk) values ("' + namaNasabah + '","' + fotoKartuKeluarga + '","' + nomorKartuKeluarga + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_DataDiri SET foto_kk = "' + fotoKartuKeluarga + '", no_kk = "' + nomorKartuKeluarga + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitKK db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitKK db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitKK db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitKK db.transaction find error:', error.message);
+                })
+            }
+        );
+    }
+
+    const doSubmitDataIdentitasDiri = () => {
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri loaded');
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri namaNasabah:', namaNasabah);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri fotokartuIdentitas:', fotokartuIdentitas);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri valueJenisKartuIdentitas:', valueJenisKartuIdentitas);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri nomorIdentitas:', nomorIdentitas);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri namaCalonNasabah:', namaCalonNasabah);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri tempatLahir:', tempatLahir);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri tanggalLahir:', tanggalLahir);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri valueStatusPerkawinan:', valueStatusPerkawinan);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatIdentitas:', alamatIdentitas);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatDomisili:', alamatDomisili);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri fotoSuratKeteranganDomisili:', fotoSuratKeteranganDomisili);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataProvinsi:', dataProvinsi);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKabupaten:', dataKabupaten);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
+
+        if (!fotokartuIdentitas || typeof fotokartuIdentitas === 'undefined' || fotokartuIdentitas === '') return alert('Foto Kartu Identitas (*) tidak boleh kosong');
+        if (!valueJenisKartuIdentitas || typeof valueJenisKartuIdentitas === 'undefined' || valueJenisKartuIdentitas ==='') return alert('Jenis Kartu Identitas (*) tidak boleh kosong');
+        if (!nomorIdentitas || typeof nomorIdentitas === 'undefined' || nomorIdentitas === '') return alert('Nomor Identitas (*) tidak boleh kosong');
+        if (!namaCalonNasabah || typeof namaCalonNasabah === 'undefined' || namaCalonNasabah === '') return alert('Nama Lengkap (*) tidak boleh kosong');
+        if (!tempatLahir || typeof tempatLahir === 'undefined' || tempatLahir === '') return alert('Tempat Lahir (*) tidak boleh kosong');
+        if (!tanggalLahir || typeof tanggalLahir === 'undefined' || tanggalLahir === '') return alert('Tanggal Lahir (*) tidak boleh kosong');
+        if (!valueStatusPerkawinan || typeof valueStatusPerkawinan === 'undefined' || valueStatusPerkawinan === '') return alert('Status Perkawinan (*) tidak boleh kosong');
+        if (!alamatIdentitas || typeof alamatIdentitas === 'undefined' || alamatIdentitas === '') return alert('Alamat Identitas (*) tidak boleh kosong');
+        if (!alamatDomisili || typeof alamatDomisili === 'undefined' || alamatDomisili === '') return alert('Alamat Domisili (*) tidak boleh kosong');
+        if (!fotoSuratKeteranganDomisili || typeof fotoSuratKeteranganDomisili === 'undefined' || fotoSuratKeteranganDomisili === '') return alert('Foto Surat Keterangan Domisili (*) tidak boleh kosong');
+        if (!dataProvinsi || typeof dataProvinsi === 'undefined' || dataProvinsi === '') return alert('Provinsi (*) tidak boleh kosong');
+        if (!dataKabupaten || typeof dataKabupaten === 'undefined' || dataKabupaten === '') return alert('Kabupaten (*) tidak boleh kosong');
+        if (!dataKecamatan || typeof dataKecamatan === 'undefined' || dataKecamatan === '') return alert('Kecamatan (*) tidak boleh kosong');
+        if (!dataKelurahan || typeof dataKelurahan === 'undefined' || dataKelurahan === '') return alert('Kelurahan (*) tidak boleh kosong');
+
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan) values ("' + fotokartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + fotoSuratKeteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + fotokartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + fotoSuratKeteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                })
+            }
+        );
     }
 
     const SubmitDataDiri = () => {
@@ -835,7 +1158,7 @@ const DataDiri = ({route}) => {
 
                     <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Identitas Diri</Text>
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas (*)</Text>
                             
                             <TouchableOpacity onPress={() => setCameraShow(1)}>
                                 <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
@@ -855,7 +1178,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas (*)</Text>
                             <DropDownPicker
                                 open={openJenisKartuIdentitas}
                                 value={valueJenisKartuIdentitas}
@@ -888,7 +1211,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Identitas</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Identitas (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454" }}/>
@@ -900,10 +1223,10 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaCalonNasabah} onChangeText={(text) => setNamaCalonNasabah(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={namaCalonNasabah} onChangeText={(text) => setNamaCalonNasabah(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }} editable={false} />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'id-badge'} size={18} />
@@ -912,7 +1235,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tempat Lahir</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tempat Lahir (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={tempatLahir} onChangeText={(text) => setTempatLahir(text)} placeholder="Masukkan Tempat Lahir" style={{ fontSize: 15, color: "#545454" }}/>
@@ -924,7 +1247,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tanggal Lahir</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tanggal Lahir (*)</Text>
                             <TouchableOpacity onPress={() => setShowCalendar(true)} style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={tanggalLahir} placeholder="Pilih tanggal lahir" editable={false} style={{ fontSize: 15, color: "#545454" }}/>
@@ -945,7 +1268,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Perkawinan</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Perkawinan (*)</Text>
                             <DropDownPicker
                                 open={openStatusPerkawinan}
                                 value={valueStatusPerkawinan}
@@ -978,7 +1301,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Identitas</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Identitas (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={alamatIdentitas} onChangeText={(text) => setAlamatIdentitas(text)} placeholder="Masukkan Alamat Identitas" style={{ fontSize: 15, color: "#545454" }}/>
@@ -990,7 +1313,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Domisili</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Domisili (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={alamatDomisili} onChangeText={(text) => setAlamatDomisili(text)} placeholder="Masukkan Alamat Domisili" style={{ fontSize: 15, color: "#545454" }}/>
@@ -1002,7 +1325,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Surat Keterangan Domisili</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Surat Keterangan Domisili (*)</Text>
                             
                             <TouchableOpacity onPress={() => setCameraShow(2)}>
                                 <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
@@ -1022,7 +1345,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Provinsi</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Provinsi (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={dataProvinsi} onChangeText={(text) => setDataProvinsi(text)} placeholder="Masukkan Nama Provinsi" style={{ fontSize: 15, color: "#545454" }}/>
@@ -1034,7 +1357,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kabupaten</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kabupaten (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={dataKabupaten} onChangeText={(text) => setDataKabupaten(text)} placeholder="Masukkan Nama Kabupaten" style={{ fontSize: 15, color: "#545454" }}/>
@@ -1046,7 +1369,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kecamatan</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kecamatan (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={dataKecamatan} onChangeText={(text) => setDataKecamatan(text)} placeholder="Masukkan Nama Kecamatan" style={{ fontSize: 15, color: "#545454" }}/>
@@ -1058,7 +1381,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kelurahan</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kelurahan (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={dataKelurahan} onChangeText={(text) => setDataKelurahan(text)} placeholder="Masukkan Nama Kelurahan" style={{ fontSize: 15, color: "#545454" }}/>
@@ -1074,14 +1397,15 @@ const DataDiri = ({route}) => {
                                 title="Save Draft"
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => SubmitDataDiri()}
+                                // onPress={() => SubmitDataDiri()}
+                                onPress={() => doSubmitDataIdentitasDiri()}
                             />
                         </View>
 
                     <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Kartu Keluarga</Text>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Keluarga</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Keluarga (*)</Text>
                             
                             <TouchableOpacity onPress={() => setCameraShow(3)}>
                                 <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
@@ -1101,7 +1425,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Kartu Keluarga</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Kartu Keluarga (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={nomorKartuKeluarga} onChangeText={(text) => setNomorKartuKeluarga(text)} placeholder="Masukkan Nomor KK" style={{ fontSize: 15, color: "#545454" }}/>
@@ -1118,7 +1442,7 @@ const DataDiri = ({route}) => {
                                 onPress={() => alert('Sukses')}
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => submitHandler()}
+                                onPress={() => doSubmitKK()}
                             />
                         </View>
 
@@ -1126,10 +1450,10 @@ const DataDiri = ({route}) => {
                     <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Diri Pribadi</Text>
                         
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={fullName} onChangeText={(text) => setFullName(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={fullName} onChangeText={(text) => setFullName(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }} editable={false} />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1138,7 +1462,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Ayah</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Ayah (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(text)} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454" }}/>
@@ -1150,21 +1474,22 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Nasabah</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Nasabah (*)</Text>
                             <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 10}}>
-                                <PhoneInput
+                                {/* <PhoneInput
                                     style={styles.phoneInput} 
                                     ref={phoneRef}
                                     initialCountry={'id'}
-                                    value={noTelfon}
+                                    initialValue={noTelfon}
                                     onChangePhoneNumber={setNoTelfon}
                                     allowZeroAfterCountryCode={false}
-                                />
+                                /> */}
+                                <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" style={{ fontSize: 15, color: "#545454" }}/>
                             </View>
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Anak</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Anak (*)</Text>
                             <DropDownPicker
                                 open={openJumlahAnak}
                                 value={valueJumlahAnak}
@@ -1198,7 +1523,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tanggungan</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tanggungan (*)</Text>
                             <DropDownPicker
                                 open={openJumlahTanggungan}
                                 value={valueJumlahTanggungan}
@@ -1232,7 +1557,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Rumah Tinggal</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Rumah Tinggal (*)</Text>
                             <DropDownPicker
                                 open={openStatusRumahTinggal}
                                 value={valueStatusRumahTinggal}
@@ -1266,10 +1591,10 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun)</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput onChangeText={(text) => setNamanasabah(text)} placeholder="Masukkan Periode Tinggal" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'chart-pie'} size={18} />
@@ -1283,17 +1608,17 @@ const DataDiri = ({route}) => {
                                 onPress={() => alert('Sukses')}
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => submitHandler()}
+                                onPress={() => doSubmitDataDiriPribadi()}
                             />
                         </View>
 
                     <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Suami</Text>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Suami</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Suami (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput onChangeText={(text) => setNamanasabah(text)} placeholder="Masukkan Nama Suami" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={namaSuami} onChangeText={(text) => setNamaSuami(text)} placeholder="Masukkan Nama Suami" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1302,7 +1627,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami (*)</Text>
                             
                             <TouchableOpacity onPress={() => setCameraShow(4)}>
                                 <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
@@ -1322,12 +1647,11 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 30, marginBottom: 20}}>
-                            <BouncyCheckbox 
-                                size={20}
-                                // isChecked={baru}
-                                fillColor={'#003049'}
-                                // disableBuiltInState
-                                // onPress={() => pickerHandler(2)}
+                            <Checkbox
+                                status={statusSuami ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setStatusSuami(!statusSuami);
+                                }}
                             />
                             <Text style={{fontSize: 15, fontWeight: 'bold'}}>Suami di luar kota / tidak di tempat</Text>
                         </View>
@@ -1335,10 +1659,9 @@ const DataDiri = ({route}) => {
                         <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
                             <Button
                                 title="Save Draft"
-                                onPress={() => alert('Sukses')}
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => submitHandler()}
+                                onPress={() => doSubmitDataSuami()}
                             />
                         </View>
 
@@ -1346,7 +1669,7 @@ const DataDiri = ({route}) => {
                     <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1, marginBottom: 20}}>Data Penjamin (1)</Text>
 
                         <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Hubungan Keluarga</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Hubungan Keluarga (*)</Text>
                             <DropDownPicker
                                 open={openStatusHubunganKeluarga}
                                 value={valueStatusHubunganKeluarga}
@@ -1379,10 +1702,10 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Penjamin</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Penjamin (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput onChangeText={(text) => setNamanasabah(text)} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(text)} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1391,7 +1714,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Penjamin</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Penjamin (*)</Text>
 
                             <TouchableOpacity onPress={() => setCameraShow(5)}>
                                 <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
@@ -1416,7 +1739,7 @@ const DataDiri = ({route}) => {
                                 onPress={() => alert('Sukses')}
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => submitHandler()}
+                                onPress={() => doSubmitDataPenjamin()}
                             />
                         </View>
 

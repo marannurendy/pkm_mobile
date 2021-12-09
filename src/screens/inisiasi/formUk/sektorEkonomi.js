@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { styles } from './styles';
+import db from '../../../database/Database';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -27,21 +28,94 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
     const [ currentDate, setCurrentDate ] = useState();
     const [openSektorEkonomi, setOpenSektorEkonomi] = useState(false);
     const [valueSektorEkonomi, setValueSektorEkonomi] = useState(null);
-    const [itemsSektorEkonomi, setItemsSektorEkonomi] = useState(dataPilihan);
+    const [itemsSektorEkonomi, setItemsSektorEkonomi] = useState([{ label: 'Perdagangan', value: '1' }]);
     const [openSubSektorEkonomi, setOpenSubSektorEkonomi] = useState(false);
     const [valueSubSektorEkonomi, setValueSubSektorEkonomi] = useState(null);
-    const [itemsSubSektorEkonomi, setItemsSubSektorEkonomi] = useState(dataPilihan);
+    const [itemsSubSektorEkonomi, setItemsSubSektorEkonomi] = useState([{ label: 'Perdagangan Barang', value: '1' }]);
     const [openJenisUsaha, setOpenJenisUsaha] = useState(false);
     const [valueJenisUsaha, setValueJenisUsaha] = useState(null);
-    const [itemsJenisUsaha, setItemsJenisUsaha] = useState(dataPilihan);
+    const [itemsJenisUsaha, setItemsJenisUsaha] = useState([{ label: 'Jualan Mainan Anak-anak', value: '1' }]);
 
     useEffect(() => {
-        setInfo()
+        setInfo();
+        getUKSektorEkonomi();
     }, [])
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         setCurrentDate(tanggal)
+    }
+
+    const getUKSektorEkonomi = () => {
+        let queryUKDataDiri = `SELECT * FROM Table_UK_SektorEkonomi WHERE nama_lengkap = '` + namaNasabah + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_SektorEkonomi length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+                        if (data.sektor_Ekonomi !== null && typeof data.sektor_Ekonomi !== 'undefined') setValueSektorEkonomi(data.sektor_Ekonomi);
+                        if (data.sub_Sektor_Ekonomi !== null && typeof data.sub_Sektor_Ekonomi !== 'undefined') setValueSubSektorEkonomi(data.sub_Sektor_Ekonomi);
+                        if (data.jenis_Usaha !== null && typeof data.jenis_Usaha !== 'undefined') setValueJenisUsaha(data.jenis_Usaha);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_SektorEkonomi error:', error.message);
+                })
+            }
+        )
+    }
+
+    const doSubmitDraft = () => {
+        if (__DEV__) console.log('doSubmitDraft loaded');
+        if (__DEV__) console.log('doSubmitDraft valueSektorEkonomi:', valueSektorEkonomi);
+        if (__DEV__) console.log('doSubmitDraft valueSubSektorEkonomi:', valueSubSektorEkonomi);
+        if (__DEV__) console.log('doSubmitDraft valueJenisUsaha:', valueJenisUsaha);
+
+        const find = 'SELECT * FROM Table_UK_SektorEkonomi WHERE nama_lengkap = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha) values ("' + namaNasabah + '","' + valueSektorEkonomi + '","' + valueSubSektorEkonomi + '","' + valueJenisUsaha + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_SektorEkonomi SET sektor_Ekonomi = "' + valueSektorEkonomi + '", sub_Sektor_Ekonomi = "' + valueSubSektorEkonomi + '", jenis_Usaha = "' + valueJenisUsaha + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_SektorEkonomi", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_SektorEkonomi RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_SektorEkonomi ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                })
+            }
+        );
     }
 
     const renderHeader = () => (
@@ -78,6 +152,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                 setItems={setItemsSektorEkonomi}
                 placeholder='Pilih Sektor Ekonomi'
                 onChangeValue={() => null}
+                zIndex={10000}
             />
         </View>
     )
@@ -94,6 +169,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                 setItems={setItemsSubSektorEkonomi}
                 placeholder='Pilih Sub Sektor Ekonomi'
                 onChangeValue={() => null}
+                zIndex={9000}
             />
         </View>
     )
@@ -110,6 +186,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                 setItems={setItemsJenisUsaha}
                 placeholder='Pilih Jenis Usaha'
                 onChangeValue={() => null}
+                zIndex={8000}
             />
         </View>
     )
@@ -118,7 +195,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
         <View style={styles.buttonContainer}>
             <View style={styles.F1} />
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
                     <Text>Save Draft</Text>

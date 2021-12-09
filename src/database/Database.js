@@ -5,6 +5,8 @@ const db = SQLite.openDatabase('dataBaase.db');
 
 db.transaction(tx => {
 
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PendapatanNasabah');
+    
     tx.executeSql(
         `create table if not exists ListGroup(
             GroupID varchar, 
@@ -121,7 +123,10 @@ db.transaction(tx => {
             status varchar
         );`
     )
-
+    
+    /**
+     * dari mulai foto_kk sampai bawah tambahan baru by Muhamad Yusup Hamdani (YPH)
+     */
     tx.executeSql(
         `create table if not exists Table_UK_DataDiri(
             foto_Kartu_Identitas varchar,
@@ -137,7 +142,21 @@ db.transaction(tx => {
             provinsi varchar,
             kabupaten varchar,
             kecamatan varchar,
-            kelurahan varchar
+            kelurahan varchar,
+            foto_kk varchar,
+            no_kk varchar,
+            nama_ayah varchar,
+            no_tlp_nasabah varchar,
+            jumlah_anak varchar,
+            jumlah_tanggungan varchar,
+            status_rumah_tinggal varchar,
+            lama_tinggal varchar,
+            nama_suami varchar,
+            foto_ktp_suami varchar,
+            suami_diluar_kota varchar,
+            status_hubungan_keluarga varchar,
+            nama_penjamin varchar,
+            foto_ktp_penjamin varchar
         );`
     )
 
@@ -182,6 +201,9 @@ db.transaction(tx => {
         );`
     )
 
+    /**
+     * Pembiayaan_Dari_LembagaLainFreetext tambahan baru by Muhamad Yusup Hamdani (YPH)
+     */
     tx.executeSql(
         `create table if not exists Table_UK_PendapatanNasabah(
             nama_lengkap varchar,
@@ -193,6 +215,7 @@ db.transaction(tx => {
             pendapatan_Bersih_Perminggu varchar,
             pembiayaan_Dari_Lembaga varchar,
             Pembiayaan_Dari_LembagaLain varchar,
+            Pembiayaan_Dari_LembagaLainFreetext varchar,
             jumlah_Angsuran varchar,
             pendapatanSuami_Kotor_Perhari varchar,
             pendapatanSuami_Pengeluaran_Keluarga_Perhari varchar,
@@ -281,6 +304,11 @@ db.transaction(tx => {
 
     // tx.executeSql(
     //     'DROP TABLE IF EXISTS DetailPAR;'
+    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
+    // )
+
+    //     tx.executeSql(
+    //     'DROP TABLE IF EXISTS Sosialisasi_Database;'
     //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
     // )
 
