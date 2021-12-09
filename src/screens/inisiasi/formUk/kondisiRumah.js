@@ -7,6 +7,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { styles } from './styles';
 import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
+import { Picker } from '@react-native-picker/picker';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -43,9 +44,11 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const [valueAksesAirBersih, setValueAksesAirBersih] = useState(true);
     const [valueKamarMandi, setValueKamarMandi] = useState(true);
     const [submmitted, setSubmmitted] = useState(false);
+    const [dataDwellingCondition, setDataDwellingCondition] = useState([]);
 
     useEffect(() => {
         setInfo();
+        getStorageDwellingCondition();
         getUKKondisiRumah();
     }, [])
 
@@ -78,6 +81,24 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                 })
             }
         )
+    }
+
+    const getStorageDwellingCondition = async () => {
+        if (__DEV__) console.log('getStorageDwellingCondition loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('DwellingCondition');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    setDataDwellingCondition(responseJSON);
+                    return;
+                }
+            }
+            setDataDwellingCondition([]);
+        } catch (error) {
+            setDataDwellingCondition([]);
+        }
     }
 
     const doSubmitDraft = () => {
@@ -228,85 +249,80 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const renderFormLuasBangunan = () => (
         <View style={styles.MT8}>
             <Text>Luas Bangunan (*)</Text>
-            <DropDownPicker
-                open={openLuasBangunan}
-                value={valueLuasBangunan}
-                items={itemsLuasBangunan}
-                setOpen={setOpenLuasBangunan}
-                setValue={setValueLuasBangunan}
-                setItems={setItemsLuasBangunan}
-                placeholder='Pilih Luas Bangunan'
-                onChangeValue={() => null}
-                zIndex={10000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueLuasBangunan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueLuasBangunan(itemValue)}
+                >
+                    {dataDwellingCondition.filter(data => data.category === 'Luas Bangunan').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    <Picker.Item label={'-- Pilih --'} value={null} />
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormKondisiBangunan = () => (
         <View style={styles.MT8}>
             <Text>Kondisi Bangunan (*)</Text>
-            <DropDownPicker
-                open={openKondisiBangunan}
-                value={valueKondisiBangunan}
-                items={itemsKondisiBangunan}
-                setOpen={setOpenKondisiBangunan}
-                setValue={setValueKondisiBangunan}
-                setItems={setItemsKondisiBangunan}
-                placeholder='Pilih Kondisi Bangunan'
-                onChangeValue={() => null}
-                zIndex={9000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueKondisiBangunan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueKondisiBangunan(itemValue)}
+                >
+                    {dataDwellingCondition.filter(data => data.category === 'Kondisi Bangunan').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    <Picker.Item label={'-- Pilih --'} value={null} />
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormJenisAtap = () => (
         <View style={styles.MT8}>
             <Text>Jenis Atap (*)</Text>
-            <DropDownPicker
-                open={openJenisAtap}
-                value={valueJenisAtap}
-                items={itemsJenisAtap}
-                setOpen={setOpenJenisAtap}
-                setValue={setValueJenisAtap}
-                setItems={setItemsJenisAtap}
-                placeholder='Pilih Jenis Atap'
-                onChangeValue={() => null}
-                zIndex={8000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJenisAtap}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueJenisAtap(itemValue)}
+                >
+                    {dataDwellingCondition.filter(data => data.category === 'Jenis Atap').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    <Picker.Item label={'-- Pilih --'} value={null} />
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormDinding = () => (
         <View style={styles.MT8}>
             <Text>Dinding (*)</Text>
-            <DropDownPicker
-                open={openDinding}
-                value={valueDinding}
-                items={itemsDinding}
-                setOpen={setOpenDinding}
-                setValue={setValueDinding}
-                setItems={setItemsDinding}
-                placeholder='Pilih Dinding'
-                onChangeValue={() => null}
-                zIndex={7000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueDinding}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueDinding(itemValue)}
+                >
+                    {dataDwellingCondition.filter(data => data.category === 'Dinding').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    <Picker.Item label={'-- Pilih --'} value={null} />
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormLantai = () => (
         <View style={styles.MT8}>
             <Text>Lantai (*)</Text>
-            <DropDownPicker
-                open={openLantai}
-                value={valueLantai}
-                items={itemsLantai}
-                setOpen={setOpenLantai}
-                setValue={setValueLantai}
-                setItems={setItemsLantai}
-                placeholder='Pilih Lantai'
-                onChangeValue={() => null}
-                zIndex={6000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueLantai}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueLantai(itemValue)}
+                >
+                    {dataDwellingCondition.filter(data => data.category === 'Lantai').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    <Picker.Item label={'-- Pilih --'} value={null} />
+                </Picker>
+            </View>
         </View>
     )
 
@@ -391,6 +407,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <Text style={styles.bodyTitle}>Kondisi Rumah</Text>
+            {/* <Text>{JSON.stringify(dataDwellingCondition)}</Text> */}
             <ScrollView>
                 {renderForm()}
                 {renderButtonSimpan()}

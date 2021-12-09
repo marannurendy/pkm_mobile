@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { styles } from './styles';
 import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
@@ -14,43 +13,27 @@ const dimension = Dimensions.get('screen');
 const images = {
     banner: require("../../../../assets/Image/Banner.png")
 };
-const dataPilihan = [
-    { label: '1', value: '1' },
-    { label: '2', value: '2' },
-    { label: '3', value: '3' },
-    { label: '4', value: '4' },
-    { label: '5', value: '5' }
-];
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const ProdukPembiayaan = ({ route }) => {
     const { groupName, namaNasabah } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [openJenisPembiayaan, setOpenJenisPembiayaan] = useState(false);
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
     const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState([{ label: '-- Pilih --', value: null }]);
-    const [openNamaProduk, setOpenNamaProduk] = useState(false);
     const [valueNamaProduk, setValueNamaProduk] = useState(null);
     const [itemsNamaProduk, setItemsNamaProduk] = useState([{ label: '-- Pilih --', value: null }]);
-    const [openProdukPembiayaan, setOpenProdukPembiayaan] = useState(false);
     const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState(null);
     const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState([{ label: '-- Pilih --', value: null }]);
-    const [openJumlahPinjaman, setOpenJumlahPinjaman] = useState(false);
     const [valueJumlahPinjaman, setValueJumlahPinjaman] = useState(null);
-    const [itemsJumlahPinjaman, setItemsJumlahPinjaman] = useState([{ label: '-- Pilih --', value: null }]);
-    const [openKategoriTujuanPembiayaan, setOpenKategoriTujuanPembiayaan] = useState(false);
     const [valueKategoriTujuanPembiayaan, setValueKategoriTujuanPembiayaan] = useState(null);
     const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }, { label: '-- Pilih --', value: null }]);
-    const [openTujuanPembiayaan, setOpenTujuanPembiayaan] = useState(false);
     const [valueTujuanPembiayaan, setValueTujuanPembiayaan] = useState(null);
     const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }, { label: '-- Pilih --', value: null }]);
-    const [openTypePencairan, setOpenTypePencairan] = useState(false);
     const [valueTypePencairan, setValueTypePencairan] = useState(null);
     const [itemsTypePencairan, setItemsTypePencairan] = useState([{ label: '-- Pilih --', value: null }]);
-    const [openFrekuensiPembayaran, setOpenFrekuensiPembayaran] = useState(false);
     const [valueFrekuensiPembayaran, setValueFrekuensiPembayaran] = useState(null);
-    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState([{ label: 'Mingguan', value: '1' }, { label: '-- Pilih --', value: null }]);
+    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState([{ label: 'Mingguan', value: '1' }, { label: 'Bulanan', value: '2' }, { label: '-- Pilih --', value: null }]);
     const [valueTermPembiayaan, setValueTermPembiayaan] = useState(null);
     const [valueNamaBank, setValueNamaBank] = useState('');
     const [valueNoRekening, setValueNoRekening] = useState('');
@@ -76,26 +59,43 @@ const ProdukPembiayaan = ({ route }) => {
         let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '` + namaNasabah + `';`
         db.transaction(
             tx => {
-                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
                     if (dataLength > 0) {
                         
                         let data = results.rows.item(0);
-                        // if (__DEV__) console.log('tx.executeSql data:', data);
-                        // if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') setValueJenisPembiayaan(data.jenis_Pembiayaan);
-                        // if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') setValueNamaProduk(data.nama_Produk);
-                        // if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
-                        // if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPinjaman(data.jumlah_Pinjaman);
-                        // if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueTermPembiayaan(data.term_Pembiayaan);
-                        // if (data.kategori_Tujuan_Pembiayaan !== null && typeof data.kategori_Tujuan_Pembiayaan !== 'undefined') setValueKategoriTujuanPembiayaan(data.kategori_Tujuan_Pembiayaan);
-                        // if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
-                        // if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
-                        // if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
-                        // if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' ? true : false);
-                        // if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
-                        // if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
-                        // if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+                        if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') {
+                            setValueJenisPembiayaan(data.jenis_Pembiayaan);
+                            getStorageNamaProduk();
+                        }
+                        if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') {
+                            setValueNamaProduk(data.nama_Produk);
+                            getStorageProduk();
+                        }
+                        if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') {
+                            setValueProdukPembiayaan(data.produk_Pembiayaan);
+
+                            const response = await AsyncStorage.getItem('Product');
+                            if (response !== null) {
+                                const responseJSON = JSON.parse(response);
+                                if (responseJSON.length > 0 ?? false) {
+                                    let value = data.produk_Pembiayaan;
+                                    setSelectedProdukPembiayaan(responseJSON.filter(data => data.id === value)[0] || null);
+                                }
+                            }
+                        } 
+                        if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPinjaman(data.jumlah_Pinjaman);
+                        if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueTermPembiayaan(data.term_Pembiayaan);
+                        if (data.kategori_Tujuan_Pembiayaan !== null && typeof data.kategori_Tujuan_Pembiayaan !== 'undefined') setValueKategoriTujuanPembiayaan(data.kategori_Tujuan_Pembiayaan);
+                        if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
+                        if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
+                        if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
+                        if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' ? true : false);
+                        if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
+                        if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
+                        if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan error:', error.message);
@@ -372,9 +372,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
                         setValueJenisPembiayaan(itemValue);
-                        setTimeout(() => {
-                            getStorageNamaProduk();
-                        }, 600);
+                        getStorageNamaProduk();
                     }}
                 >
                     {itemsJenisPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
@@ -392,9 +390,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
                         setValueNamaProduk(itemValue);
-                        setTimeout(() => {
-                            getStorageProduk();
-                        }, 600);
+                        getStorageProduk();
                     }}
                 >
                     {itemsNamaProduk.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}

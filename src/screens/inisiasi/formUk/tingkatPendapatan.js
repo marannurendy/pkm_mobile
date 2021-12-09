@@ -7,6 +7,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { styles } from './styles';
 import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
+import { Picker } from '@react-native-picker/picker';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -42,9 +43,11 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const [valuePendapatanBersihPermingguSuami, setValuePendapatanBersihPermingguSuami] = useState('');
     const [valuePembiayaanDariLembaga, setValuePembiayaanDariLembaga] = useState('1');
     const [submmitted, setSubmmitted] = useState(false);
+    const [dataPembiayaanLain, setDataPembiayaanLain] = useState([]);
 
     useEffect(() => {
         setInfo();
+        getStoragePembiayaanLain();
         getUKPendapatanNasabah();
     }, [])
 
@@ -86,6 +89,24 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 })
             }
         )
+    }
+
+    const getStoragePembiayaanLain = async () => {
+        if (__DEV__) console.log('getStoragePembiayaanLain loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('PembiayaanLain');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    setDataPembiayaanLain(responseJSON);
+                    return;
+                }
+            }
+            setDataPembiayaanLain([]);
+        } catch (error) {
+            setDataPembiayaanLain([]);
+        }
     }
 
     const doSubmitDraft = () => {
@@ -364,16 +385,17 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderFormJenisUsaha = () => (
         <View style={styles.MT16}>
             <Text>Pembiayaan Lembaga Lain</Text>
-            <DropDownPicker
-                open={openPembiayaanLembagaLain}
-                value={valuePembiayaanLembagaLain}
-                items={itemsPembiayaanLembagaLain}
-                setOpen={setOpenPembiayaanLembagaLain}
-                setValue={setValuePembiayaanLembagaLain}
-                setItems={setItemsPembiayaanLembagaLain}
-                placeholder='Pilih Pembiayaan Lembaga Lain'
-                onChangeValue={() => null}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valuePembiayaanLembagaLain}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValuePembiayaanLembagaLain(itemValue)}
+                >
+                    {dataPembiayaanLain.map((x, i) => <Picker.Item label={x.jenisPembiayaanDetail} value={x.id} />)}
+                    <Picker.Item label={'Lainnya'} value={'3'} />
+                    <Picker.Item label={'-- Pilih --'} value={null} />
+                </Picker>
+            </View>
             {['3'].includes(valuePembiayaanLembagaLain) && (
                 <View style={[styles.textInputContainer, { width: withTextInput }]}>
                     <View style={styles.F1}>

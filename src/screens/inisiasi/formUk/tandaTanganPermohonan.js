@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, ImageBackground, TextInput, ScrollView, S
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { styles } from './styles';
 import db from '../../../database/Database';
 
@@ -24,14 +23,10 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const { groupName, namaNasabah } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [openProdukPembiayaan, setOpenProdukPembiayaan] = useState(false);
-    const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState(null);
-    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState([{ label: 'S125', value: '1' }]);
+    const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState('');
     const [valueJumlahPembiayaanYangDiajukan, setValueJumlahPembiayaanYangDiajukan] = useState('');
     const [valueJangkaWaktu, setValueJangkaWaktu] = useState('');
-    const [openFrekuensiPembiayaan, setOpenFrekuensiPembiayaan] = useState(false);
-    const [valueFrekuensiPembiayaan, setValueFrekuensiPembiayaan] = useState(null);
-    const [itemsFrekuensiPembiayaan, setItemsFrekuensiPembiayaan] = useState([{ label: 'Mingguan', value: '1' }]);
+    const [valueFrekuensiPembiayaan, setValueFrekuensiPembiayaan] = useState('');
     const [valueTandaTanganNasabah, setValueTandaTanganNasabah] = useState(null);
     const [valueTandaTanganSuamiPenjamin, setValueTandaTanganSuamiPenjamin] = useState(null);
     const [valueTandaTanganKetuaSubKemlompok, setValueTandaTanganKetuaSubKemlompok] = useState(null);
@@ -42,6 +37,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     useEffect(() => {
         setInfo();
         getUKPermohonanPembiayaan();
+        getUKProdukPembiayaan();
     }, [])
 
     const setInfo = async () => {
@@ -61,8 +57,6 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
                         if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
-                        if (data.jumlah_Pembiayaan_Diajukan !== null && typeof data.jumlah_Pembiayaan_Diajukan !== 'undefined') setValueJumlahPembiayaanYangDiajukan(data.jumlah_Pembiayaan_Diajukan);
-                        if (data.jangka_Waktu !== null && typeof data.jangka_Waktu !== 'undefined') setValueJangkaWaktu(data.jangka_Waktu);
                         if (data.frekuensi_Pembiayaan !== null && typeof data.frekuensi_Pembiayaan !== 'undefined') setValueFrekuensiPembiayaan(data.frekuensi_Pembiayaan);
                         if (data.tanda_Tangan_Nasabah !== null && typeof data.tanda_Tangan_Nasabah !== 'undefined') setValueTandaTanganNasabah(data.tanda_Tangan_Nasabah);
                         if (data.tanda_Tangan_SuamiPenjamin !== null && typeof data.tanda_Tangan_SuamiPenjamin !== 'undefined') setValueTandaTanganSuamiPenjamin(data.tanda_Tangan_SuamiPenjamin);
@@ -71,6 +65,42 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_PermohonanPembiayaan error:', error.message);
+                })
+            }
+        )
+    }
+
+    const getUKProdukPembiayaan = () => {
+        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '` + namaNasabah + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+                        if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') {
+                            const response = await AsyncStorage.getItem('Product');
+                            if (response !== null) {
+                                const responseJSON = JSON.parse(response);
+                                if (responseJSON.length > 0 ?? false) {
+                                    let value = data.produk_Pembiayaan;
+                                    setValueProdukPembiayaan(responseJSON.filter(data => data.id === value)[0].productName.trim() || '');
+                                }
+                            }
+                        }
+                        if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPembiayaanYangDiajukan(data.jumlah_Pinjaman);
+                        if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueJangkaWaktu(data.term_Pembiayaan);
+                        if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') {
+                            const responseJSON = [{ label: 'Mingguan', value: '1' }, { label: 'Bulanan', value: '2' }];
+                            let value = data.frekuensi_Pembayaran;
+                            setValueFrekuensiPembiayaan(responseJSON.filter(data => data.value === value)[0].label);
+                        }
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan error:', error.message);
                 })
             }
         )
@@ -242,16 +272,12 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const renderFormProdukPembiayaan = () => (
         <View style={styles.MT8}>
             <Text>Produk Pembiayaan</Text>
-            <DropDownPicker
-                open={openProdukPembiayaan}
-                value={valueProdukPembiayaan}
-                items={itemsProdukPembiayaan}
-                setOpen={setOpenProdukPembiayaan}
-                setValue={setValueProdukPembiayaan}
-                setItems={setItemsProdukPembiayaan}
-                placeholder='Pilih Produk Pembiayaan'
-                onChangeValue={() => null}
-            />
+            <View style={[styles.textInputContainer, { width: withTextInput }]}>
+                <View style={styles.F1}>
+                    <Text style={styles.P4}>{valueProdukPembiayaan}</Text>
+                </View>
+                <View />
+            </View>
         </View>
     )
 
@@ -260,12 +286,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
             <Text>Jumlah Pembiayaan Yang Diajukan</Text>
             <View style={[styles.textInputContainer, { width: withTextInput }]}>
                 <View style={styles.F1}>
-                    <TextInput 
-                        value={valueJumlahPembiayaanYangDiajukan} 
-                        onChangeText={(text) => setValueJumlahPembiayaanYangDiajukan(text)}
-                        placeholder='3000000'
-                        style={styles.F1}
-                    />
+                    <Text style={styles.P4}>{valueJumlahPembiayaanYangDiajukan}</Text>
                 </View>
                 <View />
             </View>
@@ -277,12 +298,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
             <Text>Jangka Waktu</Text>
             <View style={[styles.textInputContainer]}>
                 <View style={styles.F1}>
-                    <TextInput 
-                        value={valueJangkaWaktu} 
-                        onChangeText={(text) => setValueJangkaWaktu(text)}
-                        placeholder='25'
-                        style={styles.F1}
-                    />
+                    <Text style={styles.P4}>{valueJangkaWaktu}</Text>
                 </View>
                 <View />
             </View>
@@ -292,16 +308,12 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const renderFormFrekuensiPembiayaan = () => (
         <View style={styles.MT8}>
             <Text>Frekuensi Pembiayaan</Text>
-            <DropDownPicker
-                open={openFrekuensiPembiayaan}
-                value={valueFrekuensiPembiayaan}
-                items={itemsFrekuensiPembiayaan}
-                setOpen={setOpenFrekuensiPembiayaan}
-                setValue={setValueFrekuensiPembiayaan}
-                setItems={setItemsFrekuensiPembiayaan}
-                placeholder='Frekuensi Pembiayaan'
-                onChangeValue={() => null}
-            />
+            <View style={[styles.textInputContainer, { width: withTextInput }]}>
+                <View style={styles.F1}>
+                    <Text style={styles.P4}>{valueFrekuensiPembiayaan}</Text>
+                </View>
+                <View />
+            </View>
         </View>
     )
 
