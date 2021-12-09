@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, ScrollView, ToastAndroid } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,6 +42,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const [itemsLantai, setItemsLantai] = useState([{ label: 'Keramik', value: '1' }]);
     const [valueAksesAirBersih, setValueAksesAirBersih] = useState(true);
     const [valueKamarMandi, setValueKamarMandi] = useState(true);
+    const [submmitted, setSubmmitted] = useState(false);
 
     useEffect(() => {
         setInfo();
@@ -89,6 +90,9 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueAksesAirBersih:', valueAksesAirBersih);
         if (__DEV__) console.log('doSubmitDraft valueKamarMandi:', valueKamarMandi);
 
+        if (submmitted) return true;
+
+        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_KondisiRumah WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -110,9 +114,11 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
                         },function() {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
-
+                            setSubmmitted(false);
+                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -128,6 +134,70 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                    setSubmmitted(false);
+                })
+            }
+        );
+    }
+
+    const doSubmitSave = () => {
+        if (__DEV__) console.log('doSubmitSave loaded');
+
+        if (!valueLuasBangunan || typeof valueLuasBangunan === 'undefined' || valueLuasBangunan === '' || valueLuasBangunan === 'null') return alert('Luas Bangunan (*) tidak boleh kosong');
+        if (!valueKondisiBangunan || typeof valueKondisiBangunan === 'undefined' || valueKondisiBangunan ==='' || valueKondisiBangunan === 'null') return alert('Kondisi Bangunan (*) tidak boleh kosong');
+        if (!valueJenisAtap || typeof valueJenisAtap === 'undefined' || valueJenisAtap ==='' || valueJenisAtap === 'null') return alert('Jenis Atap (*) tidak boleh kosong');
+        if (!valueDinding || typeof valueDinding === 'undefined' || valueDinding ==='' || valueDinding === 'null') return alert('Dinding (*) tidak boleh kosong');
+        if (!valueLantai || typeof valueLantai === 'undefined' || valueLantai ==='' || valueLantai === 'null') return alert('Lantai (*) tidak boleh kosong');
+
+        if (submmitted) return true;
+
+        setSubmmitted(true);
+        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        alert('UK Master not found');
+                        navigation.goBack();
+                        return;
+                    }
+
+                    query = 'UPDATE Table_UK_Master SET status = "3" WHERE namaNasabah = "' + namaNasabah + '"';
+
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                            
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                            setSubmmitted(false);
+                            alert('Berhasil');
+                            navigation.goBack();
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                    setSubmmitted(false);
                 })
             }
         );
@@ -292,7 +362,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const renderButtonSimpan = () => (
         <View style={styles.P16}>
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmitSave()}
             >
                 <View style={styles.buttonSubmitContainer}>
                     <Text style={styles.buttonSubmitText}>SIMPAN</Text>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ImageBackground, TextInput, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, ImageBackground, TextInput, ScrollView, StyleSheet, Dimensions, ToastAndroid } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -8,6 +8,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { styles } from './styles';
 import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
+import { Picker } from '@react-native-picker/picker';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -28,37 +29,42 @@ const ProdukPembiayaan = ({ route }) => {
     const [currentDate, setCurrentDate] = useState();
     const [openJenisPembiayaan, setOpenJenisPembiayaan] = useState(false);
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
-    const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState([{ label: 'Produk Reguler', value: '1' }]);
+    const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState([{ label: '-- Pilih --', value: null }]);
     const [openNamaProduk, setOpenNamaProduk] = useState(false);
     const [valueNamaProduk, setValueNamaProduk] = useState(null);
-    const [itemsNamaProduk, setItemsNamaProduk] = useState([{ label: 'Meekar', value: '1' }]);
+    const [itemsNamaProduk, setItemsNamaProduk] = useState([{ label: '-- Pilih --', value: null }]);
     const [openProdukPembiayaan, setOpenProdukPembiayaan] = useState(false);
     const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState(null);
-    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState([{ label: 'S125', value: '1' }]);
+    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState([{ label: '-- Pilih --', value: null }]);
     const [openJumlahPinjaman, setOpenJumlahPinjaman] = useState(false);
     const [valueJumlahPinjaman, setValueJumlahPinjaman] = useState(null);
-    const [itemsJumlahPinjaman, setItemsJumlahPinjaman] = useState([{ label: '2000000', value: '1' }]);
+    const [itemsJumlahPinjaman, setItemsJumlahPinjaman] = useState([{ label: '-- Pilih --', value: null }]);
     const [openKategoriTujuanPembiayaan, setOpenKategoriTujuanPembiayaan] = useState(false);
     const [valueKategoriTujuanPembiayaan, setValueKategoriTujuanPembiayaan] = useState(null);
-    const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }]);
+    const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }, { label: '-- Pilih --', value: null }]);
     const [openTujuanPembiayaan, setOpenTujuanPembiayaan] = useState(false);
     const [valueTujuanPembiayaan, setValueTujuanPembiayaan] = useState(null);
-    const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }]);
+    const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }, { label: '-- Pilih --', value: null }]);
     const [openTypePencairan, setOpenTypePencairan] = useState(false);
     const [valueTypePencairan, setValueTypePencairan] = useState(null);
-    const [itemsTypePencairan, setItemsTypePencairan] = useState([{ label: 'Cash', value: '1' }]);
+    const [itemsTypePencairan, setItemsTypePencairan] = useState([{ label: '-- Pilih --', value: null }]);
     const [openFrekuensiPembayaran, setOpenFrekuensiPembayaran] = useState(false);
     const [valueFrekuensiPembayaran, setValueFrekuensiPembayaran] = useState(null);
-    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState([{ label: 'Mingguan', value: '1' }]);
+    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState([{ label: 'Mingguan', value: '1' }, { label: '-- Pilih --', value: null }]);
     const [valueTermPembiayaan, setValueTermPembiayaan] = useState(null);
     const [valueNamaBank, setValueNamaBank] = useState('');
     const [valueNoRekening, setValueNoRekening] = useState('');
     const [valuePemilikRekening, setValuePemilikRekening] = useState('');
     const [valueRekeningBank, setValueRekeningBank] = useState(false);
+    const [scrollEnabled, setScrollEnabled] = useState(true);
+    const [selectedProdukPembiayaan, setSelectedProdukPembiayaan] = useState(null);
+    const [submmitted, setSubmmitted] = useState(false);
 
     useEffect(() => {
         setInfo();
         getUKProdukPembiayaan();
+        getStorageJenisPembiayaan();
+        getStorageTipePencairan();
     }, [])
 
     const setInfo = async () => {
@@ -76,26 +82,133 @@ const ProdukPembiayaan = ({ route }) => {
                     if (dataLength > 0) {
                         
                         let data = results.rows.item(0);
-                        if (__DEV__) console.log('tx.executeSql data:', data);
-                        if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') setValueJenisPembiayaan(data.jenis_Pembiayaan);
-                        if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') setValueNamaProduk(data.nama_Produk);
-                        if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
-                        if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPinjaman(data.jumlah_Pinjaman);
-                        if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueTermPembiayaan(data.term_Pembiayaan);
-                        if (data.kategori_Tujuan_Pembiayaan !== null && typeof data.kategori_Tujuan_Pembiayaan !== 'undefined') setValueKategoriTujuanPembiayaan(data.kategori_Tujuan_Pembiayaan);
-                        if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
-                        if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
-                        if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
-                        if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' ? true : false);
-                        if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
-                        if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
-                        if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
+                        // if (__DEV__) console.log('tx.executeSql data:', data);
+                        // if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') setValueJenisPembiayaan(data.jenis_Pembiayaan);
+                        // if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') setValueNamaProduk(data.nama_Produk);
+                        // if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
+                        // if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPinjaman(data.jumlah_Pinjaman);
+                        // if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueTermPembiayaan(data.term_Pembiayaan);
+                        // if (data.kategori_Tujuan_Pembiayaan !== null && typeof data.kategori_Tujuan_Pembiayaan !== 'undefined') setValueKategoriTujuanPembiayaan(data.kategori_Tujuan_Pembiayaan);
+                        // if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
+                        // if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
+                        // if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
+                        // if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' ? true : false);
+                        // if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
+                        // if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
+                        // if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan error:', error.message);
                 })
             }
         )
+    }
+
+    const getStorageProduk = async () => {
+        if (__DEV__) console.log('getStorageProduk loaded');
+        if (__DEV__) console.log('getStorageProduk valueJenisPembiayaan:', valueJenisPembiayaan);
+
+        try {
+            const response = await AsyncStorage.getItem('Product');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    let isRegular = "0";
+                    if (valueJenisPembiayaan === '1') isRegular = '1';
+                    var responseFiltered = responseJSON.filter(data => data.isReguler === isRegular).map((data, i) => {
+                        return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                    }) ?? [];
+                    responseFiltered.push({ label: '-- Pilih --', value: null });
+                    if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
+                    setItemsProdukPembiayaan(responseFiltered);
+                    return;
+                }
+            }
+            setItemsProdukPembiayaan([]);
+        } catch (error) {
+            setItemsProdukPembiayaan([]);
+        }
+    }
+
+    const getStorageJenisPembiayaan = async () => {
+        if (__DEV__) console.log('getStorageJenisPembiayaan loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('JenisPembiayaan');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    var responseFiltered = responseJSON.map((data, i) => {
+                        return { label: data.namajenispembiayaan, value: data.id };
+                    }) ?? [];
+                    responseFiltered.push({ label: '-- Pilih --', value: null });
+                    if (__DEV__) console.log('getStorageJenisPembiayaan responseFiltered:', responseFiltered);
+                    setItemsJenisPembiayaan(responseFiltered);
+                    return;
+                }
+            }
+            setItemsJenisPembiayaan([]);
+        } catch (error) {
+            setItemsJenisPembiayaan([]);
+        }
+    }
+
+    const getStorageTipePencairan = async () => {
+        if (__DEV__) console.log('getStorageTipePencairan loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('TransFund');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    var responseFiltered = responseJSON.map((data, i) => {
+                        return { label: data.transfundDetail, value: data.id };
+                    }) ?? [];
+                    responseFiltered.push({ label: '-- Pilih --', value: null });
+                    if (__DEV__) console.log('getStorageTipePencairan responseFiltered:', responseFiltered);
+                    setItemsTypePencairan(responseFiltered);
+                    return;
+                }
+            }
+            setItemsTypePencairan([]);
+        } catch (error) {
+            setItemsTypePencairan([]);
+        }
+    }
+
+    const getStorageNamaProduk = async () => {
+        if (__DEV__) console.log('getStorageNamaProduk loaded');
+
+        const responseFiltered = [{ label: 'Mekaar', value: '1' },{ label: 'Mekaar Plus', value: '2' },{ label: '-- Pilih --', value: null }];
+        setItemsNamaProduk(responseFiltered);
+    }
+
+    const generateJumlahPinjaman = (data) => {
+        if (__DEV__) console.log('generateJumlahPinjaman loaded');
+        if (__DEV__) console.log('generateJumlahPinjaman data:', data);
+
+        if (data === null) {
+            return (
+                <Picker.Item label={'-- Pilih --'} value={null} />
+            )
+        }
+
+        const kelipatan = 500000;
+        const min = parseInt(data.minPlafond);
+        const max = parseInt(data.maxPlafond);
+        const bag = max / kelipatan;
+        let datas = [];
+        let total = min;
+        for (var i = 0; i < bag; i++) {
+            if (total <= max) {
+                const data = { label: `${total}`, value: `${total}` };
+                datas.push(data);
+                total += kelipatan;
+            }
+        }
+        datas.push({ label: '-- Pilih --', value: null });
+
+        return datas.map((x) => <Picker.Item label={x.label} value={x.value} />);
     }
 
     const doSubmitDraft = () => {
@@ -114,6 +227,9 @@ const ProdukPembiayaan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueNoRekening:', valueNoRekening);
         if (__DEV__) console.log('doSubmitDraft valuePemilikRekening:', valuePemilikRekening);
 
+        if (submmitted) return true;
+
+        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -135,9 +251,11 @@ const ProdukPembiayaan = ({ route }) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
                         },function() {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
-
+                            setSubmmitted(false);
+                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -153,6 +271,64 @@ const ProdukPembiayaan = ({ route }) => {
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                    setSubmmitted(false);
+                })
+            }
+        );
+    }
+
+    const doSubmitSave = () => {
+        if (__DEV__) console.log('doSubmitSave loaded');
+
+        if (submmitted) return true;
+
+        setSubmmitted(true);
+        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        alert('UK Master not found');
+                        navigation.goBack();
+                        return;
+                    }
+
+                    query = 'UPDATE Table_UK_Master SET status = "2" WHERE namaNasabah = "' + namaNasabah + '"';
+
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                            setSubmmitted(false);
+                            alert('Berhasil');
+                            navigation.goBack();
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                    setSubmmitted(false);
                 })
             }
         );
@@ -190,68 +366,74 @@ const ProdukPembiayaan = ({ route }) => {
     const renderFormJenisPembiayaan = () => (
         <View style={styles.MT8}>
             <Text>Jenis Pembiayaan</Text>
-            <DropDownPicker
-                open={openJenisPembiayaan}
-                value={valueJenisPembiayaan}
-                items={itemsJenisPembiayaan}
-                setOpen={setOpenJenisPembiayaan}
-                setValue={setValueJenisPembiayaan}
-                setItems={setItemsJenisPembiayaan}
-                placeholder='Pilih Jenis Pembiayaan'
-                onChangeValue={() => null}
-                zIndex={10000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJenisPembiayaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => {
+                        setValueJenisPembiayaan(itemValue);
+                        setTimeout(() => {
+                            getStorageNamaProduk();
+                        }, 600);
+                    }}
+                >
+                    {itemsJenisPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormNamaProduk = () => (
         <View style={styles.MT8}>
             <Text>Nama Produk</Text>
-            <DropDownPicker
-                open={openNamaProduk}
-                value={valueNamaProduk}
-                items={itemsNamaProduk}
-                setOpen={setOpenNamaProduk}
-                setValue={setValueNamaProduk}
-                setItems={setItemsNamaProduk}
-                placeholder='Pilih Nama Produk'
-                onChangeValue={() => null}
-                zIndex={9000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueNamaProduk}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => {
+                        setValueNamaProduk(itemValue);
+                        setTimeout(() => {
+                            getStorageProduk();
+                        }, 600);
+                    }}
+                >
+                    {itemsNamaProduk.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormProdukPembiayaan = () => (
         <View style={styles.MT8}>
             <Text>Produk Pembiayaan</Text>
-            <DropDownPicker
-                open={openProdukPembiayaan}
-                value={valueProdukPembiayaan}
-                items={itemsProdukPembiayaan}
-                setOpen={setOpenProdukPembiayaan}
-                setValue={setValueProdukPembiayaan}
-                setItems={setItemsProdukPembiayaan}
-                placeholder='Pilih Produk Pembiayaan'
-                onChangeValue={() => null}
-                zIndex={8000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueProdukPembiayaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => {
+                        setValueProdukPembiayaan(itemValue);
+                        setSelectedProdukPembiayaan(itemsProdukPembiayaan[itemIndex]);
+                        setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex].paymentTerm);
+                    }}
+                >
+                    {itemsProdukPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormJumlahPinjaman = () => (
         <View style={styles.MT8}>
             <Text>Jumlah Pinjaman</Text>
-            <DropDownPicker
-                open={openJumlahPinjaman}
-                value={valueJumlahPinjaman}
-                items={itemsJumlahPinjaman}
-                setOpen={setOpenJumlahPinjaman}
-                setValue={setValueJumlahPinjaman}
-                setItems={setItemsJumlahPinjaman}
-                placeholder='Pilih Jumlah Pinjaman'
-                onChangeValue={() => null}
-                zIndex={7000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJumlahPinjaman}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueJumlahPinjaman(itemValue)}
+                >
+                    {generateJumlahPinjaman(selectedProdukPembiayaan)}
+                </Picker>
+            </View>
         </View>
     )
 
@@ -278,68 +460,60 @@ const ProdukPembiayaan = ({ route }) => {
     const renderFormKategoriTujuanPembiayaan = () => (
         <View style={styles.MT8}>
             <Text>Kategori Tujuan Pembiayaan</Text>
-            <DropDownPicker
-                open={openKategoriTujuanPembiayaan}
-                value={valueKategoriTujuanPembiayaan}
-                items={itemsKategoriTujuanPembiayaan}
-                setOpen={setOpenKategoriTujuanPembiayaan}
-                setValue={setValueKategoriTujuanPembiayaan}
-                setItems={setItemsKategoriTujuanPembiayaan}
-                placeholder='Pilih Kategori Tujuan Pembiayaan'
-                onChangeValue={() => null}
-                zIndex={6000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueKategoriTujuanPembiayaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueKategoriTujuanPembiayaan(itemValue)}
+                >
+                    {itemsKategoriTujuanPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormTujuanPembiayaan = () => (
         <View style={styles.MT8}>
             <Text>Tujuan Pembiayaan</Text>
-            <DropDownPicker
-                open={openTujuanPembiayaan}
-                value={valueTujuanPembiayaan}
-                items={itemsTujuanPembiayaan}
-                setOpen={setOpenTujuanPembiayaan}
-                setValue={setValueTujuanPembiayaan}
-                setItems={setItemsTujuanPembiayaan}
-                placeholder='Pilih Tujuan Pembiayaan'
-                onChangeValue={() => null}
-                zIndex={5000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueTujuanPembiayaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueTujuanPembiayaan(itemValue)}
+                >
+                    {itemsTujuanPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormTypePencairan = () => (
         <View style={styles.MT8}>
             <Text>Type Pencairan</Text>
-            <DropDownPicker
-                open={openTypePencairan}
-                value={valueTypePencairan}
-                items={itemsTypePencairan}
-                setOpen={setOpenTypePencairan}
-                setValue={setValueTypePencairan}
-                setItems={setItemsTypePencairan}
-                placeholder='Pilih Type Pencairan'
-                onChangeValue={() => null}
-                zIndex={4000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueTypePencairan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueTypePencairan(itemValue)}
+                >
+                    {itemsTypePencairan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
         </View>
     )
 
     const renderFormFrekuensiPembayaran = () => (
         <View style={styles.MT8}>
             <Text>Frekuensi Pembayaran</Text>
-            <DropDownPicker
-                open={openFrekuensiPembayaran}
-                value={valueFrekuensiPembayaran}
-                items={itemsFrekuensiPembayaran}
-                setOpen={setOpenFrekuensiPembayaran}
-                setValue={setValueFrekuensiPembayaran}
-                setItems={setItemsFrekuensiPembayaran}
-                placeholder='Pilih Frekuensi Pembayaran'
-                onChangeValue={() => null}
-                zIndex={3000}
-            />
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueFrekuensiPembayaran}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueFrekuensiPembayaran(itemValue)}
+                >
+                    {itemsFrekuensiPembayaran.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
         </View>
     )
 
@@ -439,7 +613,7 @@ const ProdukPembiayaan = ({ route }) => {
     const renderButtonSimpan = () => (
         <View style={styles.P16}>
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmitSave()}
             >
                 <View style={styles.buttonSubmitContainer}>
                     <Text style={styles.buttonSubmitText}>SIMPAN</Text>
@@ -451,7 +625,7 @@ const ProdukPembiayaan = ({ route }) => {
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <Text style={styles.bodyTitle}>Produk Pembiayaan</Text>
-            <ScrollView>
+            <ScrollView scrollEnabled={scrollEnabled}>
                 {renderForm()}
                 {renderButtonSimpan()}
             </ScrollView>

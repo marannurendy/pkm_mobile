@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet, ImageBackground, TextInput, ViewPropTypes, Image, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet, ImageBackground, TextInput, ToastAndroid, Image, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -154,6 +154,7 @@ const DataDiri = ({route}) => {
             value: '1'
         }
     ]);
+    const [submmitted, setSubmmitted] = useState(false);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -199,13 +200,58 @@ const DataDiri = ({route}) => {
                                 if (data.nama_penjamin !== null && typeof data.nama_penjamin !== 'undefined') setNamaPenjamin(data.nama_penjamin);
                                 if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined') setFotoDataPenjamin(data.foto_ktp_penjamin);
                             }
+                            return true;
                         }, function(error) {
-                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
+                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error 3:', error.message);
                         })
                     }
                 )
             }
-            getUKDataDiri()
+            const getStorageStatusHubunganKeluarga = async () => {
+                if (__DEV__) console.log('getStorageStatusHubunganKeluarga loaded');
+        
+                try {
+                    const response = await AsyncStorage.getItem('RelationStatus');
+                    if (response !== null) {
+                        const responseJSON = JSON.parse(response);
+                        if (responseJSON.length > 0 ?? false) {
+                            var responseFiltered = responseJSON.map((data, i) => {
+                                return { label: data.relationStatus, value: data.id };
+                            }) ?? [];
+                            if (__DEV__) console.log('getStorageStatusHubunganKeluarga responseFiltered:', responseFiltered);
+                            setItemsStatusHubunganKeluarga(responseFiltered);
+                            return;
+                        }
+                    }
+                    setItemsStatusHubunganKeluarga([]);
+                } catch (error) {
+                    setItemsStatusHubunganKeluarga([]);
+                }
+            }
+            const getStorageRumahTinggal = async () => {
+                if (__DEV__) console.log('getStorageRumahTinggal loaded');
+        
+                try {
+                    const response = await AsyncStorage.getItem('HomeStatus');
+                    if (response !== null) {
+                        const responseJSON = JSON.parse(response);
+                        if (responseJSON.length > 0 ?? false) {
+                            var responseFiltered = responseJSON.map((data, i) => {
+                                return { label: data.homeStatusDetail, value: data.id };
+                            }) ?? [];
+                            if (__DEV__) console.log('getStorageRumahTinggal responseFiltered:', responseFiltered);
+                            setItemsStatusRumahTinggal(responseFiltered);
+                            return;
+                        }
+                    }
+                    setItemsStatusRumahTinggal([]);
+                } catch (error) {
+                    setItemsStatusRumahTinggal([]);
+                }
+            }
+            getUKDataDiri();
+            getStorageStatusHubunganKeluarga();
+            getStorageRumahTinggal();
             /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
             const { status } = await Camera.requestPermissionsAsync();
@@ -288,10 +334,9 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataPenjamin namaPenjamin:', namaPenjamin);
         if (__DEV__) console.log('doSubmitDataPenjamin fotoDataPenjamin:', fotoDataPenjamin);
 
-        if (!valueStatusHubunganKeluarga || typeof valueStatusHubunganKeluarga === 'undefined' || valueStatusHubunganKeluarga === '') return alert('Status Hubungan Keluarga (*) tidak boleh kosong');
-        if (!namaPenjamin || typeof namaPenjamin === 'undefined' || namaPenjamin === '') return alert('Nama Penjamin (*) tidak boleh kosong');
-        if (!fotoDataPenjamin || typeof fotoDataPenjamin === 'undefined' || fotoDataPenjamin === '') return alert('Foto Kartu Identitas Penjamin (*) tidak boleh kosong');
+        if (submmitted) return true;
 
+        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -313,9 +358,11 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
                         },function() {
                             if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update success');
-
+                            setSubmmitted(false);
+                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -323,7 +370,7 @@ const DataDiri = ({route}) => {
                                             if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
                                         })
                                     }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 4:', error);
                                     }, function() {}
                                 );
                             }
@@ -331,6 +378,7 @@ const DataDiri = ({route}) => {
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
+                    setSubmmitted(false);
                 })
             }
         );
@@ -342,9 +390,9 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataSuami fotoKartuIdentitasSuami:', fotoKartuIdentitasSuami);
         if (__DEV__) console.log('doSubmitDataSuami statusSuami:', statusSuami);
 
-        if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '') return alert('Nama Suami (*) tidak boleh kosong');
-        if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === '') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
+        if (submmitted) return true;
 
+        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -366,9 +414,11 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
                         },function() {
                             if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update success');
-
+                            setSubmmitted(false);
+                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -376,7 +426,7 @@ const DataDiri = ({route}) => {
                                             if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
                                         })
                                     }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 5:', error);
                                     }, function() {}
                                 );
                             }
@@ -384,6 +434,7 @@ const DataDiri = ({route}) => {
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
+                    setSubmmitted(false);
                 })
             }
         );
@@ -399,14 +450,9 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataDiriPribadi valueStatusRumahTinggal:', valueStatusRumahTinggal);
         if (__DEV__) console.log('doSubmitDataDiriPribadi lamaTinggal:', lamaTinggal);
 
-        if (!fullName || typeof fullName === 'undefined' || fullName === '') return alert('Nama Lengkap (*) tidak boleh kosong');
-        if (!namaAyah || typeof namaAyah === 'undefined' || namaAyah ==='') return alert('Nama Ayah (*) tidak boleh kosong');
-        if (!noTelfon || typeof noTelfon === 'undefined' || noTelfon ==='') return alert('No. Telp/HP Nasabah (*) tidak boleh kosong');
-        if (!valueJumlahAnak || typeof valueJumlahAnak === 'undefined' || valueJumlahAnak ==='') return alert('Jumlah Anak (*) tidak boleh kosong');
-        if (!valueJumlahTanggungan || typeof valueJumlahTanggungan === 'undefined' || valueJumlahTanggungan ==='') return alert('Jumlah Tanggungan (*) tidak boleh kosong');
-        if (!valueStatusRumahTinggal || typeof valueStatusRumahTinggal === 'undefined' || valueStatusRumahTinggal ==='') return alert('Status Rumah Tangga (*) tidak boleh kosong');
-        if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
+        if (submmitted) return true;
 
+        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -428,9 +474,11 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
                         },function() {
                             if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update success');
-
+                            setSubmmitted(false);
+                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -438,7 +486,7 @@ const DataDiri = ({route}) => {
                                             if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
                                         })
                                     }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 6:', error);
                                     }, function() {}
                                 );
                             }
@@ -446,6 +494,7 @@ const DataDiri = ({route}) => {
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
+                    setSubmmitted(false);
                 })
             }
         );
@@ -456,9 +505,9 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitKK fotoKartuKeluarga:', fotoKartuKeluarga);
         if (__DEV__) console.log('doSubmitKK nomorKartuKeluarga:', nomorKartuKeluarga);
 
-        if (!fotoKartuKeluarga || typeof fotoKartuKeluarga === 'undefined' || fotoKartuKeluarga === '') return alert('Foto Kartu Keluarga (*) tidak boleh kosong');
-        if (!nomorKartuKeluarga || typeof nomorKartuKeluarga === 'undefined' || nomorKartuKeluarga ==='') return alert('Nomor Kartu Keluarga (*) tidak boleh kosong');
+        if (submmitted) return true;
 
+        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -480,9 +529,11 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitKK db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
                         },function() {
                             if (__DEV__) console.log('doSubmitKK db.transaction insert/update success');
-
+                            setSubmmitted(false);
+                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -490,7 +541,7 @@ const DataDiri = ({route}) => {
                                             if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
                                         })
                                     }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 1:', error);
                                     }, function() {}
                                 );
                             }
@@ -498,6 +549,7 @@ const DataDiri = ({route}) => {
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitKK db.transaction find error:', error.message);
+                    setSubmmitted(false);
                 })
             }
         );
@@ -521,21 +573,9 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
         if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
 
-        if (!fotokartuIdentitas || typeof fotokartuIdentitas === 'undefined' || fotokartuIdentitas === '') return alert('Foto Kartu Identitas (*) tidak boleh kosong');
-        if (!valueJenisKartuIdentitas || typeof valueJenisKartuIdentitas === 'undefined' || valueJenisKartuIdentitas ==='') return alert('Jenis Kartu Identitas (*) tidak boleh kosong');
-        if (!nomorIdentitas || typeof nomorIdentitas === 'undefined' || nomorIdentitas === '') return alert('Nomor Identitas (*) tidak boleh kosong');
-        if (!namaCalonNasabah || typeof namaCalonNasabah === 'undefined' || namaCalonNasabah === '') return alert('Nama Lengkap (*) tidak boleh kosong');
-        if (!tempatLahir || typeof tempatLahir === 'undefined' || tempatLahir === '') return alert('Tempat Lahir (*) tidak boleh kosong');
-        if (!tanggalLahir || typeof tanggalLahir === 'undefined' || tanggalLahir === '') return alert('Tanggal Lahir (*) tidak boleh kosong');
-        if (!valueStatusPerkawinan || typeof valueStatusPerkawinan === 'undefined' || valueStatusPerkawinan === '') return alert('Status Perkawinan (*) tidak boleh kosong');
-        if (!alamatIdentitas || typeof alamatIdentitas === 'undefined' || alamatIdentitas === '') return alert('Alamat Identitas (*) tidak boleh kosong');
-        if (!alamatDomisili || typeof alamatDomisili === 'undefined' || alamatDomisili === '') return alert('Alamat Domisili (*) tidak boleh kosong');
-        if (!fotoSuratKeteranganDomisili || typeof fotoSuratKeteranganDomisili === 'undefined' || fotoSuratKeteranganDomisili === '') return alert('Foto Surat Keterangan Domisili (*) tidak boleh kosong');
-        if (!dataProvinsi || typeof dataProvinsi === 'undefined' || dataProvinsi === '') return alert('Provinsi (*) tidak boleh kosong');
-        if (!dataKabupaten || typeof dataKabupaten === 'undefined' || dataKabupaten === '') return alert('Kabupaten (*) tidak boleh kosong');
-        if (!dataKecamatan || typeof dataKecamatan === 'undefined' || dataKecamatan === '') return alert('Kecamatan (*) tidak boleh kosong');
-        if (!dataKelurahan || typeof dataKelurahan === 'undefined' || dataKelurahan === '') return alert('Kelurahan (*) tidak boleh kosong');
+        if (submmitted) return true;
 
+        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -557,9 +597,11 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
                         },function() {
                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-
+                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            setSubmmitted(false);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -567,10 +609,102 @@ const DataDiri = ({route}) => {
                                             if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
                                         })
                                     }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR:', error);
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 2:', error);
+                                        setSubmmitted(false);
                                     }, function() {}
                                 );
                             }
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                    setSubmmitted(false);
+                })
+            }
+        );
+    }
+
+    const doSubmitSave = () => {
+        if (__DEV__) console.log('doSubmitSave loaded');
+
+        if (!fotokartuIdentitas || typeof fotokartuIdentitas === 'undefined' || fotokartuIdentitas === '' || fotokartuIdentitas === 'null') return alert('Foto Kartu Identitas (*) tidak boleh kosong');
+        if (!valueJenisKartuIdentitas || typeof valueJenisKartuIdentitas === 'undefined' || valueJenisKartuIdentitas ==='' || valueJenisKartuIdentitas === 'null') return alert('Jenis Kartu Identitas (*) tidak boleh kosong');
+        if (!nomorIdentitas || typeof nomorIdentitas === 'undefined' || nomorIdentitas === '' || nomorIdentitas === 'null') return alert('Nomor Identitas (*) tidak boleh kosong');
+        if (!namaCalonNasabah || typeof namaCalonNasabah === 'undefined' || namaCalonNasabah === '' || namaCalonNasabah === 'null') return alert('Nama Lengkap (*) tidak boleh kosong');
+        if (!tempatLahir || typeof tempatLahir === 'undefined' || tempatLahir === '' || tempatLahir === 'null') return alert('Tempat Lahir (*) tidak boleh kosong');
+        if (!tanggalLahir || typeof tanggalLahir === 'undefined' || tanggalLahir === '' || tanggalLahir === 'null') return alert('Tanggal Lahir (*) tidak boleh kosong');
+        if (!valueStatusPerkawinan || typeof valueStatusPerkawinan === 'undefined' || valueStatusPerkawinan === '' || valueStatusPerkawinan === 'null') return alert('Status Perkawinan (*) tidak boleh kosong');
+        if (!alamatIdentitas || typeof alamatIdentitas === 'undefined' || alamatIdentitas === '' || alamatIdentitas === 'null') return alert('Alamat Identitas (*) tidak boleh kosong');
+        if (!alamatDomisili || typeof alamatDomisili === 'undefined' || alamatDomisili === '' || alamatDomisili === 'null') return alert('Alamat Domisili (*) tidak boleh kosong');
+        if (!fotoSuratKeteranganDomisili || typeof fotoSuratKeteranganDomisili === 'undefined' || fotoSuratKeteranganDomisili === '' || fotoSuratKeteranganDomisili === 'null') return alert('Foto Surat Keterangan Domisili (*) tidak boleh kosong');
+        if (!dataProvinsi || typeof dataProvinsi === 'undefined' || dataProvinsi === '' || dataProvinsi === 'null') return alert('Provinsi (*) tidak boleh kosong');
+        if (!dataKabupaten || typeof dataKabupaten === 'undefined' || dataKabupaten === '' || dataKabupaten === 'null') return alert('Kabupaten (*) tidak boleh kosong');
+        if (!dataKecamatan || typeof dataKecamatan === 'undefined' || dataKecamatan === '' || dataKecamatan === 'null') return alert('Kecamatan (*) tidak boleh kosong');
+        if (!dataKelurahan || typeof dataKelurahan === 'undefined' || dataKelurahan === '' || dataKelurahan === 'null') return alert('Kelurahan (*) tidak boleh kosong');
+
+        if (!fotoKartuKeluarga || typeof fotoKartuKeluarga === 'undefined' || fotoKartuKeluarga === '' || fotoKartuKeluarga === 'null') return alert('Foto Kartu Keluarga (*) tidak boleh kosong');
+        if (!nomorKartuKeluarga || typeof nomorKartuKeluarga === 'undefined' || nomorKartuKeluarga ==='' || nomorKartuKeluarga ==='null') return alert('Nomor Kartu Keluarga (*) tidak boleh kosong');
+
+        if (!fullName || typeof fullName === 'undefined' || fullName === '' || fullName === 'null') return alert('Nama Lengkap (*) tidak boleh kosong');
+        if (!namaAyah || typeof namaAyah === 'undefined' || namaAyah ==='' || namaAyah === 'null') return alert('Nama Ayah (*) tidak boleh kosong');
+        if (!noTelfon || typeof noTelfon === 'undefined' || noTelfon ==='' || noTelfon === 'null') return alert('No. Telp/HP Nasabah (*) tidak boleh kosong');
+        if (!valueJumlahAnak || typeof valueJumlahAnak === 'undefined' || valueJumlahAnak ==='' || valueJumlahAnak === 'null') return alert('Jumlah Anak (*) tidak boleh kosong');
+        if (!valueJumlahTanggungan || typeof valueJumlahTanggungan === 'undefined' || valueJumlahTanggungan ==='' || valueJumlahTanggungan === 'null') return alert('Jumlah Tanggungan (*) tidak boleh kosong');
+        if (!valueStatusRumahTinggal || typeof valueStatusRumahTinggal === 'undefined' || valueStatusRumahTinggal ==='' || valueStatusRumahTinggal === 'null') return alert('Status Rumah Tangga (*) tidak boleh kosong');
+        if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='' || lamaTinggal === 'null') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
+
+        if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '' || namaSuami === 'null') return alert('Nama Suami (*) tidak boleh kosong');
+        if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === 'null' || fotoKartuIdentitasSuami === 'null') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
+
+        if (!valueStatusHubunganKeluarga || typeof valueStatusHubunganKeluarga === 'undefined' || valueStatusHubunganKeluarga === '' || valueStatusHubunganKeluarga === 'null') return alert('Status Hubungan Keluarga (*) tidak boleh kosong');
+        if (!namaPenjamin || typeof namaPenjamin === 'undefined' || namaPenjamin === '' || namaPenjamin === 'null') return alert('Nama Penjamin (*) tidak boleh kosong');
+        if (!fotoDataPenjamin || typeof fotoDataPenjamin === 'undefined' || fotoDataPenjamin === '' || fotoDataPenjamin === 'null') return alert('Foto Kartu Identitas Penjamin (*) tidak boleh kosong');
+
+        if (submmitted) return true;
+
+        setSubmmitted(true);
+        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind > 0) {
+                        setSubmmitted(false);
+                        alert('Berhasil');
+                        navigation.goBack();
+                        return;
+                    }
+
+                    query = 'INSERT INTO Table_UK_Master (namaNasabah, status) values ("' + namaNasabah + '", "1")';
+
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+
+                            setSubmmitted(false);
+                            alert('Berhasil');
+                            navigation.goBack();
                         }
                     );
                 }, function(error) {
@@ -686,29 +820,32 @@ const DataDiri = ({route}) => {
             console.log(data.uri, '<<<<<<<<<<<<<<<<<<<<<');
 
             if (type === "dataPenjamin") {
+                // setFotoDataPenjamin('data:image/jpeg;base64,'+data.base64)
                 setFotoDataPenjamin(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }else if (type === "dataSuami") {
+                // setFotoKartuIdentitasSuami('data:image/jpeg;base64,'+data.base64)
                 setFotoKartuIdentitasSuami(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }else if (type === "kartuKeluarga") {
+                // setFotoKartuKeluarga('data:image/jpeg;base64,'+data.base64)
                 setFotoKartuKeluarga(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }else if (type === "keteranganDomisili") {
+                // setFotoSuratKeteranganDomisili('data:image/jpeg;base64,'+data.base64)
                 setFotoSuratKeteranganDomisili(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }else if (type === "kartuIdentitas") {
+                // setFotoKartuIdentitas('data:image/jpeg;base64,'+data.base64)
                 setFotoKartuIdentitas(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }
-        } catch (error) {
-            console.log(error, "ERROR <<<<<<<<<<<<<")
-        }
+        } catch (error) {}
     };
 
     submitHandler = () => null;
@@ -1736,7 +1873,6 @@ const DataDiri = ({route}) => {
                         <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
                             <Button
                                 title="Save Draft"
-                                onPress={() => alert('Sukses')}
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
                                 onPress={() => doSubmitDataPenjamin()}
@@ -1746,10 +1882,9 @@ const DataDiri = ({route}) => {
                         <View style={{alignItems: 'center', marginVertical: 20}}>
                             <Button
                                 title="SIMPAN"
-                                onPress={() => alert('Sukses')}
+                                onPress={() => doSubmitSave()}
                                 buttonStyle={{backgroundColor: '#EB3C27', width: dimension.width/2}}
                                 titleStyle={{fontSize: 20, fontWeight: 'bold'}}
-                                // onPress={() => submitHandler()}
                             />
                         </View>
 

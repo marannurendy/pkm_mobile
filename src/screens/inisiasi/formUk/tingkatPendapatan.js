@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, TextInput, ScrollView, ToastAndroid } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,6 +41,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const [valuePendapatanBersihPerbulanSuami, setValuePendapatanBersihPerbulanSuami] = useState('');
     const [valuePendapatanBersihPermingguSuami, setValuePendapatanBersihPermingguSuami] = useState('');
     const [valuePembiayaanDariLembaga, setValuePembiayaanDariLembaga] = useState('1');
+    const [submmitted, setSubmmitted] = useState(false);
 
     useEffect(() => {
         setInfo();
@@ -106,6 +107,9 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPerbulanSuami:', valuePendapatanBersihPerbulanSuami);
         if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPermingguSuami:', valuePendapatanBersihPermingguSuami);
 
+        if (submmitted) return true;
+
+        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -127,9 +131,11 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
                         },function() {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
-
+                            setSubmmitted(false);
+                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -145,6 +151,64 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                    setSubmmitted(false);
+                })
+            }
+        );
+    }
+
+    const doSubmitSave = () => {
+        if (__DEV__) console.log('doSubmitSave loaded');
+
+        if (submmitted) return true;
+
+        setSubmmitted(true);
+        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        alert('UK Master not found');
+                        navigation.goBack();
+                        return;
+                    }
+
+                    query = 'UPDATE Table_UK_Master SET status = "5" WHERE namaNasabah = "' + namaNasabah + '"';
+
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                            setSubmmitted(false);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                            setSubmmitted(false);
+                            alert('Berhasil');
+                            navigation.goBack();
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                    setSubmmitted(false);
                 })
             }
         );
@@ -492,7 +556,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderButtonSimpan = () => (
         <View style={styles.P16}>
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmitSave()}
             >
                 <View style={styles.buttonSubmitContainer}>
                     <Text style={styles.buttonSubmitText}>SIMPAN</Text>
