@@ -101,7 +101,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         }
     }
 
-    const doSubmitDraft = () => {
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
         if (__DEV__) console.log('doSubmitDraft valueLuasBangunan:', valueLuasBangunan);
         if (__DEV__) console.log('doSubmitDraft valueKondisiBangunan:', valueKondisiBangunan);
@@ -111,9 +111,6 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueAksesAirBersih:', valueAksesAirBersih);
         if (__DEV__) console.log('doSubmitDraft valueKamarMandi:', valueKamarMandi);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_KondisiRumah WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -135,11 +132,10 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -151,17 +147,18 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    })
 
-    const doSubmitSave = () => {
+    const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (!valueLuasBangunan || typeof valueLuasBangunan === 'undefined' || valueLuasBangunan === '' || valueLuasBangunan === 'null') return alert('Luas Bangunan (*) tidak boleh kosong');
@@ -173,6 +170,9 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         if (submmitted) return true;
 
         setSubmmitted(true);
+
+        await doSubmitDraft('submit');
+
         const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -369,7 +369,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                 onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
-                    <Text>Save Draft</Text>
+                    <Text style={{ color: 'white' }}>Save Draft</Text>
                 </View>
             </TouchableOpacity>
         </View>

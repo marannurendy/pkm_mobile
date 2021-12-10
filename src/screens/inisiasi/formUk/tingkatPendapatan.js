@@ -109,7 +109,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         }
     }
 
-    const doSubmitDraft = () => {
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
         if (__DEV__) console.log('doSubmitDraft valuePedapatanKotorPerhari:', valuePedapatanKotorPerhari);
         if (__DEV__) console.log('doSubmitDraft valuePengeluaranKeluargaPerhari:', valuePengeluaranKeluargaPerhari);
@@ -128,9 +128,6 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPerbulanSuami:', valuePendapatanBersihPerbulanSuami);
         if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPermingguSuami:', valuePendapatanBersihPermingguSuami);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -152,11 +149,10 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -168,22 +164,26 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    })
 
-    const doSubmitSave = () => {
+    const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (submmitted) return true;
 
         setSubmmitted(true);
+
+        await doSubmitDraft('submit');
+
         const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -364,7 +364,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         <View style={styles.MT8}>
             <Text>Pembiayaan dari Lembaga</Text>
             <RadioButton.Group onValueChange={newValue => setValuePembiayaanDariLembaga(newValue)} value={valuePembiayaanDariLembaga}>
-                <View style={[styles.FDRow]}>
+                <View>
                     <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
                         <RadioButton value="1" />
                         <Text>Tidak Ada</Text>
@@ -569,7 +569,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
-                    <Text>Save Draft</Text>
+                    <Text style={{ color: 'white' }}>Save Draft</Text>
                 </View>
             </TouchableOpacity>
         </View>

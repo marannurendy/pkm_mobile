@@ -75,15 +75,12 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
         }
     }
 
-    const doSubmitDraft = () => {
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
         if (__DEV__) console.log('doSubmitDraft valueSektorEkonomi:', valueSektorEkonomi);
         if (__DEV__) console.log('doSubmitDraft valueSubSektorEkonomi:', valueSubSektorEkonomi);
         if (__DEV__) console.log('doSubmitDraft valueJenisUsaha:', valueJenisUsaha);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_SektorEkonomi WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -105,11 +102,10 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -121,17 +117,18 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    })
 
-    const doSubmitSave = () => {
+    const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (!valueSektorEkonomi || typeof valueSektorEkonomi === 'undefined' || valueSektorEkonomi === '' || valueSektorEkonomi === 'null') return alert('Sektor Ekonomi (*) tidak boleh kosong');
@@ -141,6 +138,9 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
         if (submmitted) return true;
 
         setSubmmitted(true);
+
+        await doSubmitDraft('submit');
+
         const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -285,7 +285,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                 onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
-                    <Text>Save Draft</Text>
+                    <Text style={{ color: 'white' }}>Save Draft</Text>
                 </View>
             </TouchableOpacity>
         </View>

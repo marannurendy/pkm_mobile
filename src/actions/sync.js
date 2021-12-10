@@ -11,7 +11,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
     var queryUP = ApiSync + 'Shit' + '/' + params.cabangid + '/' + params.username;
     var getPAR = ApiSync + 'GetCollectionListPAR' + '/' + params.cabangid + '/' + params.username;
     var getPKMIndividual = ApiSync + 'GetCollectionListPKMIndividual' + '/' + params.cabangid + '/' + params.username;
-    var getMasterData = ApiSyncInisiasi + 'GetMasterData/';
+    var getMasterData = ApiSyncInisiasi + 'GetMasterData/' + params.cabangid;
     var postGetSosialisasiMobile = ApiSyncInisiasi + 'GetSosialisasiMobile';
     if (__DEV__) console.log('ACTIONS GET SYNC DATA VARIABEL', getListGroup, getListCollection, queryUP, getPAR, getPKMIndividual, getMasterData);
 
@@ -708,15 +708,15 @@ export const getSyncData = (params) => new Promise((resolve) => {
         await insertListCollection(jsonCollection)
         if (__DEV__) console.log('ACTIONS GET SYNC DATA COLLECTION DONE');
 
-        const responseListUP = await fetch(queryUP);
-        const jsonListUP = await responseListUP.json(responseListUP);
-        await insertListUP(jsonListUP)
-        if (__DEV__) console.log('ACTIONS GET SYNC DATA UP DONE');
+        // const responseListUP = await fetch(queryUP);
+        // const jsonListUP = await responseListUP.json(responseListUP);
+        // await insertListUP(jsonListUP)
+        // if (__DEV__) console.log('ACTIONS GET SYNC DATA UP DONE');
 
-        const responseListPAR = await fetch(getPKMIndividual);
-        const jsongetPAR = await responseListPAR.json(responseListPAR);
-        await insertListPAR(jsongetPAR);
-        if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
+        // const responseListPAR = await fetch(getPKMIndividual);
+        // const jsongetPAR = await responseListPAR.json(responseListPAR);
+        // await insertListPAR(jsongetPAR);
+        // if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
 
         if (![2].includes(params.prospekFilter)) {
             const responseGetSosialisasiMobile = await fetch(postGetSosialisasiMobile, {
@@ -765,6 +765,11 @@ export const getSyncData = (params) => new Promise((resolve) => {
         AsyncStorage.setItem('HomeStatus', JSON.stringify(jsonMasterData.data.homeStatus));
         AsyncStorage.setItem('Referral', JSON.stringify(jsonMasterData.data.referral));
         AsyncStorage.setItem('TransFund', JSON.stringify(jsonMasterData.data.transFund));
+        AsyncStorage.setItem('JenisPembiayaan', JSON.stringify(jsonMasterData.data.jenisPembiayaan));
+        AsyncStorage.setItem('SubjenisPembiayaan', JSON.stringify(jsonMasterData.data.subjenisPembiayaan));
+        AsyncStorage.setItem('TujuanPembiayaan', JSON.stringify(jsonMasterData.data.tujuanPembiayaan));
+        AsyncStorage.setItem('KategoritujuanPembiayaan', JSON.stringify(jsonMasterData.data.kategoritujuanPembiayaan));
+        AsyncStorage.setItem('Frekuensi', JSON.stringify(jsonMasterData.data.Frekuensi));
 
         return;
     }

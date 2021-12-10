@@ -212,7 +212,7 @@ const Sosialisasi = () => {
                             setOpen={setOpen}
                             setValue={setValue}
                             setItems={setItems}
-                            placeholder={"Pilih Sumber Dana"}
+                            placeholder={"Pilih Sumber Informasi"}
                             placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
                             dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
                             style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}

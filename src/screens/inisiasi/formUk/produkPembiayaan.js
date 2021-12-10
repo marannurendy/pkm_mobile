@@ -13,6 +13,7 @@ const dimension = Dimensions.get('screen');
 const images = {
     banner: require("../../../../assets/Image/Banner.png")
 };
+const dropdownEmpty = [{ label: '-- Pilih --', value: null }];
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const ProdukPembiayaan = ({ route }) => {
@@ -20,20 +21,20 @@ const ProdukPembiayaan = ({ route }) => {
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
-    const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState([{ label: '-- Pilih --', value: null }]);
+    const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState(dropdownEmpty);
     const [valueNamaProduk, setValueNamaProduk] = useState(null);
-    const [itemsNamaProduk, setItemsNamaProduk] = useState([{ label: '-- Pilih --', value: null }]);
+    const [itemsNamaProduk, setItemsNamaProduk] = useState(dropdownEmpty);
     const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState(null);
-    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState([{ label: '-- Pilih --', value: null }]);
+    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState(dropdownEmpty);
     const [valueJumlahPinjaman, setValueJumlahPinjaman] = useState(null);
     const [valueKategoriTujuanPembiayaan, setValueKategoriTujuanPembiayaan] = useState(null);
-    const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }, { label: '-- Pilih --', value: null }]);
+    const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState(dropdownEmpty);
     const [valueTujuanPembiayaan, setValueTujuanPembiayaan] = useState(null);
-    const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState([{ label: 'Modal Usaha', value: '1' }, { label: '-- Pilih --', value: null }]);
+    const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState(dropdownEmpty);
     const [valueTypePencairan, setValueTypePencairan] = useState(null);
-    const [itemsTypePencairan, setItemsTypePencairan] = useState([{ label: '-- Pilih --', value: null }]);
+    const [itemsTypePencairan, setItemsTypePencairan] = useState(dropdownEmpty);
     const [valueFrekuensiPembayaran, setValueFrekuensiPembayaran] = useState(null);
-    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState([{ label: 'Mingguan', value: '1' }, { label: 'Bulanan', value: '2' }, { label: '-- Pilih --', value: null }]);
+    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState(dropdownEmpty);
     const [valueTermPembiayaan, setValueTermPembiayaan] = useState(null);
     const [valueNamaBank, setValueNamaBank] = useState('');
     const [valueNoRekening, setValueNoRekening] = useState('');
@@ -48,6 +49,9 @@ const ProdukPembiayaan = ({ route }) => {
         getUKProdukPembiayaan();
         getStorageJenisPembiayaan();
         getStorageTipePencairan();
+        getStorageTujuanPembiayaan();
+        getStorageKategoriTujuanPembiayaan();
+        getStorageFrekuensi();
     }, [])
 
     const setInfo = async () => {
@@ -68,11 +72,11 @@ const ProdukPembiayaan = ({ route }) => {
                         if (__DEV__) console.log('tx.executeSql data:', data);
                         if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') {
                             setValueJenisPembiayaan(data.jenis_Pembiayaan);
-                            getStorageNamaProduk();
+                            getStorageNamaProduk(data.jenis_Pembiayaan);
                         }
                         if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') {
                             setValueNamaProduk(data.nama_Produk);
-                            getStorageProduk();
+                            getStorageProduk(data.nama_Produk);
                         }
                         if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') {
                             setValueProdukPembiayaan(data.produk_Pembiayaan);
@@ -104,18 +108,20 @@ const ProdukPembiayaan = ({ route }) => {
         )
     }
 
-    const getStorageProduk = async () => {
+    const getStorageProduk = async (rw) => {
         if (__DEV__) console.log('getStorageProduk loaded');
-        if (__DEV__) console.log('getStorageProduk valueJenisPembiayaan:', valueJenisPembiayaan);
+        if (__DEV__) console.log('getStorageProduk rw:', rw);
 
         try {
             const response = await AsyncStorage.getItem('Product');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
-                if (responseJSON.length > 0 ?? false) {
-                    let isRegular = "0";
-                    if (valueJenisPembiayaan === '1') isRegular = '1';
-                    var responseFiltered = responseJSON.filter(data => data.isReguler === isRegular).map((data, i) => {
+                if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
+                if (responseJSON.length > 0) {
+                    let isRegular = rw;
+                    // if (rw === '1') isRegular = '1';
+                    if (__DEV__) console.log('getStorageProduk isRegular:', isRegular);
+                    var responseFiltered = await responseJSON.filter(data => data.isReguler === isRegular).map((data, i) => {
                         return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                     }) ?? [];
                     responseFiltered.push({ label: '-- Pilih --', value: null });
@@ -176,11 +182,98 @@ const ProdukPembiayaan = ({ route }) => {
         }
     }
 
-    const getStorageNamaProduk = async () => {
+    const getStorageNamaProduk = async (rw) => {
         if (__DEV__) console.log('getStorageNamaProduk loaded');
 
-        const responseFiltered = [{ label: 'Mekaar', value: '1' },{ label: 'Mekaar Plus', value: '2' },{ label: '-- Pilih --', value: null }];
-        setItemsNamaProduk(responseFiltered);
+        try {
+            const response = await AsyncStorage.getItem('SubjenisPembiayaan');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (__DEV__) console.log('getStorageNamaProduk responseJSON.length:', responseJSON.length);
+                if (responseJSON.length > 0 ?? false) {
+                    if (__DEV__) console.log('getStorageNamaProduk responseJSON:', responseJSON);
+                    var responseFiltered = responseJSON.filter(data => data.idjenispembiayaan === rw).map((data, i) => {
+                        return { label: data.namajenispembiayaan, value: data.id };
+                    }) ?? [];
+                    responseFiltered.push({ label: '-- Pilih --', value: null });
+                    if (__DEV__) console.log('getStorageNamaProduk responseFiltered:', responseFiltered);
+                    setItemsNamaProduk(responseFiltered);
+                    return;
+                }
+            }
+            setItemsNamaProduk([]);
+        } catch (error) {
+            setItemsNamaProduk([]);
+        }
+    }
+
+    const getStorageTujuanPembiayaan = async () => {
+        if (__DEV__) console.log('getStorageTujuanPembiayaan loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('TujuanPembiayaan');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    var responseFiltered = responseJSON.map((data, i) => {
+                        return { label: data.namatujuanpembiayaan, value: data.id };
+                    }) ?? [];
+                    responseFiltered.push({ label: '-- Pilih --', value: null });
+                    if (__DEV__) console.log('getStorageTujuanPembiayaan responseFiltered:', responseFiltered);
+                    setItemsTujuanPembiayaan(responseFiltered);
+                    return;
+                }
+            }
+            setItemsTujuanPembiayaan([]);
+        } catch (error) {
+            setItemsJenisPembiayaan([]);
+        }
+    }
+
+    const getStorageKategoriTujuanPembiayaan = async () => {
+        if (__DEV__) console.log('getStorageKategoriTujuanPembiayaan loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('KategoritujuanPembiayaan');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    var responseFiltered = responseJSON.map((data, i) => {
+                        return { label: data.namakategoritujuanpembiayaan, value: data.id };
+                    }) ?? [];
+                    responseFiltered.push({ label: '-- Pilih --', value: null });
+                    if (__DEV__) console.log('getStorageKategoriTujuanPembiayaan responseFiltered:', responseFiltered);
+                    setItemsKategoriTujuanPembiayaan(responseFiltered);
+                    return;
+                }
+            }
+            setItemsKategoriTujuanPembiayaan([]);
+        } catch (error) {
+            setItemsKategoriTujuanPembiayaan([]);
+        }
+    }
+
+    const getStorageFrekuensi = async () => {
+        if (__DEV__) console.log('getStorageFrekuensi loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('Frekuensi');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    var responseFiltered = responseJSON.map((data, i) => {
+                        return { label: data.namafrekuensi, value: data.id };
+                    }) ?? [];
+                    responseFiltered.push({ label: '-- Pilih --', value: null });
+                    if (__DEV__) console.log('getStorageFrekuensi responseFiltered:', responseFiltered);
+                    setItemsFrekuensiPembayaran(responseFiltered);
+                    return;
+                }
+            }
+            setItemsFrekuensiPembayaran([]);
+        } catch (error) {
+            setItemsFrekuensiPembayaran([]);
+        }
     }
 
     const generateJumlahPinjaman = (data) => {
@@ -211,7 +304,7 @@ const ProdukPembiayaan = ({ route }) => {
         return datas.map((x) => <Picker.Item label={x.label} value={x.value} />);
     }
 
-    const doSubmitDraft = () => {
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
         if (__DEV__) console.log('doSubmitDraft valueJenisPembiayaan:', valueJenisPembiayaan);
         if (__DEV__) console.log('doSubmitDraft valueNamaProduk:', valueNamaProduk);
@@ -227,9 +320,6 @@ const ProdukPembiayaan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueNoRekening:', valueNoRekening);
         if (__DEV__) console.log('doSubmitDraft valuePemilikRekening:', valuePemilikRekening);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -251,11 +341,10 @@ const ProdukPembiayaan = ({ route }) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -267,22 +356,26 @@ const ProdukPembiayaan = ({ route }) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    })
 
-    const doSubmitSave = () => {
+    const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (submmitted) return true;
 
         setSubmmitted(true);
+
+        await doSubmitDraft('submit');
+
         const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -372,10 +465,10 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
                         setValueJenisPembiayaan(itemValue);
-                        getStorageNamaProduk();
+                        getStorageNamaProduk(itemValue);
                     }}
                 >
-                    {itemsJenisPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                    {itemsJenisPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>
@@ -390,7 +483,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
                         setValueNamaProduk(itemValue);
-                        getStorageProduk();
+                        getStorageProduk(itemValue);
                     }}
                 >
                     {itemsNamaProduk.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
@@ -600,7 +693,7 @@ const ProdukPembiayaan = ({ route }) => {
                 onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
-                    <Text>Save Draft</Text>
+                    <Text style={{ color: 'white' }}>Save Draft</Text>
                 </View>
             </TouchableOpacity>
         </View>

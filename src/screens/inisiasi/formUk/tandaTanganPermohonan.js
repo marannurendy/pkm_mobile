@@ -106,7 +106,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         )
     }
 
-    const doSubmitDraft = () => {
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
         if (__DEV__) console.log('doSubmitDraft valueProdukPembiayaan:', valueProdukPembiayaan);
         if (__DEV__) console.log('doSubmitDraft valueJumlahPembiayaanYangDiajukan:', valueJumlahPembiayaanYangDiajukan);
@@ -117,9 +117,6 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueTandaTanganKetuaSubKemlompok:', valueTandaTanganKetuaSubKemlompok);
         if (__DEV__) console.log('doSubmitDraft valueTandaTanganKetuaKelompok:', valueTandaTanganKetuaKelompok);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -141,11 +138,10 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -157,17 +153,18 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    })
 
-    const doSubmitSave = () => {
+    const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (!valueTandaTanganNasabah || typeof valueTandaTanganNasabah === 'undefined' || valueTandaTanganNasabah === '' || valueTandaTanganNasabah === 'null') return alert('Tanda Tangan Nasabah (*) tidak boleh kosong');
@@ -178,6 +175,9 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         if (submmitted) return true;
 
         setSubmmitted(true);
+
+        await doSubmitDraft('submit');
+
         const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -407,7 +407,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                 onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
-                    <Text>Save Draft</Text>
+                    <Text style={{ color: 'white' }}>Save Draft</Text>
                 </View>
             </TouchableOpacity>
         </View>

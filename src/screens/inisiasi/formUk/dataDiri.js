@@ -51,7 +51,7 @@ const DataDiri = ({route}) => {
     //STATE DATA DIRI PRIBADI
     let [fullName, setFullName] = useState(namaNasabah)
     let [namaAyah, setNamaAyah] = useState()
-    let [noTelfon, setNoTelfon] = useState('62251')
+    let [noTelfon, setNoTelfon] = useState('')
     let [jumlahAnak, setJuma] = useState()
     let [jumlahTanggungan, setJumlahTanggungnan] = useState()
     let [statusRumahTinggal, setStatusRumahTinggal] = useState()
@@ -328,15 +328,12 @@ const DataDiri = ({route}) => {
         setSumberDana(text)
     }
 
-    const doSubmitDataPenjamin = () => {
+    const doSubmitDataPenjamin = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDataPenjamin loaded');
         if (__DEV__) console.log('doSubmitDataPenjamin valueStatusHubunganKeluarga:', valueStatusHubunganKeluarga);
         if (__DEV__) console.log('doSubmitDataPenjamin namaPenjamin:', namaPenjamin);
         if (__DEV__) console.log('doSubmitDataPenjamin fotoDataPenjamin:', fotoDataPenjamin);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -358,11 +355,10 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -374,25 +370,23 @@ const DataDiri = ({route}) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    });
 
-    const doSubmitDataSuami = () => {
+    const doSubmitDataSuami = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDataSuami loaded');
         if (__DEV__) console.log('doSubmitDataSuami namaSuami:', namaSuami);
         if (__DEV__) console.log('doSubmitDataSuami fotoKartuIdentitasSuami:', fotoKartuIdentitasSuami);
         if (__DEV__) console.log('doSubmitDataSuami statusSuami:', statusSuami);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -414,11 +408,10 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -430,17 +423,18 @@ const DataDiri = ({route}) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    });
 
-    const doSubmitDataDiriPribadi = () => {
+    const doSubmitDataDiriPribadi = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDataDiriPribadi loaded');
         if (__DEV__) console.log('doSubmitDataDiriPribadi fullName:', fullName);
         if (__DEV__) console.log('doSubmitDataDiriPribadi namaAyah:', namaAyah);
@@ -450,9 +444,6 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataDiriPribadi valueStatusRumahTinggal:', valueStatusRumahTinggal);
         if (__DEV__) console.log('doSubmitDataDiriPribadi lamaTinggal:', lamaTinggal);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -474,11 +465,10 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -490,24 +480,22 @@ const DataDiri = ({route}) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    });
 
-    const doSubmitKK = () => {
+    const doSubmitKK = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitKK loaded');
         if (__DEV__) console.log('doSubmitKK fotoKartuKeluarga:', fotoKartuKeluarga);
         if (__DEV__) console.log('doSubmitKK nomorKartuKeluarga:', nomorKartuKeluarga);
 
-        if (submmitted) return true;
-
-        setSubmmitted(true);
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -529,11 +517,10 @@ const DataDiri = ({route}) => {
                             tx.executeSql(query);
                         }, function(error) {
                             if (__DEV__) console.log('doSubmitKK db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
+                            return resolve(true);
                         },function() {
                             if (__DEV__) console.log('doSubmitKK db.transaction insert/update success');
-                            setSubmmitted(false);
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) {
                                 db.transaction(
                                     tx => {
@@ -545,86 +532,85 @@ const DataDiri = ({route}) => {
                                     }, function() {}
                                 );
                             }
+                            return resolve(true);
                         }
                     );
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitKK db.transaction find error:', error.message);
-                    setSubmmitted(false);
+                    return resolve(true);
                 })
             }
         );
-    }
+    });
 
-    const doSubmitDataIdentitasDiri = () => {
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri loaded');
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri namaNasabah:', namaNasabah);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri fotokartuIdentitas:', fotokartuIdentitas);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri valueJenisKartuIdentitas:', valueJenisKartuIdentitas);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri nomorIdentitas:', nomorIdentitas);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri namaCalonNasabah:', namaCalonNasabah);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri tempatLahir:', tempatLahir);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri tanggalLahir:', tanggalLahir);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri valueStatusPerkawinan:', valueStatusPerkawinan);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatIdentitas:', alamatIdentitas);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatDomisili:', alamatDomisili);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri fotoSuratKeteranganDomisili:', fotoSuratKeteranganDomisili);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataProvinsi:', dataProvinsi);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKabupaten:', dataKabupaten);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
-
-        if (submmitted) return true;
-
-        setSubmmitted(true);
-        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
-        db.transaction(
-            tx => {
-                tx.executeSql(find, [], (txFind, resultsFind) => {
-                    let dataLengthFind = resultsFind.rows.length
-                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
-
-                    let query = '';
-                    if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan) values ("' + fotokartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + fotoSuratKeteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '")';
-                    } else {
-                        query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + fotokartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + fotoSuratKeteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '" WHERE nama_lengkap = "' + namaNasabah + '"';
-                    }
-
-                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
-
-                    db.transaction(
-                        tx => {
-                            tx.executeSql(query);
-                        }, function(error) {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
-                        },function() {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-                            ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
-                            setSubmmitted(false);
-                            if (__DEV__) {
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
-                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 2:', error);
-                                        setSubmmitted(false);
-                                    }, function() {}
-                                );
-                            }
+    const doSubmitDataIdentitasDiri = (source = 'draft') => new Promise((resolve) => {
+        {
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri loaded');
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri namaNasabah:', namaNasabah);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri fotokartuIdentitas:', fotokartuIdentitas);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri valueJenisKartuIdentitas:', valueJenisKartuIdentitas);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri nomorIdentitas:', nomorIdentitas);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri namaCalonNasabah:', namaCalonNasabah);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri tempatLahir:', tempatLahir);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri tanggalLahir:', tanggalLahir);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri valueStatusPerkawinan:', valueStatusPerkawinan);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatIdentitas:', alamatIdentitas);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatDomisili:', alamatDomisili);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri fotoSuratKeteranganDomisili:', fotoSuratKeteranganDomisili);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri dataProvinsi:', dataProvinsi);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKabupaten:', dataKabupaten);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
+    
+            const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+            db.transaction(
+                tx => {
+                    tx.executeSql(find, [], (txFind, resultsFind) => {
+                        let dataLengthFind = resultsFind.rows.length
+                        if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+    
+                        let query = '';
+                        if (dataLengthFind === 0) {
+                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan) values ("' + fotokartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + fotoSuratKeteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '")';
+                        } else {
+                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + fotokartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + fotoSuratKeteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                         }
-                    );
-                }, function(error) {
-                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
-                    setSubmmitted(false);
-                })
-            }
-        );
-    }
+    
+                        if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+    
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query);
+                            }, function(error) {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                                return resolve(true);
+                            },function() {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                                if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                                if (__DEV__) {
+                                    db.transaction(
+                                        tx => {
+                                            tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
+                                                if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
+                                            })
+                                        }, function(error) {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 2:', error);
+                                        }, function() {}
+                                    );
+                                }
+                                return resolve(true);
+                            }
+                        );
+                    }, function(error) {
+                        if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                        return resolve(true);
+                    })
+                }
+            );
+        }
+    })
 
-    const doSubmitSave = () => {
+    const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (!fotokartuIdentitas || typeof fotokartuIdentitas === 'undefined' || fotokartuIdentitas === '' || fotokartuIdentitas === 'null') return alert('Foto Kartu Identitas (*) tidak boleh kosong');
@@ -663,6 +649,13 @@ const DataDiri = ({route}) => {
         if (submmitted) return true;
 
         setSubmmitted(true);
+
+        await doSubmitDataIdentitasDiri('submit');
+        await doSubmitKK('submit');
+        await doSubmitDataDiriPribadi('submit');
+        await doSubmitDataSuami('submit');
+        await doSubmitDataPenjamin('submit');
+
         const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -821,26 +814,31 @@ const DataDiri = ({route}) => {
 
             if (type === "dataPenjamin") {
                 // setFotoDataPenjamin('data:image/jpeg;base64,'+data.base64)
+                AsyncStorage.setItem(`formUK_dataPenjamin_${namaNasabah}`, data.base64);
                 setFotoDataPenjamin(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }else if (type === "dataSuami") {
                 // setFotoKartuIdentitasSuami('data:image/jpeg;base64,'+data.base64)
+                AsyncStorage.setItem(`formUK_dataSuami_${namaNasabah}`, data.base64);
                 setFotoKartuIdentitasSuami(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }else if (type === "kartuKeluarga") {
                 // setFotoKartuKeluarga('data:image/jpeg;base64,'+data.base64)
+                AsyncStorage.setItem(`formUK_kartuKeluarga_${namaNasabah}`, data.base64);
                 setFotoKartuKeluarga(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }else if (type === "keteranganDomisili") {
                 // setFotoSuratKeteranganDomisili('data:image/jpeg;base64,'+data.base64)
+                AsyncStorage.setItem(`formUK_keteranganDomisili_${namaNasabah}`, data.base64);
                 setFotoSuratKeteranganDomisili(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
             }else if (type === "kartuIdentitas") {
                 // setFotoKartuIdentitas('data:image/jpeg;base64,'+data.base64)
+                AsyncStorage.setItem(`formUK_kartuIdentitas_${namaNasabah}`, data.base64);
                 setFotoKartuIdentitas(data.uri)
                 setLoading(false)
                 SetButtonCam(false)
@@ -1349,14 +1347,27 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Identitas (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row'}}>
+                            <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'id-badge'} size={18} />
                                 </View>
+                                
                             </View>
+                            <View style={{ backgroundColor: '#003049', borderRadius: 10, borderWidth: 1, padding: 8, alignContent: 'center', marginLeft: 8 }}>
+                                <TouchableOpacity
+                                    onPress={() => null}
+                                >
+                                    <View>
+                                        <Text style={{ color: 'white' }}>Cek Data</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                            </View>
+                            
                         </View>
 
                         <View style={{margin: 20}}>

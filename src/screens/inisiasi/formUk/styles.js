@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         color: "#545454"
     },
     buttonSubmitContainer: {
-        backgroundColor: 'blue', 
+        backgroundColor: '#0c5da0', 
         padding: 16, 
         borderRadius: 6, 
         alignItems: 'center'
@@ -86,8 +86,9 @@ const styles = StyleSheet.create({
     button: {
         borderRadius: 6, 
         borderWidth: 2, 
-        borderColor: 'blue', 
-        padding: 8
+        borderColor: '#003049', 
+        backgroundColor: '#003049',
+        padding: 4
     },
     formContainerText: {
         flexDirection: 'row', 

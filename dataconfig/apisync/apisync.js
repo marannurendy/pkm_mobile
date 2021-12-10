@@ -11,6 +11,7 @@ import {View, Texr} from "react-native"
 
 let ApiSync = 'http://devpkm.pnm.co.id/v1/pkm/' //development v2
 let ApiSyncInisiasi = 'http://devpkm.pnm.co.id/v1/inisiasi/' //Inisiasi development
+let ApiSyncPostInisiasi = 'http://devpkm.pnm.co.id/v1/post_inisiasi/' 
 
 // let ApiSync = 'http://api-pkmmobile.pnm.co.id/' //production
 
@@ -24,4 +25,4 @@ let PostPKM = 'PostTransaction'
 let Get_notification = "GetNotification"
 let Get_Date = "GetDate"
 
-export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi}
+export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiSyncPostInisiasi}
