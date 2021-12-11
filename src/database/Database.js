@@ -6,6 +6,12 @@ const db = SQLite.openDatabase('dataBaase.db');
 db.transaction(tx => {
 
     // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PendapatanNasabah');
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_ProdukPembiayaan');
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_KondisiRumah');
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_SektorEkonomi');
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_Master');
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PermohonanPembiayaan');
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_DataDiri');
     
     tx.executeSql(
         `create table if not exists ListGroup(
@@ -233,10 +239,15 @@ db.transaction(tx => {
             jumlah_Pembiayaan_Diajukan varchar,
             jangka_Waktu varchar,
             frekuensi_Pembiayaan varchar,
+            tanda_Tangan_AOSAO varchar,
             tanda_Tangan_Nasabah varchar,
             tanda_Tangan_SuamiPenjamin varchar,
             tanda_Tangan_Ketua_SubKelompok varchar,
-            tanda_Tangan_Ketua_Kelompok
+            tanda_Tangan_Ketua_Kelompok,
+            nama_tanda_Tangan_Nasabah varchar,
+            nama_tanda_Tangan_SuamiPenjamin varchar,
+            nama_tanda_Tangan_Ketua_SubKelompok varchar,
+            nama_tanda_Tangan_Ketua_Kelompok varchar
         )`
     )
 

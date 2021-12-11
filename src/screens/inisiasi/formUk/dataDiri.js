@@ -12,11 +12,12 @@ import { Camera } from 'expo-camera'
 import { Button } from 'react-native-elements'
 import { showMessage } from "react-native-flash-message"
 import { Checkbox } from 'react-native-paper';
-
+import { Picker } from '@react-native-picker/picker';
 
 import db from '../../../database/Database'
 
-const dimension = Dimensions.get('screen')
+const dimension = Dimensions.get('screen');
+const withTextInput = dimension.width - (20 * 4) + 8;
 
 const DataDiri = ({route}) => {
 
@@ -39,7 +40,7 @@ const DataDiri = ({route}) => {
     let [alamatIdentitas, setAlamatIdentitas] = useState()
     let [alamatDomisili, setAlamatDomisili] = useState()
     let [fotoSuratKeteranganDomisili, setFotoSuratKeteranganDomisili] = useState()
-    let [dataProvinsi, setDataProvinsi] = useState()
+    let [dataProvinsi, setDataProvinsi] = useState(null)
     let [dataKabupaten, setDataKabupaten] = useState()
     let [dataKecamatan, setDataKecamatan] = useState()
     let [dataKelurahan, setDataKelurahan] = useState()
@@ -155,6 +156,13 @@ const DataDiri = ({route}) => {
         }
     ]);
     const [submmitted, setSubmmitted] = useState(false);
+    const [dataWilayahMobile, setDataWilayahMobile] = useState([]);
+
+    const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
+    const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
+    const key_kartuKeluarga = `formUK_kartuKeluarga_${namaNasabah.replace(/\s+/g, '')}`;
+    const key_keteranganDomisili = `formUK_keteranganDomisili_${namaNasabah.replace(/\s+/g, '')}`;
+    const key_kartuIdentitas = `formUK_kartuIdentitas_${namaNasabah.replace(/\s+/g, '')}`;
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -164,14 +172,21 @@ const DataDiri = ({route}) => {
             const getUKDataDiri = () => {
                 db.transaction(
                     tx => {
-                        tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                        tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
                             let dataLength = results.rows.length;
                             if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
                             if (dataLength > 0) {
                                 
                                 let data = results.rows.item(0);
                                 if (__DEV__) console.log('tx.executeSql data:', data);
-                                if (data.foto_Kartu_Identitas !== null && typeof data.foto_Kartu_Identitas !== 'undefined') setFotoKartuIdentitas(data.foto_Kartu_Identitas);
+
+                                const fotoDataPenjamin = await AsyncStorage.getItem(key_dataPenjamin);
+                                const fotoDataSuami = await AsyncStorage.getItem(key_dataSuami);
+                                const fotoKartuKeluarga = await AsyncStorage.getItem(key_kartuKeluarga);
+                                const fotoKeteranganDomisili = await AsyncStorage.getItem(key_keteranganDomisili);
+                                const fotoKartuIdentitas = await AsyncStorage.getItem(key_kartuIdentitas);
+
+                                if (data.foto_Kartu_Identitas !== null && typeof data.foto_Kartu_Identitas !== 'undefined') setFotoKartuIdentitas(fotoKartuIdentitas);
                                 if (data.jenis_Kartu_Identitas !== null && typeof data.jenis_Kartu_Identitas !== 'undefined') setValueJenisKartuIdentitas(data.jenis_Kartu_Identitas);
                                 if (data.nomor_Identitas !== null && typeof data.nomor_Identitas !== 'undefined') setNomorIdentitas(data.nomor_Identitas);
                                 if (data.nama_lengkap !== null && typeof data.nama_lengkap !== 'undefined') setNamaCalonNasabah(data.nama_lengkap);
@@ -180,12 +195,12 @@ const DataDiri = ({route}) => {
                                 if (data.status_Perkawinan !== null && typeof data.status_Perkawinan !== 'undefined') setValueStatusPerkawinan(data.status_Perkawinan);
                                 if (data.alamat_Identitas !== null && typeof data.alamat_Identitas !== 'undefined') setAlamatIdentitas(data.alamat_Identitas);
                                 if (data.alamat_Domisili !== null && typeof data.alamat_Domisili !== 'undefined') setAlamatDomisili(data.alamat_Domisili);
-                                if (data.foto_Surat_Keterangan_Domisili !== null && typeof data.foto_Surat_Keterangan_Domisili !== 'undefined') setFotoSuratKeteranganDomisili(data.foto_Surat_Keterangan_Domisili);
+                                if (data.foto_Surat_Keterangan_Domisili !== null && typeof data.foto_Surat_Keterangan_Domisili !== 'undefined') setFotoSuratKeteranganDomisili(fotoKeteranganDomisili);
                                 if (data.provinsi !== null && typeof data.provinsi !== 'undefined') setDataProvinsi(data.provinsi);
                                 if (data.kabupaten !== null && typeof data.kabupaten !== 'undefined') setDataKabupaten(data.kabupaten);
                                 if (data.kecamatan !== null && typeof data.kecamatan !== 'undefined') setDataKecamatan(data.kecamatan);
                                 if (data.kelurahan !== null && typeof data.kelurahan !== 'undefined') setDataKelurahan(data.kelurahan);
-                                if (data.foto_kk !== null && typeof data.foto_kk !== 'undefined') setFotoKartuKeluarga(data.foto_kk);
+                                if (data.foto_kk !== null && typeof data.foto_kk !== 'undefined') setFotoKartuKeluarga(fotoKartuKeluarga);
                                 if (data.no_kk !== null && typeof data.no_kk !== 'undefined') setNomorKartuKeluarga(data.no_kk);
                                 if (data.nama_ayah !== null && typeof data.nama_ayah !== 'undefined') setNamaAyah(data.nama_ayah);
                                 if (data.no_tlp_nasabah !== null && typeof data.no_tlp_nasabah !== 'undefined') setNoTelfon(data.no_tlp_nasabah);
@@ -194,11 +209,11 @@ const DataDiri = ({route}) => {
                                 if (data.status_rumah_tinggal !== null && typeof data.status_rumah_tinggal !== 'undefined') setValueStatusRumahTinggal(data.status_rumah_tinggal);
                                 if (data.lama_tinggal !== null && typeof data.lama_tinggal !== 'undefined') setLamaTinggal(data.lama_tinggal);
                                 if (data.nama_suami !== null && typeof data.nama_suami !== 'undefined') setNamaSuami(data.nama_suami);
-                                if (data.foto_ktp_suami !== null && typeof data.foto_ktp_suami !== 'undefined') setFotoKartuIdentitasSuami(data.foto_ktp_suami);
+                                if (data.foto_ktp_suami !== null && typeof data.foto_ktp_suami !== 'undefined') setFotoKartuIdentitasSuami(fotoDataSuami);
                                 if (data.suami_diluar_kota !== null && typeof data.suami_diluar_kota !== 'undefined') setStatusSuami(data.suami_diluar_kota === 'true' ? true : false);
                                 if (data.status_hubungan_keluarga !== null && typeof data.status_hubungan_keluarga !== 'undefined') setValueStatusHubunganKeluarga(data.status_hubungan_keluarga);
                                 if (data.nama_penjamin !== null && typeof data.nama_penjamin !== 'undefined') setNamaPenjamin(data.nama_penjamin);
-                                if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined') setFotoDataPenjamin(data.foto_ktp_penjamin);
+                                if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined') setFotoDataPenjamin(fotoDataPenjamin);
                             }
                             return true;
                         }, function(error) {
@@ -249,9 +264,27 @@ const DataDiri = ({route}) => {
                     setItemsStatusRumahTinggal([]);
                 }
             }
+            const getStorageWilayahMobile = async () => {
+                if (__DEV__) console.log('getStorageWilayahMobile loaded');
+        
+                try {
+                    const response = await AsyncStorage.getItem('WilayahMobile');
+                    if (response !== null) {
+                        const responseJSON = JSON.parse(response);
+                        if (responseJSON.length > 0 ?? false) {
+                            setDataWilayahMobile(responseJSON);
+                            return;
+                        }
+                    }
+                    setDataWilayahMobile([]);
+                } catch (error) {
+                    setDataWilayahMobile([]);
+                }
+            }
             getUKDataDiri();
             getStorageStatusHubunganKeluarga();
             getStorageRumahTinggal();
+            getStorageWilayahMobile();
             /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
             const { status } = await Camera.requestPermissionsAsync();
@@ -343,9 +376,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin) values ("' + namaNasabah + '","' + namaPenjamin + '","' + fotoKartuIdentitasSuami + '","' + fotoDataPenjamin + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin) values ("' + namaNasabah + '","' + namaPenjamin + '","' + fotoKartuIdentitasSuami + '","' + key_dataPenjamin + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET status_hubungan_keluarga = "' + valueStatusHubunganKeluarga + '", nama_penjamin = "' + namaPenjamin + '", foto_ktp_penjamin = "' + fotoDataPenjamin + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET status_hubungan_keluarga = "' + valueStatusHubunganKeluarga + '", nama_penjamin = "' + namaPenjamin + '", foto_ktp_penjamin = "' + key_dataPenjamin + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update query:', query);
@@ -396,9 +429,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_suami, foto_ktp_suami, suami_diluar_kota) values ("' + namaNasabah + '","' + namaSuami + '","' + fotoKartuIdentitasSuami + '","' + statusSuami + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_suami, foto_ktp_suami, suami_diluar_kota) values ("' + namaNasabah + '","' + namaSuami + '","' + key_dataSuami + '","' + statusSuami + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET nama_suami = "' + namaSuami + '", foto_ktp_suami = "' + fotoKartuIdentitasSuami + '", suami_diluar_kota = "' + statusSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET nama_suami = "' + namaSuami + '", foto_ktp_suami = "' + key_dataSuami + '", suami_diluar_kota = "' + statusSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update query:', query);
@@ -505,9 +538,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, foto_kk, no_kk) values ("' + namaNasabah + '","' + fotoKartuKeluarga + '","' + nomorKartuKeluarga + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, foto_kk, no_kk) values ("' + namaNasabah + '","' + key_kartuKeluarga + '","' + nomorKartuKeluarga + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET foto_kk = "' + fotoKartuKeluarga + '", no_kk = "' + nomorKartuKeluarga + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET foto_kk = "' + key_kartuKeluarga + '", no_kk = "' + nomorKartuKeluarga + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitKK db.transaction insert/update query:', query);
@@ -571,9 +604,9 @@ const DataDiri = ({route}) => {
     
                         let query = '';
                         if (dataLengthFind === 0) {
-                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan) values ("' + fotokartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + fotoSuratKeteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '")';
+                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '")';
                         } else {
-                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + fotokartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + fotoSuratKeteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                         }
     
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
@@ -707,101 +740,101 @@ const DataDiri = ({route}) => {
         );
     }
 
-    const SubmitDataDiri = () => {
-        // console.log("this")
-        try{
-            // console.log("try")
-            let getUkList = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap ='` + namaNasabah + `'`
-            let insertUkList = `INSERT INTO Table_UK_DataDiri (
-                foto_Kartu_Identitas,
-                jenis_Kartu_Identitas,
-                nomor_Identitas,
-                nama_lengkap,
-                tempat_lahir,
-                tanggal_Lahir,
-                status_Perkawinan,
-                alamat_Identitas,
-                alamat_Domisili,
-                foto_Surat_Keterangan_Domisili,
-                provinsi,
-                kabupaten,
-                kecamatan,
-                kelurahan
-            ) VALUES (
-                '` + fotokartuIdentitas + `',
-                '` + jenisKartuIdentitas + `',
-                '` + nomorIdentitas + `',
-                '` + namaCalonNasabah + `',
-                '` + tempatLahir + `',
-                '` + tanggalLahir + `',
-                '` + statusPerkawinan + `',
-                '` + alamatIdentitas + `',
-                '` + alamatDomisili + `',
-                '` + fotoSuratKeteranganDomisili + `',
-                '` + dataProvinsi + `',
-                '` + dataKabupaten + `',
-                '` + dataKecamatan + `',
-                '` + dataKelurahan + `'
-            );`
+    // const SubmitDataDiri = () => {
+    //     // console.log("this")
+    //     try{
+    //         // console.log("try")
+    //         let getUkList = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap ='` + namaNasabah + `'`
+    //         let insertUkList = `INSERT INTO Table_UK_DataDiri (
+    //             foto_Kartu_Identitas,
+    //             jenis_Kartu_Identitas,
+    //             nomor_Identitas,
+    //             nama_lengkap,
+    //             tempat_lahir,
+    //             tanggal_Lahir,
+    //             status_Perkawinan,
+    //             alamat_Identitas,
+    //             alamat_Domisili,
+    //             foto_Surat_Keterangan_Domisili,
+    //             provinsi,
+    //             kabupaten,
+    //             kecamatan,
+    //             kelurahan
+    //         ) VALUES (
+    //             '` + fotokartuIdentitas + `',
+    //             '` + jenisKartuIdentitas + `',
+    //             '` + nomorIdentitas + `',
+    //             '` + namaCalonNasabah + `',
+    //             '` + tempatLahir + `',
+    //             '` + tanggalLahir + `',
+    //             '` + statusPerkawinan + `',
+    //             '` + alamatIdentitas + `',
+    //             '` + alamatDomisili + `',
+    //             '` + fotoSuratKeteranganDomisili + `',
+    //             '` + dataProvinsi + `',
+    //             '` + dataKabupaten + `',
+    //             '` + dataKecamatan + `',
+    //             '` + dataKelurahan + `'
+    //         );`
 
-            let UpdateUkList = `UPDATE Table_UK_DataDiri SET 
-                foto_Kartu_Identitas = '` + fotokartuIdentitas + `',
-                jenis_Kartu_Identitas = '` + jenisKartuIdentitas + `',
-                nomor_Identitas = '` + nomorIdentitas + `',
-                nama_lengkap = '` + namaCalonNasabah + `',
-                tempat_lahir = '` + tempatLahir + `',
-                tanggal_Lahir = '` + tanggalLahir + `',
-                status_Perkawinan = '` + statusPerkawinan + `',
-                alamat_Identitas = '` + alamatIdentitas + `',
-                alamat_Domisili = '` + alamatDomisili + `',
-                foto_Surat_Keterangan_Domisili = '` + fotoSuratKeteranganDomisili + `',
-                provinsi = '` + dataProvinsi + `',
-                kabupaten = '` + dataKabupaten + `',
-                kecamatan = '` + dataKecamatan + `',
-                kelurahan = '` + dataKelurahan + `' WHERE nama_lengkap = '` + namaNasabah + `'`
+    //         let UpdateUkList = `UPDATE Table_UK_DataDiri SET 
+    //             foto_Kartu_Identitas = '` + fotokartuIdentitas + `',
+    //             jenis_Kartu_Identitas = '` + jenisKartuIdentitas + `',
+    //             nomor_Identitas = '` + nomorIdentitas + `',
+    //             nama_lengkap = '` + namaCalonNasabah + `',
+    //             tempat_lahir = '` + tempatLahir + `',
+    //             tanggal_Lahir = '` + tanggalLahir + `',
+    //             status_Perkawinan = '` + statusPerkawinan + `',
+    //             alamat_Identitas = '` + alamatIdentitas + `',
+    //             alamat_Domisili = '` + alamatDomisili + `',
+    //             foto_Surat_Keterangan_Domisili = '` + fotoSuratKeteranganDomisili + `',
+    //             provinsi = '` + dataProvinsi + `',
+    //             kabupaten = '` + dataKabupaten + `',
+    //             kecamatan = '` + dataKecamatan + `',
+    //             kelurahan = '` + dataKelurahan + `' WHERE nama_lengkap = '` + namaNasabah + `'`
 
-                console.log(getUkList)
-                console.log(UpdateUkList)
+    //             console.log(getUkList)
+    //             console.log(UpdateUkList)
 
-            db.transaction(
-                tx => {
-                    tx.executeSql(getUkList, [], (tx, results) => {
-                        let dataLength = results.rows.length
+    //         db.transaction(
+    //             tx => {
+    //                 tx.executeSql(getUkList, [], (tx, results) => {
+    //                     let dataLength = results.rows.length
 
-                        if(dataLength === 0) {
-                            console.log("insert")
-                            db.transaction(
-                                tx => {
-                                    tx.executeSql(insertUkList)
-                                }, function(error) {
-                                    console.log('Transaction ERROR: ' + error.message);
-                                },function() {
-                                    flashNotification("Sukses", "Simpan Data Draft Berhasil", "#ff6347", "#fff")
-                                }
-                            )
-                        }else{
-                            console.log("update")
-                            db.transaction(
-                                tx => {
-                                    tx.executeSql(UpdateUkList)
-                                }, function(error){
-                                    console.log('Transaction ERROR: ' + error.message);
-                                },function() {
-                                    flashNotification("Sukses", "Update Data Draft Berhasil", "#ff6347", "#fff")
-                                }
-                            )
-                        }
-                    }, function(error){
-                        console.log("error")
-                        console.log('Transaction ERROR: ' + error.message);
-                    })
-                }
-            )
-        }catch(error){
-            console.log("error")
-            console.log('Transaction ERROR: ' + error.message);
-        }
-    }
+    //                     if(dataLength === 0) {
+    //                         console.log("insert")
+    //                         db.transaction(
+    //                             tx => {
+    //                                 tx.executeSql(insertUkList)
+    //                             }, function(error) {
+    //                                 console.log('Transaction ERROR: ' + error.message);
+    //                             },function() {
+    //                                 flashNotification("Sukses", "Simpan Data Draft Berhasil", "#ff6347", "#fff")
+    //                             }
+    //                         )
+    //                     }else{
+    //                         console.log("update")
+    //                         db.transaction(
+    //                             tx => {
+    //                                 tx.executeSql(UpdateUkList)
+    //                             }, function(error){
+    //                                 console.log('Transaction ERROR: ' + error.message);
+    //                             },function() {
+    //                                 flashNotification("Sukses", "Update Data Draft Berhasil", "#ff6347", "#fff")
+    //                             }
+    //                         )
+    //                     }
+    //                 }, function(error){
+    //                     console.log("error")
+    //                     console.log('Transaction ERROR: ' + error.message);
+    //                 })
+    //             }
+    //         )
+    //     }catch(error){
+    //         console.log("error")
+    //         console.log('Transaction ERROR: ' + error.message);
+    //     }
+    // }
 
     const takePicture = async (type) => {
         try {
@@ -810,43 +843,48 @@ const DataDiri = ({route}) => {
             const options = { quality: 0.5, base64: true };
             const data = await camera.current.takePictureAsync(options)
 
-            console.log(data.uri, '<<<<<<<<<<<<<<<<<<<<<');
-
             if (type === "dataPenjamin") {
-                // setFotoDataPenjamin('data:image/jpeg;base64,'+data.base64)
-                AsyncStorage.setItem(`formUK_dataPenjamin_${namaNasabah}`, data.base64);
-                setFotoDataPenjamin(data.uri)
-                setLoading(false)
-                SetButtonCam(false)
+                AsyncStorage.setItem(key_dataPenjamin, 'data:image/jpeg;base64,' + data.base64);
+                setFotoDataPenjamin(data.uri);
+                setLoading(false);
+                SetButtonCam(false);
             }else if (type === "dataSuami") {
-                // setFotoKartuIdentitasSuami('data:image/jpeg;base64,'+data.base64)
-                AsyncStorage.setItem(`formUK_dataSuami_${namaNasabah}`, data.base64);
-                setFotoKartuIdentitasSuami(data.uri)
-                setLoading(false)
-                SetButtonCam(false)
+                AsyncStorage.setItem(key_dataSuami, 'data:image/jpeg;base64,' + data.base64);
+                setFotoKartuIdentitasSuami(data.uri);
+                setLoading(false);
+                SetButtonCam(false);
             }else if (type === "kartuKeluarga") {
-                // setFotoKartuKeluarga('data:image/jpeg;base64,'+data.base64)
-                AsyncStorage.setItem(`formUK_kartuKeluarga_${namaNasabah}`, data.base64);
-                setFotoKartuKeluarga(data.uri)
-                setLoading(false)
-                SetButtonCam(false)
+                AsyncStorage.setItem(key_kartuKeluarga, 'data:image/jpeg;base64,' + data.base64);
+                setFotoKartuKeluarga(data.uri);
+                setLoading(false);
+                SetButtonCam(false);
             }else if (type === "keteranganDomisili") {
-                // setFotoSuratKeteranganDomisili('data:image/jpeg;base64,'+data.base64)
-                AsyncStorage.setItem(`formUK_keteranganDomisili_${namaNasabah}`, data.base64);
-                setFotoSuratKeteranganDomisili(data.uri)
-                setLoading(false)
-                SetButtonCam(false)
+                AsyncStorage.setItem(key_keteranganDomisili, 'data:image/jpeg;base64,' + data.base64);
+                setFotoSuratKeteranganDomisili(data.uri);
+                setLoading(false);
+                SetButtonCam(false);
             }else if (type === "kartuIdentitas") {
-                // setFotoKartuIdentitas('data:image/jpeg;base64,'+data.base64)
-                AsyncStorage.setItem(`formUK_kartuIdentitas_${namaNasabah}`, data.base64);
-                setFotoKartuIdentitas(data.uri)
-                setLoading(false)
-                SetButtonCam(false)
+                AsyncStorage.setItem(key_kartuIdentitas, 'data:image/jpeg;base64,' + data.base64);
+                setFotoKartuIdentitas(data.uri);
+                setLoading(false);
+                SetButtonCam(false);
             }
         } catch (error) {}
     };
 
-    submitHandler = () => null;
+    const submitHandler = () => null;
+
+    const renderPickerKabupaten = () => {
+        return [...new Map(dataWilayahMobile.map(item => [item['Nama_KabKot'], item])).values()].filter(data => data.ID_Provinsi === dataProvinsi).map((x, i) => <Picker.Item key={i} label={x.Nama_KabKot} value={x.ID_Kabkot} />);
+    }
+
+    const renderPickerKecamatan = () => {
+        return [...new Map(dataWilayahMobile.map(item => [item['Nama_KabKot'], item])).values()].filter(data => data.ID_Kabkot === dataKabupaten).map((x, i) => <Picker.Item key={i} label={x.Nama_Kecamatan} value={x.ID_Kecamatan} />);
+    }
+
+    const renderPickerKelurahan = () => {
+        return dataWilayahMobile.filter(data => data.ID_Kecamatan === dataKecamatan).map((x, i) => <Picker.Item key={i} label={x.Nama_KelurahanDesa} value={x.ID_KelDes} />);
+    }
 
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -1494,49 +1532,57 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Provinsi (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={dataProvinsi} onChangeText={(text) => setDataProvinsi(text)} placeholder="Masukkan Nama Provinsi" style={{ fontSize: 15, color: "#545454" }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'location-arrow'} size={18} />
-                                </View>
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={dataProvinsi}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setDataProvinsi(itemValue)}
+                                >
+                                    {[...new Map(dataWilayahMobile.map(item => [item['Nama_Provinsi'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.Nama_Provinsi} value={x.ID_Provinsi} />)}
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                </Picker>
                             </View>
                         </View>
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kabupaten (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={dataKabupaten} onChangeText={(text) => setDataKabupaten(text)} placeholder="Masukkan Nama Kabupaten" style={{ fontSize: 15, color: "#545454" }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'location-arrow'} size={18} />
-                                </View>
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={dataKabupaten}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setDataKabupaten(itemValue)}
+                                >
+                                    {renderPickerKabupaten()}
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                </Picker>
                             </View>
                         </View>
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kecamatan (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={dataKecamatan} onChangeText={(text) => setDataKecamatan(text)} placeholder="Masukkan Nama Kecamatan" style={{ fontSize: 15, color: "#545454" }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'location-arrow'} size={18} />
-                                </View>
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={dataKecamatan}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setDataKecamatan(itemValue)}
+                                >
+                                    {renderPickerKecamatan()}
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                </Picker>
                             </View>
                         </View>
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kelurahan (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={dataKelurahan} onChangeText={(text) => setDataKelurahan(text)} placeholder="Masukkan Nama Kelurahan" style={{ fontSize: 15, color: "#545454" }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'location-arrow'} size={18} />
-                                </View>
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={dataKelurahan}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setDataKelurahan(itemValue)}
+                                >
+                                    {renderPickerKelurahan()}
+                                    <Picker.Item label={'-- Pilih --'} value={null} />
+                                </Picker>
                             </View>
                         </View>
 
@@ -1587,7 +1633,6 @@ const DataDiri = ({route}) => {
                         <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
                             <Button
                                 title="Save Draft"
-                                onPress={() => alert('Sukses')}
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
                                 onPress={() => doSubmitKK()}
@@ -1753,7 +1798,6 @@ const DataDiri = ({route}) => {
                         <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
                             <Button
                                 title="Save Draft"
-                                onPress={() => alert('Sukses')}
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
                                 onPress={() => doSubmitDataDiriPribadi()}

@@ -382,7 +382,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         </View>
     )
 
-    const renderFormJenisUsaha = () => (
+    const renderFormJenisUsaha = () => ["2", "3"].includes(valuePembiayaanDariLembaga) &&  (
         <View style={styles.MT16}>
             <Text>Pembiayaan Lembaga Lain</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
@@ -412,7 +412,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         </View>
     )
 
-    const renderFormJumlahAngsuran = () => (
+    const renderFormJumlahAngsuran = () => ["2", "3"].includes(valuePembiayaanDariLembaga) && (
         <View style={styles.MT8}>
             <Text>Jumlah Angsuran</Text>
             <View style={[styles.textInputContainer, { width: withTextInput }]}>

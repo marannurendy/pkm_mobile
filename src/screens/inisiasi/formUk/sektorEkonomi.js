@@ -154,7 +154,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                         navigation.goBack();
                         return;
                     }
-
+                    
                     query = 'UPDATE Table_UK_Master SET status = "4" WHERE namaNasabah = "' + namaNasabah + '"';
 
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
@@ -198,10 +198,10 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
         if (!selectedSektorEkonomi && !valueSektorEkonomi) return null;
         if (!selectedSektorEkonomi && valueSektorEkonomi) {
             const selected = dataEconomicSector.filter(data => data.id === valueSektorEkonomi)[0] || null;
-            return selected && dataEconomicSector.filter(data => data.economicSectorDetail === selected.economicSectorDetail).map((x, i) => <Picker.Item label={x.subSectorDetail} value={x.idSubsector} />)
+            return selected && dataEconomicSector.filter(data => data.economicSectorDetail === selected.economicSectorDetail).map((x, i) => <Picker.Item key={i} label={x.subSectorDetail} value={x.idSubsector} />)
         }
         
-        return dataEconomicSector.filter(data => data.economicSectorDetail === selectedSektorEkonomi.economicSectorDetail).map((x, i) => <Picker.Item label={x.subSectorDetail} value={x.idSubsector} />);
+        return dataEconomicSector.filter(data => data.economicSectorDetail === selectedSektorEkonomi.economicSectorDetail).map((x, i) => <Picker.Item key={i} label={x.subSectorDetail} value={x.idSubsector} />);
     }
 
     const renderHeader = () => (
@@ -238,7 +238,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                         setValueSektorEkonomi(itemValue);
                     }}
                 >
-                    {[...new Map(dataEconomicSector.map(item => [item['economicSectorDetail'], item])).values()].map((x, i) => <Picker.Item label={x.economicSectorDetail} value={x.id} />)}
+                    {[...new Map(dataEconomicSector.map(item => [item['economicSectorDetail'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.economicSectorDetail} value={x.id} />)}
                     <Picker.Item label={'-- Pilih --'} value={null} />
                 </Picker>
             </View>
@@ -255,7 +255,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueSubSektorEkonomi(itemValue)}
                 >
                     {generateSubSektorEkonomi()}
-                    <Picker.Item label={'-- Pilih --'} value={null} />
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                 </Picker>
             </View>
         </View>

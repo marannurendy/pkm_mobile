@@ -770,6 +770,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
         AsyncStorage.setItem('TujuanPembiayaan', JSON.stringify(jsonMasterData.data.tujuanPembiayaan));
         AsyncStorage.setItem('KategoritujuanPembiayaan', JSON.stringify(jsonMasterData.data.kategoritujuanPembiayaan));
         AsyncStorage.setItem('Frekuensi', JSON.stringify(jsonMasterData.data.Frekuensi));
+        AsyncStorage.setItem('WilayahMobile', JSON.stringify(jsonMasterData.data.WilayahMobile));
 
         return;
     }

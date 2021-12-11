@@ -301,7 +301,7 @@ const ProdukPembiayaan = ({ route }) => {
         }
         datas.push({ label: '-- Pilih --', value: null });
 
-        return datas.map((x) => <Picker.Item label={x.label} value={x.value} />);
+        return datas.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />);
     }
 
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
@@ -486,7 +486,7 @@ const ProdukPembiayaan = ({ route }) => {
                         getStorageProduk(itemValue);
                     }}
                 >
-                    {itemsNamaProduk.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                    {itemsNamaProduk.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>
@@ -505,7 +505,7 @@ const ProdukPembiayaan = ({ route }) => {
                         setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex].paymentTerm);
                     }}
                 >
-                    {itemsProdukPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                    {itemsProdukPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>
@@ -555,7 +555,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueKategoriTujuanPembiayaan(itemValue)}
                 >
-                    {itemsKategoriTujuanPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                    {itemsKategoriTujuanPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>
@@ -570,7 +570,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueTujuanPembiayaan(itemValue)}
                 >
-                    {itemsTujuanPembiayaan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                    {itemsTujuanPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>
@@ -585,7 +585,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueTypePencairan(itemValue)}
                 >
-                    {itemsTypePencairan.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                    {itemsTypePencairan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>
@@ -600,7 +600,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueFrekuensiPembayaran(itemValue)}
                 >
-                    {itemsFrekuensiPembayaran.map((x, i) => <Picker.Item label={x.label} value={x.value} />)}
+                    {itemsFrekuensiPembayaran.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>

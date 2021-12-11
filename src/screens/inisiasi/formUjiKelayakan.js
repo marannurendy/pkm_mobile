@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, SafeAreaView, ScrollView, ToastAndroid } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, SafeAreaView, ScrollView, ToastAndroid, Alert } from 'react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -10,22 +10,50 @@ import db from '../../database/Database';
 import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync'
 
 const FormUjiKelayakan = ({route}) => {
-    const { groupName, namaNasabah } = route.params
-    const dimension = Dimensions.get('screen')
-    const navigation = useNavigation()
+    const { groupName, namaNasabah } = route.params;
+    const dimension = Dimensions.get('screen');
+    const navigation = useNavigation();
 
-    let [currentDate, setCurrentDate] = useState();
+    let [currentDate, setCurrentDate] = useState('');
     let [dataDiri, setDataDiri] = useState(false);
     let [screenState, setScreenState] = useState(0);
     let [submitted, setSubmitted] = useState(false);
+    let [branchId, setBranchId] = useState('');
+    let [branchName, setBranchName] = useState('');
+    let [uname, setUname] = useState('');
+    let [aoName, setAoName] = useState('');
+
+    // const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_kartuKeluarga = `formUK_kartuKeluarga_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_keteranganDomisili = `formUK_keteranganDomisili_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_kartuIdentitas = `formUK_kartuIdentitas_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_tandaTanganAOSAO = `formUK_tandaTanganAOSAO_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_tandaTanganNasabah = `formUK_tandaTanganNasabah_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_tandaTanganSuamiPenjamin = `formUK_tandaTanganSuamiPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_tandaTanganKetuaSubKemlompok = `formUK_tandaTanganKetuaSubKemlompok_${namaNasabah.replace(/\s+/g, '')}`;
+    // const key_tandaTanganKetuaKelompok = `formUK_tandaTanganKetuaKelompok_${namaNasabah.replace(/\s+/g, '')}`;
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             setInfo();
+            getUserData();
             getUKMaster();
         });
         return unsubscribe;
     }, [navigation]);
+
+    const getUserData = () => {
+        AsyncStorage.getItem('userData', (error, result) => {
+            if (error) __DEV__ && console.log('userData error:', error);
+
+            let data = JSON.parse(result);
+            setBranchId(data.kodeCabang);
+            setBranchName(data.namaCabang);
+            setUname(data.userName);
+            setAoName(data.AOname);
+        });
+    }
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
@@ -53,260 +81,151 @@ const FormUjiKelayakan = ({route}) => {
 
     const submitHandler = () => null
 
-    const doSubmit = async () => {
+    const doSubmit = () => {
         if (__DEV__) console.log('doSubmit loaded');
 
         if (submitted) return true;
 
         setSubmitted(true);
 
-        const fotoDataPenjamin = await AsyncStorage.getItem(`formUK_dataPenjamin_${namaNasabah}`);
-        const fotoDataSuami = await AsyncStorage.getItem(`formUK_dataSuami_${namaNasabah}`);
-        const fotoKartuKeluarga = await AsyncStorage.getItem(`formUK_kartuKeluarga_${namaNasabah}`);
-        const fotoKeteranganDomisili = await AsyncStorage.getItem(`formUK_keteranganDomisili_${namaNasabah}`);
-        const fotoKartuIdentitas = await AsyncStorage.getItem(`formUK_kartuIdentitas_${namaNasabah}`);
+        // const fotoDataPenjamin = await AsyncStorage.getItem(key_dataPenjamin);
+        // const fotoDataSuami = await AsyncStorage.getItem(key_dataSuami);
+        // const fotoKartuKeluarga = await AsyncStorage.getItem(key_kartuKeluarga);
+        // const fotoKeteranganDomisili = await AsyncStorage.getItem(key_keteranganDomisili);
+        // const fotoKartuIdentitas = await AsyncStorage.getItem(key_kartuIdentitas);
+        // const tandaTanganAOSAO = await AsyncStorage.getItem(key_tandaTanganAOSAO);
+        // const tandaTanganNasabah = await AsyncStorage.getItem(key_tandaTanganNasabah);
+        // const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(key_tandaTanganSuamiPenjamin);
+        // const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(key_tandaTanganKetuaSubKemlompok);
+        // const tandaTanganKetuaKelompok = await AsyncStorage.getItem(key_tandaTanganKetuaKelompok);
 
-        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.nama_lengkap = b.nama_lengkap LEFT JOIN Table_UK_KondisiRumah c ON a.nama_lengkap = c.nama_lengkap LEFT JOIN Table_UK_SektorEkonomi d ON a.nama_lengkap = d.nama_lengkap LEFT JOIN Table_UK_PendapatanNasabah e ON a.nama_lengkap = e.nama_lengkap LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.nama_lengkap = f.nama_lengkap WHERE a.nama_lengkap = "' + namaNasabah + '"';
+        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.nama_lengkap = b.nama_lengkap LEFT JOIN Table_UK_KondisiRumah c ON a.nama_lengkap = c.nama_lengkap LEFT JOIN Table_UK_SektorEkonomi d ON a.nama_lengkap = d.nama_lengkap LEFT JOIN Table_UK_PendapatanNasabah e ON a.nama_lengkap = e.nama_lengkap LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.nama_lengkap = f.nama_lengkap WHERE a.nama_lengkap = "' + namaNasabah + '"';
         db.transaction(
             tx => {
-                tx.executeSql(query, [], (tx, results) => {
+                tx.executeSql(query, [], async (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
+                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
+
+                        const fotoDataPenjamin = await AsyncStorage.getItem(data.foto_ktp_penjamin);
+                        const fotoDataSuami = await AsyncStorage.getItem(data.foto_ktp_suami);
+                        const fotoKartuKeluarga = await AsyncStorage.getItem(data.foto_kk);
+                        const fotoKeteranganDomisili = await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili);
+                        const fotoKartuIdentitas = await AsyncStorage.getItem(data.foto_Kartu_Identitas);
+
+                        const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
+                        const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
+                        const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
+                        const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
+                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
+
+                        let namaBank = data.nama_Bank;
+                        let noRekening = data.no_Rekening;
+                        let pemilikRekening = data.pemilik_Rekening;
+                        if (data.status_Rekening_Bank === 'false') {
+                            namaBank = "null";
+                            noRekening = "null";
+                            pemilikRekening = "null";
+                        }
+
+                        let pembiayaan_Dari_Lembaga = '0';
+                        let Pembiayaan_Dari_LembagaLain = 'null';
+                        if (["2", "3"].includes(data.pembiayaan_Dari_Lembaga) && ["3"].includes(data.Pembiayaan_Dari_LembagaLain)) {
+                            pembiayaan_Dari_Lembaga = '1';
+                            Pembiayaan_Dari_LembagaLain = data.Pembiayaan_Dari_LembagaLainFreetext;
+                        }
+                        if (["2", "3"].includes(data.pembiayaan_Dari_Lembaga) && !["3"].includes(data.Pembiayaan_Dari_LembagaLain)) {
+                            pembiayaan_Dari_Lembaga = '1';
+                            Pembiayaan_Dari_LembagaLain = data.Pembiayaan_Dari_LembagaLain;
+                        }
+
+                        let namaProduk = data.produk_Pembiayaan;
+
                         const body = {
-                            "Alamat": "1",
-                            "AlamatDomisili": "1",
-                            "AlamatPenjamin": "1",
-                            "Berdasarkan_Kemampuan_Angsuran": "1",
-                            "Berdasarkan_Lembaga_Lain": "1",
+                            "Alamat": data.alamat_Identitas,
+                            "AlamatDomisili": data.alamat_Domisili,
+                            "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
+                            "Berdasarkan_Lembaga_Lain": pembiayaan_Dari_Lembaga, // masih ragu
                             "Berdasarkan_Tingkat_Pendapatan": "1",
-                            "CreatedBy": "1",
-                            "CreatedNIP": "1",
-                            "DaerahTinggal": "1",
-                            "Dinding": "1",
-                            "FotoKK": fotoKartuKeluarga,
-                            "FotoKTPPenjamin": fotoDataPenjamin,
-                            "FotoKTPSuami": fotoDataSuami,
-                            "FotoKartuIdentitas": fotoKartuIdentitas,
-                            "FotoPenjamin": "1",
-                            "FotoProspek": "1",
-                            "FotoRumah1": "1",
-                            "FotoRumah2": "1",
-                            "FotoSuami": "1",
-                            "FotoSuketDomisili": fotoKeteranganDomisili,
-                            "Foto_Dinding": "1",
-                            "Foto_Jenis_Atap": "1",
-                            "Foto_Lantai": "1",
-                            "Foto_PraRenov": "1",
-                            "Foto_RAB": "1",
-                            "Foto_Usaha": "1",
-                            "FrekuensiPembiayaan": data.frekuensi_Pembiayaan,
-                            "IDAgama": "1",
-                            "IDJenisPekerjaanSuami": "1",
-                            "ID_SektorEkonomi": "1",
-                            "ID_SubSektorEkonomi": "1",
-                            "IsAdaRekening": "1",
-                            "IsDitempat": "1",
-                            "IsPernyataanDibaca": "1",
-                            "IsProductVerified": "1",
-                            "IsSesuaiDukcapil": "1",
-                            "IsSuami": "1",
-                            "Is_AdaAdaToiletPribadi": "1",
-                            "Is_AdaAksesAirBersih": "1",
-                            "Is_AdaKMPribadi": "1",
-                            "Is_AdaPembiayaanLain": "1",
-                            "Is_AdaToiletPribadi": "1",
-                            "Is_AirBerasa": "1",
-                            "Is_AirBerbau": "1",
-                            "Is_AirBerlumpur": "1",
-                            "Is_AirBerwarna": "1",
-                            "Is_AirNormal": "1",
-                            "Is_AirRefill_utkMandi": "1",
-                            "Is_AirRefill_utkMinum": "1",
-                            "Is_AtapKM_Terbuka": "1",
-                            "Is_AtapKM_Tertutup": "1",
-                            "Is_AtapWC_Terbuka": "1",
-                            "Is_AtapWC_Tertutup": "1",
-                            "Is_Atap_Anyaman": "1",
-                            "Is_Atap_Galvalum": "1",
-                            "Is_Atap_None": "1",
-                            "Is_BakAirWC_Ember": "1",
-                            "Is_BakAirWC_Fiber": "1",
-                            "Is_BakAirWC_Keramik": "1",
-                            "Is_BakAirWC_Semen": "1",
-                            "Is_BakAir_Ember": "1",
-                            "Is_BakAir_Fiber": "1",
-                            "Is_BakAir_Keramik": "1",
-                            "Is_BakAir_Semen": "1",
-                            "Is_BeliAirMandi": "1",
-                            "Is_BeliAirMinum": "1",
-                            "Is_DPVerified": "1",
-                            "Is_DebitAirBerlimpah": "1",
-                            "Is_DebitAirKering": "1",
-                            "Is_DebitAirNormal": "1",
-                            "Is_DindingKM_Anyaman": "1",
-                            "Is_DindingKM_BatakoBata": "1",
-                            "Is_DindingKM_KayuBambu": "1",
-                            "Is_DindingKM_TerbukaSebagian": "1",
-                            "Is_DindingKM_Tertutup": "1",
-                            "Is_DindingWC_Anyaman": "1",
-                            "Is_DindingWC_BatakoBata": "1",
-                            "Is_DindingWC_KayuBambu": "1",
-                            "Is_DindingWC_TerbukaSebagian": "1",
-                            "Is_DindingWC_Tertutup": "1",
-                            "Is_Dinding_None": "1",
-                            "Is_Dinding_Tertutup": "1",
-                            "Is_Dinding_TertutupSebagian": "1",
-                            "Is_KMdanToiletTerpisah": "1",
-                            "Is_KRVerified": "1",
-                            "Is_Lainnya_utkMandi": "1",
-                            "Is_Lainnya_utkMinum": "1",
-                            "Is_LantaiKM_KayuBambu": "1",
-                            "Is_LantaiKM_Keramik": "1",
-                            "Is_LantaiKM_Semen": "1",
-                            "Is_LantaiKM_Tanah": "1",
-                            "Is_LantaiWC_KayuBambu": "1",
-                            "Is_LantaiWC_Keramik": "1",
-                            "Is_LantaiWC_Semen": "1",
-                            "Is_LantaiWC_Tanah": "1",
-                            "Is_Lantai_KayuBambu": "1",
-                            "Is_Lantai_Keramik": "1",
-                            "Is_Lantai_None": "1",
-                            "Is_Lantai_Semen": "1",
-                            "Is_MAtaAir_utkMinum": "1",
-                            "Is_MataAir_utkMandi": "1",
-                            "Is_Material_Batako": "1",
-                            "Is_Material_GRC": "1",
-                            "Is_Material_KayuBambu": "1",
-                            "Is_Material_None": "1",
-                            "Is_Material_Seng": "1",
-                            "Is_PDAM_utkMandi": "1",
-                            "Is_PDAM_utkMinum": "1",
-                            "Is_REnov_Baru": "1",
-                            "Is_Renov_Atap": "1",
-                            "Is_Renov_Dinding": "1",
-                            "Is_Renov_Existing": "1",
-                            "Is_Renov_Lainnya": "1",
-                            "Is_Renov_Lantai": "1",
-                            "Is_SEVerified": "1",
-                            "Is_SUmur_utkMinum": "1",
-                            "Is_SewerWC_Kolam": "1",
-                            "Is_SewerWC_SaluranAir": "1",
-                            "Is_SewerWC_SepticTank": "1",
-                            "Is_SewerWC_Sungai": "1",
-                            "Is_Sewer_Kolam": "1",
-                            "Is_Sewer_SaluranAir": "1",
-                            "Is_Sewer_SepticTank": "1",
-                            "Is_Sewer_Sungai": "1",
-                            "Is_Sumur_utkMandi": "1",
-                            "Is_TPVerified": "1",
-                            "Is_WC_Duduk": "1",
-                            "Is_WC_Jamban": "1",
-                            "Is_WC_Jongkok": "1",
-                            "Is_WC_NonJamban": "1",
-                            "JenisAtap": "1",
-                            "JenisIdentitas": "1",
-                            "JenisIdentitasPenjamin": "1",
-                            "JenisKelamin": "1",
-                            "JenisPembiayaan": "1",
-                            "Jenis_Usaha": "1",
-                            "JmlHariUsaha_perBulan": "1",
-                            "JmlHariUsaha_perBulan_Suami": "1",
-                            "JmlhAnak": "1",
-                            "JmlhTanggungan": "1",
-                            "JumlahPinjaman": "1",
-                            "Jumlah_Pendapatan_Bersih": "1",
-                            "Kabupaten": "1",
-                            "KategoriTujuanPembiayaan": "1",
-                            "Kecamatan": "1",
-                            "Kelurahan": "1",
-                            "Kemampuan_Angsuran": "1",
-                            "Ket_Renov_Lainnya": "1",
-                            "KodePOS": "1",
-                            "KondisiBangunan": "1",
-                            "LamaTinggal": "1",
-                            "LanjutUK": "1",
-                            "Lantai": "1",
-                            "Lbr_Atap": "1",
-                            "Lbr_Dinding": "1",
-                            "Lbr_Lt": "1",
-                            "LokasiSos": "1",
-                            "LokasiTinggal": "1",
-                            "LokasiUK": "1",
-                            "Lokasi_Usaha_1": "1",
-                            "Lokasi_Usaha_2": "1",
-                            "LuasBangunan": "1",
-                            "NamaAyah": "1",
-                            "NamaBank": "1",
-                            "NamaBankPemilik": "1",
-                            "NamaCalonNasabah": "1",
-                            "NamaGadisIBU": "1",
-                            "NamaLengkap": "1",
-                            "NamaPemilikRekening": "1",
-                            "NamaPenjamin": "1",
-                            "NamaProduk": "1",
-                            "NamaSuami": "1",
-                            "Nama_Pembiayaan_Lembaga_Lain": "1",
-                            "Nama_Tipe": "1",
-                            "Nilai_Total": "1",
-                            "NoHP": "1",
-                            "NoIdentitasPenjamin": "1",
-                            "NoKK": "1",
-                            "NoRekening": "1",
-                            "NoTelp": "1",
-                            "NoTelpPenjamin": "1",
-                            "NomorIdentitas": "1",
-                            "NomorRekening": "1",
-                            "OurBranchID": "1",
-                            "Pekerjaan": "1",
-                            "PekerjaanSuami": "1",
-                            "PemilikRekening": "1",
-                            "PendapatanBersih_perBulan": "1",
-                            "PendapatanBersih_perBulan_Suami": "1",
-                            "PendapatanBersih_perHari": "1",
-                            "PendapatanBersih_perHari_Suami": "1",
-                            "PendapatanBersih_perMinggu": "1",
-                            "PendapatanBersih_perMinggu_Suami": "1",
-                            "PendapatanKotor_perHari": "1",
-                            "PendapatanKotor_perHari_Suami": "1",
-                            "Pendidikan": "1",
-                            "PendidikanAnak": "1",
-                            "PendidikanTerkahirSuami": "1",
-                            "PengeluaranKel_perHari": "1",
-                            "PengeluaranKel_perHari_Suami": "1",
-                            "Pj_Atap": "1",
-                            "Pj_Dinding": "1",
-                            "Pj_Lt": "1",
-                            "ProdukPembiayaan": "1",
-                            "RT": "1",
-                            "RW": "1",
-                            "RekeningBank": "1",
-                            "Siklus": "1",
-                            "Sisipan": "1",
-                            "StatusPenjamin": "1",
-                            "StatusRumah": "1",
-                            "Status_Perkawinan": "1",
-                            "Sumber": "1",
-                            "TTD_AO": data.tanda_Tangan_Nasabah,
-                            "TTD_KC_SAO": data.tanda_Tangan_Nasabah,
-                            "TTD_KK": data.tanda_Tangan_Nasabah,
-                            "TTD_KSK": data.tanda_Tangan_Nasabah,
-                            "TTD_Nasabah": data.tanda_Tangan_Nasabah,
-                            "TTD_Penjamin": data.tanda_Tangan_SuamiPenjamin,
-                            "TTD_Suami": data.tanda_Tangan_SuamiPenjamin,
-                            "TanggalLahir": "2021-12-20",
-                            "TanggalReleaseID": "2021-12-20",
-                            "TanggalSos": "2021-12-20",
-                            "TempatLahir": "1",
-                            "TempatLahirSuami": "1",
-                            "TermPembiayaan": "1",
-                            "TglLahirSuami": "2021-12-20",
-                            "Tingkat_Pendapatan_Bersih": "1",
-                            "TujuanPembiayaan": "1",
-                            "TypePencairan": "1",
-                            "Umur": "1"
-                        };
+                            "CreatedBy": aoName,
+                            "CreatedNIP": uname,
+                            "Dinding": data.dinding,
+                            "FotoKK": fotoKartuKeluarga.split(',')[1],
+                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1],
+                            "FotoKTPSuami": fotoDataSuami.split(',')[1],
+                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
+                            "FotoSuketDomisili": fotoKeteranganDomisili.split(',')[1],
+                            "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
+                            "ID_SektorEkonomi": data.sektor_Ekonomi,
+                            "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi,
+                            "IsAdaRekening": data.status_Rekening_Bank === 'true' ? '1' : '0',
+                            "IsSuamiDitempat": data.suami_diluar_kota === 'true' ? '1' : '0',
+                            "Is_AdaAdaToiletPribadi": data.sanitasi_KamarMandi === 'true' ? '1' : '0',
+                            "Is_AdaAksesAirBersih": data.sanitasi_Akses_AirBersih === 'true' ? '1' : '0',
+                            "Is_AdaPembiayaanLain": pembiayaan_Dari_Lembaga,
+                            "JenisAtap": data.jenis_Atap,
+                            "JenisIdentitas": data.jenis_Kartu_Identitas,
+                            "JenisPembiayaan": data.jenis_Pembiayaan,
+                            "Jenis_Usaha": data.jenis_Usaha,
+                            "JmlHariUsaha_perBulan": data.jumlah_Hari_Usaha_Perbulan,
+                            "JmlHariUsaha_perBulan_Suami": data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan,
+                            "JmlhAnak": data.jumlah_anak,
+                            "JmlhTanggungan": data.jumlah_tanggungan,
+                            "JumlahPinjaman": data.jumlah_Pinjaman,
+                            "Kabupaten": data.kabupaten,
+                            "KategoriTujuanPembiayaan": data.kategori_Tujuan_Pembiayaan,
+                            "Kecamatan": data.kecamatan,
+                            "Kelurahan": data.kelurahan,
+                            "Kemampuan_Angsuran": data.frekuensi_Pembayaran,
+                            "KondisiBangunan": data.kondisi_Bangunan,
+                            "LamaTinggal": data.lama_tinggal,
+                            "Lantai": data.lantai,
+                            "LokasiSos": groupName,
+                            "LokasiUK": groupName,
+                            "LuasBangunan": data.luas_Bangunan,
+                            "NamaAyah": data.nama_ayah,
+                            "NamaBank": namaBank,
+                            "NamaLengkap": data.nama_lengkap,
+                            "NamaPemilikRekening": pemilikRekening, // double
+                            "NamaPenjamin": data.nama_penjamin,
+                            "NamaProduk": namaProduk,
+                            "NamaSuami": data.nama_suami,
+                            "Nama_Pembiayaan_Lembaga_Lain": Pembiayaan_Dari_LembagaLain,
+                            "NoHP": data.no_tlp_nasabah,
+                            "NoKK": data.no_kk,
+                            "NoRekening": noRekening, // double
+                            "NomorIdentitas": data.nomor_Identitas,
+                            "NomorRekening": noRekening, // double
+                            "OurBranchID": branchId,
+                            "PemilikRekening": pemilikRekening, // double
+                            "PendapatanBersih_perBulan": data.pendapatan_Bersih_Perbulan,
+                            "PendapatanBersih_perBulan_Suami": data.pendapatanSuami_pendapatan_Bersih_Perbulan,
+                            "PendapatanBersih_perHari": data.pendapatan_Bersih_Perhari,
+                            "PendapatanBersih_perHari_Suami": data.pendapatanSuami_Pendapatan_Bersih_Perhari,
+                            "PendapatanBersih_perMinggu": data.pendapatan_Bersih_Perminggu,
+                            "PendapatanBersih_perMinggu_Suami": data.pendapatanSuami_pendapatan_Bersih_Perminggu,
+                            "PendapatanKotor_perHari": data.pendapatan_Kotor_perhari,
+                            "PendapatanKotor_perHari_Suami": data.pendapatanSuami_Kotor_Perhari,
+                            "PengeluaranKel_perHari": data.pengeluaran_Keluarga_Perhari,
+                            "PengeluaranKel_perHari_Suami": data.pendapatanSuami_Pengeluaran_Keluarga_Perhari,
+                            "ProdukPembiayaan": data.produk_Pembiayaan,
+                            "Provinsi": data.provinsi,
+                            "StatusPenjamin": data.status_hubungan_keluarga,
+                            "StatusRumah": data.status_rumah_tinggal,
+                            "Status_Perkawinan": data.status_Perkawinan,
+                            "TTD_AO": tandaTanganAOSAO.split(',')[1],
+                            "TTD_KK": tandaTanganKetuaKelompok.split(',')[1],
+                            "TTD_KSK": tandaTanganKetuaSubKemlompok.split(',')[1],
+                            "TTD_Nasabah": tandaTanganNasabah.split(',')[1],
+                            "TTD_Penjamin": tandaTanganSuamiPenjamin.split(',')[1],
+                            "TanggalLahir": data.tanggal_Lahir,
+                            "TempatLahir": data.tempat_lahir,
+                            "TermPembiayaan": data.term_Pembiayaan,
+                            "TujuanPembiayaan": data.tujuan_Pembiayaan,
+                            "TypePencairan": data.type_Pencairan
+                        }
 
                         fetch(ApiSyncPostInisiasi + 'post_prospek_uk', {
                             method: 'POST',
@@ -320,7 +239,63 @@ const FormUjiKelayakan = ({route}) => {
                         .then((response) => response.json())
                         .then((responseJSON) => {
                             console.error('$post /post_inisiasi/post_prospek_uk response', responseJSON);
-                            ToastAndroid.show("Submit UK berhasil!", ToastAndroid.SHORT);
+
+                            if (responseJSON.responseCode === 200) {
+                                const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql(find, [], (txFind, resultsFind) => {
+                                            let dataLengthFind = resultsFind.rows.length
+                                            if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                                            let query = '';
+                                            if (dataLengthFind === 0) {
+                                                alert('UK Master not found');
+                                                navigation.goBack();
+                                                return;
+                                            }
+
+                                            query = 'UPDATE Table_UK_Master SET status = "7" WHERE namaNasabah = "' + namaNasabah + '"';
+
+                                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+
+                                            db.transaction(
+                                                tx => {
+                                                    tx.executeSql(query);
+                                                }, function(error) {
+                                                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                                                    setSubmmitted(false);
+                                                },function() {
+                                                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+
+                                                    if (__DEV__) {
+                                                        db.transaction(
+                                                            tx => {
+                                                                tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                                                    if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                                                })
+                                                            }, function(error) {
+                                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                                            }, function() {}
+                                                        );
+                                                    }
+                                                    const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
+                                                    Alert.alert(responseJSON.responseDescription, message);
+                                                    setSubmitted(false);
+                                                    navigation.goBack();
+                                                }
+                                            );
+                                        }, function(error) {
+                                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                                            setSubmmitted(false);
+                                        })
+                                    }
+                                );
+
+                                return true;
+                            }
+
+                            Alert.alert('Error', responseJSON.responseDescription);
                             setSubmitted(false);
                         })
                         .catch((error) => {
@@ -364,7 +339,7 @@ const FormUjiKelayakan = ({route}) => {
             </View>
 
             <View style={{flex: 1, marginHorizontal: 20, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFF'}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan</Text>
+                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan {screenState}</Text>
 
                 <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
 
@@ -470,14 +445,16 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <View style={{alignItems: 'center', marginBottom: 20}}>
-                        <Button
-                            title={submitted ? 'MENGIRIM...' : "SUBMIT UK"}
-                            onPress={() => screenState > 5 || submitted === false ? doSubmit() : null}
-                            buttonStyle={{backgroundColor: screenState > 5 || submitted === false ? '#D62828' : 'gray', width: dimension.width/2}}
-                            titleStyle={{fontSize: 20, fontWeight: 'bold'}}
-                        />
-                    </View>
+                    {screenState < 7 && (
+                        <View style={{alignItems: 'center', marginBottom: 20}}>
+                            <Button
+                                title={submitted ? 'MENGIRIM...' : "SUBMIT UK"}
+                                onPress={() => screenState > 5 ? doSubmit() : null}
+                                buttonStyle={{backgroundColor: screenState > 5 ? '#D62828' : 'gray', width: dimension.width/2}}
+                                titleStyle={{fontSize: 20, fontWeight: 'bold'}}
+                            />
+                        </View>
+                    )}
 
                 </ScrollView>
 

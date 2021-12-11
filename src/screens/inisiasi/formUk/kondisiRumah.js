@@ -255,7 +255,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueLuasBangunan(itemValue)}
                 >
-                    {dataDwellingCondition.filter(data => data.category === 'Luas Bangunan').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    {dataDwellingCondition.filter(data => data.category === 'Luas Bangunan').map((x, i) => <Picker.Item key={i} label={x.categoryDetail} value={x.id} />)}
                     <Picker.Item label={'-- Pilih --'} value={null} />
                 </Picker>
             </View>
@@ -271,7 +271,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueKondisiBangunan(itemValue)}
                 >
-                    {dataDwellingCondition.filter(data => data.category === 'Kondisi Bangunan').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    {dataDwellingCondition.filter(data => data.category === 'Kondisi Bangunan').map((x, i) => <Picker.Item key={i} label={x.categoryDetail} value={x.id} />)}
                     <Picker.Item label={'-- Pilih --'} value={null} />
                 </Picker>
             </View>
@@ -287,7 +287,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueJenisAtap(itemValue)}
                 >
-                    {dataDwellingCondition.filter(data => data.category === 'Jenis Atap').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    {dataDwellingCondition.filter(data => data.category === 'Jenis Atap').map((x, i) => <Picker.Item key={i} label={x.categoryDetail} value={x.id} />)}
                     <Picker.Item label={'-- Pilih --'} value={null} />
                 </Picker>
             </View>
@@ -303,7 +303,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueDinding(itemValue)}
                 >
-                    {dataDwellingCondition.filter(data => data.category === 'Dinding').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    {dataDwellingCondition.filter(data => data.category === 'Dinding').map((x, i) => <Picker.Item key={i} label={x.categoryDetail} value={x.id} />)}
                     <Picker.Item label={'-- Pilih --'} value={null} />
                 </Picker>
             </View>
@@ -319,7 +319,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueLantai(itemValue)}
                 >
-                    {dataDwellingCondition.filter(data => data.category === 'Lantai').map((x, i) => <Picker.Item label={x.categoryDetail} value={x.id} />)}
+                    {dataDwellingCondition.filter(data => data.category === 'Lantai').map((x, i) => <Picker.Item key={i} label={x.categoryDetail} value={x.id} />)}
                     <Picker.Item label={'-- Pilih --'} value={null} />
                 </Picker>
             </View>

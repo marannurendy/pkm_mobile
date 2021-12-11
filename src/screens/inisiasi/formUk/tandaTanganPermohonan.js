@@ -27,18 +27,40 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const [valueJumlahPembiayaanYangDiajukan, setValueJumlahPembiayaanYangDiajukan] = useState('');
     const [valueJangkaWaktu, setValueJangkaWaktu] = useState('');
     const [valueFrekuensiPembiayaan, setValueFrekuensiPembiayaan] = useState('');
+    const [valueTandaTanganAOSAO, setValueTandaTanganAOSAO] = useState(null);
     const [valueTandaTanganNasabah, setValueTandaTanganNasabah] = useState(null);
     const [valueTandaTanganSuamiPenjamin, setValueTandaTanganSuamiPenjamin] = useState(null);
     const [valueTandaTanganKetuaSubKemlompok, setValueTandaTanganKetuaSubKemlompok] = useState(null);
     const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKemlompok] = useState(null);
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [submmitted, setSubmmitted] = useState(false);
+    const [valueNamaTandaTanganNasabah, setValueNamaTandaTanganNasabah] = useState('');
+    const [valueNamaTandaTanganSuamiPenjamin, setValueNamaTandaTanganSuamiPenjamin] = useState('');
+    const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
+    const [valueNamaTandaTanganKetuaKelompok, setValueNamaTandaTanganKetuaKelompok] = useState('');
+    const [aoName, setAoName] = useState('');
+
+    const key_tandaTanganAOSAO = `formUK_tandaTanganAOSAO_${namaNasabah.replace(/\s+/g, '')}`;
+    const key_tandaTanganNasabah = `formUK_tandaTanganNasabah_${namaNasabah.replace(/\s+/g, '')}`;
+    const key_tandaTanganSuamiPenjamin = `formUK_tandaTanganSuamiPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
+    const key_tandaTanganKetuaSubKemlompok = `formUK_tandaTanganKetuaSubKemlompok_${namaNasabah.replace(/\s+/g, '')}`;
+    const key_tandaTanganKetuaKelompok = `formUK_tandaTanganKetuaKelompok_${namaNasabah.replace(/\s+/g, '')}`;
 
     useEffect(() => {
+        getUserData();
         setInfo();
         getUKPermohonanPembiayaan();
         getUKProdukPembiayaan();
-    }, [])
+    }, []);
+
+    const getUserData = () => {
+        AsyncStorage.getItem('userData', (error, result) => {
+            if (error) __DEV__ && console.log('userData error:', error);
+
+            let data = JSON.parse(result);
+            setAoName(data.AOname);
+        });
+    }
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
@@ -49,19 +71,31 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         let queryUKDataDiri = `SELECT * FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = '` + namaNasabah + `';`
         db.transaction(
             tx => {
-                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_PermohonanPembiayaan length:', dataLength);
                     if (dataLength > 0) {
                         
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
+
+                        const tandaTanganAOSAO = await AsyncStorage.getItem(key_tandaTanganAOSAO);
+                        const tandaTanganNasabah = await AsyncStorage.getItem(key_tandaTanganNasabah);
+                        const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(key_tandaTanganSuamiPenjamin);
+                        const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(key_tandaTanganKetuaSubKemlompok);
+                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(key_tandaTanganKetuaKelompok);
+
                         if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
                         if (data.frekuensi_Pembiayaan !== null && typeof data.frekuensi_Pembiayaan !== 'undefined') setValueFrekuensiPembiayaan(data.frekuensi_Pembiayaan);
-                        if (data.tanda_Tangan_Nasabah !== null && typeof data.tanda_Tangan_Nasabah !== 'undefined') setValueTandaTanganNasabah(data.tanda_Tangan_Nasabah);
-                        if (data.tanda_Tangan_SuamiPenjamin !== null && typeof data.tanda_Tangan_SuamiPenjamin !== 'undefined') setValueTandaTanganSuamiPenjamin(data.tanda_Tangan_SuamiPenjamin);
-                        if (data.tanda_Tangan_Ketua_SubKelompok !== null && typeof data.tanda_Tangan_Ketua_SubKelompok !== 'undefined') setValueTandaTanganKetuaSubKemlompok(data.tanda_Tangan_Ketua_SubKelompok);
-                        if (data.tanda_Tangan_Ketua_Kelompok !== null && typeof data.tanda_Tangan_Ketua_Kelompok !== 'undefined') setValueTandaTanganKetuaKemlompok(data.tanda_Tangan_Ketua_Kelompok);
+                        if (data.tanda_Tangan_AOSAO !== null && typeof data.tanda_Tangan_AOSAO !== 'undefined') setValueTandaTanganAOSAO(tandaTanganAOSAO);
+                        if (data.tanda_Tangan_Nasabah !== null && typeof data.tanda_Tangan_Nasabah !== 'undefined') setValueTandaTanganNasabah(tandaTanganNasabah);
+                        if (data.tanda_Tangan_SuamiPenjamin !== null && typeof data.tanda_Tangan_SuamiPenjamin !== 'undefined') setValueTandaTanganSuamiPenjamin(tandaTanganSuamiPenjamin);
+                        if (data.tanda_Tangan_Ketua_SubKelompok !== null && typeof data.tanda_Tangan_Ketua_SubKelompok !== 'undefined') setValueTandaTanganKetuaSubKemlompok(tandaTanganKetuaSubKemlompok);
+                        if (data.tanda_Tangan_Ketua_Kelompok !== null && typeof data.tanda_Tangan_Ketua_Kelompok !== 'undefined') setValueTandaTanganKetuaKemlompok(tandaTanganKetuaKelompok);
+                        if (data.nama_tanda_Tangan_Nasabah !== null && typeof data.nama_tanda_Tangan_Nasabah !== 'undefined') setValueNamaTandaTanganNasabah(data.nama_tanda_Tangan_Nasabah);
+                        if (data.nama_tanda_Tangan_SuamiPenjamin !== null && typeof data.nama_tanda_Tangan_SuamiPenjamin !== 'undefined') setValueNamaTandaTanganSuamiPenjamin(data.nama_tanda_Tangan_SuamiPenjamin);
+                        if (data.nama_tanda_Tangan_Ketua_SubKelompok !== null && typeof data.nama_tanda_Tangan_Ketua_SubKelompok !== 'undefined') setValueNamaTandaTanganKetuaSubKelompok(data.nama_tanda_Tangan_Ketua_SubKelompok);
+                        if (data.nama_tanda_Tangan_Ketua_Kelompok !== null && typeof data.nama_tanda_Tangan_Ketua_Kelompok !== 'undefined') setValueNamaTandaTanganKetuaKelompok(data.nama_tanda_Tangan_Ketua_Kelompok);
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_PermohonanPembiayaan error:', error.message);
@@ -112,10 +146,22 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueJumlahPembiayaanYangDiajukan:', valueJumlahPembiayaanYangDiajukan);
         if (__DEV__) console.log('doSubmitDraft valueJangkaWaktu:', valueJangkaWaktu);
         if (__DEV__) console.log('doSubmitDraft valueFrekuensiPembiayaan:', valueFrekuensiPembiayaan);
+        if (__DEV__) console.log('doSubmitDraft valueTandaTanganAOSAO:', valueTandaTanganAOSAO);
         if (__DEV__) console.log('doSubmitDraft valueTandaTanganNasabah:', valueTandaTanganNasabah);
         if (__DEV__) console.log('doSubmitDraft valueTandaTanganSuamiPenjamin:', valueTandaTanganSuamiPenjamin);
         if (__DEV__) console.log('doSubmitDraft valueTandaTanganKetuaSubKemlompok:', valueTandaTanganKetuaSubKemlompok);
         if (__DEV__) console.log('doSubmitDraft valueTandaTanganKetuaKelompok:', valueTandaTanganKetuaKelompok);
+        
+        if (__DEV__) console.log('doSubmitDraft valueNamaTandaTanganNasabah:', valueNamaTandaTanganNasabah);
+        if (__DEV__) console.log('doSubmitDraft valueNamaTandaTanganSuamiPenjamin:', valueNamaTandaTanganSuamiPenjamin);
+        if (__DEV__) console.log('doSubmitDraft valueNamaTandaTanganKetuaSubKelompok:', valueNamaTandaTanganKetuaSubKelompok);
+        if (__DEV__) console.log('doSubmitDraft valueNamaTandaTanganKetuaKelompok:', valueNamaTandaTanganKetuaKelompok);
+
+        AsyncStorage.setItem(key_tandaTanganAOSAO, valueTandaTanganAOSAO);
+        AsyncStorage.setItem(key_tandaTanganNasabah, valueTandaTanganNasabah);
+        AsyncStorage.setItem(key_tandaTanganSuamiPenjamin, valueTandaTanganSuamiPenjamin);
+        AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, valueTandaTanganKetuaSubKemlompok);
+        AsyncStorage.setItem(key_tandaTanganKetuaKelompok, valueTandaTanganKetuaKelompok);
 
         const find = 'SELECT * FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
@@ -126,9 +172,9 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok) values ("' + namaNasabah + '","' + valueProdukPembiayaan + '","' + valueJumlahPembiayaanYangDiajukan + '","' + valueJangkaWaktu + '","' + valueFrekuensiPembiayaan + '","' + valueTandaTanganNasabah + '","' + valueTandaTanganSuamiPenjamin + '","' + valueTandaTanganKetuaSubKemlompok + '","' + valueTandaTanganKetuaKelompok + '")';
+                        query = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok) values ("' + namaNasabah + '","' + valueProdukPembiayaan + '","' + valueJumlahPembiayaanYangDiajukan + '","' + valueJangkaWaktu + '","' + valueFrekuensiPembiayaan + '","' + key_tandaTanganAOSAO + '","' + key_tandaTanganNasabah + '","' + key_tandaTanganSuamiPenjamin + '","' + key_tandaTanganKetuaSubKemlompok + '","' + key_tandaTanganKetuaKelompok + '","' + valueNamaTandaTanganNasabah + '","' + valueNamaTandaTanganSuamiPenjamin + '","' + valueNamaTandaTanganKetuaSubKelompok + '","' + valueNamaTandaTanganKetuaKelompok + '")';
                     } else {
-                        query = 'UPDATE Table_UK_PermohonanPembiayaan SET produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pembiayaan_Diajukan = "' + valueJumlahPembiayaanYangDiajukan + '", jangka_Waktu = "' + valueJangkaWaktu + '", frekuensi_Pembiayaan = "' + valueFrekuensiPembiayaan + '", tanda_Tangan_Nasabah = "' + valueTandaTanganNasabah + '", tanda_Tangan_SuamiPenjamin = "' + valueTandaTanganSuamiPenjamin + '", tanda_Tangan_Ketua_SubKelompok = "' + valueTandaTanganKetuaSubKemlompok + '", tanda_Tangan_Ketua_Kelompok = "' + valueTandaTanganKetuaKelompok + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_PermohonanPembiayaan SET produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pembiayaan_Diajukan = "' + valueJumlahPembiayaanYangDiajukan + '", jangka_Waktu = "' + valueJangkaWaktu + '", frekuensi_Pembiayaan = "' + valueFrekuensiPembiayaan + '", tanda_Tangan_AOSAO = "' + key_tandaTanganAOSAO + '", tanda_Tangan_Nasabah = "' + key_tandaTanganNasabah + '", tanda_Tangan_SuamiPenjamin = "' + key_tandaTanganSuamiPenjamin + '", tanda_Tangan_Ketua_SubKelompok = "' + key_tandaTanganKetuaSubKemlompok + '", tanda_Tangan_Ketua_Kelompok = "' + key_tandaTanganKetuaKelompok + '", nama_tanda_Tangan_Nasabah = "' + valueNamaTandaTanganNasabah + '", nama_tanda_Tangan_SuamiPenjamin = "' + valueNamaTandaTanganSuamiPenjamin + '", nama_tanda_Tangan_Ketua_SubKelompok = "' + valueNamaTandaTanganKetuaSubKelompok + '", nama_tanda_Tangan_Ketua_Kelompok = "' + valueNamaTandaTanganKetuaKelompok + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -167,6 +213,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
+        if (!valueTandaTanganAOSAO || typeof valueTandaTanganAOSAO === 'undefined' || valueTandaTanganAOSAO === '' || valueTandaTanganAOSAO === 'null') return alert('Tanda Tangan AO/SAO (*) tidak boleh kosong');
         if (!valueTandaTanganNasabah || typeof valueTandaTanganNasabah === 'undefined' || valueTandaTanganNasabah === '' || valueTandaTanganNasabah === 'null') return alert('Tanda Tangan Nasabah (*) tidak boleh kosong');
         if (!valueTandaTanganSuamiPenjamin || typeof valueTandaTanganSuamiPenjamin === 'undefined' || valueTandaTanganSuamiPenjamin === '' || valueTandaTanganSuamiPenjamin === 'null') return alert('Tanda Tangan Suami/Penjamin (*) tidak boleh kosong');
         if (!valueTandaTanganKetuaSubKemlompok || typeof valueTandaTanganKetuaSubKemlompok === 'undefined' || valueTandaTanganKetuaSubKemlompok === '' || valueTandaTanganKetuaSubKemlompok === 'null') return alert('Tanda Tangan Ketua Sub Kelompok (*) tidak boleh kosong');
@@ -194,16 +241,16 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
 
                     query = 'UPDATE Table_UK_Master SET status = "6" WHERE namaNasabah = "' + namaNasabah + '"';
 
-                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+                    if (__DEV__) console.log('doSubmitSave db.transaction insert/update query:', query);
 
                     db.transaction(
                         tx => {
                             tx.executeSql(query);
                         }, function(error) {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                            if (__DEV__) console.log('doSubmitSave db.transaction insert/update error:', error.message);
                             setSubmmitted(false);
                         },function() {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                            if (__DEV__) console.log('doSubmitSave db.transaction insert/update success');
 
                             if (__DEV__) {
                                 db.transaction(
@@ -222,7 +269,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         }
                     );
                 }, function(error) {
-                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                    if (__DEV__) console.log('doSubmitSave db.transaction find error:', error.message);
                     setSubmmitted(false);
                 })
             }
@@ -238,7 +285,17 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         if (key === 'tandaTanganSuamiPenjamin') return setValueTandaTanganSuamiPenjamin(data);
         if (key === 'tandaTanganKetuaSubKemlompok') return setValueTandaTanganKetuaSubKemlompok(data);
         if (key === 'tandaTanganKetuaKemlompok') return setValueTandaTanganKetuaKemlompok(data);
+        if (key === 'tandaTanganAOSAO') return setValueTandaTanganAOSAO(data);
     };
+
+    const formatter = (price, sign = 'Rp. ') => {
+        const pieces = parseFloat(price).toFixed(2).split('');
+        let ii = pieces.length - 3
+        while ((ii-=3) > 0) {
+            pieces.splice(ii, 0, ',')
+        }
+        return sign + pieces.join('')
+    }
 
     const renderHeader = () => (
         <>
@@ -286,7 +343,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
             <Text>Jumlah Pembiayaan Yang Diajukan</Text>
             <View style={[styles.textInputContainer, { width: withTextInput }]}>
                 <View style={styles.F1}>
-                    <Text style={styles.P4}>{valueJumlahPembiayaanYangDiajukan}</Text>
+                    <Text style={styles.P4}>{formatter(valueJumlahPembiayaanYangDiajukan || 0)}</Text>
                 </View>
                 <View />
             </View>
@@ -317,6 +374,29 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         </View>
     )
 
+    const renderFormTandaTanganAOSAO = () => (
+        <View style={styles.MT8}>
+            <Text>Tanda Tangan AO/SAO (*)</Text>
+            <View style={stylesheet.boxTTD}>
+                {valueTandaTanganAOSAO && (
+                    <Image
+                        resizeMode={"contain"}
+                        style={{ width: 335, height: 215 }}
+                        source={{ uri: valueTandaTanganAOSAO }}
+                    />
+                )}
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <Text style={styles.P4}>{aoName}</Text>
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 16 }]}>*isi tanda tangan dengan benar</Text>
+                <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganAOSAO', onSelectSign: onSelectSign })} />
+            </View>
+        </View>
+    )
+
     const renderFormTandaTanganNasabah = () => (
         <View style={styles.MT8}>
             <Text>Tanda Tangan Nasabah (*)</Text>
@@ -328,7 +408,18 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         source={{ uri: valueTandaTanganNasabah }}
                     />
                 )}
-                <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <TextInput 
+                            value={valueNamaTandaTanganNasabah} 
+                            onChangeText={(text) => setValueNamaTandaTanganNasabah(text)}
+                            placeholder='Nama Lengkap (*)'
+                            style={styles.F1}
+                        />
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 16 }]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganNasabah', onSelectSign: onSelectSign })} />
             </View>
         </View>
@@ -345,7 +436,18 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         source={{ uri: valueTandaTanganSuamiPenjamin }}
                     />
                 )}
-                <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <TextInput 
+                            value={valueNamaTandaTanganSuamiPenjamin} 
+                            onChangeText={(text) => setValueNamaTandaTanganSuamiPenjamin(text)}
+                            placeholder='Nama Lengkap (*)'
+                            style={styles.F1}
+                        />
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 16 }]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganSuamiPenjamin', onSelectSign: onSelectSign })} />
             </View>
         </View>
@@ -362,7 +464,18 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         source={{ uri: valueTandaTanganKetuaSubKemlompok }}
                     />
                 )}
-                <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <TextInput 
+                            value={valueNamaTandaTanganKetuaSubKelompok} 
+                            onChangeText={(text) => setValueNamaTandaTanganKetuaSubKelompok(text)}
+                            placeholder='Nama Lengkap (*)'
+                            style={styles.F1}
+                        />
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 16 }]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaSubKemlompok', onSelectSign: onSelectSign })} />
             </View>
         </View>
@@ -379,7 +492,18 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         source={{ uri: valueTandaTanganKetuaKelompok }}
                     />
                 )}
-                <Text style={[styles.note, { color: 'red', marginLeft: 0 }]}>*isi tanda tangan dengan benar</Text>
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <TextInput 
+                            value={valueNamaTandaTanganKetuaKelompok} 
+                            onChangeText={(text) => setValueNamaTandaTanganKetuaKelompok(text)}
+                            placeholder='Nama Lengkap (*)'
+                            style={styles.F1}
+                        />
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 16 }]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaKemlompok', onSelectSign: onSelectSign })} />
             </View>
         </View>
@@ -392,6 +516,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
             {renderFormJumlahPembiayaanYangDiajukan()}
             {renderFormJangkaWaktu()}
             {renderFormFrekuensiPembiayaan()}
+            {renderFormTandaTanganAOSAO()}
             {renderFormTandaTanganNasabah()}
             {renderFormTandaTanganSuamiPenjamin()}
             {renderFormTandaTanganKetuaSubKelompok()}
