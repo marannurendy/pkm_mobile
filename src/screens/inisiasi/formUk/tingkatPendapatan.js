@@ -128,6 +128,14 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPerbulanSuami:', valuePendapatanBersihPerbulanSuami);
         if (__DEV__) console.log('doSubmitDraft valuePendapatanBersihPermingguSuami:', valuePendapatanBersihPermingguSuami);
 
+        const pendapatanBersihPerHari = (parseInt(valuePedapatanKotorPerhari || 0) - parseInt(valuePengeluaranKeluargaPerhari || 0)) || 0;
+        const pendapatanBersihPerBulan = (parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1) || 0;
+        const pendapatanBersihPerMinggu = (((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1)) / 4) || 0;
+
+        const pendapatanBersihPerHariSuami = (parseInt(valuePedapatanKotorPerhariSuami || 0) - parseInt(valuePengeluaranKeluargaPerhariSuami || 0)) || 0;
+        const pendapatanBersihPerBulanSuami = (parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1) || 0;
+        const pendapatanBersihPerMingguSuami = (((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0;
+
         const find = 'SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
             tx => {
@@ -137,9 +145,9 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu) values ("' + namaNasabah + '","' + valuePedapatanKotorPerhari + '","' + valuePengeluaranKeluargaPerhari + '","' + valuePendapatanBersihPerhari + '","' + valueJumlahHariUsahPerbulan + '","' + valuePendapatanBersihPerbulan + '","' + valuePendapatanBersihPerminggu + '","' + valuePembiayaanDariLembaga + '","' + valuePembiayaanLembagaLain + '","' + valuePembiayaanLembagaLainFreetext + '","' + valueJumlahAngsuran + '","' + valuePedapatanKotorPerhariSuami + '","' + valuePengeluaranKeluargaPerhariSuami + '","' + valuePendapatanBersihPerhariSuami + '","' + valueJumlahHariUsahPerbulanSuami + '","' + valuePendapatanBersihPerbulanSuami + '","' + valuePendapatanBersihPermingguSuami + '")';
+                        query = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu) values ("' + namaNasabah + '","' + valuePedapatanKotorPerhari + '","' + valuePengeluaranKeluargaPerhari + '","' + pendapatanBersihPerHari + '","' + valueJumlahHariUsahPerbulan + '","' + pendapatanBersihPerBulan + '","' + pendapatanBersihPerMinggu + '","' + valuePembiayaanDariLembaga + '","' + valuePembiayaanLembagaLain + '","' + valuePembiayaanLembagaLainFreetext + '","' + valueJumlahAngsuran + '","' + valuePedapatanKotorPerhariSuami + '","' + valuePengeluaranKeluargaPerhariSuami + '","' + pendapatanBersihPerHariSuami + '","' + valueJumlahHariUsahPerbulanSuami + '","' + pendapatanBersihPerBulanSuami + '","' + pendapatanBersihPerMingguSuami + '")';
                     } else {
-                        query = 'UPDATE Table_UK_PendapatanNasabah SET pendapatan_Kotor_perhari = "' + valuePedapatanKotorPerhari + '", pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhari + '", pendapatan_Bersih_Perhari = "' + valuePendapatanBersihPerhari + '", jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulan + '", pendapatan_Bersih_Perbulan = "' + valuePendapatanBersihPerbulan + '", pendapatan_Bersih_Perminggu = "' + valuePendapatanBersihPerminggu + '", pembiayaan_Dari_Lembaga = "' + valuePembiayaanDariLembaga + '", Pembiayaan_Dari_LembagaLain = "' + valuePembiayaanLembagaLain + '", Pembiayaan_Dari_LembagaLainFreetext = "' + valuePembiayaanLembagaLainFreetext + '", jumlah_Angsuran = "' + valueJumlahAngsuran + '", pendapatanSuami_Kotor_Perhari = "' + valuePedapatanKotorPerhariSuami + '", pendapatanSuami_Pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhariSuami + '", pendapatanSuami_Pendapatan_Bersih_Perhari = "' + valuePendapatanBersihPerhariSuami + '", pendapatanSuami_jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perbulan = "' + valuePendapatanBersihPerbulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perminggu = "' + valuePendapatanBersihPermingguSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_PendapatanNasabah SET pendapatan_Kotor_perhari = "' + valuePedapatanKotorPerhari + '", pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhari + '", pendapatan_Bersih_Perhari = "' + pendapatanBersihPerHari + '", jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulan + '", pendapatan_Bersih_Perbulan = "' + pendapatanBersihPerBulan + '", pendapatan_Bersih_Perminggu = "' + pendapatanBersihPerMinggu + '", pembiayaan_Dari_Lembaga = "' + valuePembiayaanDariLembaga + '", Pembiayaan_Dari_LembagaLain = "' + valuePembiayaanLembagaLain + '", Pembiayaan_Dari_LembagaLainFreetext = "' + valuePembiayaanLembagaLainFreetext + '", jumlah_Angsuran = "' + valueJumlahAngsuran + '", pendapatanSuami_Kotor_Perhari = "' + valuePedapatanKotorPerhariSuami + '", pendapatanSuami_Pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhariSuami + '", pendapatanSuami_Pendapatan_Bersih_Perhari = "' + pendapatanBersihPerHariSuami + '", pendapatanSuami_jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perbulan = "' + pendapatanBersihPerBulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perminggu = "' + pendapatanBersihPerMingguSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -235,6 +243,15 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         );
     }
 
+    const formatter = (price, sign = 'Rp. ') => {
+        const pieces = parseFloat(price).toFixed(2).split('');
+        let ii = pieces.length - 3
+        while ((ii-=3) > 0) {
+            pieces.splice(ii, 0, ',')
+        }
+        return sign + pieces.join('')
+    }
+
     const renderHeader = () => (
         <>
             <View style={styles.headerContainer}>
@@ -265,8 +282,9 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     <TextInput 
                         value={valuePedapatanKotorPerhari} 
                         onChangeText={(text) => setValuePedapatanKotorPerhari(text)}
-                        placeholder='30000'
+                        placeholder='0'
                         style={styles.F1}
+                        keyboardType = "number-pad"
                     />
                 </View>
                 <View />
@@ -282,8 +300,9 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     <TextInput 
                         value={valuePengeluaranKeluargaPerhari} 
                         onChangeText={(text) => setValuePengeluaranKeluargaPerhari(text)}
-                        placeholder='10000'
+                        placeholder='0'
                         style={styles.F1}
+                        keyboardType = "number-pad"
                     />
                 </View>
                 <View />
@@ -295,16 +314,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderFormPendapatanBersihPerhari = () => (
         <View style={styles.MT8}>
             <Text>Pendapatan Bersih Per Hari</Text>
-            <View style={[styles.textInputContainer, { width: withTextInput }]}>
-                <View style={styles.F1}>
-                    <TextInput 
-                        value={valuePendapatanBersihPerhari} 
-                        onChangeText={(text) => setValuePendapatanBersihPerhari(text)}
-                        placeholder='20000'
-                        style={styles.F1}
-                    />
-                </View>
-                <View />
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray' }]}>{formatter((parseInt(valuePedapatanKotorPerhari || 0) - parseInt(valuePengeluaranKeluargaPerhari || 0)) || 0)}</Text>
             </View>
         </View>
     )
@@ -329,16 +340,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderFormPendapatanBersihPerbulan = () => (
         <View style={styles.MT8}>
             <Text>Pendapatan Bersih Per Bulan</Text>
-            <View style={[styles.textInputContainer, { width: withTextInput }]}>
-                <View style={styles.F1}>
-                    <TextInput 
-                        value={valuePendapatanBersihPerbulan} 
-                        onChangeText={(text) => setValuePendapatanBersihPerbulan(text)}
-                        placeholder='600000'
-                        style={styles.F1}
-                    />
-                </View>
-                <View />
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray' }]}>{formatter((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1) || 0)}</Text>
             </View>
         </View>
     )
@@ -346,16 +349,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderFormPendapatanBersihPerminggu = () => (
         <View style={styles.MT8}>
             <Text>Pendapatan Bersih Per Minggu</Text>
-            <View style={[styles.textInputContainer, { width: withTextInput }]}>
-                <View style={styles.F1}>
-                    <TextInput 
-                        value={valuePendapatanBersihPerminggu} 
-                        onChangeText={(text) => setValuePendapatanBersihPerminggu(text)}
-                        placeholder='150000'
-                        style={styles.F1}
-                    />
-                </View>
-                <View />
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray' }]}>{formatter((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1)) / 4) || 0)}</Text>
             </View>
         </View>
     )
@@ -437,7 +432,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     <TextInput 
                         value={valuePedapatanKotorPerhariSuami} 
                         onChangeText={(text) => setValuePedapatanKotorPerhariSuami(text)}
-                        placeholder='30000'
+                        placeholder='0'
                         style={styles.F1}
                     />
                 </View>
@@ -454,7 +449,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     <TextInput 
                         value={valuePengeluaranKeluargaPerhariSuami} 
                         onChangeText={(text) => setValuePengeluaranKeluargaPerhariSuami(text)}
-                        placeholder='10000'
+                        placeholder='0'
                         style={styles.F1}
                     />
                 </View>
@@ -467,16 +462,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderFormPendapatanBersihPerhariSuami = () => (
         <View style={styles.MT8}>
             <Text>Pendapatan Bersih Per Hari</Text>
-            <View style={[styles.textInputContainer, { width: withTextInput }]}>
-                <View style={styles.F1}>
-                    <TextInput 
-                        value={valuePendapatanBersihPerhariSuami} 
-                        onChangeText={(text) => setValuePendapatanBersihPerhariSuami(text)}
-                        placeholder='20000'
-                        style={styles.F1}
-                    />
-                </View>
-                <View />
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray' }]}>{(formatter(parseInt(valuePedapatanKotorPerhariSuami || 0) - parseInt(valuePengeluaranKeluargaPerhariSuami || 0)) || 0)}</Text>
             </View>
         </View>
     )
@@ -501,16 +488,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderFormPendapatanBersihPerbulanSuami = () => (
         <View style={styles.MT8}>
             <Text>Pendapatan Bersih Per Bulan</Text>
-            <View style={[styles.textInputContainer, { width: withTextInput }]}>
-                <View style={styles.F1}>
-                    <TextInput 
-                        value={valuePendapatanBersihPerbulanSuami} 
-                        onChangeText={(text) => setValuePendapatanBersihPerbulanSuami(text)}
-                        placeholder='600000'
-                        style={styles.F1}
-                    />
-                </View>
-                <View />
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray' }]}>{formatter((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1) || 0)}</Text>
             </View>
         </View>
     )
@@ -518,16 +497,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const renderFormPendapatanBersihPermingguSuami = () => (
         <View style={styles.MT8}>
             <Text>Pendapatan Bersih Per Minggu</Text>
-            <View style={[styles.textInputContainer, { width: withTextInput }]}>
-                <View style={styles.F1}>
-                    <TextInput 
-                        value={valuePendapatanBersihPermingguSuami} 
-                        onChangeText={(text) => setValuePendapatanBersihPermingguSuami(text)}
-                        placeholder='150000'
-                        style={styles.F1}
-                    />
-                </View>
-                <View />
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray' }]}>{formatter((((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0)}</Text>
             </View>
         </View>
     )

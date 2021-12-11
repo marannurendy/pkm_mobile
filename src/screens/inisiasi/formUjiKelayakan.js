@@ -10,7 +10,7 @@ import db from '../../database/Database';
 import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync'
 
 const FormUjiKelayakan = ({route}) => {
-    const { groupName, namaNasabah } = route.params;
+    const { groupName, namaNasabah, nomorHandphone } = route.params;
     const dimension = Dimensions.get('screen');
     const navigation = useNavigation();
 
@@ -22,17 +22,7 @@ const FormUjiKelayakan = ({route}) => {
     let [branchName, setBranchName] = useState('');
     let [uname, setUname] = useState('');
     let [aoName, setAoName] = useState('');
-
-    // const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_kartuKeluarga = `formUK_kartuKeluarga_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_keteranganDomisili = `formUK_keteranganDomisili_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_kartuIdentitas = `formUK_kartuIdentitas_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_tandaTanganAOSAO = `formUK_tandaTanganAOSAO_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_tandaTanganNasabah = `formUK_tandaTanganNasabah_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_tandaTanganSuamiPenjamin = `formUK_tandaTanganSuamiPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_tandaTanganKetuaSubKemlompok = `formUK_tandaTanganKetuaSubKemlompok_${namaNasabah.replace(/\s+/g, '')}`;
-    // const key_tandaTanganKetuaKelompok = `formUK_tandaTanganKetuaKelompok_${namaNasabah.replace(/\s+/g, '')}`;
+    let [nip, setNip] = useState('');
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -47,11 +37,13 @@ const FormUjiKelayakan = ({route}) => {
         AsyncStorage.getItem('userData', (error, result) => {
             if (error) __DEV__ && console.log('userData error:', error);
 
+            __DEV__ && console.log('userData response:', result);
             let data = JSON.parse(result);
             setBranchId(data.kodeCabang);
             setBranchName(data.namaCabang);
             setUname(data.userName);
             setAoName(data.AOname);
+            setNip(data.nip);
         });
     }
 
@@ -87,17 +79,6 @@ const FormUjiKelayakan = ({route}) => {
         if (submitted) return true;
 
         setSubmitted(true);
-
-        // const fotoDataPenjamin = await AsyncStorage.getItem(key_dataPenjamin);
-        // const fotoDataSuami = await AsyncStorage.getItem(key_dataSuami);
-        // const fotoKartuKeluarga = await AsyncStorage.getItem(key_kartuKeluarga);
-        // const fotoKeteranganDomisili = await AsyncStorage.getItem(key_keteranganDomisili);
-        // const fotoKartuIdentitas = await AsyncStorage.getItem(key_kartuIdentitas);
-        // const tandaTanganAOSAO = await AsyncStorage.getItem(key_tandaTanganAOSAO);
-        // const tandaTanganNasabah = await AsyncStorage.getItem(key_tandaTanganNasabah);
-        // const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(key_tandaTanganSuamiPenjamin);
-        // const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(key_tandaTanganKetuaSubKemlompok);
-        // const tandaTanganKetuaKelompok = await AsyncStorage.getItem(key_tandaTanganKetuaKelompok);
 
         let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.nama_lengkap = b.nama_lengkap LEFT JOIN Table_UK_KondisiRumah c ON a.nama_lengkap = c.nama_lengkap LEFT JOIN Table_UK_SektorEkonomi d ON a.nama_lengkap = d.nama_lengkap LEFT JOIN Table_UK_PendapatanNasabah e ON a.nama_lengkap = e.nama_lengkap LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.nama_lengkap = f.nama_lengkap WHERE a.nama_lengkap = "' + namaNasabah + '"';
         db.transaction(
@@ -149,14 +130,14 @@ const FormUjiKelayakan = ({route}) => {
                             "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
                             "Berdasarkan_Lembaga_Lain": pembiayaan_Dari_Lembaga, // masih ragu
                             "Berdasarkan_Tingkat_Pendapatan": "1",
-                            "CreatedBy": aoName,
-                            "CreatedNIP": uname,
+                            "CreatedBy": uname,
+                            "CreatedNIP": nip,
                             "Dinding": data.dinding,
-                            "FotoKK": fotoKartuKeluarga.split(',')[1],
-                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1],
-                            "FotoKTPSuami": fotoDataSuami.split(',')[1],
-                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
-                            "FotoSuketDomisili": fotoKeteranganDomisili.split(',')[1],
+                            "FotoKK": fotoKartuKeluarga.split(',')[1] || 'null',
+                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1] || 'null',
+                            "FotoKTPSuami": fotoDataSuami.split(',')[1] || 'null',
+                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1] || 'null',
+                            "FotoSuketDomisili": fotoKeteranganDomisili.split(',')[1] || 'null',
                             "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
                             "ID_SektorEkonomi": data.sektor_Ekonomi,
                             "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi,
@@ -215,11 +196,11 @@ const FormUjiKelayakan = ({route}) => {
                             "StatusPenjamin": data.status_hubungan_keluarga,
                             "StatusRumah": data.status_rumah_tinggal,
                             "Status_Perkawinan": data.status_Perkawinan,
-                            "TTD_AO": tandaTanganAOSAO.split(',')[1],
-                            "TTD_KK": tandaTanganKetuaKelompok.split(',')[1],
-                            "TTD_KSK": tandaTanganKetuaSubKemlompok.split(',')[1],
-                            "TTD_Nasabah": tandaTanganNasabah.split(',')[1],
-                            "TTD_Penjamin": tandaTanganSuamiPenjamin.split(',')[1],
+                            "TTD_AO": tandaTanganAOSAO.split(',')[1] || 'null',
+                            "TTD_KK": tandaTanganKetuaKelompok.split(',')[1] || 'null',
+                            "TTD_KSK": tandaTanganKetuaSubKemlompok.split(',')[1] || 'null',
+                            "TTD_Nasabah": tandaTanganNasabah.split(',')[1] || 'null',
+                            "TTD_Penjamin": tandaTanganSuamiPenjamin.split(',')[1] || 'null',
                             "TanggalLahir": data.tanggal_Lahir,
                             "TempatLahir": data.tempat_lahir,
                             "TermPembiayaan": data.term_Pembiayaan,
@@ -339,11 +320,11 @@ const FormUjiKelayakan = ({route}) => {
             </View>
 
             <View style={{flex: 1, marginHorizontal: 20, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFF'}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan {screenState}</Text>
+                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan</Text>
 
                 <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {groupName: groupName, namaNasabah: namaNasabah})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'address-card'} size={25} color={'#FFF'} />
                         </View>

@@ -214,7 +214,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 );
                 return;
             } else {
-                truncat(reject, 'UP');
+                // truncat(reject, 'UP');
+                resolve('BERHASIL');
                 return;
             } 
         } catch(error) {
@@ -269,7 +270,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 );
                 return;
             } else {
-                truncat(reject, 'PAR');
+                // truncat(reject, 'PAR');
+                resolve('BERHASIL');
                 return;
             } 
         } catch(error) {
@@ -283,52 +285,52 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT');
         // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT', responseJson);
 
-        const sosialisai = responseJson.data.sosialisai || [];
-        const uk = responseJson.data.uk || [];
-        const uk_detail = responseJson.data.uk_detail || [];
-        const uk_client_data = responseJson.data.uk_client_data || [];
-        const pp_kelompok = responseJson.data.pp_kelompok || [];
-        const pp_2_kelompok = responseJson.data.pp_2_kelompok || [];
-        const pp_3_kelompok = responseJson.data.pp_3_kelompok || [];
-        const persetujuan_pembiayaan_kelompok = responseJson.data.persetujuan_pembiayaan_kelompok || [];
-        const persetujuan_pembiayaan_client_kelompok = responseJson.data.persetujuan_pembiayaan_client_kelompok || [];
+        const sosialisai = responseJson.data?.sosialisai || [];
+        const uk = responseJson.data?.uk || [];
+        const uk_detail = responseJson.data?.uk_detail || [];
+        const uk_client_data = responseJson.data?.uk_client_data || [];
+        const pp_kelompok = responseJson.data?.pp_kelompok || [];
+        const pp_2_kelompok = responseJson.data?.pp_2_kelompok || [];
+        const pp_3_kelompok = responseJson.data?.pp_3_kelompok || [];
+        const persetujuan_pembiayaan_kelompok = responseJson.data?.persetujuan_pembiayaan_kelompok || [];
+        const persetujuan_pembiayaan_client_kelompok = responseJson.data?.persetujuan_pembiayaan_client_kelompok || [];
         
-        // if (sosialisai.length > 0) {
-        //     try {
-        //         var query = 'INSERT INTO Sosialisasi_Database (tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type) values ';
-        //         for (let i = 0; i < sosialisai.length; i++) {
-        //             query = query + "('" + null + "','" + null + "','" + sosialisai[i].CalonNasabah + "','" + null + "','" + null + "','" + sosialisai[i].TanggalSos + "','" + sosialisai[i].Lokasi_Sos + "','" + null + "')";
-        //             if (i != sosialisai.length - 1) query = query + ",";
-        //         }
-        //         query = query + ";";
-        //         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
+        if (sosialisai.length > 0) {
+            try {
+                var query = 'INSERT INTO Sosialisasi_Database (tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type) values ';
+                for (let i = 0; i < sosialisai.length; i++) {
+                    query = query + "('" + null + "','" + null + "','" + sosialisai[i].CalonNasabah + "','" + null + "','" + null + "','" + sosialisai[i].TanggalSos + "','" + sosialisai[i].Lokasi_Sos + "','" + null + "')";
+                    if (i != sosialisai.length - 1) query = query + ",";
+                }
+                query = query + ";";
+                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
     
-        //         db.transaction(
-        //             tx => { tx.executeSql(query); }, function(error) {
-        //                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
-        //             }, function() {
-        //                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION DONE');
-        //             }
-        //         );
+                db.transaction(
+                    tx => { tx.executeSql(query); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
+                    }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION DONE');
+                    }
+                );
 
-        //         if (__DEV__) {
-        //             db.transaction(
-        //                 tx => {
-        //                     tx.executeSql("SELECT * FROM Sosialisasi_Database", [], (tx, results) => {
-        //                         if (__DEV__) console.log('SOSIALISASI MOBILE RESPONSE:', results.rows);
-        //                     })
-        //                 }, function(error) {
-        //                     if (__DEV__) console.log('SOSIALISASI MOBILE ERROR:', error);
-        //                 }, function() {}
-        //             );
-        //         }
+                if (__DEV__) {
+                    db.transaction(
+                        tx => {
+                            tx.executeSql("SELECT * FROM Sosialisasi_Database", [], (tx, results) => {
+                                if (__DEV__) console.log('SOSIALISASI MOBILE RESPONSE:', results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log('SOSIALISASI MOBILE ERROR:', error);
+                        }, function() {}
+                    );
+                }
 
-        //         return;
-        //     } catch (error) {
-        //         truncat(reject, 'SOSIALISASI MOBILE');
-        //         return;
-        //     }
-        // }
+                return;
+            } catch (error) {
+                truncat(reject, 'SOSIALISASI MOBILE');
+                return;
+            }
+        }
 
         if (uk.length > 0) {
             try {
@@ -708,15 +710,15 @@ export const getSyncData = (params) => new Promise((resolve) => {
         await insertListCollection(jsonCollection)
         if (__DEV__) console.log('ACTIONS GET SYNC DATA COLLECTION DONE');
 
-        // const responseListUP = await fetch(queryUP);
-        // const jsonListUP = await responseListUP.json(responseListUP);
-        // await insertListUP(jsonListUP)
-        // if (__DEV__) console.log('ACTIONS GET SYNC DATA UP DONE');
+        const responseListUP = await fetch(queryUP);
+        const jsonListUP = await responseListUP.json(responseListUP);
+        await insertListUP(jsonListUP)
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA UP DONE');
 
-        // const responseListPAR = await fetch(getPKMIndividual);
-        // const jsongetPAR = await responseListPAR.json(responseListPAR);
-        // await insertListPAR(jsongetPAR);
-        // if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
+        const responseListPAR = await fetch(getPKMIndividual);
+        const jsongetPAR = await responseListPAR.json(responseListPAR);
+        await insertListPAR(jsongetPAR);
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
 
         if (![2].includes(params.prospekFilter)) {
             const responseGetSosialisasiMobile = await fetch(postGetSosialisasiMobile, {

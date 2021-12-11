@@ -21,20 +21,20 @@ const ProdukPembiayaan = ({ route }) => {
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
-    const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState(dropdownEmpty);
+    const [itemsJenisPembiayaan, setItemsJenisPembiayaan] = useState([]);
     const [valueNamaProduk, setValueNamaProduk] = useState(null);
-    const [itemsNamaProduk, setItemsNamaProduk] = useState(dropdownEmpty);
+    const [itemsNamaProduk, setItemsNamaProduk] = useState([]);
     const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState(null);
-    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState(dropdownEmpty);
+    const [itemsProdukPembiayaan, setItemsProdukPembiayaan] = useState([]);
     const [valueJumlahPinjaman, setValueJumlahPinjaman] = useState(null);
     const [valueKategoriTujuanPembiayaan, setValueKategoriTujuanPembiayaan] = useState(null);
-    const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState(dropdownEmpty);
+    const [itemsKategoriTujuanPembiayaan, setItemsKategoriTujuanPembiayaan] = useState([]);
     const [valueTujuanPembiayaan, setValueTujuanPembiayaan] = useState(null);
-    const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState(dropdownEmpty);
+    const [itemsTujuanPembiayaan, setItemsTujuanPembiayaan] = useState([]);
     const [valueTypePencairan, setValueTypePencairan] = useState(null);
-    const [itemsTypePencairan, setItemsTypePencairan] = useState(dropdownEmpty);
+    const [itemsTypePencairan, setItemsTypePencairan] = useState([]);
     const [valueFrekuensiPembayaran, setValueFrekuensiPembayaran] = useState(null);
-    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState(dropdownEmpty);
+    const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState([]);
     const [valueTermPembiayaan, setValueTermPembiayaan] = useState(null);
     const [valueNamaBank, setValueNamaBank] = useState('');
     const [valueNoRekening, setValueNoRekening] = useState('');
@@ -124,7 +124,6 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = await responseJSON.filter(data => data.isReguler === isRegular).map((data, i) => {
                         return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                     }) ?? [];
-                    responseFiltered.push({ label: '-- Pilih --', value: null });
                     if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
                     setItemsProdukPembiayaan(responseFiltered);
                     return;
@@ -147,7 +146,6 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
-                    responseFiltered.push({ label: '-- Pilih --', value: null });
                     if (__DEV__) console.log('getStorageJenisPembiayaan responseFiltered:', responseFiltered);
                     setItemsJenisPembiayaan(responseFiltered);
                     return;
@@ -170,7 +168,6 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.transfundDetail, value: data.id };
                     }) ?? [];
-                    responseFiltered.push({ label: '-- Pilih --', value: null });
                     if (__DEV__) console.log('getStorageTipePencairan responseFiltered:', responseFiltered);
                     setItemsTypePencairan(responseFiltered);
                     return;
@@ -195,7 +192,6 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.filter(data => data.idjenispembiayaan === rw).map((data, i) => {
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
-                    responseFiltered.push({ label: '-- Pilih --', value: null });
                     if (__DEV__) console.log('getStorageNamaProduk responseFiltered:', responseFiltered);
                     setItemsNamaProduk(responseFiltered);
                     return;
@@ -218,7 +214,6 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.namatujuanpembiayaan, value: data.id };
                     }) ?? [];
-                    responseFiltered.push({ label: '-- Pilih --', value: null });
                     if (__DEV__) console.log('getStorageTujuanPembiayaan responseFiltered:', responseFiltered);
                     setItemsTujuanPembiayaan(responseFiltered);
                     return;
@@ -241,7 +236,6 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.namakategoritujuanpembiayaan, value: data.id };
                     }) ?? [];
-                    responseFiltered.push({ label: '-- Pilih --', value: null });
                     if (__DEV__) console.log('getStorageKategoriTujuanPembiayaan responseFiltered:', responseFiltered);
                     setItemsKategoriTujuanPembiayaan(responseFiltered);
                     return;
@@ -264,7 +258,6 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.namafrekuensi, value: data.id };
                     }) ?? [];
-                    responseFiltered.push({ label: '-- Pilih --', value: null });
                     if (__DEV__) console.log('getStorageFrekuensi responseFiltered:', responseFiltered);
                     setItemsFrekuensiPembayaran(responseFiltered);
                     return;
@@ -280,11 +273,7 @@ const ProdukPembiayaan = ({ route }) => {
         if (__DEV__) console.log('generateJumlahPinjaman loaded');
         if (__DEV__) console.log('generateJumlahPinjaman data:', data);
 
-        if (data === null) {
-            return (
-                <Picker.Item label={'-- Pilih --'} value={null} />
-            )
-        }
+        if (data === null) return null;
 
         const kelipatan = 500000;
         const min = parseInt(data.minPlafond);
@@ -299,7 +288,6 @@ const ProdukPembiayaan = ({ route }) => {
                 total += kelipatan;
             }
         }
-        datas.push({ label: '-- Pilih --', value: null });
 
         return datas.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />);
     }
@@ -468,6 +456,7 @@ const ProdukPembiayaan = ({ route }) => {
                         getStorageNamaProduk(itemValue);
                     }}
                 >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsJenisPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
@@ -486,6 +475,7 @@ const ProdukPembiayaan = ({ route }) => {
                         getStorageProduk(itemValue);
                     }}
                 >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsNamaProduk.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
@@ -505,6 +495,7 @@ const ProdukPembiayaan = ({ route }) => {
                         setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex].paymentTerm);
                     }}
                 >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsProdukPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
@@ -520,6 +511,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueJumlahPinjaman(itemValue)}
                 >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {generateJumlahPinjaman(selectedProdukPembiayaan)}
                 </Picker>
             </View>
@@ -555,6 +547,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueKategoriTujuanPembiayaan(itemValue)}
                 >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsKategoriTujuanPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
@@ -570,6 +563,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueTujuanPembiayaan(itemValue)}
                 >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsTujuanPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
@@ -585,6 +579,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueTypePencairan(itemValue)}
                 >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsTypePencairan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
@@ -600,6 +595,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueFrekuensiPembayaran(itemValue)}
                 >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsFrekuensiPembayaran.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>

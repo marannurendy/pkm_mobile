@@ -129,7 +129,7 @@ const UjiKelayakan = ({route}) => {
                     var ah = [];
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({"namaNasabah": data.namaCalonNasabah, "status": data.type, "groupName": data.lokasiSosialisasi});
+                        ah.push({"namaNasabah": data.namaCalonNasabah, "nomorHandphone": data.nomorHandphone, "status": data.type, "groupName": data.lokasiSosialisasi});
                     }
                     setData(ah)
                 })
@@ -150,7 +150,7 @@ const UjiKelayakan = ({route}) => {
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#FFF', flex: 1, borderWidth: 1, marginHorizontal: 15}} 
-            onPress={() => navigation.navigate('FormUjiKelayakan', {groupName: data.groupName, namaNasabah: data.namaNasabah})}
+            onPress={() => navigation.navigate('FormUjiKelayakan', {groupName: data.groupName, namaNasabah: data.namaNasabah, nomorHandphone: data.nomorHandphone})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessage namaNasabah={data.namaNasabah} status={data.status} />

@@ -101,8 +101,6 @@ const Sosialisasi = () => {
             flashNotification("Alert", "Silahkan pilih sumber dana", "#ff6347", "#fff")
         }else if(namaNasabah === null || namaNasabah === undefined) {
             flashNotification("Alert", "Silahkan masukkan nama nasabah", "#ff6347", "#fff")
-        }else if(nohp === null || nohp === undefined) {
-            flashNotification("Alert", "Silahkan masukkan nomor hp nasabah", "#ff6347", "#fff")
         }else if(statusNasabah === null || statusNasabah === undefined) {
             flashNotification("Alert", "Silahkan pilih status nasabah", "#ff6347", "#fff")
         }else if(tanggalSos === null || tanggalSos === undefined) {
@@ -307,10 +305,9 @@ const Sosialisasi = () => {
                     <View style={{alignItems: 'center', marginBottom: 20}}>
                         <Button
                             title="SIMPAN"
-                            onPress={() => alert('Sukses')}
+                            onPress={() => submitHandler()}
                             buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                             titleStyle={{fontSize: 20, fontWeight: 'bold'}}
-                            onPress={() => submitHandler()}
                         />
                     </View>
 

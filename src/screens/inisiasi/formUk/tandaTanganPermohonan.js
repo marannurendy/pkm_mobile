@@ -34,7 +34,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKemlompok] = useState(null);
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [submmitted, setSubmmitted] = useState(false);
-    const [valueNamaTandaTanganNasabah, setValueNamaTandaTanganNasabah] = useState('');
+    const [valueNamaTandaTanganNasabah, setValueNamaTandaTanganNasabah] = useState(namaNasabah);
     const [valueNamaTandaTanganSuamiPenjamin, setValueNamaTandaTanganSuamiPenjamin] = useState('');
     const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
     const [valueNamaTandaTanganKetuaKelompok, setValueNamaTandaTanganKetuaKelompok] = useState('');
@@ -49,6 +49,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     useEffect(() => {
         getUserData();
         setInfo();
+        getUKDataDiri();
         getUKPermohonanPembiayaan();
         getUKProdukPembiayaan();
     }, []);
@@ -140,6 +141,28 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         )
     }
 
+    const getUKDataDiri = () => {
+        let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = '` + namaNasabah + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+
+                        if (data.nama_penjamin !== null && typeof data.nama_penjamin !== 'undefined') setValueNamaTandaTanganSuamiPenjamin(data.nama_penjamin);
+                    }
+                    return true;
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error 3:', error.message);
+                })
+            }
+        )
+    }
+
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
         if (__DEV__) console.log('doSubmitDraft valueProdukPembiayaan:', valueProdukPembiayaan);
@@ -218,6 +241,11 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         if (!valueTandaTanganSuamiPenjamin || typeof valueTandaTanganSuamiPenjamin === 'undefined' || valueTandaTanganSuamiPenjamin === '' || valueTandaTanganSuamiPenjamin === 'null') return alert('Tanda Tangan Suami/Penjamin (*) tidak boleh kosong');
         if (!valueTandaTanganKetuaSubKemlompok || typeof valueTandaTanganKetuaSubKemlompok === 'undefined' || valueTandaTanganKetuaSubKemlompok === '' || valueTandaTanganKetuaSubKemlompok === 'null') return alert('Tanda Tangan Ketua Sub Kelompok (*) tidak boleh kosong');
         if (!valueTandaTanganKetuaKelompok || typeof valueTandaTanganKetuaKelompok === 'undefined' || valueTandaTanganKetuaKelompok === '' || valueTandaTanganKetuaKelompok === 'null') return alert('Tanda Tangan Kelompok (*) tidak boleh kosong');
+
+        if (!valueNamaTandaTanganNasabah || typeof valueNamaTandaTanganNasabah === 'undefined' || valueNamaTandaTanganNasabah === '' || valueNamaTandaTanganNasabah === 'null') return alert('Nama Lengkap - Tanda Tangan Nasabah (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganSuamiPenjamin || typeof valueNamaTandaTanganSuamiPenjamin === 'undefined' || valueNamaTandaTanganSuamiPenjamin === '' || valueNamaTandaTanganSuamiPenjamin === 'null') return alert('Nama Lengkap - Tanda Tangan Suami/Penjamin (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganKetuaSubKelompok || typeof valueNamaTandaTanganKetuaSubKelompok === 'undefined' || valueNamaTandaTanganKetuaSubKelompok === '' || valueNamaTandaTanganKetuaSubKelompok === 'null') return alert('Nama Lengkap - Tanda Tangan Ketua Sub Kelompok (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganKetuaKelompok || typeof valueNamaTandaTanganKetuaKelompok === 'undefined' || valueNamaTandaTanganKetuaKelompok === '' || valueNamaTandaTanganKetuaKelompok === 'null') return alert('Nama Lengkap - Tanda Tangan Kelompok (*) tidak boleh kosong');
 
         if (submmitted) return true;
 

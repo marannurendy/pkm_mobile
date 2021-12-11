@@ -238,8 +238,8 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                         setValueSektorEkonomi(itemValue);
                     }}
                 >
-                    {[...new Map(dataEconomicSector.map(item => [item['economicSectorDetail'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.economicSectorDetail} value={x.id} />)}
                     <Picker.Item label={'-- Pilih --'} value={null} />
+                    {[...new Map(dataEconomicSector.map(item => [item['economicSectorDetail'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.economicSectorDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -254,8 +254,8 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValueSubSektorEkonomi(itemValue)}
                 >
+                    <Picker.Item label={'-- Pilih --'} value={null} />
                     {generateSubSektorEkonomi()}
-                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                 </Picker>
             </View>
         </View>
