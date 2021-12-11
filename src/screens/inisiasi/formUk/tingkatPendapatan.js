@@ -302,7 +302,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         onChangeText={(text) => setValuePengeluaranKeluargaPerhari(text)}
                         placeholder='0'
                         style={styles.F1}
-                        keyboardType = "number-pad"
+                        keyboardType="number-pad"
                     />
                 </View>
                 <View />
@@ -330,6 +330,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         onChangeText={(text) => setValueJumlahHariUsahPerbulan(text)}
                         placeholder='30'
                         style={styles.F1}
+                        keyboardType="number-pad"
                     />
                 </View>
                 <View />
@@ -417,6 +418,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         onChangeText={(text) => setValueJumlahAngsuran(text)}
                         placeholder='30'
                         style={styles.F1}
+                        keyboardType="number-pad"
                     />
                 </View>
                 <View />
@@ -434,6 +436,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         onChangeText={(text) => setValuePedapatanKotorPerhariSuami(text)}
                         placeholder='0'
                         style={styles.F1}
+                        keyboardType="number-pad"
                     />
                 </View>
                 <View />
@@ -451,6 +454,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         onChangeText={(text) => setValuePengeluaranKeluargaPerhariSuami(text)}
                         placeholder='0'
                         style={styles.F1}
+                        keyboardType="number-pad"
                     />
                 </View>
                 <View />
@@ -478,6 +482,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         onChangeText={(text) => setValueJumlahHariUsahPerbulanSuami(text)}
                         placeholder='30'
                         style={styles.F1}
+                        keyboardType="number-pad"
                     />
                 </View>
                 <View />

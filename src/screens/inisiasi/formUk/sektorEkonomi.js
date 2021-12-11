@@ -234,7 +234,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                     selectedValue={valueSektorEkonomi}
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
-                        setSelectedSektorEkonomi([...new Map(dataEconomicSector.map(item => [item['economicSectorDetail'], item])).values()][itemIndex]);
+                        setSelectedSektorEkonomi([...new Map(dataEconomicSector.map(item => [item['economicSectorDetail'], item])).values()][itemIndex - 1]);
                         setValueSektorEkonomi(itemValue);
                     }}
                 >

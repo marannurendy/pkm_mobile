@@ -21,7 +21,7 @@ const withTextInput = dimension.width - (20 * 4) + 8;
 
 const DataDiri = ({route}) => {
 
-    const { groupName, namaNasabah } = route.params
+    const { groupName, namaNasabah, nomorHandphone } = route.params
 
     const navigation = useNavigation()
     const phoneRef = useRef(undefined)
@@ -52,7 +52,7 @@ const DataDiri = ({route}) => {
     //STATE DATA DIRI PRIBADI
     let [fullName, setFullName] = useState(namaNasabah)
     let [namaAyah, setNamaAyah] = useState()
-    let [noTelfon, setNoTelfon] = useState('')
+    let [noTelfon, setNoTelfon] = useState(nomorHandphone !== 'undefined' ? nomorHandphone : '')
     let [jumlahAnak, setJuma] = useState()
     let [jumlahTanggungan, setJumlahTanggungnan] = useState()
     let [statusRumahTinggal, setStatusRumahTinggal] = useState()
@@ -1538,8 +1538,8 @@ const DataDiri = ({route}) => {
                                     style={{ height: 50, width: withTextInput }}
                                     onValueChange={(itemValue, itemIndex) => setDataProvinsi(itemValue)}
                                 >
-                                    {[...new Map(dataWilayahMobile.map(item => [item['Nama_Provinsi'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.Nama_Provinsi} value={x.ID_Provinsi} />)}
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {[...new Map(dataWilayahMobile.map(item => [item['Nama_Provinsi'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.Nama_Provinsi} value={x.ID_Provinsi} />)}
                                 </Picker>
                             </View>
                         </View>
@@ -1552,8 +1552,8 @@ const DataDiri = ({route}) => {
                                     style={{ height: 50, width: withTextInput }}
                                     onValueChange={(itemValue, itemIndex) => setDataKabupaten(itemValue)}
                                 >
-                                    {renderPickerKabupaten()}
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {renderPickerKabupaten()}
                                 </Picker>
                             </View>
                         </View>
@@ -1566,8 +1566,8 @@ const DataDiri = ({route}) => {
                                     style={{ height: 50, width: withTextInput }}
                                     onValueChange={(itemValue, itemIndex) => setDataKecamatan(itemValue)}
                                 >
-                                    {renderPickerKecamatan()}
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {renderPickerKecamatan()}
                                 </Picker>
                             </View>
                         </View>
@@ -1580,8 +1580,8 @@ const DataDiri = ({route}) => {
                                     style={{ height: 50, width: withTextInput }}
                                     onValueChange={(itemValue, itemIndex) => setDataKelurahan(itemValue)}
                                 >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {renderPickerKelurahan()}
-                                    <Picker.Item label={'-- Pilih --'} value={null} />
                                 </Picker>
                             </View>
                         </View>
