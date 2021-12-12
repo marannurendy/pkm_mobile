@@ -158,6 +158,8 @@ const DataDiri = ({route}) => {
     const [submmitted, setSubmmitted] = useState(false);
     const [dataWilayahMobile, setDataWilayahMobile] = useState([]);
     const [statusAgreement, setStatusAgreement] = useState(false);
+    const [usahaPekerjaanSuami, setUsahaPekerjaanSuami] = useState('');
+    const [jumlahTenagaKerjaSuami, setJumlahTenagaKerjaSuami] = useState('');
 
     const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
     const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
@@ -210,6 +212,8 @@ const DataDiri = ({route}) => {
                                 if (data.status_rumah_tinggal !== null && typeof data.status_rumah_tinggal !== 'undefined') setValueStatusRumahTinggal(data.status_rumah_tinggal);
                                 if (data.lama_tinggal !== null && typeof data.lama_tinggal !== 'undefined') setLamaTinggal(data.lama_tinggal);
                                 if (data.nama_suami !== null && typeof data.nama_suami !== 'undefined') setNamaSuami(data.nama_suami);
+                                if (data.usaha_pekerjaan_suami !== null && typeof data.usaha_pekerjaan_suami !== 'undefined') setUsahaPekerjaanSuami(data.usaha_pekerjaan_suami);
+                                if (data.jumlah_tenaga_kerja_suami !== null && typeof data.jumlah_tenaga_kerja_suami !== 'undefined') setJumlahTenagaKerjaSuami(data.jumlah_tenaga_kerja_suami);
                                 if (data.foto_ktp_suami !== null && typeof data.foto_ktp_suami !== 'undefined') setFotoKartuIdentitasSuami(fotoDataSuami);
                                 if (data.suami_diluar_kota !== null && typeof data.suami_diluar_kota !== 'undefined') setStatusSuami(data.suami_diluar_kota === 'true' ? true : false);
                                 if (data.status_hubungan_keluarga !== null && typeof data.status_hubungan_keluarga !== 'undefined') setValueStatusHubunganKeluarga(data.status_hubungan_keluarga);
@@ -321,7 +325,7 @@ const DataDiri = ({route}) => {
             setItemsJenisKartuIdentitas(arrayIdentity);
             setItemsStatusPerkawinan(arrayMarriage);
             
-          })();
+        })();
     }, [])
 
     if (hasPermission === null) {
@@ -341,7 +345,7 @@ const DataDiri = ({route}) => {
             backgroundColor: backgroundColor,
             color: color
         });
-      }
+    }
 
     const dateLahirHandler = (event, date) => {
         let dateValue = moment(date).format('YYYY-MM-DD')
@@ -418,6 +422,8 @@ const DataDiri = ({route}) => {
     const doSubmitDataSuami = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDataSuami loaded');
         if (__DEV__) console.log('doSubmitDataSuami namaSuami:', namaSuami);
+        if (__DEV__) console.log('doSubmitDataSuami usahaPekerjaanSuami:', usahaPekerjaanSuami);
+        if (__DEV__) console.log('doSubmitDataSuami jumlahTenagaKerjaSuami:', jumlahTenagaKerjaSuami);
         if (__DEV__) console.log('doSubmitDataSuami fotoKartuIdentitasSuami:', fotoKartuIdentitasSuami);
         if (__DEV__) console.log('doSubmitDataSuami statusSuami:', statusSuami);
 
@@ -430,9 +436,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_suami, foto_ktp_suami, suami_diluar_kota) values ("' + namaNasabah + '","' + namaSuami + '","' + key_dataSuami + '","' + statusSuami + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota) values ("' + namaNasabah + '","' + namaSuami + '","' + key_dataSuami + '","' + statusSuami + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET nama_suami = "' + namaSuami + '", foto_ktp_suami = "' + key_dataSuami + '", suami_diluar_kota = "' + statusSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET nama_suami = "' + namaSuami + '", usaha_pekerjaan_suami = "' + usahaPekerjaanSuami + '", jumlah_tenaga_kerja_suami = "' + jumlahTenagaKerjaSuami + '", foto_ktp_suami = "' + key_dataSuami + '", suami_diluar_kota = "' + statusSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update query:', query);
@@ -676,6 +682,8 @@ const DataDiri = ({route}) => {
         if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='' || lamaTinggal === 'null') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
 
         if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '' || namaSuami === 'null') return alert('Nama Suami (*) tidak boleh kosong');
+        if (!usahaPekerjaanSuami || typeof usahaPekerjaanSuami === 'undefined' || usahaPekerjaanSuami === '' || usahaPekerjaanSuami === 'null') return alert('Usaha/Pekerjaan Suami (*) tidak boleh kosong');
+        if (!jumlahTenagaKerjaSuami || typeof jumlahTenagaKerjaSuami === 'undefined' || jumlahTenagaKerjaSuami === '' || jumlahTenagaKerjaSuami === 'null') return alert('Jumlah Tenaga Kerja (*) tidak boleh kosong');
         if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === 'null' || fotoKartuIdentitasSuami === 'null') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
 
         if (!valueStatusHubunganKeluarga || typeof valueStatusHubunganKeluarga === 'undefined' || valueStatusHubunganKeluarga === '' || valueStatusHubunganKeluarga === 'null') return alert('Status Hubungan Keluarga (*) tidak boleh kosong');
@@ -1822,6 +1830,26 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Usaha/Pekerjaan Suami (*)</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                                <View style={{flex: 1}}>
+                                    <TextInput value={usahaPekerjaanSuami} onChangeText={(text) => setUsahaPekerjaanSuami(text)} placeholder="" style={{ fontSize: 15, color: "#545454" }}/>
+                                </View>
+                                <View />
+                            </View>
+                        </View>
+
+                        <View style={{margin: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja (*)</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                                <View style={{flex: 1}}>
+                                    <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" style={{ fontSize: 15, color: "#545454" }}/>
+                                </View>
+                                <View />
+                            </View>
+                        </View>
+
+                        <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami (*)</Text>
                             
                             <TouchableOpacity onPress={() => setCameraShow(4)}>
@@ -1936,23 +1964,29 @@ const DataDiri = ({route}) => {
                                 onPress={() => doSubmitDataPenjamin()}
                             />
                         </View>
-
-                        <View style={
-                            {
-                                flex: 1,
-                                flexDirection: 'row',
-                                marginHorizontal: 30,
-                                marginBottom: 20,
-                                width: dimension.width - (32 * 4)
-                            }
-                        }>
-                            <Checkbox
-                                status={statusAgreement ? 'checked' : 'unchecked'}
-                                onPress={() => {
-                                    setStatusAgreement(!statusAgreement);
-                                }}
-                            />
-                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Informasi data pribadi yang saya kemukakan disini adalah benar adanya dan telah sesuai, selanjutnya saya memberikan persetujuan bagi PNM untuk menggunakan dan memberikan data tersebut untuk keperluan apapun bagi pihak manapun yang berdasarkan pertimbangan PNM perlu dan penting untuk dilakukan sesuai dengan ketentuan hukum yang berlaku.</Text>
+                        
+                        <View style={{margin: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Pernyataan Calon Nasabah</Text>
+                            <View style={
+                                {
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    marginBottom: 20,
+                                    width: dimension.width - (32 * 3),
+                                    borderWidth: 1, 
+                                    borderRadius: 10,
+                                    paddingHorizontal: 4,
+                                    paddingVertical: 12
+                                }
+                            }>
+                                <Checkbox
+                                    status={statusAgreement ? 'checked' : 'unchecked'}
+                                    onPress={() => {
+                                        setStatusAgreement(!statusAgreement);
+                                    }}
+                                />
+                                <Text style={{flex: 1, fontSize: 12}}>Informasi data pribadi yang saya kemukakan disini adalah benar adanya dan telah sesuai, selanjutnya saya memberikan persetujuan bagi PNM untuk menggunakan dan memberikan data tersebut untuk keperluan apapun bagi pihak manapun yang berdasarkan pertimbangan PNM perlu dan penting untuk dilakukan sesuai dengan ketentuan hukum yang berlaku.</Text>
+                            </View>
                         </View>
 
                         <View style={{alignItems: 'center', marginVertical: 20}}>

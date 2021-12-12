@@ -70,36 +70,66 @@ const ProdukPembiayaan = ({ route }) => {
                         
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
-                        if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') {
-                            setValueJenisPembiayaan(data.jenis_Pembiayaan);
-                            getStorageNamaProduk(data.jenis_Pembiayaan);
-                        }
-                        if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') {
-                            setValueNamaProduk(data.nama_Produk);
-                            getStorageProduk(data.nama_Produk);
-                        }
-                        if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') {
-                            setValueProdukPembiayaan(data.produk_Pembiayaan);
 
-                            const response = await AsyncStorage.getItem('Product');
-                            if (response !== null) {
-                                const responseJSON = JSON.parse(response);
-                                if (responseJSON.length > 0 ?? false) {
-                                    let value = data.produk_Pembiayaan;
-                                    setSelectedProdukPembiayaan(responseJSON.filter(data => data.id === value)[0] || null);
+                        const getJenisPembiayaan = () => {
+                            return new Promise((resolve, reject) => {
+                                if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueJenisPembiayaan(data.jenis_Pembiayaan);
+                                        getStorageNamaProduk(data.jenis_Pembiayaan);
+                                        return resolve('next');
+                                    }, 600);
                                 }
-                            }
-                        } 
-                        if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPinjaman(data.jumlah_Pinjaman);
-                        if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueTermPembiayaan(data.term_Pembiayaan);
-                        if (data.kategori_Tujuan_Pembiayaan !== null && typeof data.kategori_Tujuan_Pembiayaan !== 'undefined') setValueKategoriTujuanPembiayaan(data.kategori_Tujuan_Pembiayaan);
-                        if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
-                        if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
-                        if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
-                        if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' ? true : false);
-                        if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
-                        if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
-                        if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
+                                return resolve('next');
+                            });
+                        }
+
+                        const getNamaProduk = () => {
+                            return new Promise((resolve, reject) => {
+                                if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueNamaProduk(data.nama_Produk);
+                                        getStorageProduk(data.nama_Produk);
+                                        return resolve('next');
+                                    }, 900);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        const getProdukPembiayaan = () => {
+                            return new Promise((resolve, reject) => {
+                                if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueProdukPembiayaan(data.produk_Pembiayaan);
+                                        AsyncStorage.getItem('Product').then((response) => {
+                                            if (response !== null) {
+                                                const responseJSON = JSON.parse(response);
+                                                if (responseJSON.length > 0 ?? false) {
+                                                    let value = data.produk_Pembiayaan;
+                                                    setSelectedProdukPembiayaan(responseJSON.filter(data => data.id === value)[0] || null);
+                                                }
+                                            }
+                                        });
+                                        return resolve('next');
+                                    }, 1200);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        Promise.all([getJenisPembiayaan(), getNamaProduk(), getProdukPembiayaan()]).then((response) => {
+                            if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPinjaman(data.jumlah_Pinjaman);
+                            if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueTermPembiayaan(data.term_Pembiayaan);
+                            if (data.kategori_Tujuan_Pembiayaan !== null && typeof data.kategori_Tujuan_Pembiayaan !== 'undefined') setValueKategoriTujuanPembiayaan(data.kategori_Tujuan_Pembiayaan);
+                            if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
+                            if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
+                            if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
+                            if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' ? true : false);
+                            if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
+                            if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
+                            if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
+                        }) ;
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan error:', error.message);
