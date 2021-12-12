@@ -3,7 +3,9 @@ import Sosialisasi from "./sosialisasi";
 import Floating from "./floating";
 import UjiKelayakan from "./ujiKelayakan";
 import FormUjiKelayakan from "./formUjiKelayakan";
+import Verifikasi from "./verifikasi";
 import { DataDiri, ProdukPembiayaan, InisiasiFormUKKondisiRumah, InisiasiFormUKSektorEkonomi, InisiasiFormUKTingkatPendapatan, InisiasiFormUKTandaTanganPermohonan, InisiasiFormUKSignatureScreen } from "./formUk";
+import { VerifikasiFormReview, VerifikasiFormPreview } from "./formVerifikasi";
 
 export { 
     Inisasi, 
@@ -17,5 +19,8 @@ export {
     InisiasiFormUKSektorEkonomi, 
     InisiasiFormUKTingkatPendapatan, 
     InisiasiFormUKTandaTanganPermohonan, 
-    InisiasiFormUKSignatureScreen 
+    InisiasiFormUKSignatureScreen,
+    Verifikasi,
+    VerifikasiFormReview,
+    VerifikasiFormPreview
 };

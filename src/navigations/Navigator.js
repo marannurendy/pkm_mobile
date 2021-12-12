@@ -31,7 +31,7 @@ import MeetingDay from '../screens/MeetingDay'
 import MeetingMenu from '../screens/MeetingMenu'
 import GroupCollection from '../screens/groupCollection'
 
-import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan, InisiasiFormUKKondisiRumah, InisiasiFormUKSektorEkonomi, InisiasiFormUKTingkatPendapatan, InisiasiFormUKTandaTanganPermohonan, InisiasiFormUKSignatureScreen } from '../screens/inisiasi/index'
+import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan, InisiasiFormUKKondisiRumah, InisiasiFormUKSektorEkonomi, InisiasiFormUKTingkatPendapatan, InisiasiFormUKTandaTanganPermohonan, InisiasiFormUKSignatureScreen, Verifikasi, VerifikasiFormReview, VerifikasiFormPreview } from '../screens/inisiasi/index'
 
 
 const Stack = createStackNavigator();
@@ -530,6 +530,9 @@ export default function AppNavigator() {
                 <Stack.Screen name="InisiasiFormUKTingkatPendapatan" component={InisiasiFormUKTingkatPendapatan} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormUKTandaTanganPermohonan" component={InisiasiFormUKTandaTanganPermohonan} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormUKSignatureScreen" component={InisiasiFormUKSignatureScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Verifikasi" component={Verifikasi} options={{ headerShown: false }} />
+                <Stack.Screen name="VerifikasiFormReview" component={VerifikasiFormReview} options={{ headerShown: false }} />
+                <Stack.Screen name="VerifikasiFormPreview" component={VerifikasiFormPreview} options={{ headerShown: false }} />
 
           </Stack.Navigator>
       </NavigationContainer>

@@ -157,6 +157,7 @@ const DataDiri = ({route}) => {
     ]);
     const [submmitted, setSubmmitted] = useState(false);
     const [dataWilayahMobile, setDataWilayahMobile] = useState([]);
+    const [statusAgreement, setStatusAgreement] = useState(false);
 
     const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
     const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
@@ -645,6 +646,8 @@ const DataDiri = ({route}) => {
 
     const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
+
+        if (!statusAgreement) return true;
 
         if (!fotokartuIdentitas || typeof fotokartuIdentitas === 'undefined' || fotokartuIdentitas === '' || fotokartuIdentitas === 'null') return alert('Foto Kartu Identitas (*) tidak boleh kosong');
         if (!valueJenisKartuIdentitas || typeof valueJenisKartuIdentitas === 'undefined' || valueJenisKartuIdentitas ==='' || valueJenisKartuIdentitas === 'null') return alert('Jenis Kartu Identitas (*) tidak boleh kosong');
@@ -1934,11 +1937,29 @@ const DataDiri = ({route}) => {
                             />
                         </View>
 
+                        <View style={
+                            {
+                                flex: 1,
+                                flexDirection: 'row',
+                                marginHorizontal: 30,
+                                marginBottom: 20,
+                                width: dimension.width - (32 * 4)
+                            }
+                        }>
+                            <Checkbox
+                                status={statusAgreement ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setStatusAgreement(!statusAgreement);
+                                }}
+                            />
+                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Informasi data pribadi yang saya kemukakan disini adalah benar adanya dan telah sesuai, selanjutnya saya memberikan persetujuan bagi PNM untuk menggunakan dan memberikan data tersebut untuk keperluan apapun bagi pihak manapun yang berdasarkan pertimbangan PNM perlu dan penting untuk dilakukan sesuai dengan ketentuan hukum yang berlaku.</Text>
+                        </View>
+
                         <View style={{alignItems: 'center', marginVertical: 20}}>
                             <Button
                                 title="SIMPAN"
                                 onPress={() => doSubmitSave()}
-                                buttonStyle={{backgroundColor: '#EB3C27', width: dimension.width/2}}
+                                buttonStyle={{backgroundColor: statusAgreement ? '#EB3C27' : 'gray', width: dimension.width/2}}
                                 titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                             />
                         </View>

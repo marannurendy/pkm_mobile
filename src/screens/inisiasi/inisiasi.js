@@ -178,7 +178,8 @@ const Inisasi = () => {
     }
     const ItemVerif = ({ data }) => (
         <TouchableOpacity 
-            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}}
+            onPress={() => navigation.navigate('Verifikasi', {groupName: data.groupName})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageVerif groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
