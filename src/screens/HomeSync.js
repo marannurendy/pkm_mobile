@@ -96,7 +96,10 @@ export default function FrontHomeSync(props) {
         if (__DEV__) console.log('doSubmit selectedIndexFilterProspek', selectedIndexFilterProspek);
 
         if (submitted) return true;
-        if (![2].includes(selectedIndexFilterProspek) && selectedItemsProspek.length === 0) return true;
+        if (![2].includes(selectedIndexFilterProspek) && selectedItemsProspek.length === 0) {
+            ToastAndroid.show('Belum ada nama prospek yang dipilih!', ToastAndroid.SHORT);
+            return true;
+        }
 
         const prospekMap = selectedItemsProspek.map((prospek, index) => {
             const dataProspek = JSON.parse(prospek);

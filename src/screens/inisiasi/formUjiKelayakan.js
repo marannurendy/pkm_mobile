@@ -90,11 +90,11 @@ const FormUjiKelayakan = ({route}) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
 
-                        const fotoDataPenjamin = await AsyncStorage.getItem(data.foto_ktp_penjamin);
-                        const fotoDataSuami = await AsyncStorage.getItem(data.foto_ktp_suami);
-                        const fotoKartuKeluarga = await AsyncStorage.getItem(data.foto_kk);
-                        const fotoKeteranganDomisili = await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili);
-                        const fotoKartuIdentitas = await AsyncStorage.getItem(data.foto_Kartu_Identitas);
+                        let fotoDataPenjamin = await AsyncStorage.getItem(data.foto_ktp_penjamin);
+                        let fotoDataSuami = await AsyncStorage.getItem(data.foto_ktp_suami);
+                        let fotoKartuKeluarga = await AsyncStorage.getItem(data.foto_kk);
+                        let fotoKeteranganDomisili = await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili);
+                        let fotoKartuIdentitas = await AsyncStorage.getItem(data.foto_Kartu_Identitas);
 
                         const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
                         const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
@@ -123,6 +123,27 @@ const FormUjiKelayakan = ({route}) => {
                         }
 
                         let namaProduk = data.produk_Pembiayaan;
+                        
+                        if (fotoKartuIdentitas === null) {
+                            setSubmitted(false);
+                            return Alert.alert('Error: Foto Kartu Identitas', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
+                        }
+                        if (fotoKeteranganDomisili === null) {
+                            setSubmitted(true);
+                            return Alert.alert('Error: Foto Surat Keterangan Domisili', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
+                        }
+                        if (fotoKartuKeluarga === null) {
+                            setSubmitted(false);
+                            return Alert.alert('Error: Foto Kartu Keluarga', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
+                        }
+                        if (fotoDataSuami === null) {
+                            setSubmitted(false);
+                            return Alert.alert('Error: Foto Kartu Identitas Suami', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
+                        }
+                        if (fotoDataPenjamin === null) {
+                            setSubmitted(false);
+                            return Alert.alert('Error: Foto Kartu Identitas Penjamin', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
+                        }
 
                         const body = {
                             "Alamat": data.alamat_Identitas,
@@ -173,8 +194,8 @@ const FormUjiKelayakan = ({route}) => {
                             "NamaPenjamin": data.nama_penjamin,
                             "NamaProduk": namaProduk,
                             "NamaSuami": data.nama_suami,
-                            "UsahaPekerjaanSuami": data.usahaPekerjaanSuami,
-                            "JumlahTenagaKerjaSuami": data.jumlahTenagaKerjaSuami,
+                            "PekerjaanSuami": data.usaha_pekerjaan_suami,
+                            "JumlahTenagaKerjaSuami": data.jumlah_tenaga_kerja_suami,
                             "Nama_Pembiayaan_Lembaga_Lain": Pembiayaan_Dari_LembagaLain,
                             "NoHP": data.no_tlp_nasabah,
                             "NoKK": data.no_kk,
@@ -247,7 +268,7 @@ const FormUjiKelayakan = ({route}) => {
                                                     tx.executeSql(query);
                                                 }, function(error) {
                                                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                                                    setSubmmitted(false);
+                                                    setSubmitted(false);
                                                 },function() {
                                                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
 
@@ -270,7 +291,7 @@ const FormUjiKelayakan = ({route}) => {
                                             );
                                         }, function(error) {
                                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
-                                            setSubmmitted(false);
+                                            setSubmitted(false);
                                         })
                                     }
                                 );

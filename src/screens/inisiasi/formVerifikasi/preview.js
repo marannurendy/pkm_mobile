@@ -13,6 +13,7 @@ const VerifikasiFormPreview = ({ route }) => {
     const navigation = useNavigation();
     const [pdf, setPdf] = useState('');
     const [statusMounting, setStatusMounting] = useState(false);
+    const [currentDate, setCurrentDate] = useState('');
 
     useEffect(() => {
         setInfo();
