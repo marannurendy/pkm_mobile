@@ -10,6 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import 'moment/locale/id';
 import SearchListView from '../components/SearchListView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
 const colors = {
     HITAM: '#000',
@@ -203,6 +204,11 @@ export default function FrontHomeSync(props) {
                     textDecorationLine: 'underline'
                 }
             }
+            onPress={() => {
+                if ([2].includes(selectedIndexFilterProspek)) return true;
+                
+                fetchData();
+            }}
         >
             Tampilkan
         </Text>
@@ -286,7 +292,6 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            {/* <FontAwesomeIcon name="database" size={32} color={colors.DEFAULT} /> */}
             <Text
                 style={
                     {
@@ -358,7 +363,10 @@ export default function FrontHomeSync(props) {
                     </View>
                 </TouchableOpacity>
             ) : (
-                <Text>Sedang sync, mohon tunggu...</Text>
+                <>
+                    <ActivityIndicator animating={true} color={Colors.red800} />
+                    <Text style={{ marginLeft: 12 }}>{`Sedang sync,\nmohon tunggu...`}</Text>
+                </>
             )}
             <View style={{flex: 1}} />
         </View>

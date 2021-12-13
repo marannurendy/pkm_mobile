@@ -13,7 +13,6 @@ const dimension = Dimensions.get('screen');
 const images = {
     banner: require("../../../../assets/Image/Banner.png")
 };
-const dropdownEmpty = [{ label: '-- Pilih --', value: null }];
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const ProdukPembiayaan = ({ route }) => {
@@ -521,8 +520,8 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
                         setValueProdukPembiayaan(itemValue);
-                        setSelectedProdukPembiayaan(itemsProdukPembiayaan[itemIndex]);
-                        setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex].paymentTerm);
+                        setSelectedProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1]);
+                        setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex - 1].paymentTerm);
                     }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
@@ -539,7 +538,9 @@ const ProdukPembiayaan = ({ route }) => {
                 <Picker
                     selectedValue={valueJumlahPinjaman}
                     style={{ height: 50, width: withTextInput }}
-                    onValueChange={(itemValue, itemIndex) => setValueJumlahPinjaman(itemValue)}
+                    onValueChange={(itemValue, itemIndex) => {
+                        setValueJumlahPinjaman(itemValue);
+                    }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {generateJumlahPinjaman(selectedProdukPembiayaan)}

@@ -173,6 +173,8 @@ const FormUjiKelayakan = ({route}) => {
                             "NamaPenjamin": data.nama_penjamin,
                             "NamaProduk": namaProduk,
                             "NamaSuami": data.nama_suami,
+                            "UsahaPekerjaanSuami": data.usahaPekerjaanSuami,
+                            "JumlahTenagaKerjaSuami": data.jumlahTenagaKerjaSuami,
                             "Nama_Pembiayaan_Lembaga_Lain": Pembiayaan_Dari_LembagaLain,
                             "NoHP": data.no_tlp_nasabah,
                             "NoKK": data.no_kk,
