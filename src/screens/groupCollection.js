@@ -1,29 +1,76 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, ImageBackground, Dimensions, SafeAreaView, FlatList, TextInput } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, SafeAreaView, TextInput, Keyboard, Alert, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import db from '../database/Database'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import CurrencyInput from 'react-native-currency-input'
 import moment from 'moment'
-import { RadioButton } from 'react-native-paper'
-import { marginTop } from 'styled-system'
+import BottomSheet from 'reanimated-bottom-sheet'
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+
+import { GroupCollection_Child as Child } from '../child'
+import { ScrollView } from 'react-native-gesture-handler'
+
+const dimension = Dimensions.get('screen')
+
+const windowWidth = Dimensions.get('window').width
 
 const GroupCollection = ({route}) => {
 
-    const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
+    const { groupid, GroupName } = route.params
+
+    var memberLists = "SELECT DISTINCT * FROM AccountList WHERE GroupID = '"+groupid+"'"
+    const SelectMemberList = (memberList) => (new Promise((resolve, reject) => {
+        try{
+            db.transaction(
+                tx => {
+                    tx.executeSql(memberList, [], (tx, results) => {
+                        let dataLength = results.rows.length
+                        var dataList = []
+                        for(let a = 0; a < dataLength; a++) {
+                            let newData = results.rows.item(a);
+                            newData['titipan'] = newData.savings === null ? 0 : newData.savings === undefined ? 0 : newData.savings;
+                            newData['tarikan'] = newData.withDraw === null ? 0 : newData.withDraw === undefined ? 0 : newData.withDraw;
+                            newData['angsuran'] = newData.InstallmentAmount
+                            newData['total'] = newData.InstallmentAmount
+                            dataList.push(newData);
+                        }
+
+                        resolve (dataList)
+                    })
+                },function(error) {
+                    reject(error)
+                }
+            )
+        } catch( error ) {
+            reject(error)
+        }
+    }))
 
     let [currentDate, setCurrentDate] = useState()
     let [groupInfo, setGroupInfo] = useState()
     let [isLoaded, setLoaded] = useState(false)
-    let [memberList, setMemberList] = useState([])
+    let [memberList, setMemberList] = useState(useMemo(() => SelectMemberList(memberLists)), [])
     let [attendList, setAttendList] = useState([])
+
+    let [totalSetoran, setTotalSetoran] = useState()
+    let [totalAngsuran, setTotalAngsuran] = useState()
+    let [totalTitipan, setTotalTitipan] = useState()
+    let [totalTarikan, setTotalTarikan] = useState()
+    let [totalAbsen, setTotalAbsen] = useState()
+
+    let [visible, setVisible] = useState(false)
+    let [buttonSubmit, setButtonSubmit] = useState(false)
+
 
     let [listData, setListData] = useState([])
 
-
-    const { groupid, GroupName } = route.params
+    const btmsheet = React.createRef()
 
     useEffect(() => {
         fetchData()
@@ -42,36 +89,7 @@ const GroupCollection = ({route}) => {
                 db.transaction(
                     tx => {
                         tx.executeSql(groupDetail, [], (tx, results) => {
-                            // let dataLength = results.rows.length
-                            // console.log("yang ini bang " + dataLength)
-                            // var datasign = []
-                            // for(let a = 0; a < dataLength; a++) {
-                            //     datasign.push(results.rows.item(a))
-                            // }
-
                             resolve (results.rows.item(0))
-                        })
-                    },function(error) {
-                        reject(error)
-                    }
-                )
-            } catch( error ) {
-                reject(error)
-            }
-        }))
-
-        const SelectMemberList = (memberList) => (new Promise((resolve, reject) => {
-            try{
-                db.transaction(
-                    tx => {
-                        tx.executeSql(memberList, [], (tx, results) => {
-                            let dataLength = results.rows.length
-                            var dataList = []
-                            for(let a = 0; a < dataLength; a++) {
-                                dataList.push(results.rows.item(a))
-                            }
-
-                            resolve (dataList)
                         })
                     },function(error) {
                         reject(error)
@@ -91,7 +109,7 @@ const GroupCollection = ({route}) => {
                             var dataAbsent = []
                             for(let a = 0; a < dataLength; a++) {
                                 let data = results.rows.item(a)
-                                dataAbsent.push({'attendStatus': data.attendStatus})
+                                dataAbsent.push(data.attendStatus)
                             }
 
                             resolve (dataAbsent)
@@ -109,154 +127,283 @@ const GroupCollection = ({route}) => {
         const DataMemberList = await SelectMemberList(memberList)
         const DataAttendStatus = await SelectAttendStatus(memberList)
 
+        const statusTotal = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.totalSetor) , 0 )
+        const statusTotalAngsuran = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.InstallmentAmount) , 0 )
+        const statusTotalTitipan = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.titipan) , 0 )
+        const statusTotalTarikan = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.tarikan) , 0 )
+
+        console.log(DataMemberList)
+
+        if(DataGroupInfo.Status === '3') {
+            setButtonSubmit(true)
+        }
+
+        setTotalSetoran(statusTotal)
+        setTotalAngsuran(statusTotalAngsuran)
+        setTotalTitipan(statusTotalTitipan)
+        setTotalTarikan(statusTotalTarikan)
+
         setGroupInfo(DataGroupInfo)
         setMemberList(DataMemberList)
         setAttendList(DataAttendStatus)
 
         setListData(DataMemberList)
-        // setJumlahTagih(number(DataGroupInfo.JumlahTagihan))
+
         setLoaded(true)
     }
 
-    // LIST VIEW
+    const onInputChange = async (index, item) => {
+        memberList[index] = item;
 
-    const renderItem = ({ item }) => (
-        <Item data={item} />
-    )
+        const statusTotal = await memberList.reduce((a,v) =>  a = Number(a) + Number(v.totalSetor) , 0 )
+        const statusTotalAngsuran = await memberList.reduce((a,v) =>  a = Number(a) + Number(v.InstallmentAmount) , 0 )
+        const statusTotalTitipan = await memberList.reduce((a,v) =>  a = Number(a) + Number(v.titipan) , 0 )
+        const statusTotalTarikan = await memberList.reduce((a,v) =>  a = Number(a) + Number(v.tarikan) , 0 )
 
-    const pressHandler = (groupid, groupName, branchId, Username) => {
-        navigation.navigate("MeetingMenu", {groupid: groupid})
-    }
-
-    const Item = ({ data }) => (
-        <TouchableOpacity 
-            style={{marginHorizontal: 20, marginVertical: 10, borderRadius: 20, backgroundColor: '#FFF'}}
-        >
-            <View>
-                <ListMessage 
-                    memberName={data.ClientName} 
-                    clientid={data.ClientID} 
-                    productid={data.ProductID} 
-                    jumlahAngsuran={data.ke}
-                    attendStatus={data.attendStatus}
-                />
-            </View>
-        </TouchableOpacity>
-    )
-
-    const attendanceHandler = (idAbsent, index, clientid) => {
-        let newArr = [...attendList]
-        newArr[index] = idAbsent
-
-        setAttendList(newArr)
-    }
+        setTotalSetoran(statusTotal)
+        setTotalAngsuran(statusTotalAngsuran)
+        setTotalTitipan(statusTotalTitipan)
+        setTotalTarikan(statusTotalTarikan)
+    };
 
     const searchHandler = (value, data) => {
         let newData = [];
-        console.log(value)
+        // console.log(value)
         if (value) {
             newData = data.filter(function(item) {
                 const itemData = item.ClientName.toUpperCase();
                 const textData = value.toUpperCase();
                 return itemData.includes(textData);
             })
-            console.log("yang ini ==> " + newData)
             setMemberList([...newData]);
         } else {
-            console.log("that")
             setMemberList([...listData]);
         }
     }
 
-    const ListMessage = ({ memberName, clientid, productid, jumlahAngsuran }) => {
-        function getIndex(clientid) {
-            return memberList.findIndex(obj => obj.ClientID === clientid);
+    const SubmitHandler = () => {
+        let dataLength = memberList.length
+        
+        for(let a= 0; a < dataLength; a++) {
+            let b = memberList[a].attendStatus
+            if(b === undefined || b === null || b === 0) {
+                Alert.alert(
+                    "Caution",
+                    "Status kehadiran nasabah atas nama " + memberList[a].ClientName + " belum diisi.",
+                    [
+                        { text: "OK", onPress: () => {return false} }
+                    ],
+                )
+                return false
+            }
         }
-        var index = getIndex(clientid)
 
-        return(
-            <View style={{margin: 20}}>
-                <View style={{paddingVertical: 10, paddingHorizontal: 20, borderTopRightRadius: 20, borderTopLeftRadius: 20, borderBottomLeftRadius: 20, borderBottomRightRadius:20, backgroundColor: '#0E71C4'}}>
-                    <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 18, marginBottom: 5, color: '#FAFAF8'}} >{memberName}</Text>
-                    <Text style={{fontWeight: 'bold', fontSize: 15, marginBottom: 5, color: '#FAFAF8'}} >{clientid}</Text>
-                </View>
+        setVisible(true)
 
-                <View style={{marginTop: 10}}>
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={{marginHorizontal: 10, width: dimension.width/4}}>Product ID</Text>
-                        <Text style={{marginHorizontal: 5}}>:</Text>
-                        <Text>{productid}</Text>
-                    </View>
+        Alert.alert(
+            "Caution",
+            "Apa anda yakin akan menyimpan data PKM ?",
+            [
+                { text: "BATAL", onPress: () => {
+                    setVisible(false)
+                }},
+                { text: "OK", onPress: () => {
 
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={{marginHorizontal: 10, width: dimension.width/4}}>Angsuran Ke</Text>
-                        <Text style={{marginHorizontal: 5}}>:</Text>
-                        <Text>{jumlahAngsuran}</Text>
-                    </View>
-                </View>
+                    let dataLength = memberList.length
+                    for(let a = 0; a < dataLength; a++) {
+                        // setLoading(true)
+                        // console.log('ini ' + loading)
+                        let query = `UPDATE AccountList SET 
+                            InstallmentAmount = '` + memberList[a].InstallmentAmount + `',
+                            attendStatus = '` + memberList[a].attendStatus + `',
+                            savings = '` + memberList[a].titipan + `',
+                            withDraw = '` + memberList[a].tarikan + `',
+                            totalSetor = '` + memberList[a].totalSetor + `' 
+                            WHERE ClientID = '` + memberList[a].ClientID + `';`
 
-                <View style={{borderBottomWidth: 1, marginVertical: 10}} />
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query)
+                            },function(error) {
+                                setVisible(false)
+                                alert('Transaction ERROR: ' + error.message);
+                            }
+                        )
+                    }
 
-                <View>
-                    <Text style={{fontWeight: 'bold', fontSize: 15}}>Kehadiran Nasabah</Text>
-
-                    <View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton 
-                                value= "1"
-                                status={ attendList[index] === '1' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('1', index, clientid)} 
-                            />
-                            <Text>1. Hadir, Bayar</Text>
-                        </View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton 
-                                value= "2"
-                                status={ attendList[index] === '2' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('2', index, clientid)} 
-                            />
-                            <Text>2. Tidak Hadir, Bayar</Text>
-                        </View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton 
-                                value= "3"
-                                status={ attendList[index] === '3' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('3', index, clientid)} 
-                            />
-                            <Text>3. Hadir, Tidak Bayar</Text>
-                        </View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton 
-                                value= "4"
-                                status={ attendList[index] === '4' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('4', index, clientid)} 
-                            />
-                            <Text>4. Tidak Hadir, Tidak Bayar</Text>
-                        </View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton 
-                                value= "5"
-                                status={ attendList[index] === '5' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('5', index, clientid)} 
-                            />
-                            <Text>5. Hadir, Tanggung Renteng</Text>
-                        </View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton
-                                value= "6"
-                                status={ attendList[index] === '6' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('6', index, clientid)} 
-                            />
-                            <Text>6. Tidak Hadir, Tanggung Renteng</Text>
-                        </View>
-                    </View>
-                </View>
-
-            </View>
+                    let query = `UPDATE GroupList SET Status = '1' WHERE GroupID = '` + groupid + `'`
+                    let queryTotal = `INSERT INTO Totalpkm (
+                        userName,
+                        GroupID,
+                        MeetingDay,
+                        TotalSetoran,
+                        TotalAngsuran,
+                        TotalTitipan
+                    ) values (
+                        '` + groupInfo.syncby + `',
+                        '` + groupid + `',
+                        '` + groupInfo.MeetingDay + `',
+                        '` + totalSetoran + `',
+                        '` + totalAngsuran + `',
+                        '` + totalTitipan + `'
+                    );`
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryTotal)
+                        }, function(error) {
+                            setVisible(false)
+                            alert('Transaction ERROR: ' + error.message);
+                        }, function() {
+                            db.transaction(
+                                tx => {
+                                    tx.executeSql(query)
+                                }, function(error) {
+                                    setVisible(false)
+                                    alert('Transaction ERROR: ' + error.message);
+                                }, function() {
+                                    setVisible(false)
+                                    alert('input data berhasil');
+                                    navigation.goBack()
+                                }
+                            )
+                        }
+                    )
+                }},
+            ]
         )
     }
 
-    // END LIST VIEW
+    const renderContent = () => (
+        <View style={{ backgroundColor: '#CCCCC4', padding: 12, height: 600,}}>
+
+            <View style={{borderTopWidth: 4, marginBottom: 10, width: 50, borderRadius: 50, alignSelf: 'center', borderColor: '#51534E'}} />
+
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ flex: 3 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#FFF', borderRadius: 10 }}>
+                        <Text style={{ color: '#2e2e2e', fontWeight: 'bold', padding: 5, flex: 3 }}>Total Setoran</Text>
+                        <CurrencyInput
+                            value={totalSetoran}
+                            prefix="Rp "
+                            delimiter=","
+                            separator="."
+                            precision={0}
+                            editable= {false}
+                            style={{
+                                color: 'black',
+                                fontSize: 16,
+                                padding: 5,
+                                flex: 3
+                            }}
+                            numberOfLines={1}
+                        />
+                    </View>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#FFF', borderRadius: 10, marginTop: 5 }}>
+                        <Text style={{ color: '#2e2e2e', fontWeight: 'bold', padding: 5, flex: 3 }}>Total Angsuran</Text>
+                        <CurrencyInput
+                            value={totalAngsuran}
+                            prefix="Rp "
+                            delimiter=","
+                            separator="."
+                            precision={0}
+                            editable= {false}
+                            style={{
+                                color: 'black',
+                                fontSize: 16,
+                                padding: 5,
+                                flex: 3
+                            }}
+                            numberOfLines={1}
+                        />
+                    </View>
+                </View>
+
+                <View style={{ flex: 2, alignItems: 'center' }}>
+                    <TouchableOpacity disabled={buttonSubmit} onPress={() => SubmitHandler()} style={{ paddingHorizontal: 25, paddingVertical: 5, borderRadius: 10, backgroundColor: buttonSubmit === false ? '#08847C' : '#CCCCC4' }}>
+                        { buttonSubmit === false ?
+                            <Text style={{ fontSize: 17, color: '#FFF', fontWeight: 'bold' }}>SUBMIT</Text> : 
+                            <Text style={{ fontSize: 15, color: '#FFF', fontWeight: 'bold' }}>SUBMITTED</Text>
+                        }
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={{marginTop: 30}}>
+                <Text style={{color: '#51534E', fontSize: 15, marginBottom: 10, margin: 10, fontWeight: 'bold'}}>Detail Draft Pertemuan Kolektif Mingguan </Text>
+                <View style={{borderWidth: 1.5, borderColor: '#fff', borderRadius: 10}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 2.5, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
+                        <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', padding: 5, flex: 2 }}>Total Setoran :</Text>
+                        <CurrencyInput
+                            value={totalSetoran}
+                            prefix="Rp "
+                            delimiter=","
+                            separator="."
+                            precision={0}
+                            editable= {false}
+                            style={{
+                                color: 'black',
+                                fontSize: 16,
+                                flex: 4
+                            }}
+                        />
+                    </View>
+
+                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 2.5, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
+                        <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', padding: 5, flex: 2 }}>Total Angsuran :</Text>
+                        <CurrencyInput
+                            value={totalAngsuran}
+                            prefix="Rp "
+                            delimiter=","
+                            separator="."
+                            precision={0}
+                            editable= {false}
+                            style={{
+                                color: 'black',
+                                fontSize: 16,
+                                flex: 4
+                            }}
+                        />
+                    </View>
+
+                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 2.5, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
+                        <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', padding: 5, flex: 2 }}>Total Titipan :</Text>
+                        <CurrencyInput
+                            value={totalTitipan}
+                            prefix="Rp "
+                            delimiter=","
+                            separator="."
+                            precision={0}
+                            editable= {false}
+                            style={{
+                                color: 'black',
+                                fontSize: 16,
+                                flex: 4
+                            }}
+                        />
+                    </View>
+
+                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 2.5, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
+                        <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', padding: 5, flex: 2 }}>Total Tarikan :</Text>
+                        <CurrencyInput
+                            value={totalTarikan}
+                            prefix="Rp "
+                            delimiter=","
+                            separator="."
+                            precision={0}
+                            editable= {false}
+                            style={{
+                                color: 'black',
+                                fontSize: 16,
+                                flex: 4
+                            }}
+                        />
+                    </View>
+                </View>
+            </View>
+            
+        </View>
+    );
 
     return (
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -269,18 +416,10 @@ const GroupCollection = ({route}) => {
                 paddingHorizontal: 20,
             }}
             >
-                <View style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
-                    <TouchableOpacity onPress={() => navigation.replace("MeetingMenu", {groupid: groupid})}>
-                        <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                    <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>PKM</Text>
-                </View>
-                {/* <View style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
-                    <TouchableOpacity onPress={() => navigation.replace("Meeting", {id : groupid, group : groupname})}>
-                        <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
-                    </TouchableOpacity>
-                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>PKM</Text>
-                </View> */}
+                </TouchableOpacity>
             </View>
 
             <View style={{height: dimension.height/5, marginHorizontal: 20, borderRadius: 20, marginTop: 30}}>
@@ -314,7 +453,7 @@ const GroupCollection = ({route}) => {
                 />
             </View>
 
-            <SafeAreaView style={{flex: 1, marginTop: 20}}>
+            <SafeAreaView style={{flex: 1, marginTop: 10}}>
                 {isLoaded === false ? 
                     (
                         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -323,24 +462,34 @@ const GroupCollection = ({route}) => {
                             </View>
                         </View>
                     ) :
-                    ( <View style={{ justifyContent:  'space-between'}}>
-                        <FlatList
-                            // contentContainerStyle={styles.listStyle}
-                            // refreshing={refreshing}
-                            // onRefresh={() => _onRefresh()}
-                            data={memberList}
-                            keyExtractor={(item, index) => index.toString()}
-                            enabledGestureInteraction={true}
-                            // onEndReachedThreshold={0.1}
-                            // onEndReached={() => handleEndReach()}
-                            renderItem={renderItem}
-                            // style={{height: '88.6%'}}
-                        /> 
-                    </View>
+                    ( <ScrollView onScrollBeginDrag={Keyboard.dismiss} style={{ marginHorizontal: 20, marginBottom: 100 }}>
+                        {memberList.map((item, index) => (
+                            <Child
+                                key={item.ClientID}
+                                item={item}
+                                index={index}
+                                onChange={onInputChange}
+                            />
+                        ))}
+                    </ScrollView>
                     )
                 }
+
             </SafeAreaView>
 
+            <BottomSheet
+                ref={btmsheet}
+                snapPoints={[450, 200, 120]}
+                initialSnap={2}
+                borderRadius={20}
+                renderContent={renderContent}
+            />
+
+                {visible &&
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#00ff00" />
+                    </View>
+                }
         </View>
     )
 }
@@ -352,4 +501,49 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
+    paymentStyle: {
+        fontSize: 16
+    },
+    Detailtitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    currencyInput: {
+        borderWidth: 1,
+        borderRadius: 10,
+        paddingTop: 0,
+        height: dimension.height/18,
+        width: dimension.width/3.0
+    },
+    deviderStyle: {
+        borderBottomColor: 'black',
+        borderBottomWidth: 1,
+        width: dimension.width/1.5,
+        padding: 10,
+    },
+    modal: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.6)',
+    },
+    container: {
+        width: windowWidth - 80,
+        height: 300,
+        backgroundColor: 'white',
+        padding: 16,
+        borderRadius: 4,
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        opacity: 0.5,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
 })

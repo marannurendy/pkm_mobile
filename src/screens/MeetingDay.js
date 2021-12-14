@@ -115,12 +115,10 @@ const MeetingDay = () => {
                 paddingHorizontal: 20,
             }}
             >
-                <View style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
-                    <TouchableOpacity onPress={() => navigation.replace('FrontHome')}>
-                        <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                    <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>PKM</Text>
-                </View>
+                </TouchableOpacity>
             </View>
 
             <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>

@@ -1,3 +1,3 @@
-import {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi} from "./apisync/apisync"
+import {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb} from "./apisync/apisync"
 
-export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi}
+export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb}

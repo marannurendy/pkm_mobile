@@ -7,7 +7,7 @@ import { FAB } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Alert } from 'react-native';
-import {ApiSync, Get_notification, Get_Date, ApiSyncInisiasi} from '../../dataconfig/index'
+import {ApiSync, Get_notification, Get_Date, ApiSyncInisiasi, ApiPkmb} from '../../dataconfig/index'
 import moment from 'moment';
 import 'moment/locale/id';
 import { Card, Button } from 'react-native-elements';
@@ -36,6 +36,8 @@ export default function FrontHome() {
     const apiSync = ApiSync
     const apiSyncInisiasi = ApiSyncInisiasi
 
+    let [isSync, setIsSync] = useState(true)
+
     LogBox.ignoreAllLogs()
 
 
@@ -52,19 +54,28 @@ export default function FrontHome() {
 
     }
 
-    const itemReadyHandler = () => {
+    const itemReadyHandler = async (id, uname) => {
         console.log("shit")
+        var queryCek = `SELECT * FROM GroupList WHERE OurBranchID = '` + id + `' AND syncby = '` + uname + `'`
+        console.log(queryCek)
         db.transaction(
             tx => {
-                tx.executeSql("SELECT * FROM GroupList WHERE OurBranchID = '"+cabangid+"' AND syncby = '"+username+"'", [], (tx, results) => {
+                tx.executeSql(queryCek, [], (tx, results) => {
                     var testLength = results.rows.length
+                    // let data = results.rows.item(0)
 
-                    console.log("yang ini " + testLength)
+                    console.log(results.rows.item(0))
+
+                    // console.log("SELECT * FROM GroupList WHERE OurBranchID = '"+cabangid+"' AND syncby = '"+username+"'")
+                    // console.log("testLength " + testLength)
+
                     if(testLength > 0) {
-                        setButtonstat(false)
+                        // setButtonstat(false)
+                        setIsSync(true)
                         fetchData()
                     }else{
-                        setButtonstat(true)
+                        // setButtonstat(true)
+                        setIsSync(false)
                         fetchData()
                     }
                 })
@@ -101,20 +112,34 @@ export default function FrontHome() {
     }
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            syncData()
-            itemReadyHandler()
+        const unsubscribe = navigation.addListener('focus', async () => {
+            // syncData()
             // fetchData()
+            // AsyncStorage.getItem('userData', (error, result) => {
+            //     const dt = JSON.parse(result);
+    
+            //     setCabangid(dt.kodeCabang)
+            //     setNamacabang(dt.namaCabang)
+            //     setUsername(dt.userName)
+            //     setAoname(dt.AOname)
+            // })
+
+
+            const syncStatus = await AsyncStorage.getItem('userData')
+            
+            let DetailData = JSON.parse(syncStatus)
+
+            setCabangid(DetailData.kodeCabang)
+            setNamacabang(DetailData.namaCabang)
+            setUsername(DetailData.userName)
+            setAoname(DetailData.AOname)
+
+            itemReadyHandler(DetailData.kodeCabang, DetailData.userName)
+
+
         });
 
-        AsyncStorage.getItem('userData', (error, result) => {
-            const dt = JSON.parse(result);
-
-            setCabangid(dt.kodeCabang)
-            setNamacabang(dt.namaCabang)
-            setUsername(dt.userName)
-            setAoname(dt.AOname)
-        })
+        
 
         // AsyncStorage.removeItem('SyncDate');
 
@@ -197,382 +222,453 @@ export default function FrontHome() {
         )
       }
 
-    function syncData() {
-        moment.locale('id');
-        var now = moment().format('YYYY-MM-DD');
+    // function syncData() {
+    //     moment.locale('id');
+    //     var now = moment().format('YYYY-MM-DD');
 
-        AsyncStorage.getItem('SyncDate', (error, syncDate) => {
-            if (syncDate !== now) {
-                setButtonDis(false);
-                return;
-            }
+    //     AsyncStorage.getItem('SyncDate', (error, syncDate) => {
+    //         if (syncDate !== now) {
+    //             setButtonDis(false);
+    //             return;
+    //         }
 
-            setButtonDis(true);
-        });
-    }
+    //         setButtonDis(true);
+    //     });
+    // }
 
     // backup punya rendy by Muhamad Yusup Hamdani
-    // async function syncData() {
-    //     moment.locale('id');
-    //     var tanggal = moment().format('YYYY-MM-DD')
+    async function syncData() {
+        moment.locale('id');
+        var tanggal = moment().format('YYYY-MM-DD')
 
-    //     var getListGroup = apiSync + 'GetListGroup' + '/' + cabangid + '/' + username
-    //     var getListCollection = apiSync + 'GetCollectionList' + '/' + cabangid + '/' + username
-    //     var queryUP = apiSync + 'Shit' + '/' + cabangid + '/' + username
-    //     var getPAR = apiSync + 'GetCollectionListPAR' + '/' + cabangid + '/' + username
-    //     var getPKMIndividual = apiSync + 'GetCollectionListPKMIndividual' + '/' + cabangid + '/' + username
+        var getListGroup = apiSync + 'GetListGroup' + '/' + cabangid + '/' + username
+        var getListCollection = apiSync + 'GetCollectionList' + '/' + cabangid + '/' + username
+        var queryUP = apiSync + 'Shit' + '/' + cabangid + '/' + username
+        var getPAR = apiSync + 'GetCollectionListPAR' + '/' + cabangid + '/' + username
+        var getPKMIndividual = apiSync + 'GetCollectionListPKMIndividual' + '/' + cabangid + '/' + username
+        var get_pkmb = ApiPkmb + username
 
-    //     var getMasterData = apiSyncInisiasi + 'GetMasterData/'
+        var getMasterData = apiSyncInisiasi + 'GetMasterData/'
 
-    //     console.log(getListGroup, getListCollection, queryUP, getPAR, getPKMIndividual)
+        // console.log(get_pkmb)
 
-    //     const insertListGroup = (responseJson) => ( new Promise((resolve, reject) => {
-    //         try{
-    //             var query = 'INSERT INTO GroupList (OurBranchID, GroupName, GroupID, MeetingDay, AnggotaAktif, JumlahTagihan, MeetingPlace, MeetingTime, syncby) values';
+        const insertListGroup = (responseJson) => ( new Promise((resolve, reject) => {
+            try{
+                var query = 'INSERT INTO GroupList (OurBranchID, GroupName, GroupID, MeetingDay, AnggotaAktif, JumlahTagihan, MeetingPlace, MeetingTime, syncby) values';
 
-    //             if(responseJson != null) {
-    //                 // console.log('group '+responseJson.length)
-    //                 for (let i = 0; i < responseJson.length; i++) {
-    //                     query = query + "('"
-    //                     + responseJson[i].OurBranchID
-    //                     + "','"
-    //                     + responseJson[i].GroupName
-    //                     + "','"
-    //                     + responseJson[i].GroupID
-    //                     + "','"
-    //                     + responseJson[i].MeetingDay
-    //                     + "','"
-    //                     + responseJson[i].AnggotaAktif
-    //                     + "','"
-    //                     + responseJson[i].JumlahTagihan
-    //                     + "','"
-    //                     + responseJson[i].MeetingPlace
-    //                     + "','"
-    //                     + responseJson[i].MeetingTime
-    //                     + "','"
-    //                     + username
-    //                     + "')";
-    //                     if (i != responseJson.length - 1) {
-    //                         query = query + ",";
-    //                     }
-    //                 }
-    //                 query = query + ";";
-    //                 db.transaction(
-    //                     tx => {
-    //                         tx.executeSql(query);
-    //                     }
-    //                     ,function(error) {
-    //                         console.log('Transaction ERROR: ' + error.message);
-    //                         alert('Transaction ERROR: ' + error.message)
-    //                         // ToastAndroid.show("error : Terjadi kesalahan dalam pengambilan data" + error, ToastAndroid.SHORT)
-    //                         reject('Gagal input Data PKM !')
-    //                     },function() {
-    //                         resolve('berhasil')
-    //                     }
-    //                  )
+                if(responseJson != null) {
+                    // console.log('group '+responseJson.length)
+                    for (let i = 0; i < responseJson.length; i++) {
+                        query = query + "('"
+                        + responseJson[i].OurBranchID
+                        + "','"
+                        + responseJson[i].GroupName
+                        + "','"
+                        + responseJson[i].GroupID
+                        + "','"
+                        + responseJson[i].MeetingDay
+                        + "','"
+                        + responseJson[i].AnggotaAktif
+                        + "','"
+                        + responseJson[i].JumlahTagihan
+                        + "','"
+                        + responseJson[i].MeetingPlace
+                        + "','"
+                        + responseJson[i].MeetingTime
+                        + "','"
+                        + username
+                        + "')";
+                        if (i != responseJson.length - 1) {
+                            query = query + ",";
+                        }
+                    }
+                    query = query + ";";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }
+                        ,function(error) {
+                            console.log('Transaction ERROR: ' + error.message);
+                            alert('Transaction ERROR: ' + error.message)
+                            // ToastAndroid.show("error : Terjadi kesalahan dalam pengambilan data" + error, ToastAndroid.SHORT)
+                            reject('Gagal input Data PKM !')
+                        },function() {
+                            resolve('berhasil')
+                        }
+                     )
     
-    //                 } else {
-    //                     Alert.alert("Kelompok tidak tersedia, Mohon lakukan pengecekan !")
-    //                     db.transaction(
-    //                         tx => {
-    //                             tx.executeSql("DELETE FROM ListGroup")
-    //                             tx.executeSql("DELETE FROM GroupList")
-    //                             tx.executeSql("DELETE FROM UpAccountList")
-    //                             tx.executeSql("DELETE FROM PAR_AccountList")
-    //                             tx.executeSql("DELETE FROM AccountList")
-    //                             tx.executeSql("DELETE FROM Totalpkm")
-    //                             tx.executeSql("DELETE FROM pkmTransaction")
-    //                             tx.executeSql("DELETE FROM parTransaction")
-    //                             tx.executeSql("DELETE FROM DetailKehadiran")
-    //                             tx.executeSql("DELETE FROM DetailUP")
-    //                             tx.executeSql("DELETE FROM DetailPAR")
-    //                             tx.executeSql("DELETE FROM Detailpkm")
-    //                         },function(error) {
-    //                             ToastAndroid.show("Something Went Wrong : " + error, ToastAndroid.SHORT);
-    //                             reject('Gagal Memproses Data')
-    //                             alert('Transaction ERROR: ' + error.message)
-    //                         }, function() {
-    //                             setLoading(false)
-    //                             reject('Data Kelompok Kosong, silahkan Cek kembali !')
-    //                         }
-    //                     )                 
+                    } else {
+                        Alert.alert("Kelompok tidak tersedia, Mohon lakukan pengecekan !")
+                        db.transaction(
+                            tx => {
+                                tx.executeSql("DELETE FROM ListGroup")
+                                tx.executeSql("DELETE FROM GroupList")
+                                tx.executeSql("DELETE FROM UpAccountList")
+                                tx.executeSql("DELETE FROM PAR_AccountList")
+                                tx.executeSql("DELETE FROM AccountList")
+                                tx.executeSql("DELETE FROM Totalpkm")
+                                tx.executeSql("DELETE FROM pkmTransaction")
+                                tx.executeSql("DELETE FROM parTransaction")
+                                tx.executeSql("DELETE FROM DetailKehadiran")
+                                tx.executeSql("DELETE FROM DetailUP")
+                                tx.executeSql("DELETE FROM DetailPAR")
+                                tx.executeSql("DELETE FROM Detailpkm")
+                            },function(error) {
+                                ToastAndroid.show("Something Went Wrong : " + error, ToastAndroid.SHORT);
+                                reject('Gagal Memproses Data')
+                                alert('Transaction ERROR: ' + error.message)
+                            }, function() {
+                                setLoading(false)
+                                reject('Data Kelompok Kosong, silahkan Cek kembali !')
+                            }
+                        )                 
     
-    //                 }
-    //         } catch {
-    //             reject('Gagal input data ke local storage')
-    //         }
-    //     }))
+                    }
+            } catch {
+                reject('Gagal input data ke local storage')
+            }
+        }))
 
-    //     const insertgetListCollection = (responseJson) => (new Promise((resolve, reject) =>  {
-    //         try{
-    //             var query = 'INSERT INTO AccountList (OurBranchID, GroupName, GroupID, MeetingDay, ClientID, ClientName, AccountID, ProductID, InstallmentAmount, rill, ke, VolSavingsBal, StatusPAR, syncby) values';
+        const insertgetListCollection = (responseJson) => (new Promise((resolve, reject) =>  {
+            try{
+                var query = 'INSERT INTO AccountList (OurBranchID, GroupName, GroupID, MeetingDay, ClientID, ClientName, AccountID, ProductID, InstallmentAmount, rill, ke, VolSavingsBal, StatusPAR, totalSetor, syncby) values';
 
-    //             if(responseJson != null) {
-    //                     for (let d = 0; d < responseJson.length; d++) {
-    //                     query = query + "('"
-    //                     + responseJson[d].OurBranchID
-    //                     + "','"
-    //                     + responseJson[d].GroupName
-    //                     + "','"
-    //                     + responseJson[d].GroupID
-    //                     + "','"
-    //                     + responseJson[d].MeetingDay
-    //                     + "','"
-    //                     + responseJson[d].ClientID
-    //                     + "','"
-    //                     + responseJson[d].ClientName
-    //                     + "','"
-    //                     + responseJson[d].AccountID
-    //                     + "','"
-    //                     + responseJson[d].ProductID
-    //                     + "','"
-    //                     + responseJson[d].InstallmentAmount
-    //                     + "','"
-    //                     + responseJson[d].Rill
-    //                     + "','"
-    //                     + responseJson[d].Ke
-    //                     + "','"
-    //                     + responseJson[d].VolSavingsBal
-    //                     + "','"
-    //                     + responseJson[d].StatusPAR
-    //                     + "','"
-    //                     + username
-    //                     + "')";
-    //                     if (d != responseJson.length - 1) {
-    //                         query = query + ",";
-    //                     }
-    //                 }
-    //                 query = query + ";";
-    //                 db.transaction(
-    //                     tx => {
-    //                         tx.executeSql(query)
-    //                     }
-    //                     ,function(error) {
-    //                         console.log(error.message)
-    //                         reject('Gagal input data nasabah PKM')
-    //                     },function() {
-    //                         resolve('berhasil')
-    //                     }
-    //                 )
-    //             }
-    //         }catch{
-    //             reject('Gagal input data nasabah PKM ke local storage !')
-    //         }
-    //     }))
+                if(responseJson != null) {
+                        for (let d = 0; d < responseJson.length; d++) {
+                        query = query + "('"
+                        + responseJson[d].OurBranchID
+                        + "','"
+                        + responseJson[d].GroupName
+                        + "','"
+                        + responseJson[d].GroupID
+                        + "','"
+                        + responseJson[d].MeetingDay
+                        + "','"
+                        + responseJson[d].ClientID
+                        + "','"
+                        + responseJson[d].ClientName
+                        + "','"
+                        + responseJson[d].AccountID
+                        + "','"
+                        + responseJson[d].ProductID
+                        + "','"
+                        + responseJson[d].InstallmentAmount
+                        + "','"
+                        + responseJson[d].Rill
+                        + "','"
+                        + responseJson[d].Ke
+                        + "','"
+                        + responseJson[d].VolSavingsBal
+                        + "','"
+                        + responseJson[d].StatusPAR
+                        + "','"
+                        + responseJson[d].InstallmentAmount
+                        + "','"
+                        + username
+                        + "')";
+                        if (d != responseJson.length - 1) {
+                            query = query + ",";
+                        }
+                    }
+                    query = query + ";";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query)
+                        }
+                        ,function(error) {
+                            console.log(error.message)
+                            reject('Gagal input data nasabah PKM')
+                        },function() {
+                            resolve('berhasil')
+                        }
+                    )
+                }
+            }catch{
+                reject('Gagal input data nasabah PKM ke local storage !')
+            }
+        }))
 
-    //     const insertListUP = (responseJson) => (new Promise((resolve, reject) => {
-    //         try{
-    //             var upQuery = 'INSERT INTO UpAccountList (OurBranchID, ClientID, ClientName, GroupID, GroupName, MeetingDay, JumlahUP, syncby) values '
+        const insertListUP = (responseJson) => (new Promise((resolve, reject) => {
+            try{
+                var upQuery = 'INSERT INTO UpAccountList (OurBranchID, ClientID, ClientName, GroupID, GroupName, MeetingDay, JumlahUP, syncby) values '
 
-    //             if(responseJson != null) {
+                if(responseJson != null) {
     
-    //             for(let u = 0;u < responseJson.length;u++) {
-    //                 upQuery = upQuery + "('"
-    //                 + responseJson[u].OurBranchID
-    //                 + "','"
-    //                 + responseJson[u].ClientID
-    //                 + "','"
-    //                 + responseJson[u].ClientName
-    //                 + "','"
-    //                 + responseJson[u].GroupID
-    //                 + "','"
-    //                 + responseJson[u].GroupName
-    //                 + "','"
-    //                 + responseJson[u].MeetingDay
-    //                 + "','"
-    //                 + responseJson[u].CompSavingsBal
-    //                 + "','"
-    //                 + username
-    //                 + "')";
-    //                 if (u != responseJson.length - 1) {
-    //                     upQuery = upQuery + ",";
-    //                 }
-    //             }
-    //             upQuery = upQuery + ";";
-    //             db.transaction(
-    //                 tx => {
-    //                     tx.executeSql(upQuery)
-    //                 }
-    //                 ,function(error) {
-    //                     console.log('Transaction ERROR: ' + error.message);
-    //                     reject('Gagal input Data Uang Pertanggungjawaban')
-    //                 }
-    //                 , function() {
-    //                     resolve('berhasil')
-    //                 }
-    //             )
-    //             }else{
-    //                 resolve('berhasil')
-    //             }
-    //         }catch{
-    //             console.log('catch')
-    //             db.transaction(
-    //                 tx => {
-    //                     tx.executeSql("DELETE FROM ListGroup")
-    //                     tx.executeSql("DELETE FROM GroupList")
-    //                     tx.executeSql("DELETE FROM UpAccountList")
-    //                     tx.executeSql("DELETE FROM PAR_AccountList")
-    //                     tx.executeSql("DELETE FROM AccountList")
-    //                     tx.executeSql("DELETE FROM Totalpkm")
-    //                     tx.executeSql("DELETE FROM pkmTransaction")
-    //                     tx.executeSql("DELETE FROM parTransaction")
-    //                     tx.executeSql("DELETE FROM DetailKehadiran")
-    //                     tx.executeSql("DELETE FROM DetailUP")
-    //                     tx.executeSql("DELETE FROM DetailPAR")
-    //                     tx.executeSql("DELETE FROM Detailpkm")
-    //                 },function(error) {
-    //                     console.log('gagal hapus')
-    //                     alert('Transaction ERROR: ' + error.message)
-    //                     reject('Gagal Memeproses Data UP')
-    //                 },function() {
-    //                     console.log('sukses hapus')
-    //                     reject('Terjadi Kesalahan Sync, Mohon lakukan pengecekan !')
-    //                 }
-    //             )
+                for(let u = 0;u < responseJson.length;u++) {
+                    upQuery = upQuery + "('"
+                    + responseJson[u].OurBranchID
+                    + "','"
+                    + responseJson[u].ClientID
+                    + "','"
+                    + responseJson[u].ClientName
+                    + "','"
+                    + responseJson[u].GroupID
+                    + "','"
+                    + responseJson[u].GroupName
+                    + "','"
+                    + responseJson[u].MeetingDay
+                    + "','"
+                    + responseJson[u].CompSavingsBal
+                    + "','"
+                    + username
+                    + "')";
+                    if (u != responseJson.length - 1) {
+                        upQuery = upQuery + ",";
+                    }
+                }
+                upQuery = upQuery + ";";
+                db.transaction(
+                    tx => {
+                        tx.executeSql(upQuery)
+                    }
+                    ,function(error) {
+                        console.log('Transaction ERROR: ' + error.message);
+                        reject('Gagal input Data Uang Pertanggungjawaban')
+                    }
+                    , function() {
+                        resolve('berhasil')
+                    }
+                )
+                }else{
+                    resolve('berhasil')
+                }
+            }catch{
+                console.log('catch')
+                db.transaction(
+                    tx => {
+                        tx.executeSql("DELETE FROM ListGroup")
+                        tx.executeSql("DELETE FROM GroupList")
+                        tx.executeSql("DELETE FROM UpAccountList")
+                        tx.executeSql("DELETE FROM PAR_AccountList")
+                        tx.executeSql("DELETE FROM AccountList")
+                        tx.executeSql("DELETE FROM Totalpkm")
+                        tx.executeSql("DELETE FROM pkmTransaction")
+                        tx.executeSql("DELETE FROM parTransaction")
+                        tx.executeSql("DELETE FROM DetailKehadiran")
+                        tx.executeSql("DELETE FROM DetailUP")
+                        tx.executeSql("DELETE FROM DetailPAR")
+                        tx.executeSql("DELETE FROM Detailpkm")
+                    },function(error) {
+                        console.log('gagal hapus')
+                        alert('Transaction ERROR: ' + error.message)
+                        reject('Gagal Memeproses Data UP')
+                    },function() {
+                        console.log('sukses hapus')
+                        reject('Terjadi Kesalahan Sync, Mohon lakukan pengecekan !')
+                    }
+                )
 
-    //         }
-    //     }))
+            }
+        }))
 
-    //     const insertListPAR = (responseJson) => (new Promise((resolve, reject) => {
-    //         try{
-    //             if(responseJson != null){
-    //                 var parQuery = 'INSERT INTO PAR_AccountList (OurBranchID, ClientID, ClientName, AccountID, ProductID, GroupID, GroupName, ODAmount, syncby) values '
+        const insertListPAR = (responseJson) => (new Promise((resolve, reject) => {
+            try{
+                if(responseJson != null){
+                    var parQuery = 'INSERT INTO PAR_AccountList (OurBranchID, ClientID, ClientName, AccountID, ProductID, GroupID, GroupName, ODAmount, syncby) values '
         
-    //                 for(let p = 0;p < responseJson.length;p++) {
-    //                     parQuery = parQuery + "('"
-    //                     + responseJson[p].OurBranchID
-    //                     + "','"
-    //                     + responseJson[p].ClientID
-    //                     + "','"
-    //                     + responseJson[p].ClientName
-    //                     + "','"
-    //                     + responseJson[p].AccountID
-    //                     + "','"
-    //                     + responseJson[p].ProductID
-    //                     + "','"
-    //                     + responseJson[p].GroupID
-    //                     + "','"
-    //                     + responseJson[p].GroupName
-    //                     + "','"
-    //                     + responseJson[p].InstallmentAmount
-    //                     + "','"
-    //                     + username
-    //                     + "')";
-    //                     if (p != responseJson.length - 1) {
-    //                         parQuery = parQuery + ",";
-    //                     }
-    //                 }
-    //                 parQuery = parQuery + ";";
-    //                 db.transaction(
-    //                     tx => {
-    //                         tx.executeSql(parQuery)
-    //                     }
-    //                     ,function(error) {
-    //                         reject('Gagal input Data Uang PAR')
-    //                         alert('Transaction ERROR: ' + error.message)
-    //                     }
-    //                     , function() {
-    //                         resolve('berhasil')
-    //                     }
-    //                 )
-    //             }else{
-    //                 resolve('berhasil')
-    //             }
-    //         }catch{
-    //             db.transaction(
-    //                 tx => {
-    //                     tx.executeSql("DELETE FROM ListGroup")
-    //                     tx.executeSql("DELETE FROM GroupList")
-    //                     tx.executeSql("DELETE FROM UpAccountList")
-    //                     tx.executeSql("DELETE FROM PAR_AccountList")
-    //                     tx.executeSql("DELETE FROM AccountList")
-    //                     tx.executeSql("DELETE FROM Totalpkm")
-    //                     tx.executeSql("DELETE FROM pkmTransaction")
-    //                     tx.executeSql("DELETE FROM parTransaction")
-    //                     tx.executeSql("DELETE FROM DetailKehadiran")
-    //                     tx.executeSql("DELETE FROM DetailUP")
-    //                     tx.executeSql("DELETE FROM DetailPAR")
-    //                     tx.executeSql("DELETE FROM Detailpkm")
-    //                 },function(error) {
-    //                     reject('Gagal Memeproses Data PAR')
-    //                     alert('Transaction ERROR: ' + error.message)
-    //                 }, function() {
-    //                     reject('Gagal input Data Uang PAR')
-    //                 }
-    //             ) 
-    //         }
-    //     }))
+                    for(let p = 0;p < responseJson.length;p++) {
+                        parQuery = parQuery + "('"
+                        + responseJson[p].OurBranchID
+                        + "','"
+                        + responseJson[p].ClientID
+                        + "','"
+                        + responseJson[p].ClientName
+                        + "','"
+                        + responseJson[p].AccountID
+                        + "','"
+                        + responseJson[p].ProductID
+                        + "','"
+                        + responseJson[p].GroupID
+                        + "','"
+                        + responseJson[p].GroupName
+                        + "','"
+                        + responseJson[p].InstallmentAmount
+                        + "','"
+                        + username
+                        + "')";
+                        if (p != responseJson.length - 1) {
+                            parQuery = parQuery + ",";
+                        }
+                    }
+                    parQuery = parQuery + ";";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(parQuery)
+                        }
+                        ,function(error) {
+                            reject('Gagal input Data Uang PAR')
+                            alert('Transaction ERROR: ' + error.message)
+                        }
+                        , function() {
+                            resolve('berhasil')
+                        }
+                    )
+                }else{
+                    resolve('berhasil')
+                }
+            }catch{
+                db.transaction(
+                    tx => {
+                        tx.executeSql("DELETE FROM ListGroup")
+                        tx.executeSql("DELETE FROM GroupList")
+                        tx.executeSql("DELETE FROM UpAccountList")
+                        tx.executeSql("DELETE FROM PAR_AccountList")
+                        tx.executeSql("DELETE FROM AccountList")
+                        tx.executeSql("DELETE FROM Totalpkm")
+                        tx.executeSql("DELETE FROM pkmTransaction")
+                        tx.executeSql("DELETE FROM parTransaction")
+                        tx.executeSql("DELETE FROM DetailKehadiran")
+                        tx.executeSql("DELETE FROM DetailUP")
+                        tx.executeSql("DELETE FROM DetailPAR")
+                        tx.executeSql("DELETE FROM Detailpkm")
+                    },function(error) {
+                        reject('Gagal Memeproses Data PAR')
+                        alert('Transaction ERROR: ' + error.message)
+                    }, function() {
+                        reject('Gagal input Data Uang PAR')
+                    }
+                ) 
+            }
+        }))
 
-    //     try{
-    //         setButtonDis(true)
-    //         setLoading(true)
-    //         const responseListGroup = await fetch(getListGroup)
-    //         const json = await responseListGroup.json(responseListGroup)
-    //         await insertListGroup(json)
-    //         const responseListCollection = await fetch(getListCollection)
-    //         const jsonCollection = await responseListCollection.json(responseListCollection)
-    //         await insertgetListCollection(jsonCollection)
-    //         const responseListUP = await fetch(queryUP)
-    //         const jsonListUP = await responseListUP.json(responseListUP)
-    //         await insertListUP(jsonListUP)
-    //         const responseListPAR = await fetch(getPKMIndividual)
-    //         const jsongetPAR = await responseListPAR.json(responseListPAR)
-    //         await insertListPAR(jsongetPAR)
-    //         const getDate = await fetch(ApiSync+Get_Date)
-    //         const jsongetDate = await getDate.json(getDate)
+        // const insertPkmb = (responseJson) => (new Promise((resolve, reject) => {
+        //     let data = responseJson
+        //     var queryInsertDetail = `INSERT INTO Survei_Detail ( clientid, accountid, groupid, id, pertanyaan ) values `
+        //     var queryInsertJawaban = `INSERT INTO Survei_Jawaban ( clientid, id, jawaban, nilai )`
 
-    //         //get master data
-    //         const MasterData = await fetch(getMasterData)
-    //         const jsonMasterData = await MasterData.json(MasterData)
+        //     for(let a = 0; a < 1; a++) {
+        //         let x = data[a].survey
 
-    //         console.log(JSON.stringify(jsonMasterData.data.marriageStatus))
+        //         for(let b = 0; b < x.length; b++) {
+        //             if (b <= 4) {
+        //                 let y = x[b]
+        //                 queryInsertDetail = queryInsertDetail + `( '`
+        //                 + y.clientid
+        //                 + `','`
+        //                 + y.accountid
+        //                 + `','`
+        //                 + y.groupid
+        //                 + `','`
+        //                 + y.id
+        //                 + `','`
+        //                 + y.pertanyaan
+        //                 + `' )`
+    
+        //                 if (a != responseJson.length - 1) {
+        //                     queryInsertDetail = queryInsertDetail + ` ,`
+        //                 }
+        //             }
+                    
+        //         }
+        //         queryInsertDetail = queryInsertDetail + ";"
 
-    //         AsyncStorage.setItem('SyncDate', jsongetDate.currentDate)
-    //         AsyncStorage.setItem('TransactionDate', jsongetDate.currentDate)
-    //         AsyncStorage.setItem('Absent', JSON.stringify(jsonMasterData.data.absent))
-    //         AsyncStorage.setItem('Religion', JSON.stringify(jsonMasterData.data.religion))
-    //         AsyncStorage.setItem('LivingType', JSON.stringify(jsonMasterData.data.livingType))
-    //         AsyncStorage.setItem('IdentityType', JSON.stringify(jsonMasterData.data.identityType))
-    //         AsyncStorage.setItem('PartnerJob', JSON.stringify(jsonMasterData.data.partnerJob))
-    //         AsyncStorage.setItem('DwellingCondition', JSON.stringify(jsonMasterData.data.dwellingCondition))
-    //         AsyncStorage.setItem('ResidenceLocation', JSON.stringify(jsonMasterData.data.residenceLocation))
-    //         AsyncStorage.setItem('PembiayaanLain', JSON.stringify(jsonMasterData.data.pembiayaanLain))
-    //         AsyncStorage.setItem('Education', JSON.stringify(jsonMasterData.data.education))
-    //         AsyncStorage.setItem('Product', JSON.stringify(jsonMasterData.data.product))
-    //         AsyncStorage.setItem('EconomicSector', JSON.stringify(jsonMasterData.data.economicSector))
-    //         AsyncStorage.setItem('RelationStatus', JSON.stringify(jsonMasterData.data.relationStatus))
-    //         AsyncStorage.setItem('MarriageStatus', JSON.stringify(jsonMasterData.data.marriageStatus))
-    //         AsyncStorage.setItem('HomeStatus', JSON.stringify(jsonMasterData.data.homeStatus))
-    //         AsyncStorage.setItem('Referral', JSON.stringify(jsonMasterData.data.referral))
-    //         AsyncStorage.setItem('TransFund', JSON.stringify(jsonMasterData.data.transFund))
+        //         console.log(queryInsertDetail)
+        //     }
+
+        //     resolve
 
 
-    //         Alert.alert(
-    //             "Sukses",
-    //             "Sync Berhasil Dilakukan",
-    //             [
-    //                 { text: "OK", onPress: () => {
+        //     // for(let a = 0; a < responseJson.length; a ++) {
+        //         // queryInsertDetail = queryInsertDetail + `( '`
+        //         // + data[a].clientid
+        //         // + `','`
+        //         // + data[a].accountid
+        //         // + `','`
+        //         // + data[a].groupid
+        //         // + `','`
+        //         // + data[a].id
+        //         // + `','`
+        //         // + data[a].pertanyaan
+        //         // + `' )`
 
-    //                 }
-    //                 }
-    //             ],
-    //             { cancelable: false }
-    //         )
+        //         // if (a != responseJson.length - 1) {
+        //         //     parQuery = parQuery + `','`
+        //         // }
+        //     // }
 
-    //         console.log("this")
+        //     // console.log("ini " + queryInsertDetail)
+        //     setLoading(false)
+        //     setButtonDis(true)
+        //     setButtonstat(false)
+        // }))
 
-    //         setLoading(false)
-    //         setButtonDis(true)
-    //         setButtonstat(false)
-    //     }catch(error) {
-    //         console.log(error)
-    //         ToastAndroid.show("error : " + error, ToastAndroid.LONG);
-    //         setLoading(false)
-    //         setButtonDis(false)
-    //     }
+        try{
+            setButtonDis(true)
+            setLoading(true)
+            const responseListGroup = await fetch(getListGroup)
+            const json = await responseListGroup.json(responseListGroup)
+            await insertListGroup(json)
+            const responseListCollection = await fetch(getListCollection)
+            const jsonCollection = await responseListCollection.json(responseListCollection)
+            await insertgetListCollection(jsonCollection)
+            const responseListUP = await fetch(queryUP)
+            const jsonListUP = await responseListUP.json(responseListUP)
+            await insertListUP(jsonListUP)
+            const responseListPAR = await fetch(getPKMIndividual)
+            const jsongetPAR = await responseListPAR.json(responseListPAR)
+            await insertListPAR(jsongetPAR)
+            const getDate = await fetch(ApiSync+Get_Date)
+            const jsongetDate = await getDate.json(getDate)
+
+            //get master data
+            // const MasterData = await fetch(getMasterData)
+            // const jsonMasterData = await MasterData.json(MasterData)
+            // const responseListGroup = await fetch(get_pkmb)
+            // const json = await responseListGroup.json(responseListGroup)
+
+            // console.log(json.data)
+            
+            // await insertPkmb(json.data)
+
+            // console.log(JSON.stringify(jsonMasterData.data.marriageStatus))
+
+            AsyncStorage.setItem('SyncDate', jsongetDate.currentDate)
+            AsyncStorage.setItem('TransactionDate', jsongetDate.currentDate)
+            // AsyncStorage.setItem('Absent', JSON.stringify(jsonMasterData.data.absent))
+            // AsyncStorage.setItem('Religion', JSON.stringify(jsonMasterData.data.religion))
+            // AsyncStorage.setItem('LivingType', JSON.stringify(jsonMasterData.data.livingType))
+            // AsyncStorage.setItem('IdentityType', JSON.stringify(jsonMasterData.data.identityType))
+            // AsyncStorage.setItem('PartnerJob', JSON.stringify(jsonMasterData.data.partnerJob))
+            // AsyncStorage.setItem('DwellingCondition', JSON.stringify(jsonMasterData.data.dwellingCondition))
+            // AsyncStorage.setItem('ResidenceLocation', JSON.stringify(jsonMasterData.data.residenceLocation))
+            // AsyncStorage.setItem('PembiayaanLain', JSON.stringify(jsonMasterData.data.pembiayaanLain))
+            // AsyncStorage.setItem('Education', JSON.stringify(jsonMasterData.data.education))
+            // AsyncStorage.setItem('Product', JSON.stringify(jsonMasterData.data.product))
+            // AsyncStorage.setItem('EconomicSector', JSON.stringify(jsonMasterData.data.economicSector))
+            // AsyncStorage.setItem('RelationStatus', JSON.stringify(jsonMasterData.data.relationStatus))
+            // AsyncStorage.setItem('MarriageStatus', JSON.stringify(jsonMasterData.data.marriageStatus))
+            // AsyncStorage.setItem('HomeStatus', JSON.stringify(jsonMasterData.data.homeStatus))
+            // AsyncStorage.setItem('Referral', JSON.stringify(jsonMasterData.data.referral))
+            // AsyncStorage.setItem('TransFund', JSON.stringify(jsonMasterData.data.transFund))
+
+
+            Alert.alert(
+                "Sukses",
+                "Sync Berhasil Dilakukan",
+                [
+                    { text: "OK", onPress: () => {
+                        setIsSync(true)
+                    }
+                    }
+                ],
+                { cancelable: false }
+            )
+
+            console.log("this")
+
+            setLoading(false)
+            setButtonDis(true)
+            setButtonstat(false)
+            // setIsSync(true)
+        }catch(error) {
+            console.log(error)
+            ToastAndroid.show("error : " + error, ToastAndroid.LONG);
+            setLoading(false)
+            setButtonDis(false)
+        }
         
 
-    // }
+    }
 
     if (!buttonDis) {
         return (
@@ -587,6 +683,20 @@ export default function FrontHome() {
             />
         )
     }
+
+    // if (!buttonDis) {
+    //     return (
+    //         <FrontHomeSync 
+    //             // username={username}
+    //             // cabangid={cabangid}
+    //             username={'AO12-90091'} /* DATA DUMMY */
+    //             cabangid={90091} /* DATA DUMMY */
+    //             aoname={aoname}
+    //             namacabang={namacabang}
+    //             onSuccess={() => setButtonDis(true)}
+    //         />
+    //     )
+    // }
 
     return(
         // <View style={styles.container}>            
@@ -633,8 +743,8 @@ export default function FrontHome() {
                         <Text style={{fontSize: scale(13), marginLeft: scale(10), fontWeight: 'bold', color: '#545851'}}>
                             STATUS
                         </Text>
-                        <View style={buttonDis === true ? {marginLeft: scale(10), flex: 1, borderRadius: scale(10), padding: scale(5), backgroundColor: '#0CB35D'} : {marginLeft: scale(10), flex: 1, borderRadius: scale(10), padding: 5, backgroundColor: '#C73D3D'}}>
-                            {buttonDis === true ? 
+                        <View style={isSync === true ? {marginLeft: scale(10), flex: 1, borderRadius: scale(10), padding: scale(5), backgroundColor: '#0CB35D'} : {marginLeft: scale(10), flex: 1, borderRadius: scale(10), padding: 5, backgroundColor: '#C73D3D'}}>
+                            {isSync === true ? 
                                 <Text style={{fontWeight: 'bold', textAlign: 'center', color: '#fff'}}>Berhasil Sync</Text> : 
                                 <Text style={{fontWeight: 'bold', textAlign: 'center', color: '#fff'}}>Belum Sync</Text>
                             }
@@ -642,8 +752,9 @@ export default function FrontHome() {
                     </View>
 
                     <TouchableOpacity 
-                        style={buttonDis === true ? {marginTop: scale(15), marginRight: scale(15), flex: 2, marginLeft: scale(10),borderRadius: scale(10), padding: scale(10), backgroundColor: '#CCCCC4', alignItems: 'center'} : {marginTop: scale(15), marginRight: scale(15), flex: 2, marginLeft: scale(10),borderRadius: scale(10), padding: scale(10), backgroundColor: '#0CB35D', alignItems: 'center'}}
+                        style={isSync === true ? {marginTop: scale(15), marginRight: scale(15), flex: 2, marginLeft: scale(10),borderRadius: scale(10), padding: scale(10), backgroundColor: '#CCCCC4', alignItems: 'center'} : {marginTop: scale(15), marginRight: scale(15), flex: 2, marginLeft: scale(10),borderRadius: scale(10), padding: scale(10), backgroundColor: '#0CB35D', alignItems: 'center'}}
                         // style={{marginTop: 30, marginRight: 20, flex: 2, marginLeft: 10,borderRadius: 10, padding: 10, backgroundColor: '#0CB35D', alignItems: 'center'}}
+                        disabled={isSync}
                         onPress={() => syncData()}
                     >
                         <MaterialCommunityIcons name="sync" color={'#FFF'} size={30} />
@@ -667,7 +778,7 @@ export default function FrontHome() {
 
                         <View style={{height: window.height/3, width: window.width/2.5, flexDirection: 'column', justifyContent: 'space-between'}}>
 
-                            <TouchableOpacity style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
+                            <TouchableOpacity onPress={() => navigation.navigate('IndividualCollection', {cabangid: cabangid, uname: username})} style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
                                 <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
                                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                                         PENAGIHAN
