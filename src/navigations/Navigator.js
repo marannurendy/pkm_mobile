@@ -30,6 +30,8 @@ import SignAdd from '../screens/SignatureAdd'
 import MeetingDay from '../screens/MeetingDay'
 import MeetingMenu from '../screens/MeetingMenu'
 import GroupCollection from '../screens/groupCollection'
+import IndividualCollection from '../screens/individualCollection'
+import FormIndividualCollection from '../screens/formIndividualCollection'
 
 import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
 
@@ -193,11 +195,83 @@ function CustomDrawerContent(props) {
         );
     }
 
+    const ClearDataHandler = () => {
+        Alert.alert(
+            "Logout Alert",
+            "Apakah anda yakin ingin Menghapus Semua Data ?",
+            [
+              { text: "OK", onPress: () => {
+                  db.transaction(
+                        tx => {
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS PAR_AccountList;'
+                            );
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS parTransaction;'
+                            );
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS ListGroup;'
+                            );
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS DetailKehadiran;'
+                            );
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS UpAccountList;'
+                            );
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS GroupList;'
+                            );
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS AccountList;'
+                            );
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS Totalpkm;'
+                            )
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS LisDetailpkmtGroup;'
+                            )
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS pkmTransaction;'
+                            )
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS DetailUP;'
+                            )
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS DetailPAR;'
+                            )
+                        
+                            tx.executeSql(
+                                'DROP TABLE IF EXISTS Sosialisasi_Database;'
+                            )
+                        },function(error) {
+                            alert('Transaction ERROR: ' + error.message);
+                        }, function() {
+                            alert('Data Berhasil Di hapus');
+                        }
+                  )
+              }}
+            ],
+            { cancelable: true }
+        );
+    }
+
     return (
       <DrawerContentScrollView {...props}>
         <DrawerItemList {...props} />
         <DrawerItem label="About"/>
         <DrawerItem label="Log Out" onPress={() => LogOuthandler()} />
+        {/* <DrawerItem label="Clear Data" onPress={() => ClearDataHandler()} /> */}
       </DrawerContentScrollView>
     );
   }
@@ -399,7 +473,7 @@ export default function AppNavigator() {
                 name="SignNew" 
                 component={SignNew}
                 options={{
-                    headerShown: true,
+                    headerShown: false,
                     headerStyle: {
                         backgroundColor: '#0D67B2'
                     },
@@ -515,6 +589,11 @@ export default function AppNavigator() {
                     // headerTitle: props => <MenuPKM />
                 }}
                 />
+
+                {/* PKM */}
+
+                <Stack.Screen name="IndividualCollection" component={IndividualCollection} options={{ headerShown: false }} />
+                <Stack.Screen name="FormIndividualCollection" component={FormIndividualCollection} options={{ headerShown: false }} />
 
                 {/* INISIASI */}
 

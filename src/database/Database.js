@@ -23,7 +23,8 @@ db.transaction(tx => {
             JumlahTagihan varchar, 
             MeetingPlace varchar, 
             MeetingTime varchar, 
-            CreditOfficerID varchar, 
+            CreditOfficerID varchar,
+            Status varchar,
             syncby varchar)
         ;`
     );
@@ -33,11 +34,43 @@ db.transaction(tx => {
     )
 
     tx.executeSql(
-        'create table if not exists PAR_AccountList(OurBranchID varchar, ClientID varchar, ClientName varchar, AccountID varchar, ProductID varchar, GroupID varchar, GroupName varchar, ODAmount varchar, jumlahbayar varchar, status varchar, syncby varchar);'
+        `create table if not exists PAR_AccountList(
+            OurBranchID varchar,
+            ClientID varchar,
+            ClientName varchar,
+            AccountID varchar,
+            ProductID varchar,
+            GroupID varchar,
+            GroupName varchar,
+            ODAmount varchar,
+            jumlahbayar varchar,
+            status varchar,
+            syncby varchar,
+            AoSign varchar,
+            NasabahSign varchar)
+        ;`
     )
 
     tx.executeSql(
-        'create table if not exists AccountList(OurBranchID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, AccountID varchar, ProductID varchar, InstallmentAmount varchar, rill varchar, ke varchar, VolSavingsBal varchar, StatusPAR varchar, attendStatus varchar, syncby varchar);'
+        `create table if not exists AccountList(
+            OurBranchID varchar, 
+            GroupName varchar, 
+            GroupID varchar, 
+            MeetingDay varchar, 
+            ClientID varchar, 
+            ClientName varchar, 
+            AccountID varchar, 
+            ProductID varchar, 
+            InstallmentAmount varchar, 
+            rill varchar, 
+            ke varchar, 
+            VolSavingsBal varchar, 
+            StatusPAR varchar, 
+            attendStatus varchar,
+            savings varchar,
+            withDraw varchar,
+            totalSetor varchar,
+            syncby varchar);`
     );
 
     tx.executeSql(
@@ -84,7 +117,26 @@ db.transaction(tx => {
         'create table if not exists DetailPAR(cabangid varchar, groupid varchar, clientid varchar, accountid varchar, jumlahpar varchar, clientSign varchar, AOSign varchar, createdby varchar, trxdate varchar);'
     )
 
-    
+    // database PKMB
+
+    tx.executeSql(
+        `create table if not exists Survei_Detail(
+            clientid varchar,
+            accountid varchar,
+            groupid varchar,
+            id varchar,
+            pertanyaan varchar
+        );`
+    )
+
+    tx.executeSql(
+        `create table if not exists Survei_Jawaban(
+            clientid varchar,
+            id varchar,
+            jawaban varchar,
+            nilai varchar
+        );`
+    )
 
     // database INISIASI
 
@@ -149,7 +201,7 @@ db.transaction(tx => {
             produk_Pembiayaan varchar, 
             jumlah_Pinjaman varchar,
             term_Pembiayaan varchar,
-            kategori_Tujuan-Pembiayaan varchar,
+            kategori_Tujuan_Pembiayaan varchar,
             tujuan_Pembiayaan varchar,
             type_Pencairan varchar,
             frekuensi_Pembayaran varchar,
