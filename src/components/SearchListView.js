@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     View,
@@ -28,11 +28,12 @@ export default({
     visible,
     onDismiss,
     datas = [],
+    selectedItems = [],
     doSearch = null,
     doSubmit = null
 }) => {
     const [keyword, setKeyword] = useState('');
-    const [selectedItemsProspek, setSelectedItemsProspek] = useState([]);
+    const [selectedItemsProspek, setSelectedItemsProspek] = useState(selectedItems);
 
     const getSelectedProspek = propspek => selectedItemsProspek.includes(JSON.stringify(propspek));
 
@@ -45,6 +46,10 @@ export default({
         }
         setSelectedItemsProspek([...selectedItemsProspek, JSON.stringify(prospek)]);
     };
+
+    useEffect(() => {
+        setSelectedItemsProspek(selectedItems);
+    }, [selectedItems]);
 
     const header = () => (
         <View

@@ -10,12 +10,11 @@ import db from '../../database/Database'
 const UjiKelayakan = ({route}) => {
 
     const { groupName } = route.params
-    const dimension = Dimensions.get('screen')
-    const navigation = useNavigation()
-    
-    let [ currentDate, setCurrentDate ] = useState()
-
-    let [data, setData] = useState()
+    const dimension = Dimensions.get('screen');
+    const navigation = useNavigation();
+    let [ currentDate, setCurrentDate ] = useState();
+    let [data, setData] = useState();
+    const [keyword, setKeyword] = useState('');
 
     // let [data, setData] = useState([
     //     {
@@ -93,28 +92,50 @@ const UjiKelayakan = ({route}) => {
     // ])
 
     useEffect(() => {
-        GetInfo()
+        GetInfo();
+        getSosialisasiDatabase();
 
-        let GetListMemberUk = `SELECT * FROM Sosialisasi_Database WHERE lokasiSosialisasi ='` + groupName + `'`
+        // let GetListMemberUk = `SELECT * FROM Sosialisasi_Database WHERE lokasiSosialisasi ='` + groupName + `'`
+        // db.transaction(
+        //     tx => {
+        //         tx.executeSql(GetListMemberUk, [], (tx, results) => {
+        //             // console.log(JSON.stringify(results.rows._array))
+        //             let dataLength = results.rows.length
+        //             // console.log(dataLength)
 
+        //             var listData = []
+        //             for(let a = 0; a < dataLength; a++) {
+        //                 let masterList = results.rows.item(a)
+        //                 listData.push({"namaNasabah": masterList.namaCalonNasabah, "status": masterList.type, "groupName": masterList.lokasiSosialisasi})
+        //             }
+
+        //             setData(listData)
+        //         })
+        //     }
+        // )
+    }, []);
+
+    const getSosialisasiDatabase = () => {
+        if (__DEV__) console.log('getSosialisasiDatabase loaded');
+        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
+
+        let query = 'SELECT * FROM Sosialisasi_Database WHERE lokasiSosialisasi = "'+ groupName +'" AND namaCalonNasabah LIKE "%'+ keyword +'%"';
         db.transaction(
             tx => {
-                tx.executeSql(GetListMemberUk, [], (tx, results) => {
-                    // console.log(JSON.stringify(results.rows._array))
-                    let dataLength = results.rows.length
-                    // console.log(dataLength)
+                tx.executeSql(query, [], (tx, results) => {
+                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
+                    let dataLength = results.rows.length;
 
-                    var listData = []
+                    var ah = [];
                     for(let a = 0; a < dataLength; a++) {
-                        let masterList = results.rows.item(a)
-                        listData.push({"namaNasabah": masterList.namaCalonNasabah, "status": masterList.type, "groupName": masterList.lokasiSosialisasi})
+                        let data = results.rows.item(a);
+                        ah.push({"namaNasabah": data.namaCalonNasabah, "nomorHandphone": data.nomorHandphone, "status": data.type, "groupName": data.lokasiSosialisasi});
                     }
-
-                    setData(listData)
+                    setData(ah)
                 })
             }
-        )
-    }, [])
+        );
+    }
 
     const GetInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
@@ -129,7 +150,7 @@ const UjiKelayakan = ({route}) => {
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#FFF', flex: 1, borderWidth: 1, marginHorizontal: 15}} 
-            onPress={() => navigation.navigate('FormUjiKelayakan', {groupName: data.groupName, namaNasabah: data.namaNasabah})}
+            onPress={() => navigation.navigate('FormUjiKelayakan', {groupName: data.groupName, namaNasabah: data.namaNasabah, nomorHandphone: data.nomorHandphone})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessage namaNasabah={data.namaNasabah} status={data.status} />
@@ -161,6 +182,20 @@ const UjiKelayakan = ({route}) => {
         )
     }
     // END LIST VIEW
+
+    const _listEmptyComponent = () => {
+        return (
+            <View
+                style={
+                    {
+                        padding: 16
+                    }
+                }
+            >
+                <Text>Data kosong</Text>
+            </View>
+        )
+    }
 
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -195,7 +230,20 @@ const UjiKelayakan = ({route}) => {
                 </View> */}
                 <View style={{borderWidth: 1, marginHorizontal: 10, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderRadius: 20}}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
-                    <TextInput placeholder={"Cari Kelompok"} style={{padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                    <TextInput 
+                        placeholder={"Cari Kelompok"}
+                        style={
+                            {
+                                padding: 5,
+                                borderBottomLeftRadius: 20,
+                                borderBottomRightRadius: 20
+                            }
+                        }
+                        onChangeText={(text) => setKeyword(text)}
+                        value={keyword}
+                        returnKeyType="done"
+                        onSubmitEditing={() => getSosialisasiDatabase()}
+                    />
                 </View>
                 <SafeAreaView style={{flex: 1}}>
 
@@ -216,6 +264,7 @@ const UjiKelayakan = ({route}) => {
                                 // onEndReached={() => handleEndReach()}
                                 renderItem={renderItem}
                                 // style={{height: '88.6%'}}
+                                ListEmptyComponent={_listEmptyComponent}
                             />
                         </View>
                     )}

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, TextInput, ScrollView, ToastAndroid, Alert, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, Alert, SafeAreaView } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { scale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native';
@@ -9,6 +9,8 @@ import { getSyncData } from './../actions/sync';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import 'moment/locale/id';
 import SearchListView from '../components/SearchListView';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
 const colors = {
     HITAM: '#000',
@@ -41,6 +43,19 @@ export default function FrontHomeSync(props) {
     const [submitted, setSubmitted] = useState(false);
     const [isVisibleModalSearchListView, setIsVisibleModalSearchListView] = useState(false);
 
+    useEffect(() => {
+        syncData();
+    }, []);
+
+    function syncData() {
+        moment.locale('id');
+        var now = moment().format('YYYY-MM-DD');
+
+        AsyncStorage.getItem('SyncDate', (error, syncDate) => {
+            if (syncDate === now) props.onSuccess();
+        });
+    }
+
     const fetchData = (keyword = '') => {
         if (__DEV__) console.log('fetchData loaded');
 
@@ -67,6 +82,7 @@ export default function FrontHomeSync(props) {
                 if (__DEV__) console.log('fetchData $get /inisiasi/GetListClient success:', responseJson);
                 setDataProspekResponse(responseJson);
                 setFetching(false);
+                if (!isVisibleModalSearchListView) setIsVisibleModalSearchListView(true);
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $get /inisiasi/GetListClient error:', error);
@@ -76,12 +92,27 @@ export default function FrontHomeSync(props) {
 
     const doSubmit = () => {
         if (__DEV__) console.log('doSubmit loaded');
+        if (__DEV__) console.log('doSubmit selectedItemsProspek', selectedItemsProspek);
+        if (__DEV__) console.log('doSubmit selectedIndexFilterProspek', selectedIndexFilterProspek);
+
         if (submitted) return true;
+        if (![2].includes(selectedIndexFilterProspek) && selectedItemsProspek.length === 0) {
+            ToastAndroid.show('Belum ada nama prospek yang dipilih!', ToastAndroid.SHORT);
+            return true;
+        }
+
+        const prospekMap = selectedItemsProspek.map((prospek, index) => {
+            const dataProspek = JSON.parse(prospek);
+            return dataProspek.ID_Prospek;
+        });
+        if (__DEV__) console.log('doSubmit prospekMap', prospekMap);
 
         setSubmitted(true);
         const params = { 
             username: props.username,
-            cabangid: props.cabangid
+            cabangid: props.cabangid,
+            prospekMap,
+            prospekFilter: selectedIndexFilterProspek
         };
         getSyncData(params).then((responseJson) => {
             if (__DEV__) console.log('doSubmit getSyncData response:', responseJson);
@@ -102,23 +133,6 @@ export default function FrontHomeSync(props) {
             ToastAndroid.show(JSON.stringify(error), ToastAndroid.SHORT);
             setSubmitted(false);
         })
-    }
-
-    const doSubmitProspek = () => {
-        if (__DEV__) console.log('doSubmitProspek loaded');
-        if (__DEV__) console.log('doSubmitProspek selectedItemsProspek:', selectedItemsProspek);
-
-        Alert.alert(
-            "Sukses",
-            "Data prospek berhasil disimpan",
-            [
-                { 
-                    text: "OK",
-                    onPress: () => {}
-                }
-            ],
-            { cancelable: false }
-        );
     }
 
     const renderHeaderMenu = () => (
@@ -154,7 +168,10 @@ export default function FrontHomeSync(props) {
     const renderProspekList = () => dataFilterProspek.map((item, index) => (
         <TouchableOpacity
             key={index}
-            onPress={() => setSelectedIndexFilterProspek(index)}
+            onPress={() => {
+                setSelectedItemsProspek([]);
+                setSelectedIndexFilterProspek(index);
+            }}
         >
             <View
                 style={
@@ -190,6 +207,11 @@ export default function FrontHomeSync(props) {
                     textDecorationLine: 'underline'
                 }
             }
+            onPress={() => {
+                if ([2].includes(selectedIndexFilterProspek)) return true;
+                
+                fetchData();
+            }}
         >
             Tampilkan
         </Text>
@@ -212,7 +234,11 @@ export default function FrontHomeSync(props) {
 
     const renderProspekResultSearch = () => (
         <TouchableOpacity
-            onPress={() => setIsVisibleModalSearchListView(true)}
+            onPress={() => {
+                if ([2].includes(selectedIndexFilterProspek)) return true;
+                
+                fetchData();
+            }}
         >
             <View
                 style={
@@ -254,7 +280,7 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            <Text>{JSON.parse(item).Nama}</Text>
+            <Text>{index + 1}. {JSON.parse(item).Nama}</Text>
         </View>
     ))
 
@@ -269,7 +295,6 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            <FontAwesomeIcon name="database" size={32} color={colors.DEFAULT} />
             <Text
                 style={
                     {
@@ -278,40 +303,8 @@ export default function FrontHomeSync(props) {
                     }
                 }
             >
-                {fetching ? 'Loading...' : `Data tidak ditemukan\ncoba cari "Prospek" lain.`}
+                {fetching && 'Mohon tunggu...'}
             </Text>
-        </View>
-    )
-
-    const renderProspekResultButton = () => (
-        <View
-            style={
-                {
-                    flexDirection: "row",
-                    marginVertical: 16
-                }
-            }
-        >
-            <TouchableOpacity
-                onPress={() => selectedItemsProspek.length === 0 ? null : doSubmitProspek()}
-                style={
-                    {
-                        backgroundColor: selectedItemsProspek.length === 0 ? 'gray' : colors.DEFAULT,
-                        padding: 8,
-                        borderRadius: 6
-                    }
-                }
-            >
-                <Text 
-                style={
-                    {
-                        color: colors.PUTIH        
-                    }
-                }>
-                    Simpan
-                </Text>
-            </TouchableOpacity>
-            <View style={{ flex: 1 }} />
         </View>
     )
 
@@ -330,10 +323,9 @@ export default function FrontHomeSync(props) {
             >
                 {renderProspekResultSearch()}
                 <ScrollView>
-                    {dataProspekResponse.length > 0 ? renderProspekResultList() : renderProspekResultEmpty()}
+                    {selectedItemsProspek.length > 0 ? renderProspekResultList() : renderProspekResultEmpty()}
                 </ScrollView>
             </View>
-            {renderProspekResultButton()}
         </>
     )
 
@@ -355,24 +347,30 @@ export default function FrontHomeSync(props) {
             }
         >
             <View style={{ flex: 1 }} />
-            <TouchableOpacity
-                // onPress={() => submitted || selectedItemsProspek.length === 0 ? null : doSubmit()}
-                onPress={() => doSubmit()}
-            >
-                <View
-                    style={
-                        {
-                            padding: 12,
-                            backgroundColor: submitted || selectedItemsProspek.length === 0 ? 'gray' : colors.DEFAULT,
-                            borderRadius: 45,
-                            borderWidth: 8,
-                            borderColor: 'whitesmoke'
-                        }
-                    }
+            {!submitted ? (
+                <TouchableOpacity
+                    onPress={() => doSubmit()}
                 >
-                    <MaterialCommunityIcons name="sync" color={colors.PUTIH} size={32} />
-                </View>
-            </TouchableOpacity>
+                    <View
+                        style={
+                            {
+                                padding: 12,
+                                backgroundColor: colors.DEFAULT,
+                                borderRadius: 45,
+                                borderWidth: 8,
+                                borderColor: 'whitesmoke'
+                            }
+                        }
+                    >
+                        <MaterialCommunityIcons name="sync" color={colors.PUTIH} size={32} />
+                    </View>
+                </TouchableOpacity>
+            ) : (
+                <>
+                    <ActivityIndicator animating={true} color={Colors.red800} />
+                    <Text style={{ marginLeft: 12 }}>{`Sedang sync,\nmohon tunggu...`}</Text>
+                </>
+            )}
             <View style={{flex: 1}} />
         </View>
     )
@@ -397,6 +395,7 @@ export default function FrontHomeSync(props) {
             visible={isVisibleModalSearchListView}
             onDismiss={() => setIsVisibleModalSearchListView(!isVisibleModalSearchListView)}
             datas={dataProspekResponse}
+            selectedItems={selectedItemsProspek}
             doSearch={(keyword) => fetchData(keyword)}
             doSubmit={(data) => {
                 if (__DEV__) console.log('renderModalSearchListView data:', data);

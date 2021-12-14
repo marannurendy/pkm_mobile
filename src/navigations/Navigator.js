@@ -34,6 +34,29 @@ import IndividualCollection from '../screens/individualCollection'
 import FormIndividualCollection from '../screens/formIndividualCollection'
 
 import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
+import { 
+    Inisasi,
+    Sosialisasi,
+    Floating,
+    UjiKelayakan,
+    FormUjiKelayakan,
+    DataDiri,
+    ProdukPembiayaan,
+    InisiasiFormUKKondisiRumah,
+    InisiasiFormUKSektorEkonomi,
+    InisiasiFormUKTingkatPendapatan,
+    InisiasiFormUKTandaTanganPermohonan,
+    InisiasiFormUKSignatureScreen,
+    Verifikasi,
+    VerifikasiFormReview,
+    VerifikasiFormPreview,
+    InisiasiFormPPKelompok,
+    InisiasiFormPPKelompokIntro,
+    InisiasiFormPPKelompokList,
+    InisiasiFormPPKelompokSub,
+    InisiasiFormPPKelompokDetail,
+    InisiasiFormPPKelompokSubForm
+} from '../screens/inisiasi/index'
 
 
 const Stack = createStackNavigator();
@@ -604,6 +627,20 @@ export default function AppNavigator() {
                 <Stack.Screen name="FormUjiKelayakan" component={FormUjiKelayakan} options={{ headerShown: false }} />
                 <Stack.Screen name="DataDiri" component={DataDiri} options={{ headerShown: false }} />
                 <Stack.Screen name="ProdukPembiayaan" component={ProdukPembiayaan} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormUKKondisiRumah" component={InisiasiFormUKKondisiRumah} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormUKSektorEkonomi" component={InisiasiFormUKSektorEkonomi} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormUKTingkatPendapatan" component={InisiasiFormUKTingkatPendapatan} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormUKTandaTanganPermohonan" component={InisiasiFormUKTandaTanganPermohonan} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormUKSignatureScreen" component={InisiasiFormUKSignatureScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Verifikasi" component={Verifikasi} options={{ headerShown: false }} />
+                <Stack.Screen name="VerifikasiFormReview" component={VerifikasiFormReview} options={{ headerShown: false }} />
+                <Stack.Screen name="VerifikasiFormPreview" component={VerifikasiFormPreview} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompok" component={InisiasiFormPPKelompok} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokList" component={InisiasiFormPPKelompokList} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokIntro" component={InisiasiFormPPKelompokIntro} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokSub" component={InisiasiFormPPKelompokSub} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokDetail" component={InisiasiFormPPKelompokDetail} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokSubForm" component={InisiasiFormPPKelompokSubForm} options={{ headerShown: false }} />
 
           </Stack.Navigator>
       </NavigationContainer>

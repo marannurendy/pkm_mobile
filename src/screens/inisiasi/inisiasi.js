@@ -14,54 +14,87 @@ const Inisasi = () => {
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
 
-    let [branchId, setBranchId] = useState()
-    let [branchName, setBranchName] = useState()
-    let [uname, setUname] = useState()
-    let [aoName, setAoName] = useState()
-    let [menuShow, setMenuShow] = useState(0)
-    let [menuToggle, setMenuToggle] = useState(false)
-
-    //data
-    let [data, setData] = useState([])
+    let [branchId, setBranchId] = useState();
+    let [branchName, setBranchName] = useState();
+    let [uname, setUname] = useState();
+    let [aoName, setAoName] = useState();
+    let [menuShow, setMenuShow] = useState(0);
+    let [menuToggle, setMenuToggle] = useState(false);
+    let [data, setData] = useState([]);
+    const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
-        AsyncStorage.getItem('userData', (error, result) => {
-            let dt = JSON.parse(result)
+        const getUserData = () => {
+            AsyncStorage.getItem('userData', (error, result) => {
+                if (error) __DEV__ && console.log('userData error:', error);
 
-            setBranchId(dt.kodeCabang)
-            setBranchName(dt.namaCabang)
-            setUname(dt.userName)
-            setAoName(dt.AOname)
-        })
+                let data = JSON.parse(result);
+                setBranchId(data.kodeCabang);
+                setBranchName(data.namaCabang);
+                setUname(data.userName);
+                setAoName(data.AOname);
+            });
+        }
 
+        getUserData();
+        getSosialisasiDatabase();
 
-        let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
+        // AsyncStorage.getItem('userData', (error, result) => {
+        //     let dt = JSON.parse(result)
 
-        db.transaction(
-            tx => {
-                tx.executeSql(GetInisiasi, [], (tx, results) => {
-                    console.log(JSON.stringify(results.rows._array))
-                    let dataLength = results.rows.length
-                    // console.log(dataLength)
+        //     setBranchId(dt.kodeCabang)
+        //     setBranchName(dt.namaCabang)
+        //     setUname(dt.userName)
+        //     setAoName(dt.AOname)
+        // })
 
-                    var arrayHelper = []
-                    for(let a = 0; a < dataLength; a ++) {
-                        let data = results.rows.item(a)
-                        arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-                        // console.log("this")
-                        // console.log(data.COUNT(namaCalonNasabah))
-                    }
-                    console.log(arrayHelper)
-                    setData(arrayHelper)
-                }
-                )
-            }
-        )
+        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
+        // db.transaction(
+        //     tx => {
+        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
+        //             console.log(JSON.stringify(results.rows._array))
+        //             let dataLength = results.rows.length
+        //             // console.log(dataLength)
+
+        //             var arrayHelper = []
+        //             for(let a = 0; a < dataLength; a ++) {
+        //                 let data = results.rows.item(a)
+        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
+        //                 // console.log("this")
+        //                 // console.log(data.COUNT(namaCalonNasabah))
+        //             }
+        //             console.log(arrayHelper)
+        //             setData(arrayHelper)
+        //         }
+        //         )
+        //     }
+        // )
 
         // AsyncStorage.getItem('DwellingCondition', (error, result) => {
         //     console.log(result)
         // })
-    }, [])
+    }, []);
+
+    const getSosialisasiDatabase = () => {
+        if (__DEV__) console.log('getSosialisasiDatabase loaded');
+        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
+
+        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
+                    let dataLength = results.rows.length
+                    var ah = []
+                    for(let a = 0; a < dataLength; a++) {
+                        let data = results.rows.item(a);
+                        ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
+                    }
+                    setData(ah);
+                })
+            }
+        )
+    }
 
     const menuHandler = () => {
         setMenuShow(0)
@@ -93,6 +126,7 @@ const Inisasi = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            onPress={() => navigation.navigate('UjiKelayakan', {groupName: data.groupName})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
@@ -144,7 +178,8 @@ const Inisasi = () => {
     }
     const ItemVerif = ({ data }) => (
         <TouchableOpacity 
-            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}}
+            onPress={() => navigation.navigate('Verifikasi', {groupName: data.groupName})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageVerif groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
@@ -160,6 +195,20 @@ const Inisasi = () => {
         )
     }
     // END LIST VIEW VERIFIKASI
+
+    const _listEmptyComponent = () => {
+        return (
+            <View
+                style={
+                    {
+                        padding: 16
+                    }
+                }
+            >
+                <Text>Data kosong</Text>
+            </View>
+        )
+    }
 
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -244,7 +293,7 @@ const Inisasi = () => {
 
                         <TouchableOpacity onPress={() => ppPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#17BEBB', padding: 20}}>
                             <FontAwesome5 name="get-pocket" size={50} color="#FFFCFA" />
-                            <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Persiapan Pencairan</Text>
+                            <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Persiapan Pembiayaan</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -259,7 +308,21 @@ const Inisasi = () => {
                         <Text style={{fontSize: 30, fontWeight: 'bold'}}>Sosialisasi</Text>
                         <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
                             <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
-                            <TextInput placeholder={"Cari Kelompok"} style={{flex: 1, padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                            <TextInput 
+                                placeholder={"Cari Kelompok"} 
+                                style={
+                                    {
+                                        flex: 1,
+                                        padding: 5,
+                                        borderBottomLeftRadius: 20,
+                                        borderBottomRightRadius: 20
+                                    }
+                                }
+                                onChangeText={(text) => setKeyword(text)}
+                                value={keyword}
+                                returnKeyType="done"
+                                onSubmitEditing={() => getSosialisasiDatabase()}
+                            />
                         </View>
                     </View>
 
@@ -276,6 +339,7 @@ const Inisasi = () => {
                                 // onEndReached={() => handleEndReach()}
                                 renderItem={renderItemSos}
                                 // style={{height: '88.6%'}}
+                                ListEmptyComponent={_listEmptyComponent}
                             /> 
                         </View>
                     </SafeAreaView>
@@ -301,7 +365,21 @@ const Inisasi = () => {
                         <Text style={{fontSize: 30, fontWeight: 'bold'}}>Uji Kelayakan</Text>
                         <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
                             <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
-                            <TextInput placeholder={"Cari Kelompok"} style={{flex: 1, padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                            <TextInput 
+                                placeholder={"Cari Kelompok"} 
+                                style={
+                                    {
+                                        flex: 1, 
+                                        padding: 5, 
+                                        borderBottomLeftRadius: 20, 
+                                        borderBottomRightRadius: 20
+                                    }
+                                }
+                                onChangeText={(text) => setKeyword(text)}
+                                value={keyword}
+                                returnKeyType="done"
+                                onSubmitEditing={() => getSosialisasiDatabase()}
+                            />
                         </View>
                     </View>
 
@@ -318,6 +396,7 @@ const Inisasi = () => {
                                 // onEndReached={() => handleEndReach()}
                                 renderItem={renderItemUk}
                                 // style={{height: '88.6%'}}
+                                ListEmptyComponent={_listEmptyComponent}
                             /> 
                         </View>
                     </SafeAreaView>
@@ -333,7 +412,21 @@ const Inisasi = () => {
                         <Text style={{fontSize: 30, fontWeight: 'bold'}}>Verifikasi</Text>
                         <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
                             <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
-                            <TextInput placeholder={"Cari Kelompok"} style={{flex: 1, padding: 5, borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} />
+                            <TextInput 
+                                placeholder={"Cari Kelompok"} 
+                                style={
+                                    {
+                                        flex: 1,
+                                        padding: 5,
+                                        borderBottomLeftRadius: 20,
+                                        borderBottomRightRadius: 20
+                                    }
+                                }
+                                onChangeText={(text) => setKeyword(text)}
+                                value={keyword}
+                                returnKeyType="done"
+                                onSubmitEditing={() => getSosialisasiDatabase()}
+                            />
                         </View>
                     </View>
 
@@ -350,6 +443,7 @@ const Inisasi = () => {
                                 // onEndReached={() => handleEndReach()}
                                 renderItem={renderItemVerif}
                                 // style={{height: '88.6%'}}
+                                ListEmptyComponent={_listEmptyComponent}
                             /> 
                         </View>
                     </SafeAreaView>
@@ -368,12 +462,15 @@ const Inisasi = () => {
                     <View style={{flex: 1, justifyContent: 'center'}}>
                         <View style={{width: '100%', height: dimension.height/2.5}}>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{height: dimension.height/6}} >
-                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('InisiasiFormPPKelompokIntro')}
+                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
+                                >
                                     <FontAwesome5 name={'users'} size={50} color={'#FFF'} />
                                     <View style={{flex: 1}}>
                                         <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>Kelompok</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
 
                                 <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
                                     <FontAwesome5 name={'calendar'} size={50} color={'#FFF'} />

@@ -141,11 +141,13 @@ export default function FrontHome() {
 
         
 
+        // AsyncStorage.removeItem('SyncDate');
+
         // const timer = setTimeout(() => {
         //     checkConnection()
         //   }, 3600)
 
-        return unsubscribe
+        return unsubscribe;
     }, []);
 
     const renderItem = ({ item }) => (
@@ -666,6 +668,20 @@ export default function FrontHome() {
         }
         
 
+    // }
+
+    if (!buttonDis) {
+        return (
+            <FrontHomeSync 
+                username={username}
+                cabangid={cabangid}
+                // username={'AO12-90091'} /* DATA DUMMY */
+                // cabangid={90091} /* DATA DUMMY */
+                aoname={aoname}
+                namacabang={namacabang}
+                onSuccess={() => setButtonDis(true)}
+            />
+        )
     }
 
     // if (!buttonDis) {
@@ -773,7 +789,7 @@ export default function FrontHome() {
                             <TouchableOpacity style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
                                 <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
                                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                                        PELUNASAN
+                                        PELUNASAN DINI
                                     </Text>
                                 </View>
                             </TouchableOpacity>

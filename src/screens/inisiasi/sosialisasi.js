@@ -33,8 +33,8 @@ const Sosialisasi = () => {
     let [value, setValue] = useState(null)
     let [nohp, setNohp] = useState()
     let [sisipan, setSisipan] = useState(false)
-    let [baru, setBaru] = useState(false)
-    let [statusNasabah, setStatusNasabah] = useState()
+    let [baru, setBaru] = useState(true)
+    let [statusNasabah, setStatusNasabah] = useState(2)
     
     let [lokasiSos, setLokasiSos] = useState()
     let [namaNasabah, setNamanasabah] = useState()
@@ -101,8 +101,6 @@ const Sosialisasi = () => {
             flashNotification("Alert", "Silahkan pilih sumber dana", "#ff6347", "#fff")
         }else if(namaNasabah === null || namaNasabah === undefined) {
             flashNotification("Alert", "Silahkan masukkan nama nasabah", "#ff6347", "#fff")
-        }else if(nohp === null || nohp === undefined) {
-            flashNotification("Alert", "Silahkan masukkan nomor hp nasabah", "#ff6347", "#fff")
         }else if(statusNasabah === null || statusNasabah === undefined) {
             flashNotification("Alert", "Silahkan pilih status nasabah", "#ff6347", "#fff")
         }else if(tanggalSos === null || tanggalSos === undefined) {
@@ -212,7 +210,7 @@ const Sosialisasi = () => {
                             setOpen={setOpen}
                             setValue={setValue}
                             setItems={setItems}
-                            placeholder={"Pilih Sumber Dana"}
+                            placeholder={"Pilih Sumber Informasi"}
                             placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
                             dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
                             style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
@@ -307,10 +305,9 @@ const Sosialisasi = () => {
                     <View style={{alignItems: 'center', marginBottom: 20}}>
                         <Button
                             title="SIMPAN"
-                            onPress={() => alert('Sukses')}
+                            onPress={() => submitHandler()}
                             buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                             titleStyle={{fontSize: 20, fontWeight: 'bold'}}
-                            onPress={() => submitHandler()}
                         />
                     </View>
 
