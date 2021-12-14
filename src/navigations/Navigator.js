@@ -30,8 +30,29 @@ import SignAdd from '../screens/SignatureAdd'
 import MeetingDay from '../screens/MeetingDay'
 import MeetingMenu from '../screens/MeetingMenu'
 import GroupCollection from '../screens/groupCollection'
-
-import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan, InisiasiFormUKKondisiRumah, InisiasiFormUKSektorEkonomi, InisiasiFormUKTingkatPendapatan, InisiasiFormUKTandaTanganPermohonan, InisiasiFormUKSignatureScreen, Verifikasi, VerifikasiFormReview, VerifikasiFormPreview } from '../screens/inisiasi/index'
+import { 
+    Inisasi,
+    Sosialisasi,
+    Floating,
+    UjiKelayakan,
+    FormUjiKelayakan,
+    DataDiri,
+    ProdukPembiayaan,
+    InisiasiFormUKKondisiRumah,
+    InisiasiFormUKSektorEkonomi,
+    InisiasiFormUKTingkatPendapatan,
+    InisiasiFormUKTandaTanganPermohonan,
+    InisiasiFormUKSignatureScreen,
+    Verifikasi,
+    VerifikasiFormReview,
+    VerifikasiFormPreview,
+    InisiasiFormPPKelompok,
+    InisiasiFormPPKelompokIntro,
+    InisiasiFormPPKelompokList,
+    InisiasiFormPPKelompokSub,
+    InisiasiFormPPKelompokDetail,
+    InisiasiFormPPKelompokSubForm
+} from '../screens/inisiasi/index'
 
 
 const Stack = createStackNavigator();
@@ -533,6 +554,12 @@ export default function AppNavigator() {
                 <Stack.Screen name="Verifikasi" component={Verifikasi} options={{ headerShown: false }} />
                 <Stack.Screen name="VerifikasiFormReview" component={VerifikasiFormReview} options={{ headerShown: false }} />
                 <Stack.Screen name="VerifikasiFormPreview" component={VerifikasiFormPreview} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompok" component={InisiasiFormPPKelompok} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokList" component={InisiasiFormPPKelompokList} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokIntro" component={InisiasiFormPPKelompokIntro} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokSub" component={InisiasiFormPPKelompokSub} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokDetail" component={InisiasiFormPPKelompokDetail} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokSubForm" component={InisiasiFormPPKelompokSubForm} options={{ headerShown: false }} />
 
           </Stack.Navigator>
       </NavigationContainer>

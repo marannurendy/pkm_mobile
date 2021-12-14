@@ -462,12 +462,15 @@ const Inisasi = () => {
                     <View style={{flex: 1, justifyContent: 'center'}}>
                         <View style={{width: '100%', height: dimension.height/2.5}}>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{height: dimension.height/6}} >
-                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('InisiasiFormPPKelompokIntro')}
+                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
+                                >
                                     <FontAwesome5 name={'users'} size={50} color={'#FFF'} />
                                     <View style={{flex: 1}}>
                                         <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>Kelompok</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
 
                                 <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
                                     <FontAwesome5 name={'calendar'} size={50} color={'#FFF'} />

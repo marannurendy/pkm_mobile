@@ -1,7 +1,9 @@
 import React from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
+import { colors } from './colors';
 
 const dimension = Dimensions.get('screen');
+const windowWidth = dimension.width;
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -10,29 +12,28 @@ const styles = StyleSheet.create({
     },
     bodyContainer: {
         flex: 1,
-        marginTop: 20,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        marginHorizontal: 20,
+        marginVertical: 16,
+        borderRadius: 16,
+        marginHorizontal: 16,
         backgroundColor: 'white'
     },
     bodyTitle: {
         fontSize: 25, 
         fontWeight: 'bold', 
-        margin: 20
+        margin: 16
     },
     headerContainer: {
         flexDirection: "row",
         justifyContent: 'space-between',
-        marginTop: 40,
+        marginTop: 42,
         alignItems: "center",
-        paddingHorizontal: 20
+        paddingHorizontal: 16
     },
     headerBoxImageBackground: {
         height: dimension.height / 5,
-        marginHorizontal: 30, 
-        borderRadius: 20, 
-        marginTop: 30
+        marginHorizontal: 32, 
+        borderRadius: 16, 
+        marginTop: 32
     },
     headerImageBackground: {
         flex: 1,
@@ -54,16 +55,17 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#BCC8C6",
-        borderRadius: 10
+        borderRadius: 8
     },
     textInputContainer: {
         flexDirection: 'row', 
         alignItems: 'center', 
         borderWidth: 1, 
-        paddingVertical: 5,
-        paddingHorizontal: 10, 
-        borderRadius: 10,
-        width: dimension.width / 3
+        paddingVertical: 6,
+        paddingHorizontal: 8, 
+        borderRadius: 8,
+        width: dimension.width / 3,
+        height: 48
     },
     textInput: {
         fontSize: 15, 
@@ -101,11 +103,37 @@ const styles = StyleSheet.create({
         color: 'gray', 
         marginLeft: 16
     },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
+    checkbox: {
+        paddingHorizontal: 4,
+        paddingVertical: 2,
+        marginRight: 8,
+        borderWidth: 1,
+        borderColor: colors.HITAM,
+        borderRadius: 4
+    },
     spaceGray: {
         borderWidth: 3,
         borderColor: 'gray'
     },
-    F1 : {
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,0,0,0.6)',
+    },
+    modalBody: {
+        width: windowWidth - 32,
+        height: 300,
+        backgroundColor: 'white',
+        padding: 16,
+        borderRadius: 4,
+    },
+    F1: {
         flex: 1
     },
     P2: {
@@ -119,6 +147,45 @@ const styles = StyleSheet.create({
     },
     P16: {
         padding: 16
+    },
+    P32: {
+        padding: 32
+    },
+    PV2: {
+        paddingVertical: 2
+    },
+    PV4: {
+        paddingVertical: 4
+    },
+    PV8: {
+        paddingVertical: 8
+    },
+    PV16: {
+        paddingVertical: 16
+    },
+    PH2: {
+        paddingHorizontal: 2
+    },
+    PH4: {
+        paddingHorizontal: 4
+    },
+    PH8: {
+        paddingHorizontal: 8
+    },
+    PH16: {
+        paddingHorizontal: 16
+    },
+    M2: {
+        margin: 2
+    },
+    M4: {
+        margin: 4
+    },
+    M8: {
+        margin: 8
+    },
+    M16: {
+        margin: 16
     },
     MT2: {
         marginTop: 2
@@ -167,6 +234,18 @@ const styles = StyleSheet.create({
     },
     ML16: {
         marginLeft: 16
+    },
+    MH2: {
+        marginHorizontal: 2
+    },
+    MH4: {
+        marginHorizontal: 4
+    },
+    MH8: {
+        marginHorizontal: 8
+    },
+    MH16: {
+        marginHorizontal: 16
     },
     FS18: {
         fontSize: 18
