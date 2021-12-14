@@ -668,7 +668,7 @@ export default function FrontHome() {
         }
         
 
-    // }
+    }
 
     if (!buttonDis) {
         return (
