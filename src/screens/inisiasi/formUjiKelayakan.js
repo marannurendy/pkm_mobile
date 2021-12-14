@@ -452,7 +452,7 @@ const FormUjiKelayakan = ({route}) => {
                     {screenState < 7 && (
                         <View style={{alignItems: 'center', marginBottom: 20}}>
                             <Button
-                                title={submitted ? 'MENGIRIM...' : "SUBMIT UK"}
+                                title={submitted ? 'MENGIRIM...' : "KIRIM UK"}
                                 onPress={() => screenState > 5 ? doSubmit() : null}
                                 buttonStyle={{backgroundColor: screenState > 5 ? '#D62828' : 'gray', width: dimension.width/2}}
                                 titleStyle={{fontSize: 20, fontWeight: 'bold'}}

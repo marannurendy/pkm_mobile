@@ -6,7 +6,7 @@ import FormUjiKelayakan from "./formUjiKelayakan";
 import Verifikasi from "./verifikasi";
 import { DataDiri, ProdukPembiayaan, InisiasiFormUKKondisiRumah, InisiasiFormUKSektorEkonomi, InisiasiFormUKTingkatPendapatan, InisiasiFormUKTandaTanganPermohonan, InisiasiFormUKSignatureScreen } from "./formUk";
 import { VerifikasiFormReview, VerifikasiFormPreview } from "./formVerifikasi";
-import { InisiasiFormPPKelompok, InisiasiFormPPKelompokIntro, InisiasiFormPPKelompokList, InisiasiFormPPKelompokSub, InisiasiFormPPKelompokDetail, InisiasiFormPPKelompokSubForm } from "./formPP";
+import { InisiasiFormPPKelompok, InisiasiFormPPKelompokIntro, InisiasiFormPPKelompokList, InisiasiFormPPKelompokSub, InisiasiFormPPKelompokDetail, InisiasiFormPPKelompokSubForm, InisiasiFormPPKelompokSubMemberVerifikasi, InisiasiFormPPH, InisiasiFormPP, InisiasiFormPPList, InisiasiFormPPForm } from "./formPP";
 
 export { 
     Inisasi, 
@@ -29,5 +29,10 @@ export {
     InisiasiFormPPKelompokList,
     InisiasiFormPPKelompokSub,
     InisiasiFormPPKelompokDetail,
-    InisiasiFormPPKelompokSubForm
+    InisiasiFormPPKelompokSubForm,
+    InisiasiFormPPKelompokSubMemberVerifikasi,
+    InisiasiFormPPH,
+    InisiasiFormPP,
+    InisiasiFormPPList,
+    InisiasiFormPPForm
 };

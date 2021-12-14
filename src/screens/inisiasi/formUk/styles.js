@@ -131,7 +131,18 @@ const styles = StyleSheet.create({
         height: 300,
         backgroundColor: 'white',
         padding: 16,
-        borderRadius: 4,
+        borderRadius: 16,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,  
+        elevation: 5
+    },
+    containerImageBackground: {
+        resizeMode: "cover", 
+        justifyContent: "center",
+        borderRadius: 8,
+        paddingVertical: 18
     },
     F1: {
         flex: 1
@@ -211,6 +222,9 @@ const styles = StyleSheet.create({
     MB16: {
         marginBottom: 16
     },
+    MB32: {
+        marginBottom: 32
+    },
     MR2: {
         marginRight: 2
     },
@@ -246,6 +260,18 @@ const styles = StyleSheet.create({
     },
     MH16: {
         marginHorizontal: 16
+    },
+    MV2: {
+        marginHorizontal: 2
+    },
+    MV4: {
+        marginHorizontal: 4
+    },
+    MV8: {
+        marginHorizontal: 8
+    },
+    MV16: {
+        marginVertical: 16
     },
     FS18: {
         fontSize: 18

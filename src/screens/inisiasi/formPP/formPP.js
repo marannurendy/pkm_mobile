@@ -1,38 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import ActionButton from 'react-native-action-button';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 
-const dimension = Dimensions.get('screen');
-
-const InisiasiFormPPKelompokList = ({ route }) => {
+const InisiasiFormPP = ({ route }) => {
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [data, setData] = useState([
         {
-            groupName: 'Mawar Merah',
-            jumlahNasabah: '2'
-        },
-        {
-            groupName: 'Bayam Hijau',
-            jumlahNasabah: '4'
-        },
-        {
-            groupName: 'Mekaar I',
-            jumlahNasabah: '6'
-        },
-        {
-            groupName: 'Mekaar IV',
-            jumlahNasabah: '5'
+            groupName: 'Mekaar VI',
+            jumlahNasabah: '10'
         },
         {
             groupName: 'Gang Kelinci',
-            jumlahNasabah: '6'
+            jumlahNasabah: '1'
         }
     ]);
     const [keyword, setKeyword] = useState('');
@@ -68,7 +53,7 @@ const InisiasiFormPPKelompokList = ({ route }) => {
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={stylesheet.containerItem} 
-            onPress={() => navigation.navigate('InisiasiFormPPKelompokDetail', { ...data })}
+            onPress={() => navigation.navigate('InisiasiFormPPList', { ...data })}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} />
@@ -94,18 +79,10 @@ const InisiasiFormPPKelompokList = ({ route }) => {
         </View>
     )
 
-    const renderActionButton = () => (
-        <ActionButton buttonColor="#003049">
-            <ActionButton.Item buttonColor='#D62828' title="Kelompok Baru" onPress={() => navigation.navigate('InisiasiFormPPKelompok')}>
-                <FontAwesome5 name="user-plus" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-        </ActionButton>
-    )
-
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <View style={stylesheet.containerProspek}>
-                <Text style={stylesheet.textProspek}>Kelompok</Text>
+                <Text style={stylesheet.textProspek}>Persetujuan Pembiayaan</Text>
                 <View style={stylesheet.containerSearch}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={styles.MH8} />
                     <TextInput 
@@ -148,7 +125,6 @@ const InisiasiFormPPKelompokList = ({ route }) => {
         <View style={styles.mainContainer}>
             {renderHeader()}
             {renderBody()}
-            {renderActionButton()}
         </View>
     )
 }
@@ -201,4 +177,4 @@ const stylesheet = StyleSheet.create({
     }
 });
 
-export default InisiasiFormPPKelompokList;
+export default InisiasiFormPP;

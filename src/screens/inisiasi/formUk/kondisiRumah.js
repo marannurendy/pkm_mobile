@@ -50,7 +50,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         setInfo();
         getStorageDwellingCondition();
         getUKKondisiRumah();
-    }, [])
+    }, []);
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
@@ -381,7 +381,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                 onPress={() => doSubmitSave()}
             >
                 <View style={styles.buttonSubmitContainer}>
-                    <Text style={styles.buttonSubmitText}>SIMPAN</Text>
+                    <Text style={styles.buttonSubmitText}>SUBMIT</Text>
                 </View>
             </TouchableOpacity>
         </View>

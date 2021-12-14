@@ -1,50 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator } from 'react-native';
+import { 
+    View,
+    Text,
+    ImageBackground,
+    TouchableOpacity,
+    Dimensions,
+    StyleSheet,
+    SafeAreaView,
+    FlatList,
+    TextInput,
+    ActivityIndicator,
+    Modal,
+    KeyboardAvoidingView
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import ActionButton from 'react-native-action-button';
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { Checkbox } from 'react-native-paper';
+import moment from 'moment';
+import 'moment/locale/id';
+
+import db from '../../../database/Database';
+import { style } from 'styled-system';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 
 const dimension = Dimensions.get('screen');
 
-const InisiasiFormPPKelompokList = ({ route }) => {
+const InisiasiFormPPH = ({ route }) => {
+    const { source } = route.params;
     const navigation = useNavigation();
-    const [currentDate, setCurrentDate] = useState();
+    const [date, setDate] = useState('');
     const [data, setData] = useState([
         {
-            groupName: 'Mawar Merah',
-            jumlahNasabah: '2'
+            groupName: 'Bogor',
+            jumlahNasabah: '10'
         },
         {
-            groupName: 'Bayam Hijau',
+            groupName: 'Depok',
+            jumlahNasabah: '1'
+        },
+        {
+            groupName: 'Jakarta',
             jumlahNasabah: '4'
-        },
-        {
-            groupName: 'Mekaar I',
-            jumlahNasabah: '6'
-        },
-        {
-            groupName: 'Mekaar IV',
-            jumlahNasabah: '5'
-        },
-        {
-            groupName: 'Gang Kelinci',
-            jumlahNasabah: '6'
         }
     ]);
     const [keyword, setKeyword] = useState('');
     const [fetching, setFetching] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [statusMelakukan, setStatusMelakukan] = useState(false)
 
     useEffect(() => {
-        GetInfo();
+        generateDate();
     }, []);
 
-    const GetInfo = async () => {
-        const tanggal = await AsyncStorage.getItem('TransactionDate');
-        setCurrentDate(tanggal)
+    const generateDate = () => {
+        if (source === '2') return setDate(moment(new Date()).add(1, 'days'));
+        if (source === '3') return setDate(moment(new Date()).add(2, 'days'));
+
+        setDate(new Date());
     }
 
     const renderHeader = () => (
@@ -68,7 +85,7 @@ const InisiasiFormPPKelompokList = ({ route }) => {
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={stylesheet.containerItem} 
-            onPress={() => navigation.navigate('InisiasiFormPPKelompokDetail', { ...data })}
+            onPress={() => setVisible(true)}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} />
@@ -94,18 +111,10 @@ const InisiasiFormPPKelompokList = ({ route }) => {
         </View>
     )
 
-    const renderActionButton = () => (
-        <ActionButton buttonColor="#003049">
-            <ActionButton.Item buttonColor='#D62828' title="Kelompok Baru" onPress={() => navigation.navigate('InisiasiFormPPKelompok')}>
-                <FontAwesome5 name="user-plus" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-        </ActionButton>
-    )
-
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <View style={stylesheet.containerProspek}>
-                <Text style={stylesheet.textProspek}>Kelompok</Text>
+                <Text style={stylesheet.textProspek}>Persiapan Pembiayaan {source}</Text>
                 <View style={stylesheet.containerSearch}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={styles.MH8} />
                     <TextInput 
@@ -144,11 +153,78 @@ const InisiasiFormPPKelompokList = ({ route }) => {
         </View>
     )
 
+    const renderHeaderModal = () => (
+        <View
+            style={[styles.MB16, styles.FDRow]}
+        >
+            <Text style={{ flex: 1, fontSize: 18 }}>PP{source} - GANG KELINCI</Text>
+            <FontAwesome5 name="times-circle" size={22} color="#2e2e2e" onPress={() => setVisible(!visible)} />
+        </View>
+    )
+
+    const renderBodyModal = () => (
+        <View style={styles.F1}>
+            <View>
+                <Text>Tanggal PP 1</Text>
+                <View style={[styles.P16, styles.MT8, { borderWidth: 1, borderRadius: 6 }]}>
+                    <Text>{moment(date).format('LL')}</Text>
+                </View>
+            </View>
+            <View style={[styles.FDRow, { alignItems: 'center', marginLeft: -8 }]}>
+                <Checkbox
+                    status={statusMelakukan ? 'checked' : 'unchecked'}
+                    onPress={() => {
+                        setStatusMelakukan(!statusMelakukan);
+                    }}
+                />
+                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Melakukan PP{source}</Text>
+            </View>
+        </View>
+    )
+
+    const renderFooterModal = () => (
+        <View style={styles.FDRow}>
+            <View style={styles.F1} />
+            <TouchableOpacity
+                onPress={() => alert(JSON.stringify(statusMelakukan))}
+            >
+                <View style={[styles.buttonSubmitContainer, { padding: 8 }]}>
+                    <Text style={styles.buttonSubmitText}>SIMPAN</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    const renderModal = () => (
+        <Modal            
+            animationType={"fade"}  
+            transparent={true}  
+            visible={visible}  
+            onRequestClose={() =>{ console.log("Modal has been closed.") } }
+            KeyboardSpacer
+        >
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+                <View style={styles.modalContainer}>  
+                    <View style={styles.modalBody}>
+                        {renderHeaderModal()}
+                        {renderSpace()}
+                        {renderBodyModal()}
+                        {renderFooterModal()}
+                    </View>
+                </View>
+            </KeyboardAvoidingView>
+        </Modal>
+    )
+
+    const renderSpace = () => (
+        <View style={[styles.spaceGray, styles.MB8, { borderWidth: 1, borderColor: 'whitesmoke' }]} />
+    )
+
     return (
         <View style={styles.mainContainer}>
             {renderHeader()}
             {renderBody()}
-            {renderActionButton()}
+            {renderModal()}
         </View>
     )
 }
@@ -201,4 +277,4 @@ const stylesheet = StyleSheet.create({
     }
 });
 
-export default InisiasiFormPPKelompokList;
+export default InisiasiFormPPH;

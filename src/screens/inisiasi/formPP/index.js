@@ -4,6 +4,11 @@ import InisiasiFormPPKelompokList from "./formPPKelompokList";
 import InisiasiFormPPKelompokSub from "./formPPKelompokSub";
 import InisiasiFormPPKelompokSubForm from "./formPPKelompokSubForm";
 import InisiasiFormPPKelompokDetail from "./formPPKelompokDetail";
+import InisiasiFormPPKelompokSubMemberVerifikasi from "./formPPKelompokSubMemberVerifikasi";
+import InisiasiFormPPH from "./formPPH";
+import InisiasiFormPP from "./formPP";
+import InisiasiFormPPList from "./formPPList";
+import InisiasiFormPPForm from "./formPPForm";
 
 export { 
     InisiasiFormPPKelompok,
@@ -11,5 +16,10 @@ export {
     InisiasiFormPPKelompokList,
     InisiasiFormPPKelompokSub,
     InisiasiFormPPKelompokDetail,
-    InisiasiFormPPKelompokSubForm
+    InisiasiFormPPKelompokSubForm,
+    InisiasiFormPPKelompokSubMemberVerifikasi,
+    InisiasiFormPPH,
+    InisiasiFormPP,
+    InisiasiFormPPList,
+    InisiasiFormPPForm
 }
