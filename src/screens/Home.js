@@ -835,7 +835,7 @@ export default function FrontHome() {
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                            <TouchableOpacity style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Pencairan')} style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
                                 <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
                                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                                         PENCAIRAN
