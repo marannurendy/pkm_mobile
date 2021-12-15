@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, Platform, PermissionsAndroid, ScrollView, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -91,7 +91,24 @@ const Inisasi = () => {
         // AsyncStorage.getItem('DwellingCondition', (error, result) => {
         //     console.log(result)
         // })
+
+        hasLocationPermission();
     }, []);
+
+    const hasLocationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                ToastAndroid.show("You can use the location", ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show("Location permission denied", ToastAndroid.SHORT);
+            }
+        } catch (err) {
+            console.log('hasLocationPermission error:', err);
+        }
+    };
 
     const getSosialisasiDatabase = () => {
         if (__DEV__) console.log('getSosialisasiDatabase loaded');

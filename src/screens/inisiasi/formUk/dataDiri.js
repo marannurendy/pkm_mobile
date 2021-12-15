@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet, ImageBackground, TextInput, ToastAndroid, Image, ActivityIndicator, Platform, PermissionsAndroid } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet, ImageBackground, TextInput, ToastAndroid, Image, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -312,40 +312,20 @@ const DataDiri = ({route}) => {
                     setItemsReligion([]);
                 }
             }
-            const hasLocationPermission = async () => {
-                try {
-                    const granted = await PermissionsAndroid.request(
-                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-                    )
-                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                        ToastAndroid.show("You can use the location", ToastAndroid.SHORT);
-                        return true;
-                    } else {
-                        ToastAndroid.show("Location permission denied", ToastAndroid.SHORT);
-                        return false;
-                    }
-                } catch (err) {
-                    console.log('hasLocationPermission error:', err);
-                    return false;
-                }
-            };
-        
+            
             const getLocation = async () => {
-                const permission = hasLocationPermission();
-                if (permission) {
-                    Geolocation.getCurrentPosition(
-                        (position) => {
-                            setLocation(position);
-                            if (__DEV__) console.log(position);
-                        },
-                        (error) => {
-                            // See error code charts below.
-                            setLocation(null);
-                            if (__DEV__) console.log(error.code, error.message);
-                        },
-                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-                    );
-                }
+                Geolocation.getCurrentPosition(
+                    (position) => {
+                        setLocation(position);
+                        if (__DEV__) console.log(position);
+                    },
+                    (error) => {
+                        // See error code charts below.
+                        setLocation(null);
+                        if (__DEV__) console.log(error.code, error.message);
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+                );
             };
             getUKDataDiri();
             getStorageStatusHubunganKeluarga();

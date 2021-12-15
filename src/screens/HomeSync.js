@@ -57,7 +57,8 @@ export default function FrontHomeSync(props) {
 
         const syncBy = await AsyncStorage.getItem('SyncBy')
         let dataRole = await JSON.parse(syncBy)
-        let lengthData = dataRole.filter((x) => x.userName === userName).length || 0
+        let lengthData = 0;
+        if (dataRole !== null) lengthData = dataRole.filter((x) => x.userName === userName).length || 0;
 
         AsyncStorage.getItem('SyncDate', (error, syncDate) => {
             if (syncDate !== now || lengthData === 0) {
