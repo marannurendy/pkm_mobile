@@ -21,6 +21,7 @@ const Inisasi = () => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [dataVerifikasi, setDataVerifikasi] = useState([]);
 
     let [roleCheck, setRoleCheck] = useState(0)
     const [keyword, setKeyword] = useState('');
@@ -40,6 +41,7 @@ const Inisasi = () => {
 
         getUserData();
         getSosialisasiDatabase();
+        getUKDataDiriVerifikasi();
 
         const onLoadCheck = async () => {
             const roleUser = await AsyncStorage.getItem('roleUser')
@@ -107,6 +109,27 @@ const Inisasi = () => {
                         ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
                     }
                     setData(ah);
+                })
+            }
+        )
+    }
+
+    const getUKDataDiriVerifikasi = () => {
+        if (__DEV__) console.log('getUKDataDiri loaded');
+        if (__DEV__) console.log('getUKDataDiri keyword', keyword);
+
+        let query = 'SELECT kelurahan, COUNT(kelurahan) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND kelurahan LIKE "%'+ keyword +'%" AND (sync_Verif != "2" OR sync_Verif IS NULL) GROUP BY kelurahan';
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    if (__DEV__) console.log('getUKDataDiri results:', results.rows);
+                    let dataLength = results.rows.length
+                    var ah = []
+                    for(let a = 0; a < dataLength; a++) {
+                        let data = results.rows.item(a);
+                        ah.push({'groupName' : data.kelurahan, 'totalnasabah': data.jumlah, 'date': '08-09-2021'});
+                    }
+                    setDataVerifikasi(ah);
                 })
             }
         )
@@ -441,7 +464,7 @@ const Inisasi = () => {
                                 onChangeText={(text) => setKeyword(text)}
                                 value={keyword}
                                 returnKeyType="done"
-                                onSubmitEditing={() => getSosialisasiDatabase()}
+                                onSubmitEditing={() => getUKDataDiriVerifikasi()}
                             />
                         </View>
                     </View>
@@ -449,16 +472,10 @@ const Inisasi = () => {
                     <SafeAreaView style={{flex: 1}}>
                         <View style={{ justifyContent:  'space-between'}}>
                             <FlatList
-                                // contentContainerStyle={styles.listStyle}
-                                // refreshing={refreshing}
-                                // onRefresh={() => _onRefresh()}
-                                data={data}
+                                data={dataVerifikasi}
                                 keyExtractor={(item, index) => index.toString()}
                                 enabledGestureInteraction={true}
-                                // onEndReachedThreshold={0.1}
-                                // onEndReached={() => handleEndReach()}
                                 renderItem={renderItemVerif}
-                                // style={{height: '88.6%'}}
                                 ListEmptyComponent={_listEmptyComponent}
                             /> 
                         </View>

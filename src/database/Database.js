@@ -297,7 +297,11 @@ db.transaction(tx => {
             longitude varchar,
             latitude varchar,
             agama varchar,
-            status_Verif varchar
+            status_Verif varchar,
+            status_UK_Pass varchar,
+            status_Verifikasi_Pass varchar,
+            sync_Verif varchar,
+            id_prospek varchar
         );`
     )
 
