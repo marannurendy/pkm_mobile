@@ -9,7 +9,7 @@ import { scale, verticalScale } from 'react-native-size-matters'
 
 import db from '../../database/Database'
 
-const MenuflowPencairan = () => {
+const ListPencairan = ({route}) => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -21,9 +21,11 @@ const MenuflowPencairan = () => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [kelom, setKelom] = useState();
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
+        setKelom(route.params.groupName)
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -88,11 +90,50 @@ const MenuflowPencairan = () => {
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
+                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
                     }
-                    setData(ah);
+                    setData([{'kelName' :'Vina binti Supardi (SY)', 'Nomor': '900900102/3000000/25'}, {'kelName' :'Vina binti Supardi (K)', 'Nomor': '900900102/3000000/25'}]);
                 })
             }
+        )
+    }
+
+    // LIST VIEW PENCAIRAN
+    const renderItemSos = ({ item }) => (
+        <ItemSos data={item} />  
+    )
+
+    const ItemSos = ({ data }) => (
+        <TouchableOpacity 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            onPress={() => navigation.navigate('Perjanjian', {data: data})}
+        >
+            <View style={{alignItems: 'flex-start'}}>
+                <ListMessageSos kelName={data.kelName} Nomor={data.Nomor} />
+            </View>
+        </TouchableOpacity>
+    )
+    const ListMessageSos = ({ kelName, Nomor }) => {
+        return(
+            <View style={{ flex: 1, margin: 20}}>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{kelName}</Text>
+                <Text>{Nomor}</Text>
+            </View>
+        )
+    }
+    // END LIST VIEW PENCAIRAN
+
+    const _listEmptyComponent = () => {
+        return (
+            <View
+                style={
+                    {
+                        padding: 16
+                    }
+                }
+            >
+                <Text>Data kosong</Text>
+            </View>
         )
     }
 
@@ -124,44 +165,51 @@ const MenuflowPencairan = () => {
             </View>
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Pencairan</Text>
-                
-                <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{groupName: "TOTO"})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
-                    </TouchableOpacity>
+                <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan {" " + kelom}</Text>
+                    <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
+                        <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
+                        <TextInput 
+                            placeholder={"Cari Kelompok"} 
+                            style={
+                                {
+                                    flex: 1,
+                                    padding: 5,
+                                    borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20
+                                }
+                            }
+                            onChangeText={(text) => setKeyword(text)}
+                            value={keyword}
+                            returnKeyType="done"
+                            onSubmitEditing={() => getSosialisasiDatabase()}
+                        />
+                    </View>
                 </View>
 
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="upload" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Upload Nota Pembelian</Text>
-                    </TouchableOpacity>
-                </View>
+                <SafeAreaView style={{flex: 1}}>
+                    <View style={{ justifyContent:  'space-between'}}>
+                        <FlatList
+                            // contentContainerStyle={styles.listStyle}
+                            // refreshing={refreshing}
+                            // onRefresh={() => _onRefresh()}
+                            data={data}
+                            keyExtractor={(item, index) => index.toString()}
+                            enabledGestureInteraction={true}
+                            // onEndReachedThreshold={0.1}
+                            // onEndReached={() => handleEndReach()}
+                            renderItem={renderItemSos}
+                            // style={{height: '88.6%'}}
+                            //ListEmptyComponent={_listEmptyComponent}
+                        /> 
+                    </View>
+                </SafeAreaView>
             </View>
         </View>
     )
 }
 
-export default MenuflowPencairan
+export default ListPencairan
 
 const styles = StyleSheet.create({
     button: {

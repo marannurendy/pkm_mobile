@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import ActionButton from 'react-native-action-button'
 import { scale, verticalScale } from 'react-native-size-matters'
+import { Card, Divider } from 'react-native-elements';
+import SignatureScreen from "react-native-signature-canvas";
+import { Button } from 'react-native-elements';
+import bismillah from '../../images/bismillah.png';
 
 import db from '../../database/Database'
 
-const MenuflowPencairan = () => {
+const window = Dimensions.get('window');
+
+const Siklus = () => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -88,12 +94,17 @@ const MenuflowPencairan = () => {
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
+                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
                     }
-                    setData(ah);
+                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
                 })
             }
         )
+    }
+    
+    // Simpan Handler
+    const submitHandler = () => {
+        navigation.replace("Pencairan")
     }
 
     return(
@@ -124,44 +135,78 @@ const MenuflowPencairan = () => {
             </View>
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Pencairan</Text>
-                
-                <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{groupName: "TOTO"})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
-                    </TouchableOpacity>
+                <SafeAreaView style={{flex: 1}}>
+                    <ScrollView>
+                        <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
+                            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Siklus Pertama</Text>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
-                    </TouchableOpacity>
-                </View>
+                            <Text style={{fontSize: 14, fontWeight: 'bold'}}>Produk Pembiayaan</Text>
+                            <TextInput 
+                                placeholder={"Wadah, Tepung Terigu dll"} 
+                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                // onChangeText={(value) => {
+                                //     searchHandler(value, memberList)
+                                // }}
+                                returnKeyType="done"
+                            />
 
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
-                    </TouchableOpacity>
+                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Plafond</Text>
+                            <TextInput 
+                                placeholder={"Wadah, Tepung Terigu dll"} 
+                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                // onChangeText={(value) => {
+                                //     searchHandler(value, memberList)
+                                // }}
+                                returnKeyType="done"
+                            />
 
-                    <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
-                    </TouchableOpacity>
-                </View>
+                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Term Pembiayaan</Text>
+                            <TextInput 
+                                placeholder={"Wadah, Tepung Terigu dll"} 
+                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                // onChangeText={(value) => {
+                                //     searchHandler(value, memberList)
+                                // }}
+                                returnKeyType="done"
+                            />
 
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="upload" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Upload Nota Pembelian</Text>
-                    </TouchableOpacity>
-                </View>
+                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Jumlah UP</Text>
+                            <TextInput 
+                                placeholder={"Wadah, Tepung Terigu dll"} 
+                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                // onChangeText={(value) => {
+                                //     searchHandler(value, memberList)
+                                // }}
+                                returnKeyType="done"
+                            />
+
+                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Total Pencairan</Text>
+                            <TextInput 
+                                placeholder={"Wadah, Tepung Terigu dll"} 
+                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                // onChangeText={(value) => {
+                                //     searchHandler(value, memberList)
+                                // }}
+                                returnKeyType="done"
+                            />
+                            
+                            <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
+                                <Button
+                                    title="SIMPAN"
+                                    onPress={() => submitHandler()}
+                                    buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
+                                    titleStyle={{fontSize: 20, fontWeight: 'bold'}}
+                                />
+                            </View>
+                        </View>
+                    </ScrollView>
+                </SafeAreaView>
             </View>
         </View>
     )
 }
 
-export default MenuflowPencairan
+export default Siklus
 
 const styles = StyleSheet.create({
     button: {
@@ -183,4 +228,36 @@ const styles = StyleSheet.create({
         height: 22,
         color: 'white',
     },
+    signature: {
+        height: window.height/4,
+        flex: 1
+      },
+      buttonStyle: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        margin: 10,
+      },
+      centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        // height: window.height
+      },
+      modalView: {
+        backgroundColor: "#ECE9E4",
+        // borderRadius: 5,
+        // alignItems: "center",
+        // shadowColor: "#000",
+        height: window.height,
+        width: window.width,
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 2
+        // },
+        // shadowOpacity: 0.25,
+        // shadowRadius: 4,
+        // elevation: 5,
+      },
 })
