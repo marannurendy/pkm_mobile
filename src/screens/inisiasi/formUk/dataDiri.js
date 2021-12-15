@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet, ImageBackground, TextInput, ToastAndroid, Image, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet, ImageBackground, TextInput, ToastAndroid, Image, ActivityIndicator, Platform, PermissionsAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -13,6 +13,7 @@ import { Button } from 'react-native-elements'
 import { showMessage } from "react-native-flash-message"
 import { Checkbox } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
+import Geolocation from 'react-native-geolocation-service';
 
 import db from '../../../database/Database'
 
@@ -21,7 +22,7 @@ const withTextInput = dimension.width - (20 * 4) + 8;
 
 const DataDiri = ({route}) => {
 
-    const { groupName, namaNasabah, nomorHandphone } = route.params
+    const { groupName, namaNasabah, nomorHandphone, screenState } = route.params
 
     const navigation = useNavigation()
     const phoneRef = useRef(undefined)
@@ -160,6 +161,9 @@ const DataDiri = ({route}) => {
     const [statusAgreement, setStatusAgreement] = useState(false);
     const [usahaPekerjaanSuami, setUsahaPekerjaanSuami] = useState('');
     const [jumlahTenagaKerjaSuami, setJumlahTenagaKerjaSuami] = useState('');
+    const [location, setLocation] = useState(null);
+    const [valueReligion, setValueReligion] = useState(null);
+    const [itemsReligion, setItemsReligion] = useState([]);
 
     const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
     const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
@@ -207,6 +211,7 @@ const DataDiri = ({route}) => {
                                 if (data.no_kk !== null && typeof data.no_kk !== 'undefined') setNomorKartuKeluarga(data.no_kk);
                                 if (data.nama_ayah !== null && typeof data.nama_ayah !== 'undefined') setNamaAyah(data.nama_ayah);
                                 if (data.no_tlp_nasabah !== null && typeof data.no_tlp_nasabah !== 'undefined') setNoTelfon(data.no_tlp_nasabah);
+                                if (data.agama !== null && typeof data.agama !== 'undefined') setValueReligion(data.agama);
                                 if (data.jumlah_anak !== null && typeof data.jumlah_anak !== 'undefined') setValueJumlahAnak(data.jumlah_anak);
                                 if (data.jumlah_tanggungan !== null && typeof data.jumlah_tanggungan !== 'undefined') setValueJumlahTanggungan(data.jumlah_tanggungan);
                                 if (data.status_rumah_tinggal !== null && typeof data.status_rumah_tinggal !== 'undefined') setValueStatusRumahTinggal(data.status_rumah_tinggal);
@@ -286,10 +291,68 @@ const DataDiri = ({route}) => {
                     setDataWilayahMobile([]);
                 }
             }
+            const getStorageReligion = async () => {
+                if (__DEV__) console.log('getStorageReligion loaded');
+        
+                try {
+                    const response = await AsyncStorage.getItem('Religion');
+                    if (response !== null) {
+                        const responseJSON = JSON.parse(response);
+                        if (responseJSON.length > 0 ?? false) {
+                            var responseFiltered = responseJSON.map((data, i) => {
+                                return { label: data.religion, value: data.id };
+                            }) ?? [];
+                            if (__DEV__) console.log('getStorageReligion responseFiltered:', responseFiltered);
+                            setItemsReligion(responseFiltered);
+                            return;
+                        }
+                    }
+                    setItemsReligion([]);
+                } catch (error) {
+                    setItemsReligion([]);
+                }
+            }
+            const hasLocationPermission = async () => {
+                try {
+                    const granted = await PermissionsAndroid.request(
+                        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+                    )
+                    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                        ToastAndroid.show("You can use the location", ToastAndroid.SHORT);
+                        return true;
+                    } else {
+                        ToastAndroid.show("Location permission denied", ToastAndroid.SHORT);
+                        return false;
+                    }
+                } catch (err) {
+                    console.log('hasLocationPermission error:', err);
+                    return false;
+                }
+            };
+        
+            const getLocation = async () => {
+                const permission = hasLocationPermission();
+                if (permission) {
+                    Geolocation.getCurrentPosition(
+                        (position) => {
+                            setLocation(position);
+                            if (__DEV__) console.log(position);
+                        },
+                        (error) => {
+                            // See error code charts below.
+                            setLocation(null);
+                            if (__DEV__) console.log(error.code, error.message);
+                        },
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+                    );
+                }
+            };
             getUKDataDiri();
             getStorageStatusHubunganKeluarga();
             getStorageRumahTinggal();
             getStorageWilayahMobile();
+            getStorageReligion();
+            getLocation();
             /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
             const { status } = await Camera.requestPermissionsAsync();
@@ -345,6 +408,22 @@ const DataDiri = ({route}) => {
             backgroundColor: backgroundColor,
             color: color
         });
+    }
+
+    const onRefreshLocation = () => {
+        Geolocation.getCurrentPosition(
+            (position) => {
+                setLocation(position);
+                ToastAndroid.show("Long, Lat refresh!", ToastAndroid.SHORT);
+                if (__DEV__) console.log(position);
+            },
+            (error) => {
+                // See error code charts below.
+                setLocation(null);
+                if (__DEV__) console.log(error.code, error.message);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
     }
 
     const dateLahirHandler = (event, date) => {
@@ -483,6 +562,7 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataDiriPribadi valueJumlahTanggungan:', valueJumlahTanggungan);
         if (__DEV__) console.log('doSubmitDataDiriPribadi valueStatusRumahTinggal:', valueStatusRumahTinggal);
         if (__DEV__) console.log('doSubmitDataDiriPribadi lamaTinggal:', lamaTinggal);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi agama:', valueReligion);
 
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
         db.transaction(
@@ -493,9 +573,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal) values ("' + namaNasabah + '","' + namaAyah + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, agama) values ("' + namaNasabah + '","' + namaAyah + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '","' + valueReligion + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '", agama = "' + valueReligion + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update query:', query);
@@ -601,7 +681,12 @@ const DataDiri = ({route}) => {
             if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKabupaten:', dataKabupaten);
             if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
             if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
-    
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri longitude:', location?.coords?.longitude ?? '0');
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri latitude:', location?.coords?.latitude ?? '0');
+
+            const long = location?.coords?.longitude ?? '0';
+            const lat = location?.coords?.latitude ?? '0';
+
             const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
             db.transaction(
                 tx => {
@@ -611,9 +696,9 @@ const DataDiri = ({route}) => {
     
                         let query = '';
                         if (dataLengthFind === 0) {
-                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '")';
+                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + long + '","' + lat + '")';
                         } else {
-                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + long + '", latitude = "' + lat + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                         }
     
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
@@ -680,6 +765,7 @@ const DataDiri = ({route}) => {
         if (!valueJumlahTanggungan || typeof valueJumlahTanggungan === 'undefined' || valueJumlahTanggungan ==='' || valueJumlahTanggungan === 'null') return alert('Jumlah Tanggungan (*) tidak boleh kosong');
         if (!valueStatusRumahTinggal || typeof valueStatusRumahTinggal === 'undefined' || valueStatusRumahTinggal ==='' || valueStatusRumahTinggal === 'null') return alert('Status Rumah Tangga (*) tidak boleh kosong');
         if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='' || lamaTinggal === 'null') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
+        if (!valueReligion || typeof valueReligion === 'undefined' || valueReligion ==='' || valueReligion === 'null') return alert('Agama (*) tidak boleh kosong');
 
         if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '' || namaSuami === 'null') return alert('Nama Suami (*) tidak boleh kosong');
         if (!usahaPekerjaanSuami || typeof usahaPekerjaanSuami === 'undefined' || usahaPekerjaanSuami === '' || usahaPekerjaanSuami === 'null') return alert('Usaha/Pekerjaan Suami (*) tidak boleh kosong');
@@ -1349,6 +1435,7 @@ const DataDiri = ({route}) => {
                                     is24Hour={true}
                                     display="default"
                                     onChange={dateLahirHandler}
+                                    maximumDate={new Date()}
                                 />
                             )}
                         </View>
@@ -1471,6 +1558,14 @@ const DataDiri = ({route}) => {
                             </View>
                         </View>
 
+                        <View style={{margin: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Long, Lat (*)</Text>
+                            <View style={{ flexDirection: 'row', borderWidth: 1, borderRadius: 6, padding: 12 }}>
+                                <Text style={{ flex: 1 }}>{location?.coords?.longitude ?? '0'}, {location?.coords?.latitude ?? '0'}</Text>
+                                <FontAwesome5 name={'sync'} size={18} onPress={() => onRefreshLocation()} />
+                            </View>
+                        </View>
+
                         <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
                             <Button
                                 title="Save Draft"
@@ -1553,7 +1648,21 @@ const DataDiri = ({route}) => {
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Nasabah (*)</Text>
                             <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 10}}>
-                                <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" style={{ fontSize: 15, color: "#545454" }}/>
+                                <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
+                            </View>
+                        </View>
+
+                        <View style={{margin: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Agama (*)</Text>
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueReligion}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueReligion(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsReligion.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
                             </View>
                         </View>
 
@@ -1618,7 +1727,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'chart-pie'} size={18} />
@@ -1663,7 +1772,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
                                 <View />
                             </View>

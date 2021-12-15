@@ -20,7 +20,7 @@ const dataPilihan = [
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
-    const { groupName, namaNasabah } = route.params;
+    const { groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState('');
@@ -120,6 +120,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                             const response = await AsyncStorage.getItem('Product');
                             if (response !== null) {
                                 const responseJSON = JSON.parse(response);
+                                if (__DEV__) console.log('AsyncStorage Product responseJSON:', responseJSON);
                                 if (responseJSON.length > 0 ?? false) {
                                     let value = data.produk_Pembiayaan;
                                     setValueProdukPembiayaan(responseJSON.filter(data => data.id === value)[0].productName.trim() || '');
@@ -129,9 +130,15 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         if (data.jumlah_Pinjaman !== null && typeof data.jumlah_Pinjaman !== 'undefined') setValueJumlahPembiayaanYangDiajukan(data.jumlah_Pinjaman);
                         if (data.term_Pembiayaan !== null && typeof data.term_Pembiayaan !== 'undefined') setValueJangkaWaktu(data.term_Pembiayaan);
                         if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') {
-                            const responseJSON = [{ label: 'Mingguan', value: '1' }, { label: 'Bulanan', value: '2' }];
-                            let value = data.frekuensi_Pembayaran;
-                            setValueFrekuensiPembiayaan(responseJSON.filter(data => data.value === value)[0].label);
+                            const response = await AsyncStorage.getItem('Frekuensi');
+                            if (response !== null) {
+                                const responseJSON = JSON.parse(response);
+                                if (__DEV__) console.log('AsyncStorage Frekuensi responseJSON:', responseJSON);
+                                if (responseJSON.length > 0 ?? false) {
+                                    let value = data.frekuensi_Pembayaran;
+                                    setValueFrekuensiPembiayaan(responseJSON.filter(data => data.id === value)[0].namafrekuensi.trim() || '');
+                                }
+                            }
                         }
                     }
                 }, function(error) {
@@ -580,7 +587,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
 
     const renderBody = () => (
         <View style={styles.bodyContainer}>
-            <Text style={styles.bodyTitle}>Produk Pembiayaan</Text>
+            <Text style={styles.bodyTitle}>Permohonan Pembiayaan</Text>
             <ScrollView scrollEnabled={scrollEnabled}>
                 {renderForm()}
                 {renderButtonSimpan()}

@@ -21,7 +21,7 @@ const dataPembiayaanLembagaLain = [
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKTingkatPendapatan = ({ route }) => {
-    const { groupName, namaNasabah } = route.params;
+    const { groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valuePedapatanKotorPerhari, setValuePedapatanKotorPerhari] = useState('');

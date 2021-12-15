@@ -14,7 +14,7 @@ const images = {
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKSektorEkonomi = ({ route }) => {
-    const { groupName, namaNasabah } = route.params;
+    const { groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueSektorEkonomi, setValueSektorEkonomi] = useState(null);
@@ -278,7 +278,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
         </View>
     )
 
-    const renderButtonSaveDraft = () => (
+    const renderButtonSaveDraft = () =>  (
         <View style={styles.buttonContainer}>
             <View style={styles.F1} />
             <TouchableOpacity
