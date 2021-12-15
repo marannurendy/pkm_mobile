@@ -281,6 +281,7 @@ db.transaction(tx => {
             foto_kk varchar,
             no_kk varchar,
             nama_ayah varchar,
+            nama_gadis_ibu varchar,
             no_tlp_nasabah varchar,
             jumlah_anak varchar,
             jumlah_tanggungan varchar,
@@ -301,7 +302,8 @@ db.transaction(tx => {
             status_UK_Pass varchar,
             status_Verifikasi_Pass varchar,
             sync_Verif varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            is_pernyataan_dibaca varchar
         );`
     )
 

@@ -164,6 +164,7 @@ const DataDiri = ({route}) => {
     const [location, setLocation] = useState(null);
     const [valueReligion, setValueReligion] = useState(null);
     const [itemsReligion, setItemsReligion] = useState([]);
+    const [namaGadisIbu, setNamaGadisIbu] = useState('');
 
     const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
     const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
@@ -210,6 +211,7 @@ const DataDiri = ({route}) => {
                                 if (data.foto_kk !== null && typeof data.foto_kk !== 'undefined') setFotoKartuKeluarga(fotoKartuKeluarga);
                                 if (data.no_kk !== null && typeof data.no_kk !== 'undefined') setNomorKartuKeluarga(data.no_kk);
                                 if (data.nama_ayah !== null && typeof data.nama_ayah !== 'undefined') setNamaAyah(data.nama_ayah);
+                                if (data.nama_gadis_ibu !== null && typeof data.nama_gadis_ibu !== 'undefined') setNamaGadisIbu(data.nama_gadis_ibu);
                                 if (data.no_tlp_nasabah !== null && typeof data.no_tlp_nasabah !== 'undefined') setNoTelfon(data.no_tlp_nasabah);
                                 if (data.agama !== null && typeof data.agama !== 'undefined') setValueReligion(data.agama);
                                 if (data.jumlah_anak !== null && typeof data.jumlah_anak !== 'undefined') setValueJumlahAnak(data.jumlah_anak);
@@ -224,6 +226,7 @@ const DataDiri = ({route}) => {
                                 if (data.status_hubungan_keluarga !== null && typeof data.status_hubungan_keluarga !== 'undefined') setValueStatusHubunganKeluarga(data.status_hubungan_keluarga);
                                 if (data.nama_penjamin !== null && typeof data.nama_penjamin !== 'undefined') setNamaPenjamin(data.nama_penjamin);
                                 if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined') setFotoDataPenjamin(fotoDataPenjamin);
+                                if (data.is_pernyataan_dibaca !== null && typeof data.is_pernyataan_dibaca !== 'undefined') setStatusAgreement(data.is_pernyataan_dibaca === '1' ? true : false);
                             }
                             return true;
                         }, function(error) {
@@ -537,6 +540,7 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataDiriPribadi loaded');
         if (__DEV__) console.log('doSubmitDataDiriPribadi fullName:', fullName);
         if (__DEV__) console.log('doSubmitDataDiriPribadi namaAyah:', namaAyah);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi namaGadisIbu:', namaGadisIbu);
         if (__DEV__) console.log('doSubmitDataDiriPribadi noTelfon:', noTelfon);
         if (__DEV__) console.log('doSubmitDataDiriPribadi valueJumlahAnak:', valueJumlahAnak);
         if (__DEV__) console.log('doSubmitDataDiriPribadi valueJumlahTanggungan:', valueJumlahTanggungan);
@@ -553,9 +557,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, agama) values ("' + namaNasabah + '","' + namaAyah + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '","' + valueReligion + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, agama) values ("' + namaNasabah + '","' + namaAyah + '","' + namaGadisIbu + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '","' + valueReligion + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '", agama = "' + valueReligion + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", nama_gadis_ibu = "' + namaGadisIbu + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '", agama = "' + valueReligion + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update query:', query);
@@ -663,9 +667,11 @@ const DataDiri = ({route}) => {
             if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
             if (__DEV__) console.log('doSubmitDataIdentitasDiri longitude:', location?.coords?.longitude ?? '0');
             if (__DEV__) console.log('doSubmitDataIdentitasDiri latitude:', location?.coords?.latitude ?? '0');
+            if (__DEV__) console.log('doSubmitDataIdentitasDiri statusAgreement:', statusAgreement);
 
             const long = location?.coords?.longitude ?? '0';
             const lat = location?.coords?.latitude ?? '0';
+            const status_agreement = statusAgreement ? '1' : '0';
 
             const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
             db.transaction(
@@ -676,9 +682,9 @@ const DataDiri = ({route}) => {
     
                         let query = '';
                         if (dataLengthFind === 0) {
-                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + long + '","' + lat + '")';
+                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + long + '","' + lat + '","' + status_agreement + '")';
                         } else {
-                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + long + '", latitude = "' + lat + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + long + '", latitude = "' + lat + '", is_pernyataan_dibaca = "' + status_agreement + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                         }
     
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
@@ -740,6 +746,7 @@ const DataDiri = ({route}) => {
 
         if (!fullName || typeof fullName === 'undefined' || fullName === '' || fullName === 'null') return alert('Nama Lengkap (*) tidak boleh kosong');
         if (!namaAyah || typeof namaAyah === 'undefined' || namaAyah ==='' || namaAyah === 'null') return alert('Nama Ayah (*) tidak boleh kosong');
+        if (!namaGadisIbu || typeof namaGadisIbu === 'undefined' || namaGadisIbu ==='' || namaGadisIbu === 'null') return alert('Nama Gadis Ibu Kandung (*) tidak boleh kosong');
         if (!noTelfon || typeof noTelfon === 'undefined' || noTelfon ==='' || noTelfon === 'null') return alert('No. Telp/HP Nasabah (*) tidak boleh kosong');
         if (!valueJumlahAnak || typeof valueJumlahAnak === 'undefined' || valueJumlahAnak ==='' || valueJumlahAnak === 'null') return alert('Jumlah Anak (*) tidak boleh kosong');
         if (!valueJumlahTanggungan || typeof valueJumlahTanggungan === 'undefined' || valueJumlahTanggungan ==='' || valueJumlahTanggungan === 'null') return alert('Jumlah Tanggungan (*) tidak boleh kosong');
@@ -1618,6 +1625,18 @@ const DataDiri = ({route}) => {
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(text)} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454" }}/>
+                                </View>
+                                <View>
+                                    <FontAwesome5 name={'address-card'} size={18} />
+                                </View>
+                            </View>
+                        </View>
+
+                        <View style={{margin: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Gadis Ibu Kandung (*)</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                                <View style={{flex: 1}}>
+                                    <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(text)} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
