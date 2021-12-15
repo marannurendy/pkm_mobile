@@ -21,6 +21,8 @@ const Inisasi = () => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+
+    let [roleCheck, setRoleCheck] = useState(0)
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
@@ -38,6 +40,20 @@ const Inisasi = () => {
 
         getUserData();
         getSosialisasiDatabase();
+
+        const onLoadCheck = async () => {
+            const roleUser = await AsyncStorage.getItem('roleUser')
+            
+            if(roleUser === 'KC'){
+                setRoleCheck(1)
+            }else if(roleUser === 'SAO'){
+                setRoleCheck(2)
+            }else if(roleUser === 'AO'){
+                setRoleCheck(3)
+            }
+        }
+        
+        onLoadCheck()
 
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
@@ -274,12 +290,12 @@ const Inisasi = () => {
                     <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>MENU</Text>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                        <TouchableOpacity onPress={() => sosPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#003049', padding: 20}}>
+                        <TouchableOpacity disabled={roleCheck === 1 ? true : roleCheck === 2 ? false : false} onPress={() => sosPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  roleCheck === 1 ? '#E6E6E6' : '#003049', padding: 20}}>
                             <FontAwesome5 name="share-alt-square" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sosialisasi</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => ukPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#D62828', padding: 20}}>
+                        <TouchableOpacity disabled={roleCheck === 1 ? true : roleCheck === 2 ? false : false} onPress={() => ukPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  roleCheck === 1 ? '#E6E6E6' : '#D62828', padding: 20}}>
                             <FontAwesome5 name="clipboard-check" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Uji Kelayakan</Text>
                         </TouchableOpacity>

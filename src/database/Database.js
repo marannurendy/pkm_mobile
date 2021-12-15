@@ -296,7 +296,8 @@ db.transaction(tx => {
             foto_ktp_penjamin varchar,
             longitude varchar,
             latitude varchar,
-            agama varchar
+            agama varchar,
+            status_Verif varchar
         );`
     )
 

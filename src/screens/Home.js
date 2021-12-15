@@ -32,6 +32,8 @@ export default function FrontHome() {
     const [data, setData] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
 
+    let [isKc, setIsKc] = useState(false)
+
     const netInfo = useNetInfo()
     const apiSync = ApiSync
     const apiSyncInisiasi = ApiSyncInisiasi
@@ -39,7 +41,6 @@ export default function FrontHome() {
     let [isSync, setIsSync] = useState(true)
 
     LogBox.ignoreAllLogs()
-
 
     const navigation = useNavigation()
 
@@ -124,6 +125,10 @@ export default function FrontHome() {
             //     setAoname(dt.AOname)
             // })
 
+            const roleUser = await AsyncStorage.getItem('roleUser')
+            if(roleUser === 'KC'){
+                setIsKc(true)
+            }
 
             const syncStatus = await AsyncStorage.getItem('userData')
             
@@ -670,19 +675,19 @@ export default function FrontHome() {
 
     // }
 
-    if (!buttonDis) {
-        return (
-            <FrontHomeSync 
-                username={username}
-                cabangid={cabangid}
-                // username={'AO12-90091'} /* DATA DUMMY */
-                // cabangid={90091} /* DATA DUMMY */
-                aoname={aoname}
-                namacabang={namacabang}
-                onSuccess={() => setButtonDis(true)}
-            />
-        )
-    }
+    // if (!buttonDis) {
+    //     return (
+    //         <FrontHomeSync 
+    //             username={username}
+    //             cabangid={cabangid}
+    //             // username={'AO12-90091'} /* DATA DUMMY */
+    //             // cabangid={90091} /* DATA DUMMY */
+    //             aoname={aoname}
+    //             namacabang={namacabang}
+    //             onSuccess={() => setButtonDis(true)}
+    //         />
+    //     )
+    // }
 
     // if (!buttonDis) {
     //     return (
@@ -768,7 +773,7 @@ export default function FrontHome() {
 
                         {/* <Shadow></Shadow> */}
 
-                        <TouchableOpacity style={{borderWidth: 2, height: window.height/3, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}} onPress={() => pkmHandler()}>
+                        <TouchableOpacity disabled={isKc} style={{borderWidth: 2, height: window.height/3, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff'}} onPress={() => pkmHandler()}>
                             <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
                                 <Text style={{fontSize: scale(30), fontWeight: 'bold'}}>
                                     PKM
@@ -778,7 +783,7 @@ export default function FrontHome() {
 
                         <View style={{height: window.height/3, width: window.width/2.5, flexDirection: 'column', justifyContent: 'space-between'}}>
 
-                            <TouchableOpacity onPress={() => navigation.navigate('IndividualCollection', {cabangid: cabangid, uname: username})} style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
+                            <TouchableOpacity disabled={isKc} onPress={() => navigation.navigate('IndividualCollection', {cabangid: cabangid, uname: username})} style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff'}}>
                                 <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
                                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                                         PENAGIHAN
@@ -786,8 +791,8 @@ export default function FrontHome() {
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
-                                <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
+                            <TouchableOpacity disabled={isKc} style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff'}}>
+                                <View style={{alignItems: 'center', justifyContent: 'center', padding: 5, flex: 1}}>
                                     <Text style={{fontSize: 20, fontWeight: 'bold'}}>
                                         {`PELUNASAN\nDINI`}
                                     </Text>
