@@ -88,12 +88,7 @@ const VerifikasiFormReview = ({ route }) => {
                 </View>
             </TouchableOpacity>
             <TouchableOpacity
-                onPress={() => {
-                    setSelectedData('REVISI');
-                    setTimeout(() => {
-                        setVisible(true);
-                    }, 300);
-                }}
+                onPress={() => alert('Revisi')}
                 style={[styles.F1, styles.ML16]}
             >
                 <View style={[styles.P8, { backgroundColor: colors.OREN, borderRadius: 6 }]}>
@@ -184,7 +179,7 @@ const VerifikasiFormReview = ({ route }) => {
                 <WebView
                     renderLoading={renderLoadingView}
                     onLoad={() => setStatusMounting(true)}
-                    source={{ uri: 'http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP_KONVE_TL.html?ID_Prospek=4' }}
+                    source={{ uri: 'http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4' }}
                     startInLoadingState={true}
                     style={styles.F1}
                 />
