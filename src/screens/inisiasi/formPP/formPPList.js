@@ -38,6 +38,7 @@ const InisiasiFormPPList = ({ route }) => {
     ]);
     const [keyword, setKeyword] = useState('');
     const [fetching, setFetching] = useState(false);
+    const [currentDate, setCurrentDate] = useState()
 
     useEffect(() => {
         GetInfo();

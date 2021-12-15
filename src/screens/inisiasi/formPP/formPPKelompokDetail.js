@@ -108,6 +108,7 @@ const InisiasiFormPPKelompokDetail = ({ route }) => {
             <Text style={[styles.headerTitle, { paddingLeft: 0, marginBottom: 8 }]}>{keyGroup} ({dataGroup[keyGroup].length})</Text>
             {dataGroup[keyGroup].map((group, indexGroup) => (
                 <View 
+                    key={indexGroup}
                     style={[styles.textInputContainer, { width: withTextInput, marginBottom: indexGroup === dataGroup[keyGroup].length - 1 ? 0 : 8, borderColor: 'gray' }]}
                 >
                     <TouchableOpacity 
