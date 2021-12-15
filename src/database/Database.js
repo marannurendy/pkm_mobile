@@ -386,6 +386,37 @@ db.transaction(tx => {
         )`
     )
 
+    tx.executeSql(
+        `create table if not exists Table_PP_Kelompok(
+            kelompok_Id varchar,
+            kelompok varchar,
+            group_Produk varchar,
+            tanggal_Pertama varchar,
+            hari_Pertemuan varchar,
+            waktu_Pertemuan varchar,
+            lokasi_Pertemuan varchar
+        );`
+    )
+
+    tx.executeSql(
+        `create table if not exists Table_PP_SubKelompok(
+            kelompok_Id varchar,
+            subKelompok_Id varchar,
+            subKelompok varchar
+        );`
+    )
+
+    tx.executeSql(
+        `create table if not exists Table_PP_ListNasabah(
+            kelompok_Id varchar,
+            subKelompok_Id varchar,
+            Nasabah_Id varchar,
+            Nama_Nasabah varchar,
+            is_Ketua_Kelompok varchar,
+            is_KetuaSubKelompok varchar
+        )`
+    )
+
 
     // tx.executeSql(
     //     // 'DROP TABLE IF EXISTS GroupList'

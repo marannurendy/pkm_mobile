@@ -33,12 +33,13 @@ export default function FrontHome() {
     const [modalVisible, setModalVisible] = useState(false)
 
     let [isKc, setIsKc] = useState(false)
+    let [isRkh, setIsRkh] = useState(false)
 
     const netInfo = useNetInfo()
     const apiSync = ApiSync
     const apiSyncInisiasi = ApiSyncInisiasi
 
-    let [isSync, setIsSync] = useState(true)
+    let [isSync, setIsSync] = useState(false)
 
     LogBox.ignoreAllLogs()
 
@@ -227,17 +228,34 @@ export default function FrontHome() {
         )
     }
 
-    function syncData() {
+    async function syncData() {
         moment.locale('id');
         var now = moment().format('YYYY-MM-DD');
 
+        const syncStatus = await AsyncStorage.getItem('userData')
+        let DetailData = JSON.parse(syncStatus)
+        let userName = DetailData.userName
+
+        const syncBy = await AsyncStorage.getItem('SyncBy')
+        let dataRole = await JSON.parse(syncBy)
+        let lengthData = dataRole.filter((x) => x.userName === userName).length || 0
+
+        // if (dataRole.userName === username) {
+
+        // console.log("ini " + userName)
+        
+        console.log(lengthData)
+
         AsyncStorage.getItem('SyncDate', (error, syncDate) => {
-            if (syncDate !== now) {
-                setButtonDis(false);
+            if (syncDate !== now || lengthData === 0) {
+                console.log("disini coyyyy")
+                setIsRkh(false);
                 return;
             }
 
-            setButtonDis(true);
+            console.log("keluar")
+
+            setIsRkh(true);
         });
     }
 
@@ -689,19 +707,19 @@ export default function FrontHome() {
     //     )
     // }
 
-    // if (!buttonDis) {
-    //     return (
-    //         <FrontHomeSync 
-    //             // username={username}
-    //             // cabangid={cabangid}
-    //             username={'AO12-90091'} /* DATA DUMMY */
-    //             cabangid={90091} /* DATA DUMMY */
-    //             aoname={aoname}
-    //             namacabang={namacabang}
-    //             onSuccess={() => setButtonDis(true)}
-    //         />
-    //     )
-    // }
+    if (!isRkh) {
+        return (
+            <FrontHomeSync 
+                username={username}
+                cabangid={cabangid}
+                // username={'AO12-90091'} /* DATA DUMMY */
+                // cabangid={90091} /* DATA DUMMY */
+                aoname={aoname}
+                namacabang={namacabang}
+                onSuccess={() => setIsRkh(true)}
+            />
+        )
+    }
 
     return(
         // <View style={styles.container}>            
