@@ -33,7 +33,7 @@ import GroupCollection from '../screens/groupCollection'
 import IndividualCollection from '../screens/individualCollection'
 import FormIndividualCollection from '../screens/formIndividualCollection'
 
-import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
+// import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
 import { 
     Inisasi,
     Sosialisasi,

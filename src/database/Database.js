@@ -293,7 +293,8 @@ db.transaction(tx => {
             suami_diluar_kota varchar,
             status_hubungan_keluarga varchar,
             nama_penjamin varchar,
-            foto_ktp_penjamin varchar
+            foto_ktp_penjamin varchar,
+            status_Verif varchar
         );`
     )
 

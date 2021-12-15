@@ -76,38 +76,57 @@ export default function Login() {
               flashNotification("Network Error", "Pastikan anda terhubung dengan internet", "#ff6347", "#fff")
               setLoading(false)
           }else if(netInfo.isConnected === true) {
-              let password = base64.encode(passwd)
-              console.log(loginApi + "SetLogin" + "/" + uname + "/" + password)
-              fetch(loginApi + "SetLogin" + "/" + uname + "/" + password, {
-                  method: 'GET',
+            console.log(loginApi + "AuthLogin")
+              fetch(loginApi + "AuthLogin", {
+                  method: 'POST',
                   headers: {
                       'Accept' : 'application/json',
                       'Content-Type' : 'application/json',     
-                      'Authorization' : 'Basic'+base64.encode('event:event')
-                  }
+                  },
+                  body: JSON.stringify({
+                    username: uname,
+                    password: passwd
+                  })
               })
               .then((response) => response.json())
               .then((responseJson) => {
-                  if(responseJson.Status == "Login Berhasil") {
+
+                console.log(responseJson.responseStatus)
+                  if(responseJson.responseStatus === true) {
+                    console.log("disini")
+                    console.log(responseJson.data.jabatan)
+                    flashNotification("Sukses!", 'Pesan : '+responseJson.message, "#1F8327", "#fff")
                       let data = {
-                          kodeCabang: responseJson.LoginStat[0].OURBRANCHID,
-                          nip: responseJson.LoginStat[0].NIP,
-                          namaCabang: responseJson.LoginStat[0].BranchName,
-                          userName: responseJson.LoginStat[0].USERNAME,
-                          password: responseJson.LoginStat[0].Password,
-                          AOname: responseJson.LoginStat[0].NAMA,
+                          kodeCabang: responseJson.data.unitKerja,
+                          nip: responseJson.data.nip,
+                          namaCabang: responseJson.data.branchName,
+                          userName: responseJson.data.userName,
+                          password: responseJson.data.password,
+                          AOname: responseJson.data.nama,
                       }
 
-                      setLoading(false)
-                      AsyncStorage.setItem('statusMenu', 'FrontHome')
-                      AsyncStorage.setItem('userData', JSON.stringify(data))
-                      navigation.replace('FrontHome')
+                      if(responseJson.data.jabatan === 'Kepala Cabang Mekaar' || responseJson.data.jabatan === 'Pj Kepala Cabang Mekaar') {
+                        AsyncStorage.setItem('roleUser', 'KC') 
+                        setLoading(false)
+                        AsyncStorage.setItem('userData', JSON.stringify(data))
+                        navigation.replace('FrontHome')
+                      }else if(responseJson.data.jabatan === 'Senior Account Officer'){
+                        AsyncStorage.setItem('roleUser', 'SAO') 
+                        setLoading(false)
+                        AsyncStorage.setItem('userData', JSON.stringify(data))
+                        navigation.replace('FrontHome')
+                      }else if(responseJson.data.jabatan === 'Account Officer'){
+                        AsyncStorage.setItem('roleUser', 'AO') 
+                        setLoading(false)
+                        AsyncStorage.setItem('userData', JSON.stringify(data))
+                        navigation.replace('FrontHome')
+                      }else{
+                        flashNotification("Alert", 'Gagal Login : Jabatan anda tidak memiliki akses', "#ff6347", "#fff")
+                        setLoading(false) 
+                      }
             
-                  }else if(responseJson.Status == "Login Telah Dipakai") {
-                      flashNotification("Alert", 'Gagal Login : '+responseJson.Status, "#ff6347", "#fff")
-                      setLoading(false)
-                  }else{
-                      flashNotification("Alert", 'Gagal Login : '+responseJson.Status, "#ff6347", "#fff")
+                  }else if(responseJson.responseStatus === false) {
+                      flashNotification("Alert", 'Gagal Login : '+responseJson.message, "#ff6347", "#fff")
                       setLoading(false)
                   }
               })
