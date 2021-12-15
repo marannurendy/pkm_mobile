@@ -488,33 +488,45 @@ const Inisasi = () => {
                                     </View>
                                 </TouchableOpacity>
 
-                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('InisiasiFormPPH', { source: '1' })}
+                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
+                                >
                                     <FontAwesome5 name={'calendar'} size={50} color={'#FFF'} />
                                     <View style={{flex: 1}}>
                                         <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 1</Text>
                                     </View>
-                                </View>
-
-                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                </TouchableOpacity>
+                                
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('InisiasiFormPPH', { source: '2' })}
+                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
+                                >
                                     <FontAwesome5 name={'calendar-alt'} size={50} color={'#FFF'} />
                                     <View style={{flex: 1}}>
                                         <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 2</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
 
-                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('InisiasiFormPPH', { source: '3' })}
+                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
+                                >
                                     <FontAwesome5 name={'calendar-check'} size={50} color={'#FFF'} />
                                     <View style={{flex: 1}}>
                                         <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 3</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
 
-                                <View style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('InisiasiFormPP')}
+                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
+                                >
                                     <FontAwesome5 name={'money-check'} size={50} color={'#FFF'} />
                                     <View style={{flex: 1}}>
                                         <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>Persetujuan Pembiayaan</Text>
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                             </ScrollView>
                         </View>
                     </View>

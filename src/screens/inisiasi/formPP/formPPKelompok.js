@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator, ScrollView, Modal } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, Dimensions, TextInput, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-
-import db from '../../../database/Database';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 
@@ -231,7 +228,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
     )
 
     const renderHeader = () => (
-        <>
+        <ImageBackground source={require("../../../../assets/Image/Banner.png")} style={styles.containerImageBackground} imageStyle={{ borderRadius: 20 }}>
             <View style={styles.headerContainer}>
                 <TouchableOpacity 
                     onPress={() => navigation.goBack()} 
@@ -241,26 +238,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
                     <Text style={styles.headerTitle}>BACK</Text>
                 </TouchableOpacity>
             </View>
-        </>
-    )
-
-    const renderModal = () => (
-        <Modal            
-            animationType={"fade"}  
-            transparent={true}  
-            visible={visible}  
-            onRequestClose={() =>{ console.log("Modal has been closed.") } }
-            KeyboardSpacer
-        >
-            <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-                <View style={styles.modalContainer}>  
-                    <View style={styles.moda}>
-                        {header()}
-                        {body()}
-                    </View>
-                </View>
-            </KeyboardAvoidingView>
-        </Modal>
+        </ImageBackground>
     )
 
     return (

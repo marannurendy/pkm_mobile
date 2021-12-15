@@ -1281,21 +1281,6 @@ const DataDiri = ({route}) => {
                                 labelStyle={styles.dropdownLabelStyle}
                                 onChangeValue={() => JenisKartuIdentitas(valueJenisKartuIdentitas)}
                             />
-
-                            {/* <DropDownPicker
-                                open={open}
-                                value={value}
-                                items={items}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setItems}
-                                placeholder={"Pilih Jenis Kartu Identitas"}
-                                placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
-                                style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
-                                labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                onChangeValue={() => JenisKartuIdentitas(value)}
-                            /> */}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1327,7 +1312,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaCalonNasabah} onChangeText={(text) => setNamaCalonNasabah(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }} editable={false} />
+                                    <TextInput value={namaCalonNasabah} onChangeText={(text) => setNamaCalonNasabah(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }} />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'id-badge'} size={18} />
@@ -1384,21 +1369,6 @@ const DataDiri = ({route}) => {
                                 labelStyle={styles.dropdownLabelStyle}
                                 onChangeValue={() => MarriageStatus(valueStatusPerkawinan)}
                             />
-
-                            {/* <DropDownPicker
-                                open={open}
-                                value={statusPerkawinan}
-                                items={itemsMarrige}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setItems}
-                                placeholder={"Pilih Status"}
-                                placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
-                                style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
-                                labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                onChangeValue={() => MarriageStatus(value)}
-                            /> */}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1506,7 +1476,6 @@ const DataDiri = ({route}) => {
                                 title="Save Draft"
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                // onPress={() => SubmitDataDiri()}
                                 onPress={() => doSubmitDataIdentitasDiri()}
                             />
                         </View>
@@ -1561,7 +1530,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={fullName} onChangeText={(text) => setFullName(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }} editable={false} />
+                                    <TextInput value={fullName} onChangeText={(text) => setFullName(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }} />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1584,14 +1553,6 @@ const DataDiri = ({route}) => {
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Nasabah (*)</Text>
                             <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 10}}>
-                                {/* <PhoneInput
-                                    style={styles.phoneInput} 
-                                    ref={phoneRef}
-                                    initialCountry={'id'}
-                                    initialValue={noTelfon}
-                                    onChangePhoneNumber={setNoTelfon}
-                                    allowZeroAfterCountryCode={false}
-                                /> */}
                                 <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" style={{ fontSize: 15, color: "#545454" }}/>
                             </View>
                         </View>
@@ -1613,21 +1574,6 @@ const DataDiri = ({route}) => {
                                 zIndex={6000}
                                 onChangeValue={() => __DEV__ && console.log('onChangeValue')}
                             />
-
-                            {/* <DropDownPicker
-                                open={open}
-                                value={jumlahAnak}
-                                items={itemJumlahAnak}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setItems}
-                                placeholder={"Pilih Jumlah"}
-                                placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
-                                style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
-                                labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                onChangeValue={() => console.log('jumlahAnak')}
-                            /> */}
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
@@ -1647,21 +1593,6 @@ const DataDiri = ({route}) => {
                                 zIndex={5000}
                                 onChangeValue={() => __DEV__ && console.log('onChangeValue')}
                             />
-
-                            {/* <DropDownPicker
-                                open={open}
-                                value={value}
-                                items={itemJumlahTanggungan}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setItems}
-                                placeholder={"Pilih Jumlah"}
-                                placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
-                                style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
-                                labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                onChangeValue={() => console.log('jumlahTanggungan')}
-                            /> */}
                         </View>
 
                         <View style={{marginHorizontal: 20}}>
@@ -1681,21 +1612,6 @@ const DataDiri = ({route}) => {
                                 zIndex={4000}
                                 onChangeValue={() => __DEV__ && console.log('onChangeValue')}
                             />
-
-                            {/* <DropDownPicker
-                                open={open}
-                                value={value}
-                                items={items}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setItems}
-                                placeholder={"Pilih Status"}
-                                placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
-                                style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
-                                labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                onChangeValue={() => sumberDataHandler(value)}
-                            /> */}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1811,21 +1727,6 @@ const DataDiri = ({route}) => {
                                 labelStyle={styles.dropdownLabelStyle}
                                 onChangeValue={() => __DEV__ && console.log('onChangeValue')}
                             />
-
-                            {/* <DropDownPicker
-                                open={open}
-                                value={value}
-                                items={items}
-                                setOpen={setOpen}
-                                setValue={setValue}
-                                setItems={setItems}
-                                placeholder={"Pilih Status"}
-                                placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
-                                style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
-                                labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-                                onChangeValue={() => sumberDataHandler(value)}
-                            /> */}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1895,7 +1796,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{alignItems: 'center', marginVertical: 20}}>
                             <Button
-                                title="SIMPAN"
+                                title="SUBMIT"
                                 onPress={() => doSubmitSave()}
                                 buttonStyle={{backgroundColor: statusAgreement ? '#EB3C27' : 'gray', width: dimension.width/2}}
                                 titleStyle={{fontSize: 20, fontWeight: 'bold'}}
@@ -1917,8 +1818,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        // height: dimension.height,
-        // width: dimension.width,
         margin: 20,
     },
     capture: {
@@ -1953,8 +1852,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
         margin: 20
-        // height: Dimensions.get('window').height,
-        // width: Dimensions.get('window').width
     },
     thumbnailPhoto: {
         flex: 1,
@@ -1962,8 +1859,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         margin: 5,
         borderRadius: 10
-        // height: Dimensions.get('window').height,
-        // width: Dimensions.get('window').width
     },
     loading: {
         position: 'absolute',
@@ -2003,10 +1898,3 @@ const styles = StyleSheet.create({
         color: '#545851'
     }
 })
-
-
-
-// placeholderStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}
-// dropDownContainerStyle={{marginLeft: 10, marginTop: 5, borderColor: "#003049", width: dimension.width/1.5, borderWidth: 2}}
-// style={{ marginLeft: 10, borderColor: "black", width: dimension.width/1.5, borderRadius: 10, borderWidth: 1 }}
-// labelStyle={{fontWeight: 'bold', fontSize: 17, margin: 10, color: '#545851'}}

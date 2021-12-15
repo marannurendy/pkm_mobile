@@ -49,13 +49,17 @@ import {
     InisiasiFormUKSignatureScreen,
     Verifikasi,
     VerifikasiFormReview,
-    VerifikasiFormPreview,
     InisiasiFormPPKelompok,
     InisiasiFormPPKelompokIntro,
     InisiasiFormPPKelompokList,
-    InisiasiFormPPKelompokSub,
     InisiasiFormPPKelompokDetail,
-    InisiasiFormPPKelompokSubForm
+    InisiasiFormPPKelompokSub,
+    InisiasiFormPPKelompokSubForm,
+    InisiasiFormPPKelompokSubMemberVerifikasi,
+    InisiasiFormPPH,
+    InisiasiFormPP,
+    InisiasiFormPPList,
+    InisiasiFormPPForm
 } from '../screens/inisiasi/index'
 
 
@@ -634,13 +638,17 @@ export default function AppNavigator() {
                 <Stack.Screen name="InisiasiFormUKSignatureScreen" component={InisiasiFormUKSignatureScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Verifikasi" component={Verifikasi} options={{ headerShown: false }} />
                 <Stack.Screen name="VerifikasiFormReview" component={VerifikasiFormReview} options={{ headerShown: false }} />
-                <Stack.Screen name="VerifikasiFormPreview" component={VerifikasiFormPreview} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompok" component={InisiasiFormPPKelompok} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompokList" component={InisiasiFormPPKelompokList} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompokIntro" component={InisiasiFormPPKelompokIntro} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompokSub" component={InisiasiFormPPKelompokSub} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompokDetail" component={InisiasiFormPPKelompokDetail} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompokSubForm" component={InisiasiFormPPKelompokSubForm} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPKelompokSubMemberVerifikasi" component={InisiasiFormPPKelompokSubMemberVerifikasi} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPH" component={InisiasiFormPPH} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPP" component={InisiasiFormPP} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPList" component={InisiasiFormPPList} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormPPForm" component={InisiasiFormPPForm} options={{ headerShown: false }} />
 
           </Stack.Navigator>
       </NavigationContainer>

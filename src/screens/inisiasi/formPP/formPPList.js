@@ -4,35 +4,36 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import ActionButton from 'react-native-action-button';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 
-const dimension = Dimensions.get('screen');
-
-const InisiasiFormPPKelompokList = ({ route }) => {
+const InisiasiFormPPList = ({ route }) => {
+    const { groupName } = route.params;
     const navigation = useNavigation();
-    const [currentDate, setCurrentDate] = useState();
     const [data, setData] = useState([
         {
-            groupName: 'Mawar Merah',
-            jumlahNasabah: '2'
+            name: 'Vina Rosmawaty (Syariah)'
         },
         {
-            groupName: 'Bayam Hijau',
-            jumlahNasabah: '4'
+            name: 'Vivie Anggraini'
         },
         {
-            groupName: 'Mekaar I',
-            jumlahNasabah: '6'
+            name: 'Wanti Riana'
         },
         {
-            groupName: 'Mekaar IV',
-            jumlahNasabah: '5'
+            name: 'Sriyati Rahayu'
         },
         {
-            groupName: 'Gang Kelinci',
-            jumlahNasabah: '6'
+            name: 'Sri Rezeki'
+        },
+        {
+            name: 'Lusianawati'
+        },
+        {
+            name: 'Miranti Ekadini'
+        },
+        {
+            name: 'Baiq Rachmawaty'
         }
     ]);
     const [keyword, setKeyword] = useState('');
@@ -57,6 +58,7 @@ const InisiasiFormPPKelompokList = ({ route }) => {
                     <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     <Text style={styles.headerTitle}>BACK</Text>
                 </TouchableOpacity>
+                <Text style={{ color: colors.PUTIH }}>{groupName}</Text>
             </View>
         </ImageBackground>
     )
@@ -68,22 +70,18 @@ const InisiasiFormPPKelompokList = ({ route }) => {
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={stylesheet.containerItem} 
-            onPress={() => navigation.navigate('InisiasiFormPPKelompokDetail', { ...data })}
+            onPress={() => navigation.navigate('InisiasiFormPPForm', { ...data, groupName })}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} />
+                <ListMessage name={data.name} />
             </View>
         </TouchableOpacity>
     )
 
-    const ListMessage = ({ groupName, jumlahNasabah }) => {
+    const ListMessage = ({ name }) => {
         return (
             <View style={stylesheet.containerList}>
-                <FontAwesome5 name="users" size={32} color="#2e2e2e" />
-                <View style={styles.ML16}>
-                    <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
-                    <Text>{jumlahNasabah} Orang</Text>
-                </View>
+                <Text numberOfLines={1} style={stylesheet.textList}>{name}</Text>
             </View>
         )
     }
@@ -94,22 +92,14 @@ const InisiasiFormPPKelompokList = ({ route }) => {
         </View>
     )
 
-    const renderActionButton = () => (
-        <ActionButton buttonColor="#003049">
-            <ActionButton.Item buttonColor='#D62828' title="Kelompok Baru" onPress={() => navigation.navigate('InisiasiFormPPKelompok')}>
-                <FontAwesome5 name="user-plus" style={styles.actionButtonIcon} />
-            </ActionButton.Item>
-        </ActionButton>
-    )
-
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <View style={stylesheet.containerProspek}>
-                <Text style={stylesheet.textProspek}>Kelompok</Text>
+                <Text style={stylesheet.textProspek}>Persetujuan Pembiayaan</Text>
                 <View style={stylesheet.containerSearch}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={styles.MH8} />
                     <TextInput 
-                        placeholder={"Cari Kelompok"}
+                        placeholder={"Cari"}
                         style={
                             {
                                 padding: 5,
@@ -148,7 +138,6 @@ const InisiasiFormPPKelompokList = ({ route }) => {
         <View style={styles.mainContainer}>
             {renderHeader()}
             {renderBody()}
-            {renderActionButton()}
         </View>
     )
 }
@@ -201,4 +190,4 @@ const stylesheet = StyleSheet.create({
     }
 });
 
-export default InisiasiFormPPKelompokList;
+export default InisiasiFormPPList;

@@ -201,9 +201,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF'
     },
     textProspek: {
-        fontSize: 30, 
+        fontSize: 18, 
         fontWeight: 'bold', 
-        margin: 20
+        margin: 16
     },
     containerSearch: {
         borderWidth: 1, 
