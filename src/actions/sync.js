@@ -90,7 +90,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 );
                 return;
             } else {
-                truncat(reject, 'GROUP');
+                // truncat(reject, 'GROUP');
+                resolve('BERHASIL');
                 return;
             } 
         } catch(error) {
@@ -155,7 +156,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 );
                 return;
             } else {
-                truncat(reject, 'COLLECTION');
+                // truncat(reject, 'COLLECTION');
+                resolve('BERHASIL');
                 return;
             } 
         } catch(error) {
@@ -833,6 +835,38 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const MasterData = await fetch(getMasterData);
         const jsonMasterData = await MasterData.json(MasterData);
         if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
+
+        // let dataLogin = [{
+        //     userName: params.username
+        // }]
+        // const syncBy = await AsyncStorage.getItem('SyncBy')
+        // const loginData = JSON.parse(syncBy)
+        // dataLogin.push(loginData)
+        // AsyncStorage.setItem('SyncBy', dataLogin);
+        // AsyncStorage.removeItem('SyncBy')
+
+        const syncBy = await AsyncStorage.getItem('SyncBy')
+        let loginData = JSON.parse(syncBy)
+        if (loginData === null) {
+            if (__DEV__) console.log('loginData baru:', loginData);
+
+            let newData = [];
+            newData.push({userName: params.username});
+            AsyncStorage.setItem('SyncBy', JSON.stringify(newData));
+        } else {
+            if (__DEV__) console.log('loginData tambah:', loginData);
+
+            let lengthData = loginData.filter((x) => x.userName === params.username).length || 0
+
+            if(lengthData === 0) {
+                loginData.push({userName: params.username});
+                AsyncStorage.setItem('SyncBy', JSON.stringify(loginData))
+            }
+            
+        }
+
+        // AsyncStorage.removeItem('userData')
+        // navigation.replace('Login')
 
         AsyncStorage.setItem('SyncDate', jsonGetDate.currentDate);
         AsyncStorage.setItem('TransactionDate', jsonGetDate.currentDate);

@@ -47,13 +47,36 @@ export default function FrontHomeSync(props) {
         syncData();
     }, []);
 
-    function syncData() {
+    async function syncData() {
         moment.locale('id');
         var now = moment().format('YYYY-MM-DD');
 
+        const syncStatus = await AsyncStorage.getItem('userData')
+        let DetailData = JSON.parse(syncStatus)
+        let userName = DetailData.userName
+
+        const syncBy = await AsyncStorage.getItem('SyncBy')
+        let dataRole = await JSON.parse(syncBy)
+        let lengthData = dataRole.filter((x) => x.userName === userName).length || 0
+
         AsyncStorage.getItem('SyncDate', (error, syncDate) => {
-            if (syncDate === now) props.onSuccess();
+            if (syncDate !== now || lengthData === 0) {
+
+            } else {
+                props.onSuccess()
+            }
+
+            // console.log("keluar")
+
+            // setIsRkh(true);
         });
+
+        // AsyncStorage.getItem('SyncDate', (error, syncDate) => {
+        //     if(){
+                
+        //     }
+        //     if (syncDate === now) props.onSuccess();
+        // });
     }
 
     const fetchData = (keyword = '') => {

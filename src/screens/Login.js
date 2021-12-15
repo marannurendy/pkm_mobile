@@ -105,18 +105,25 @@ export default function Login() {
                           AOname: responseJson.data.nama,
                       }
 
+                      // let dataLogin = {
+                      //     userName: responseJson.data.userName
+                      // }
+
                       if(responseJson.data.jabatan === 'Kepala Cabang Mekaar' || responseJson.data.jabatan === 'Pj Kepala Cabang Mekaar') {
                         AsyncStorage.setItem('roleUser', 'KC') 
+                        // AsyncStorage.setItem('SyncBy', JSON.stringify(dataLogin)) 
                         setLoading(false)
                         AsyncStorage.setItem('userData', JSON.stringify(data))
                         navigation.replace('FrontHome')
                       }else if(responseJson.data.jabatan === 'Senior Account Officer'){
-                        AsyncStorage.setItem('roleUser', 'SAO') 
+                        AsyncStorage.setItem('roleUser', 'SAO')
+                        // AsyncStorage.setItem('SyncBy', JSON.stringify(dataLogin)) 
                         setLoading(false)
                         AsyncStorage.setItem('userData', JSON.stringify(data))
                         navigation.replace('FrontHome')
                       }else if(responseJson.data.jabatan === 'Account Officer'){
-                        AsyncStorage.setItem('roleUser', 'AO') 
+                        AsyncStorage.setItem('roleUser', 'AO')
+                        // AsyncStorage.setItem('SyncBy', JSON.stringify(dataLogin)) 
                         setLoading(false)
                         AsyncStorage.setItem('userData', JSON.stringify(data))
                         navigation.replace('FrontHome')

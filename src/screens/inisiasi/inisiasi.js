@@ -325,12 +325,12 @@ const Inisasi = () => {
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                        <TouchableOpacity onPress={() => verifPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity disabled={roleCheck === 3 ? true : false} onPress={() => verifPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: roleCheck === 3 ? '#E6E6E6' : '#F77F00', padding: 20}}>
                             <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Verifikasi</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => ppPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#17BEBB', padding: 20}}>
+                        <TouchableOpacity disabled={roleCheck === 3 ? true : false} onPress={() => ppPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: roleCheck === 3 ? '#E6E6E6' : '#17BEBB', padding: 20}}>
                             <FontAwesome5 name="get-pocket" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Persiapan Pembiayaan</Text>
                         </TouchableOpacity>
