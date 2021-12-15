@@ -281,6 +281,7 @@ db.transaction(tx => {
             foto_kk varchar,
             no_kk varchar,
             nama_ayah varchar,
+            nama_gadis_ibu varchar,
             no_tlp_nasabah varchar,
             jumlah_anak varchar,
             jumlah_tanggungan varchar,
@@ -297,7 +298,12 @@ db.transaction(tx => {
             longitude varchar,
             latitude varchar,
             agama varchar,
-            status_Verif varchar
+            status_Verif varchar,
+            status_UK_Pass varchar,
+            status_Verifikasi_Pass varchar,
+            sync_Verif varchar,
+            id_prospek varchar,
+            is_pernyataan_dibaca varchar
         );`
     )
 
@@ -383,6 +389,37 @@ db.transaction(tx => {
             nama_tanda_Tangan_SuamiPenjamin varchar,
             nama_tanda_Tangan_Ketua_SubKelompok varchar,
             nama_tanda_Tangan_Ketua_Kelompok varchar
+        )`
+    )
+
+    tx.executeSql(
+        `create table if not exists Table_PP_Kelompok(
+            kelompok_Id varchar,
+            kelompok varchar,
+            group_Produk varchar,
+            tanggal_Pertama varchar,
+            hari_Pertemuan varchar,
+            waktu_Pertemuan varchar,
+            lokasi_Pertemuan varchar
+        );`
+    )
+
+    tx.executeSql(
+        `create table if not exists Table_PP_SubKelompok(
+            kelompok_Id varchar,
+            subKelompok_Id varchar,
+            subKelompok varchar
+        );`
+    )
+
+    tx.executeSql(
+        `create table if not exists Table_PP_ListNasabah(
+            kelompok_Id varchar,
+            subKelompok_Id varchar,
+            Nasabah_Id varchar,
+            Nama_Nasabah varchar,
+            is_Ketua_Kelompok varchar,
+            is_KetuaSubKelompok varchar
         )`
     )
 

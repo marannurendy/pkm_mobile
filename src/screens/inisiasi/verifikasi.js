@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator } from 'react-native'
+import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-
+import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync';
 import db from '../../database/Database'
 import { style } from 'styled-system'
 
@@ -15,35 +15,97 @@ const Verifikasi = ({ route }) => {
     const navigation = useNavigation();
     const dimension = Dimensions.get('screen');
     const [currentDate, setCurrentDate] = useState();
-    const [data, setData] = useState([
-        {
-            namaNasabah: 'Raffi Ahmad',
-            nomorHandphone: '085774553921',
-            status: '2',
-            groupName: 'Kuningan'
-        },
-        {
-            namaNasabah: 'Baim Wong',
-            nomorHandphone: '08998525878',
-            status: '2',
-            groupName: 'Kuningan'
-        },
-        {
-            namaNasabah: 'Rizky Billar',
-            nomorHandphone: '085715374827',
-            status: '2',
-            groupName: 'Kuningan'
-        }
-    ]);
+    const [data, setData] = useState([]);
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
-        GetInfo();
-    }, []);
+        const unsubscribe = navigation.addListener('focus', () => {
+            GetInfo();
+            getDataDiri();
+        });
+        return unsubscribe;
+    }, [navigation]);
+
+    const getDataDiri = () => {
+        if (__DEV__) console.log('getDataDiri loaded');
+        if (__DEV__) console.log('getDataDiri keyword:', keyword);
+
+        let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND kelurahan = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%" AND (sync_Verif != "2" OR sync_Verif IS NULL)';
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    if (__DEV__) console.log('getDataDiri results:', results.rows);
+                    let dataLength = results.rows.length;
+
+                    var ah = [];
+                    for(let a = 0; a < dataLength; a++) {
+                        let data = results.rows.item(a);
+                        ah.push({ "namaNasabah": data.nama_lengkap, "nomorHandphone": data.no_tlp_nasabah, "status": data.status_Verif, "groupName": data.kelurahan, "idProspek": data.id_prospek, "syncVerif": data.sync_Verif });
+                    }
+                    setData(ah)
+                })
+            }
+        );
+    }
 
     const GetInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate');
         setCurrentDate(tanggal)
+    }
+
+    const doSync = () => {
+        if (data.length > 0) {
+            const nestedPromise = async (items = []) => {
+                return await Promise.all(
+                    items.map(async item => {
+                        const body = await AsyncStorage.getItem(`formVerifikasi_body_${item.idProspek}`);
+                        if (body) {
+                            await fetch(ApiSyncPostInisiasi + 'post_verif_status', {
+                                method: 'POST',
+                                headers: {
+                                    Accept:
+                                        'application/json',
+                                        'Content-Type': 'application/json'
+                                    },
+                                body: body
+                            })
+                            .then((response) => response.json())
+                            .then((responseJSON) => {
+                                if (__DEV__) console.error('$post /post_inisiasi/post_verif_status response', responseJSON);
+
+                                let query = 'UPDATE Table_UK_DataDiri SET sync_Verif = "2", status_Verifikasi_Pass = "1" WHERE id_prospek = "' + item.idProspek + '"';
+                                if (__DEV__) console.log('doSave db.transaction update query:', query);
+
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql(query);
+                                    }, function(error) {
+                                        if (__DEV__) console.log('doSave db.transaction insert/update error:', error.message);
+                                    },function() {
+                                        if (__DEV__) console.log('doSave db.transaction update success');
+                                        AsyncStorage.removeItem(`formVerifikasi_body_${item.idProspek}`);
+                                    }
+                                );
+                            })
+                            .catch((error) => {
+                                console.error('$post /post_inisiasi/post_verif_status response', error);
+                                ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
+                            });
+                            return true;
+                        }
+                    })
+                )
+            }
+
+            nestedPromise(data).then(results => {
+                ToastAndroid.show(`Sync selesai`, ToastAndroid.SHORT);
+                setTimeout(() => {
+                    getDataDiri();
+                }, 600);
+            })
+        } else {
+            ToastAndroid.show(`Sync kosong`, ToastAndroid.SHORT);
+        }
     }
 
     const renderItem = ({ item }) => (
@@ -53,24 +115,30 @@ const Verifikasi = ({ route }) => {
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={styles.containerItem} 
-            onPress={() => navigation.navigate('VerifikasiFormReview', {
-                groupName: data.groupName,
-                namaNasabah: data.namaNasabah,
-                nomorHandphone: data.nomorHandphone
-            })}
+            onPress={() => {
+                if (data.syncVerif === '1') return ToastAndroid.show('Menunggu sync', ToastAndroid.SHORT);
+
+                navigation.navigate('VerifikasiFormReview', {
+                    groupName: data.groupName,
+                    namaNasabah: data.namaNasabah,
+                    nomorHandphone: data.nomorHandphone,
+                    idProspek: data.idProspek
+                })
+            }}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessage namaNasabah={data.namaNasabah} status={data.status} />
+                <ListMessage namaNasabah={data.namaNasabah} status={data.status} syncVerif={data.syncVerif} />
             </View>
         </TouchableOpacity>
     )
 
-    const ListMessage = ({ namaNasabah, status }) => {
+    const ListMessage = ({ namaNasabah, status, syncVerif }) => {
         return(
-            <View style={styles.containerList}>
-                <View>
-                    <Text numberOfLines={1} style={styles.textList}>{namaNasabah}</Text>
+            <View style={[styles.containerList, { alignItems: 'center' }]}>
+                <View style={{ flex: 1 }}>
+                    <Text numberOfLines={2} style={[styles.textList]}>{namaNasabah}</Text>
                 </View>
+                {syncVerif === '1' && <FontAwesome5 name="sync" size={15} color="#2e2e2e" style={{ marginLeft: 8 }} />}
             </View>
         )
     }
@@ -107,7 +175,19 @@ const Verifikasi = ({ route }) => {
                 </ImageBackground>
             </View>
             <View style={styles.containerProspek}>
-                <Text style={styles.textProspek}>Daftar Prospek</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={[styles.textProspek, { flex: 1 }]}>Daftar Prospek</Text>
+                    <TouchableOpacity
+                        onPress={() => doSync()}
+                        style={{ marginRight: 16 }}
+                    >
+                        <View
+                            style={{ backgroundColor: '#3CB371', padding: 8, borderRadius: 8 }}
+                        >
+                            <Text style={{ color: 'white' }}>(Sync)</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
                 <View style={styles.containerSearch}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
                     <TextInput 
@@ -122,7 +202,7 @@ const Verifikasi = ({ route }) => {
                         onChangeText={(text) => setKeyword(text)}
                         value={keyword}
                         returnKeyType="done"
-                        onSubmitEditing={() => getSosialisasiDatabase()}
+                        onSubmitEditing={() => getDataDiri()}
                     />
                 </View>
                 <SafeAreaView style={{flex: 1}}>
@@ -229,8 +309,7 @@ const styles = StyleSheet.create({
     containerList: {
         width: "85%",
         margin: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between'
+        flexDirection: 'row'
     },
     textList: {
         fontWeight: 'bold',
