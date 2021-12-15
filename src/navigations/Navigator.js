@@ -62,6 +62,11 @@ import {
     InisiasiFormPPForm
 } from '../screens/inisiasi/index'
 
+import { 
+    KelompokPencairan, 
+    FlowPencairan 
+} from '../screens/pencairan/index'
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -649,6 +654,10 @@ export default function AppNavigator() {
                 <Stack.Screen name="InisiasiFormPP" component={InisiasiFormPP} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPList" component={InisiasiFormPPList} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPForm" component={InisiasiFormPPForm} options={{ headerShown: false }} />
+
+                {/* Pencairan */}
+                <Stack.Screen name="Pencairan" component={KelompokPencairan} options={{ headerShown: false }} />
+                <Stack.Screen name="FlowPencairan" component={FlowPencairan} options={{ headerShown: false }} />
 
           </Stack.Navigator>
       </NavigationContainer>
