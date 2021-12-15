@@ -49,7 +49,6 @@ import {
     InisiasiFormUKSignatureScreen,
     Verifikasi,
     VerifikasiFormReview,
-    VerifikasiFormPreview,
     InisiasiFormPPKelompok,
     InisiasiFormPPKelompokIntro,
     InisiasiFormPPKelompokList,
@@ -639,7 +638,6 @@ export default function AppNavigator() {
                 <Stack.Screen name="InisiasiFormUKSignatureScreen" component={InisiasiFormUKSignatureScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Verifikasi" component={Verifikasi} options={{ headerShown: false }} />
                 <Stack.Screen name="VerifikasiFormReview" component={VerifikasiFormReview} options={{ headerShown: false }} />
-                <Stack.Screen name="VerifikasiFormPreview" component={VerifikasiFormPreview} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompok" component={InisiasiFormPPKelompok} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompokList" component={InisiasiFormPPKelompokList} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPKelompokIntro" component={InisiasiFormPPKelompokIntro} options={{ headerShown: false }} />
