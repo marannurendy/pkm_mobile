@@ -165,12 +165,11 @@ const DataDiri = ({route}) => {
     const [valueReligion, setValueReligion] = useState(null);
     const [itemsReligion, setItemsReligion] = useState([]);
     const [namaGadisIbu, setNamaGadisIbu] = useState('');
-
-    const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_kartuKeluarga = `formUK_kartuKeluarga_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_keteranganDomisili = `formUK_keteranganDomisili_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_kartuIdentitas = `formUK_kartuIdentitas_${namaNasabah.replace(/\s+/g, '')}`;
+    const [key_dataPenjamin, setKey_dataPenjamin] = useState(`formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_dataSuami, setKey_dataSuami] = useState(`formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_kartuKeluarga, setKey_kartuKeluarga] = useState(`formUK_kartuKeluarga_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_keteranganDomisili, setKey_keteranganDomisili] = useState(`formUK_keteranganDomisili_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_kartuIdentitas, setKey_kartuIdentitas] = useState(`formUK_kartuIdentitas_${namaNasabah.replace(/\s+/g, '')}`);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -188,11 +187,23 @@ const DataDiri = ({route}) => {
                                 let data = results.rows.item(0);
                                 if (__DEV__) console.log('tx.executeSql data:', data);
 
-                                const fotoDataPenjamin = await AsyncStorage.getItem(key_dataPenjamin);
-                                const fotoDataSuami = await AsyncStorage.getItem(key_dataSuami);
-                                const fotoKartuKeluarga = await AsyncStorage.getItem(key_kartuKeluarga);
-                                const fotoKeteranganDomisili = await AsyncStorage.getItem(key_keteranganDomisili);
-                                const fotoKartuIdentitas = await AsyncStorage.getItem(key_kartuIdentitas);
+                                setKey_dataPenjamin(data.foto_ktp_penjamin);
+                                setKey_dataSuami(data.foto_ktp_suami);
+                                setKey_kartuKeluarga(data.foto_kk);
+                                setKey_keteranganDomisili(data.foto_Surat_Keterangan_Domisili);
+                                setKey_kartuIdentitas(data.foto_Kartu_Identitas);
+
+                                const fotoDataPenjamin = await AsyncStorage.getItem(data.foto_ktp_penjamin);
+                                const fotoDataSuami = await AsyncStorage.getItem(data.foto_ktp_suami);
+                                const fotoKartuKeluarga = await AsyncStorage.getItem(data.foto_kk);
+                                const fotoKeteranganDomisili = await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili);
+                                const fotoKartuIdentitas = await AsyncStorage.getItem(data.foto_Kartu_Identitas);
+
+                                if (__DEV__) console.log('fotoDataPenjamin :', data.foto_ktp_penjamin, fotoDataPenjamin);
+                                if (__DEV__) console.log('fotoDataSuami :', data.foto_ktp_suami, fotoDataSuami);
+                                if (__DEV__) console.log('fotoKartuKeluarga :', data.foto_kk, fotoKartuKeluarga);
+                                if (__DEV__) console.log('fotoKeteranganDomisili :', data.foto_Surat_Keterangan_Domisili, fotoKeteranganDomisili);
+                                if (__DEV__) console.log('fotoKartuIdentitas :', data.foto_Kartu_Identitas, fotoKartuIdentitas);
 
                                 if (data.foto_Kartu_Identitas !== null && typeof data.foto_Kartu_Identitas !== 'undefined') setFotoKartuIdentitas(fotoKartuIdentitas);
                                 if (data.jenis_Kartu_Identitas !== null && typeof data.jenis_Kartu_Identitas !== 'undefined') setValueJenisKartuIdentitas(data.jenis_Kartu_Identitas);

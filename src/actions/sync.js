@@ -442,6 +442,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     const key_tandaTanganKetuaSubKemlompok = `formUK_tandaTanganKetuaSubKemlompok_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
                     const key_tandaTanganKetuaKelompok = `formUK_tandaTanganKetuaKelompok_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
 
+                    AsyncStorage.setItem(key_dataPenjamin, 'data:image/jpeg;base64,' + uk_client_data[i].Foto_KTP_Penjamin);
                     AsyncStorage.setItem(key_kartuIdentitas, 'data:image/jpeg;base64,' + uk_client_data[i].Foto_Kartu_Identitas);
                     AsyncStorage.setItem(key_dataSuami, 'data:image/jpeg;base64,' + uk_client_data[i].Foto_KTP_Suami);
                     AsyncStorage.setItem(key_kartuKeluarga, 'data:image/jpeg;base64,' + uk_client_data[i].Foto_KK);
@@ -453,7 +454,19 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KSK);
                     AsyncStorage.setItem(key_tandaTanganKetuaKelompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KK);
 
-                    /* ============== START: HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
+                    if (__DEV__) console.log('fotoDataPenjamin :', key_dataPenjamin, uk_client_data[i].Foto_KTP_Penjamin);
+                    if (__DEV__) console.log('fotoDataSuami :', key_dataSuami, uk_client_data[i].Foto_KTP_Suami);
+                    if (__DEV__) console.log('fotoKartuKeluarga :', key_kartuKeluarga, uk_client_data[i].Foto_KK);
+                    if (__DEV__) console.log('fotoKeteranganDomisili :', key_keteranganDomisili, uk_client_data[i].Foto_Suket_Domisili);
+                    if (__DEV__) console.log('fotoKartuIdentitas :', key_kartuIdentitas, uk_client_data[i].Foto_Kartu_Identitas);
+
+                    if (__DEV__) console.log('tandaTanganAOSAO :', key_tandaTanganAOSAO, uk_client_data[i].TTD_AO);
+                    if (__DEV__) console.log('tandaTanganNasabah :', key_tandaTanganNasabah, uk_client_data[i].TTD_Nasabah);
+                    if (__DEV__) console.log('tandaTanganSuamiPenjamin :', key_tandaTanganSuamiPenjamin, uk_client_data[i].TTD_Penjamin);
+                    if (__DEV__) console.log('tandaTanganKetuaSubKemlompok :', key_tandaTanganKetuaSubKemlompok, uk_client_data[i].TTD_KSK);
+                    if (__DEV__) console.log('tandaTanganKetuaKelompok :', key_tandaTanganKetuaKelompok, uk_client_data[i].TTD_KK);
+
+                    /* ============== START HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
                     const queryDelete = "DELETE FROM Sosialisasi_Database WHERE namaCalonNasabah = '" + uk_client_data[i].Nama_Lengkap + "'";
                     const queryDeleteUKMaster = "DELETE FROM Table_UK_Master WHERE namaNasabah = '" + uk_client_data[i].Nama_Lengkap + "'";
                     const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
@@ -534,7 +547,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
                         }, function() {}
                     );
-                    /* ============== FINISH: HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
+                    /* ============== FINISH HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
                     
                     if (["3", 3].includes(uk_client_data[i].PostStatus)) {
                         query = query + "('"
@@ -565,7 +578,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     }
 
                     queryUKDataDiri = queryUKDataDiri + "('"
-                    + key_dataPenjamin
+                    + key_kartuIdentitas
                     + "','"
                     + uk_client_data[i].Jenis_Identitas
                     + "','"

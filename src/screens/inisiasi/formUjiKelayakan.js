@@ -239,7 +239,7 @@ const FormUjiKelayakan = ({route}) => {
                             "IsPernyataanDibaca": data.is_pernyataan_dibaca,
                             "ID_Prospek": idProspek
                         }
-                        // if (__DEV__) console.log('doSubmit body:', body);
+                        if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
 
                         fetch(ApiSyncPostInisiasi + 'post_prospek_uk', {
                             method: 'POST',
@@ -363,6 +363,20 @@ const FormUjiKelayakan = ({route}) => {
                                                             if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
                                                         }, function() {}
                                                     );
+                                                    
+                                                    /* ============ START REMOVE STORAGE ============ */
+                                                    AsyncStorage.removeItem(data.foto_ktp_penjamin);
+                                                    AsyncStorage.removeItem(data.foto_ktp_suami);
+                                                    AsyncStorage.removeItem(data.foto_kk);
+                                                    AsyncStorage.removeItem(data.foto_Surat_Keterangan_Domisili);
+                                                    AsyncStorage.removeItem(data.foto_Kartu_Identitas);
+
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_AOSAO);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Nasabah);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Ketua_SubKelompok);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Ketua_Kelompok);
+                                                    /* ============ FINISH REMOVE STORAGE ============ */
 
                                                     const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
                                                     Alert.alert(responseJSON.responseDescription, message);
