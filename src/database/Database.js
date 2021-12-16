@@ -234,7 +234,10 @@ db.transaction(tx => {
             status varchar, 
             tanggalSosialisas varchar, 
             lokasiSosialisasi varchar,
-            type varchar);`
+            type varchar,
+            verifikasiTanggal varchar,
+            verifikasiStatus varchar,
+            verifikasiReason varchar);`
     )
 
     tx.executeSql(
