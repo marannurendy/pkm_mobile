@@ -7,6 +7,10 @@ import FinalPencairan from "./FinalPencairan"
 import Siklus from "./Siklus"
 import Perjanjian from "./Perjanjian"
 import TandaTanganPencairan from "./TandaTangan"
+import SyncPencairan from "./SyncPencairan"
+import Preview from "./Preview"
+import FormFP4 from "./FormFP4"
+import UploadBuktiPem from "./UploadBuktiPem"
 
 export { 
     KelompokPencairan,
@@ -17,5 +21,9 @@ export {
     FinalPencairan,
     Siklus,
     Perjanjian,
-    TandaTanganPencairan
+    TandaTanganPencairan,
+    SyncPencairan,
+    Preview,
+    FormFP4,
+    UploadBuktiPem
 };

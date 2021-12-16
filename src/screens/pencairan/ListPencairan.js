@@ -106,7 +106,7 @@ const ListPencairan = ({route}) => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('Perjanjian', {data: data})}
+            onPress={() => data.kelName.includes("(SY)") ? navigation.navigate('AkadWakalah', {data: data}) : navigation.navigate('Perjanjian', {data: data})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos kelName={data.kelName} Nomor={data.Nomor} />

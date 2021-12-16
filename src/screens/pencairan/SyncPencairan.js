@@ -1,21 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import ActionButton from 'react-native-action-button'
 import { scale, verticalScale } from 'react-native-size-matters'
-import { Card, Divider } from 'react-native-elements';
-import SignatureScreen from "react-native-signature-canvas";
-import { Button } from 'react-native-elements';
-import bismillah from '../../images/bismillah.png';
 
 import db from '../../database/Database'
 
-const window = Dimensions.get('window');
-
-const Siklus = () => {
+const SyncPencairan = () => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -94,17 +88,52 @@ const Siklus = () => {
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
+                        ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
                     }
-                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
+                    setData([{'groupName' :'Toto', 'totalnasabah': '10', 'date': '08-09-2021'}]);
                 })
             }
         )
     }
-    
-    // Simpan Handler
-    const submitHandler = () => {
-        navigation.navigate("FormFP4")
+
+    // LIST VIEW PENCAIRAN
+    const renderItemSos = ({ item }) => (
+        <ItemSos data={item} />  
+    )
+
+    const ItemSos = ({ data }) => (
+        <TouchableOpacity 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            onPress={() => navigation.navigate('FlowPencairan', {groupName: data.groupName})}
+        >
+            <View style={{alignItems: 'flex-start'}}>
+                <ListMessageSos groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
+            </View>
+        </TouchableOpacity>
+    )
+    const ListMessageSos = ({ groupName, date, totalNasabah }) => {
+        return(
+            <View style={{ flex: 1, margin: 20}}>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
+                <Text>{date}</Text>
+                <Text>Total Nasabah : {totalNasabah}</Text>
+            </View>
+        )
+    }
+    // END LIST VIEW PENCAIRAN
+
+    const _listEmptyComponent = () => {
+        return (
+            <View
+                style={
+                    {
+                        padding: 16
+                    }
+                }
+            >
+                <Text>Data kosong</Text>
+            </View>
+        )
     }
 
     return(
@@ -135,78 +164,51 @@ const Siklus = () => {
             </View>
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
+                <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Sync Data</Text>
+                    <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
+                        <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
+                        <TextInput 
+                            placeholder={"Cari Kelompok"} 
+                            style={
+                                {
+                                    flex: 1,
+                                    padding: 5,
+                                    borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20
+                                }
+                            }
+                            onChangeText={(text) => setKeyword(text)}
+                            value={keyword}
+                            returnKeyType="done"
+                            onSubmitEditing={() => getSosialisasiDatabase()}
+                        />
+                    </View>
+                </View>
+
                 <SafeAreaView style={{flex: 1}}>
-                    <ScrollView>
-                        <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
-                            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Form Siklus Pertama</Text>
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold'}}>Produk Pembiayaan</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Plafond</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Term Pembiayaan</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Jumlah UP</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Total Pencairan</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-                            
-                            <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
-                                <Button
-                                    title="SIMPAN"
-                                    onPress={() => submitHandler()}
-                                    buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
-                                    titleStyle={{fontSize: 20, fontWeight: 'bold'}}
-                                />
-                            </View>
-                        </View>
-                    </ScrollView>
+                    <View style={{ justifyContent:  'space-between'}}>
+                        <FlatList
+                            // contentContainerStyle={styles.listStyle}
+                            // refreshing={refreshing}
+                            // onRefresh={() => _onRefresh()}
+                            data={data}
+                            keyExtractor={(item, index) => index.toString()}
+                            enabledGestureInteraction={true}
+                            // onEndReachedThreshold={0.1}
+                            // onEndReached={() => handleEndReach()}
+                            renderItem={renderItemSos}
+                            // style={{height: '88.6%'}}
+                            //ListEmptyComponent={_listEmptyComponent}
+                        /> 
+                    </View>
                 </SafeAreaView>
             </View>
         </View>
     )
 }
 
-export default Siklus
+export default SyncPencairan
 
 const styles = StyleSheet.create({
     button: {
@@ -228,36 +230,4 @@ const styles = StyleSheet.create({
         height: 22,
         color: 'white',
     },
-    signature: {
-        height: window.height/4,
-        flex: 1
-      },
-      buttonStyle: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: 50,
-        margin: 10,
-      },
-      centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        // height: window.height
-      },
-      modalView: {
-        backgroundColor: "#ECE9E4",
-        // borderRadius: 5,
-        // alignItems: "center",
-        // shadowColor: "#000",
-        height: window.height,
-        width: window.width,
-        // shadowOffset: {
-        //   width: 0,
-        //   height: 2
-        // },
-        // shadowOpacity: 0.25,
-        // shadowRadius: 4,
-        // elevation: 5,
-      },
 })

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, ActivityIndicator, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, CheckBox, SafeAreaView, ActivityIndicator, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -15,10 +15,10 @@ import bismillah from '../../images/bismillah.png';
 import db from '../../database/Database'
 
 const window = Dimensions.get('window');
+const dimension = Dimensions.get('screen');
 
 const FinalPencairan = ({route}) => {
 
-    const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
     const camera = useRef(null)
     const [loading, setLoading] = useState(false)
@@ -37,11 +37,11 @@ const FinalPencairan = ({route}) => {
     const [signatureKetuaKel, setSignatureKetuaKel] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
     let [buttonCam, SetButtonCam] = useState(false);
+    const [isSelected, setSelection] = useState(false);
     let [fotoDataPencairan, setFotoDataPencairan] = useState();
     const [hasPermission, setHasPermission] = useState(null);
 
     useEffect(() => {
-        
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -55,7 +55,8 @@ const FinalPencairan = ({route}) => {
         }
         
         getUserData();
-        getSosialisasiDatabase();
+        hasCamera();
+        //getSosialisasiDatabase();
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
 
@@ -91,29 +92,20 @@ const FinalPencairan = ({route}) => {
         //     console.log(result)
         // })
         
+        
     }, []);
+    
 
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
-
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
-        db.transaction(
-            tx => {
-                tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
-                    }
-                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
-                })
-            }
-        )
+    const hasCamera = async () => {
+        const { status } = await Camera.requestPermissionsAsync();
+        setHasPermission(status === 'granted');
+        if (status === null) {
+            return <View />
+        }
+        if (status === false) {
+            return <Text>No access to camera</Text>
+        }
     }
-
 
     const takePicture = async (type) => {
         try {
@@ -380,44 +372,53 @@ const FinalPencairan = ({route}) => {
                                     </View>
                                     <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
                                 </View>
-                            
-                                <Camera 
-                                    ref={camera}
-                                    style={styles.preview}
-                                    type={Camera.Constants.Type.back}
-                                    // flashMode={Camera.Constants.FlashMode.on}
-                                    androidCameraPermissionOptions={{
-                                        title: 'Permission to use camera',
-                                        message: 'We need your permission to use your camera',
-                                        buttonPositive: 'Ok',
-                                        buttonNegative: 'Cancel'
-                                    }}
-                                >
-                                    {loading &&
-                                        <View style={styles.loading}>
-                                            <ActivityIndicator size="large" color="#737A82" />
-                                        </View>
-                                    }
+                                <View style={{flex: 1, marginTop: 20, borderRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF', marginBottom: 20}}>
+                                    <Camera 
+                                        ref={camera}
+                                        style={styles.preview}
+                                        type={Camera.Constants.Type.back}
+                                        androidCameraPermissionOptions={{
+                                            title: 'Permission to use camera',
+                                            message: 'We need your permission to use your camera',
+                                            buttonPositive: 'Ok',
+                                            buttonNegative: 'Cancel'
+                                        }}
+                                    >
+                                        {loading &&
+                                            <View style={styles.loading}>
+                                                <ActivityIndicator size="large" color="#737A82" />
+                                            </View>
+                                        }
 
-                                    <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
-                                        <TouchableOpacity 
-                                            disabled={ buttonCam }
-                                            style={{
-                                                flex: 0,
-                                                backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
-                                                borderRadius: 5,
-                                                padding: 15,
-                                                paddingHorizontal: 20,
-                                                alignSelf: 'center',
-                                                margin: 20,
-                                            }} 
-                                            onPress={() => takePicture("fotopencairan")
-                                        }>
-                                            <Text style={{ fontSize: 14 }}> Ambil Foto Pencairan </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </Camera>
+                                        <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                                            <TouchableOpacity 
+                                                disabled={ buttonCam }
+                                                style={{
+                                                    flex: 0,
+                                                    backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                                                    borderRadius: 5,
+                                                    padding: 15,
+                                                    paddingHorizontal: 20,
+                                                    alignSelf: 'center',
+                                                    margin: 20,
+                                                }} 
+                                                onPress={() => takePicture("fotopencairan")
+                                            }>
+                                                <Text style={{ fontSize: 14 }}> Ambil Foto Pencairan </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </Camera>
+                                </View>
                             </Card>
+                        </View>
+
+                        <View style={{alignItems: 'center', flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                            <CheckBox
+                                value={isSelected}
+                                onValueChange={setSelection}
+                                style={styles.checkbox}
+                            />
+                            <Text style={styles.label}>Sudah Dicairkan</Text>
                         </View>
 
                         <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
@@ -448,6 +449,13 @@ const styles = StyleSheet.create({
         shadowColor: '#003049',
         shadowOpacity: 0.3,
         shadowOffset: { height: 10 },
+    },
+    label: {
+        margin: 8,
+        fontSize:18
+      },
+    checkbox: {
+        alignSelf: "center",
     },
     menu: {
         backgroundColor: '#003049'
