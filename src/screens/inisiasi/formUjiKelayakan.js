@@ -233,7 +233,8 @@ const FormUjiKelayakan = ({route}) => {
                             "TermPembiayaan": data.term_Pembiayaan,
                             "TujuanPembiayaan": data.tujuan_Pembiayaan,
                             "TypePencairan": data.type_Pencairan,
-                            "IsPernyataanDibaca": data.is_pernyataan_dibaca
+                            "IsPernyataanDibaca": data.is_pernyataan_dibaca,
+                            "IdProspek": data.id_prospek
                         }
                         // if (__DEV__) console.log('doSubmit body:', body);
 

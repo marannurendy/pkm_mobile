@@ -103,6 +103,7 @@ const InisiasiFormPPKelompokDetail = ({ route }) => {
 
     const renderList = () => Object.keys(dataGroup).map(keyGroup => (
         <View
+            key={JSON.stringify(keyGroup)}
             style={styles.MT16}
         >
             <Text style={[styles.headerTitle, { paddingLeft: 0, marginBottom: 8 }]}>{keyGroup} ({dataGroup[keyGroup].length})</Text>

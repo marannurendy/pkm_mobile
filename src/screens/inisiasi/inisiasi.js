@@ -81,7 +81,7 @@ const Inisasi = () => {
         if (__DEV__) console.log('getSosialisasiDatabase loaded');
         if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
 
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
+        let query = 'SELECT a.lokasiSosialisasi, COUNT(a.namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database a WHERE a.lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY a.lokasiSosialisasi';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -162,7 +162,7 @@ const Inisasi = () => {
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
-                <Text>Total Nasabah : {totalNasabah}</Text>
+                {/* <Text>Total Nasabah : {totalNasabah}</Text> */}
             </View>
         )
     }
@@ -188,6 +188,7 @@ const Inisasi = () => {
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
+                {/* <Text>Total Nasabah : {totalNasabah}</Text> */}
             </View>
         )
     }
