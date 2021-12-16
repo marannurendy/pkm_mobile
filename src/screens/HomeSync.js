@@ -358,7 +358,7 @@ export default function FrontHomeSync(props) {
             {renderProspekFilter()}
             {renderProspekButton()}
             {renderProspekResult()}
-            <Text>{JSON.stringify(selectedItemsProspek)}</Text>
+            {/* <Text>{JSON.stringify(selectedItemsProspek)}</Text> */}
         </>
     )
 
@@ -366,7 +366,8 @@ export default function FrontHomeSync(props) {
         <View
             style={
                 {
-                    flexDirection: 'row'
+                    flexDirection: 'row',
+                    marginTop: 16
                 }
             }
         >
