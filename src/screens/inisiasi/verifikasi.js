@@ -17,6 +17,7 @@ const Verifikasi = ({ route }) => {
     const [currentDate, setCurrentDate] = useState();
     const [data, setData] = useState([]);
     const [keyword, setKeyword] = useState('');
+    const [submitted, setSubmitted] = useState(false);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -54,6 +55,8 @@ const Verifikasi = ({ route }) => {
     }
 
     const doSync = () => {
+        if (submitted) return true;
+
         if (data.length > 0) {
             Alert.alert(
                 "Sync Verifikasi",
@@ -67,6 +70,7 @@ const Verifikasi = ({ route }) => {
                     { 
                         text: "OK", 
                         onPress: () => {
+                            setSubmitted(true);
                             const nestedPromise = async (items = []) => {
                                 return await Promise.all(
                                     items.map(async item => {
@@ -112,6 +116,7 @@ const Verifikasi = ({ route }) => {
                 
                             nestedPromise(data).then(results => {
                                 ToastAndroid.show(`Sync selesai`, ToastAndroid.SHORT);
+                                setSubmitted(false);
                                 setTimeout(() => {
                                     getDataDiri();
                                 }, 600);
@@ -202,7 +207,7 @@ const Verifikasi = ({ route }) => {
                         <View
                             style={{ backgroundColor: '#3CB371', padding: 8, borderRadius: 8 }}
                         >
-                            <Text style={{ color: 'white' }}>(Sync)</Text>
+                            <Text style={{ color: 'white' }}>(Sync{submitted && '...'})</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
