@@ -16,110 +16,19 @@ const UjiKelayakan = ({route}) => {
     let [data, setData] = useState();
     const [keyword, setKeyword] = useState('');
 
-    // let [data, setData] = useState([
-    //     {
-    //         namaNasabah : "Sriyati Rahayu",
-    //         idNasabah : "1",
-    //         status : "1",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Sri Rezeki",
-    //         idNasabah : "2",
-    //         status : "1",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Umariyah",
-    //         idNasabah : "3",
-    //         status : "1",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Uun Widayanti",
-    //         idNasabah : "3",
-    //         status : "2",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Vina Rosayanti",
-    //         idNasabah : "4",
-    //         status : "3",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Vivien Anggraini",
-    //         idNasabah : "4",
-    //         status : "1",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Wanti Riana",
-    //         idNasabah : "5",
-    //         status : "2",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Baiq Rachmawati",
-    //         idNasabah : "6",
-    //         status : "1",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Sudi Harjanti",
-    //         idNasabah : "7",
-    //         status : "1",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Aminah Rosmaini",
-    //         idNasabah : "8",
-    //         status : "1",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Bellanisa Zainudin",
-    //         idNasabah : "9",
-    //         status : "2",
-    //         groupName : "Gang Kelinci"
-    //     },
-    //     {
-    //         namaNasabah : "Nadine Chandrawinata",
-    //         idNasabah : "10",
-    //         status : "1",
-    //         groupName : "Gang Kelinci"
-    //     }
-    // ])
-
     useEffect(() => {
-        GetInfo();
-        getSosialisasiDatabase();
-
-        // let GetListMemberUk = `SELECT * FROM Sosialisasi_Database WHERE lokasiSosialisasi ='` + groupName + `'`
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetListMemberUk, [], (tx, results) => {
-        //             // console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var listData = []
-        //             for(let a = 0; a < dataLength; a++) {
-        //                 let masterList = results.rows.item(a)
-        //                 listData.push({"namaNasabah": masterList.namaCalonNasabah, "status": masterList.type, "groupName": masterList.lokasiSosialisasi})
-        //             }
-
-        //             setData(listData)
-        //         })
-        //     }
-        // )
-    }, []);
+        const unsubscribe = navigation.addListener('focus', () => {
+            GetInfo();
+            getSosialisasiDatabase();
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     const getSosialisasiDatabase = () => {
         if (__DEV__) console.log('getSosialisasiDatabase loaded');
         if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
 
-        let query = 'SELECT * FROM Sosialisasi_Database WHERE lokasiSosialisasi = "'+ groupName +'" AND namaCalonNasabah LIKE "%'+ keyword +'%"';
+        let query = 'SELECT a.* FROM Sosialisasi_Database a WHERE a.lokasiSosialisasi = "'+ groupName +'" AND a.namaCalonNasabah LIKE "%'+ keyword +'%"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -129,7 +38,7 @@ const UjiKelayakan = ({route}) => {
                     var ah = [];
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({"namaNasabah": data.namaCalonNasabah, "nomorHandphone": data.nomorHandphone, "status": data.type, "groupName": data.lokasiSosialisasi});
+                        ah.push({"namaNasabah": data.namaCalonNasabah, "nomorHandphone": data.nomorHandphone, "status": data.verifikasiStatus, "groupName": data.lokasiSosialisasi});
                     }
                     setData(ah)
                 })
@@ -153,6 +62,7 @@ const UjiKelayakan = ({route}) => {
             onPress={() => navigation.navigate('FormUjiKelayakan', {groupName: data.groupName, namaNasabah: data.namaNasabah, nomorHandphone: data.nomorHandphone})}
         >
             <View style={{alignItems: 'flex-start'}}>
+                {/* <Text>{JSON.stringify(data)}</Text> */}
                 <ListMessage namaNasabah={data.namaNasabah} status={data.status} />
             </View>
         </TouchableOpacity>
@@ -165,16 +75,8 @@ const UjiKelayakan = ({route}) => {
                     <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, marginBottom: 5, color: '#545851'}} >{namaNasabah}</Text>
                 </View>
                 <View>
-                    {status === '1' ? (
-                        <View></View>
-                    ) : status === '2' ? (
-                        <View>
-                            <FontAwesome5 name={'file-import'} size={25} color={'#D62828'} />
-                        </View>
-                    ) : (
-                        <View>
-                            <FontAwesome5 name={'file-contract'} size={25} color={'#D62828'} />
-                        </View>
+                    {status === '3' && (
+                        <FontAwesome5 name={'file-import'} size={25} color={'#FFA500'} />
                     )}
                 </View>
                 

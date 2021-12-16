@@ -39,12 +39,11 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
     const [valueNamaTandaTanganKetuaKelompok, setValueNamaTandaTanganKetuaKelompok] = useState('');
     const [aoName, setAoName] = useState('');
-
-    const key_tandaTanganAOSAO = `formUK_tandaTanganAOSAO_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_tandaTanganNasabah = `formUK_tandaTanganNasabah_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_tandaTanganSuamiPenjamin = `formUK_tandaTanganSuamiPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_tandaTanganKetuaSubKemlompok = `formUK_tandaTanganKetuaSubKemlompok_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_tandaTanganKetuaKelompok = `formUK_tandaTanganKetuaKelompok_${namaNasabah.replace(/\s+/g, '')}`;
+    const [key_tandaTanganAOSAO, setKey_tandaTanganAOSAO] = useState(`formUK_tandaTanganAOSAO_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganNasabah, setKey_tandaTanganNasabah] = useState(`formUK_tandaTanganNasabah_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganSuamiPenjamin, setKey_tandaTanganSuamiPenjamin] = useState(`formUK_tandaTanganSuamiPenjamin_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganKetuaSubKemlompok, setKey_tandaTanganKetuaSubKemlompok] = useState(`formUK_tandaTanganKetuaSubKemlompok_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganKetuaKelompok, setKey_tandaTanganKetuaKelompok] = useState(`formUK_tandaTanganKetuaKelompok_${namaNasabah.replace(/\s+/g, '')}`);
 
     useEffect(() => {
         getUserData();
@@ -80,11 +79,23 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
 
-                        const tandaTanganAOSAO = await AsyncStorage.getItem(key_tandaTanganAOSAO);
-                        const tandaTanganNasabah = await AsyncStorage.getItem(key_tandaTanganNasabah);
-                        const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(key_tandaTanganSuamiPenjamin);
-                        const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(key_tandaTanganKetuaSubKemlompok);
-                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(key_tandaTanganKetuaKelompok);
+                        setKey_tandaTanganAOSAO(data.tanda_Tangan_AOSAO);
+                        setKey_tandaTanganNasabah(data.tanda_Tangan_Nasabah);
+                        setKey_tandaTanganSuamiPenjamin(data.tanda_Tangan_SuamiPenjamin);
+                        setKey_tandaTanganKetuaSubKemlompok(data.tanda_Tangan_Ketua_SubKelompok);
+                        setKey_tandaTanganKetuaKelompok(data.tanda_Tangan_Ketua_Kelompok);
+
+                        const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
+                        const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
+                        const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
+                        const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
+                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
+
+                        if (__DEV__) console.log('tandaTanganAOSAO :', data.tanda_Tangan_AOSAO, tandaTanganAOSAO);
+                        if (__DEV__) console.log('tandaTanganNasabah :', data.tanda_Tangan_Nasabah, tandaTanganNasabah);
+                        if (__DEV__) console.log('tandaTanganSuamiPenjamin :', data.tanda_Tangan_SuamiPenjamin, tandaTanganSuamiPenjamin);
+                        if (__DEV__) console.log('tandaTanganKetuaSubKemlompok :', data.tanda_Tangan_Ketua_SubKelompok, tandaTanganKetuaSubKemlompok);
+                        if (__DEV__) console.log('tandaTanganKetuaKelompok :', data.tanda_Tangan_Ketua_Kelompok, tandaTanganKetuaKelompok);
 
                         if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
                         if (data.frekuensi_Pembiayaan !== null && typeof data.frekuensi_Pembiayaan !== 'undefined') setValueFrekuensiPembiayaan(data.frekuensi_Pembiayaan);
