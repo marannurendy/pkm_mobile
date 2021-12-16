@@ -74,7 +74,8 @@ import {
     TandaTanganPencairan,
     SyncPencairan,
     Preview,
-    FormFP4
+    FormFP4,
+    UploadBuktiPem
 } from '../screens/pencairan/index'
 
 
@@ -678,6 +679,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="SyncPencairan" component={SyncPencairan} options={{ headerShown: false }} />
                 <Stack.Screen name="Preview" component={Preview} options={{ headerShown: false }} />
                 <Stack.Screen name="FormFP4" component={FormFP4} options={{ headerShown: false }} />
+                <Stack.Screen name="UploadBuktiPem" component={UploadBuktiPem} options={{ headerShown: false }} />
 
           </Stack.Navigator>
       </NavigationContainer>

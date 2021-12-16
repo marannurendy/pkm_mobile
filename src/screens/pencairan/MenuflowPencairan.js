@@ -152,7 +152,7 @@ const MenuflowPencairan = () => {
                 </View>
                 {uname.includes("SY") ? 
                 <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('UploadBuktiPem')} style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                         <FontAwesome5 name="upload" size={50} color="#FFFCFA" />
                         <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Upload Nota Pembelian</Text>
                     </TouchableOpacity>

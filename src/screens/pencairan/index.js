@@ -10,6 +10,7 @@ import TandaTanganPencairan from "./TandaTangan"
 import SyncPencairan from "./SyncPencairan"
 import Preview from "./Preview"
 import FormFP4 from "./FormFP4"
+import UploadBuktiPem from "./UploadBuktiPem"
 
 export { 
     KelompokPencairan,
@@ -23,5 +24,6 @@ export {
     TandaTanganPencairan,
     SyncPencairan,
     Preview,
-    FormFP4
+    FormFP4,
+    UploadBuktiPem
 };

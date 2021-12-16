@@ -15,7 +15,7 @@ import db from '../../database/Database'
 
 const window = Dimensions.get('window');
 
-const Siklus = () => {
+const UploadBuktiPem = () => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -138,7 +138,7 @@ const Siklus = () => {
                 <SafeAreaView style={{flex: 1}}>
                     <ScrollView>
                         <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
-                            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Form Siklus Pertama</Text>
+                            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Bukti Nota Pembelian</Text>
 
                             <Text style={{fontSize: 14, fontWeight: 'bold'}}>Produk Pembiayaan</Text>
                             <TextInput 
@@ -206,7 +206,7 @@ const Siklus = () => {
     )
 }
 
-export default Siklus
+export default UploadBuktiPem
 
 const styles = StyleSheet.create({
     button: {
