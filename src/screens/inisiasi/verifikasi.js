@@ -30,7 +30,6 @@ const Verifikasi = ({ route }) => {
         if (__DEV__) console.log('getDataDiri loaded');
         if (__DEV__) console.log('getDataDiri keyword:', keyword);
 
-        // let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass != "1" AND alamat_Domisili = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%" AND (sync_Verif != "2" OR sync_Verif IS NULL)';
         let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND alamat_Domisili = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
         db.transaction(
             tx => {
@@ -72,8 +71,10 @@ const Verifikasi = ({ route }) => {
                                 return await Promise.all(
                                     items.map(async item => {
                                         const body = await AsyncStorage.getItem(`formVerifikasi_body_${item.idProspek}`);
+                                        if (__DEV__) console.log('doSync nestedPromise:', body);
+
                                         if (body) {
-                                            await fetch(ApiSyncPostInisiasi + 'post_verif_status', {
+                                            return fetch(ApiSyncPostInisiasi + 'post_verif_status', {
                                                 method: 'POST',
                                                 headers: {
                                                     Accept:
@@ -104,7 +105,6 @@ const Verifikasi = ({ route }) => {
                                                 console.log('$post /post_inisiasi/post_verif_status response', error);
                                                 ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
                                             });
-                                            return true;
                                         }
                                     })
                                 )

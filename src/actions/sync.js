@@ -2,6 +2,7 @@ import { ApiSync, ApiSyncInisiasi, Get_Date } from "../../dataconfig";
 import { ToastAndroid } from 'react-native';
 import db from '../database/Database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment'
 
 export const getSyncData = (params) => new Promise((resolve) => {
     if (__DEV__) console.log('ACTIONS GET SYNC DATA PARAMS', params);
@@ -414,6 +415,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         if (uk_client_data.length > 0) {
             try {
+                var sosialisasiDatabaseCount = 0;
                 var query = 'INSERT INTO Sosialisasi_Database (tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, verifikasiTanggal, verifikasiStatus, verifikasiReason) values ';
                 var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek) values ';
                 var queryUKPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, nomor_Identitas, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, id_prospek) values ';
@@ -529,29 +531,33 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     );
                     /* ============== FINISH: HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
                     
-                    query = query + "('"
-                    + '2021-12-16' 
-                    + "','"
-                    + ""
-                    + "','"
-                    + uk_client_data[i].Nama_Lengkap
-                    + "','"
-                    + ""
-                    + "','"
-                    + ""
-                    + "','"
-                    + '2021-12-16' 
-                    + "','"
-                    + uk_client_data[i].Lokasi_Sos
-                    + "','"
-                    + ""
-                    + "','"
-                    + uk_client_data[i].Tanggal_Verif
-                    + "','"
-                    + uk_client_data[i].PostStatus
-                    + "','"
-                    + uk_client_data[i].Reason
-                    + "')";
+                    if (["3", 3].includes(uk_client_data[i].PostStatus)) {
+                        query = query + "('"
+                        + '2021-12-16' 
+                        + "','"
+                        + ""
+                        + "','"
+                        + uk_client_data[i].Nama_Lengkap
+                        + "','"
+                        + ""
+                        + "','"
+                        + ""
+                        + "','"
+                        + '2021-12-16' 
+                        + "','"
+                        + uk_client_data[i].Lokasi_Sos
+                        + "','"
+                        + ""
+                        + "','"
+                        + moment(uk_client_data[i].Tanggal_Verif).format('YYYY-MM-DD')
+                        + "','"
+                        + uk_client_data[i].PostStatus
+                        + "','"
+                        + uk_client_data[i].Reason
+                        + "')";
+
+                        sosialisasiDatabaseCount += 1;
+                    }
 
                     queryUKDataDiri = queryUKDataDiri + "('"
                     + key_dataPenjamin
@@ -564,7 +570,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + uk_client_data[i].Tempat_Lahir
                     + "','"
-                    + uk_client_data[i].Tanggal_Lahir
+                    + moment(uk_client_data[i].Tanggal_Lahir).format('YYYY-MM-DD')
                     + "','"
                     + uk_client_data[i].Status_Perkawinan
                     + "','"
@@ -768,7 +774,10 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "')";
 
                     if (i != uk_client_data.length - 1) {
-                        query = query + ",";
+                        if (["3", 3].includes(uk_client_data[i].PostStatus)) {
+                            query = query + ",";
+                        }
+                        
                         queryUKDataDiri = queryUKDataDiri + ",";
                         queryUKPembiayaan = queryUKPembiayaan + ",";
                         queryUKKondisiRumah = queryUKKondisiRumah + ",";
@@ -786,6 +795,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 queryUKPendapatanNasabah = queryUKPendapatanNasabah + ";";
                 queryUKPermohonanPembiayaan = queryUKPermohonanPembiayaan + ";";
 
+                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE COUNT:', sosialisasiDatabaseCount);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA DIRI INSERT QUERY:', queryUKDataDiri);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA PEMBIAYAAN INSERT QUERY:', queryUKPembiayaan);
@@ -794,13 +804,15 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK PENDAPATAN NASABAH INSERT QUERY:', queryUKPendapatanNasabah);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK PERMOHONAN PEMBIAYAAN INSERT QUERY:', queryUKPermohonanPembiayaan);
 
-                db.transaction(
-                    tx => { tx.executeSql(query); }, function(error) {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
-                    }, function() {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION DONE');
-                    }
-                );
+                if (sosialisasiDatabaseCount > 0) {
+                    db.transaction(
+                        tx => { tx.executeSql(query); }, function(error) {
+                            if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
+                        }, function() {
+                            if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION DONE');
+                        }
+                    );
+                }
                 db.transaction(
                     tx => { tx.executeSql(queryUKDataDiri); }, function(error) {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA DIRI INSERT TRANSACTION ERROR:', error);
@@ -1031,7 +1043,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
         AsyncStorage.setItem('Frekuensi', JSON.stringify(jsonMasterData.data.Frekuensi));
         AsyncStorage.setItem('WilayahMobile', JSON.stringify(jsonMasterData.data.WilayahMobile));
 
-        return;
+        return 'SYNC DONE';
     }
 
     resolve(fetchWaterfall());
