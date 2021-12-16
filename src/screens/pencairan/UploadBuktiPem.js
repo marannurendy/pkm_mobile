@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, ActivityIndicator, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import ActionButton from 'react-native-action-button'
-import { scale, verticalScale } from 'react-native-size-matters'
-import { Card, Divider } from 'react-native-elements';
-import SignatureScreen from "react-native-signature-canvas";
 import { Button } from 'react-native-elements';
 import bismillah from '../../images/bismillah.png';
+import { Camera } from 'expo-camera'
 
 import db from '../../database/Database'
 
@@ -19,15 +16,21 @@ const UploadBuktiPem = () => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
-
+    const camera = useRef(null)
+    const [loading, setLoading] = useState(false)
     let [branchId, setBranchId] = useState();
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
-    let [menuShow, setMenuShow] = useState(0);
-    let [menuToggle, setMenuToggle] = useState(false);
-    let [data, setData] = useState([]);
-    const [keyword, setKeyword] = useState('');
+    let [fotoBukti1, setFotoBukti1] = useState();
+    let [fotoBukti2, setFotoBukti2] = useState();
+    let [fotoBukti3, setFotoBukti3] = useState();
+    let [buttonCam, SetButtonCam] = useState(false);
+    let [cameraShow, setCameraShow] = useState()
+    const [hasPermission, setHasPermission] = useState(null);
+    const key_fotoBukti1 = `formUK_dataPenjamin_`;
+    const key_fotoBukti2 = `formUK_dataPenjamin_`;
+    const key_fotoBukti3 = `formUK_dataPenjamin_`;
 
     useEffect(() => {
         const getUserData = () => {
@@ -43,7 +46,13 @@ const UploadBuktiPem = () => {
         }
 
         getUserData();
-        getSosialisasiDatabase();
+
+        const came = async () => {
+            const { status } = await Camera.requestPermissionsAsync();
+            setHasPermission(status === 'granted');
+        }
+
+        came();
 
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
@@ -81,31 +90,37 @@ const UploadBuktiPem = () => {
         // })
     }, []);
 
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
-
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
-        db.transaction(
-            tx => {
-                tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
-                    }
-                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
-                })
-            }
-        )
-    }
     
     // Simpan Handler
     const submitHandler = () => {
         navigation.navigate("FormFP4")
     }
+
+    const takePicture = async (type) => {
+        try {
+            setLoading(true)
+            SetButtonCam(true)
+            const options = { quality: 0.5, base64: true };
+            const data = await camera.current.takePictureAsync(options)
+
+            if (type === "Bukti1") {
+                AsyncStorage.setItem(key_fotoBukti1, 'data:image/jpeg;base64,' + data.base64);
+                setFotoBukti1(data.uri);
+                setLoading(false);
+                SetButtonCam(false);
+            }else if (type === "Bukti2") {
+                AsyncStorage.setItem(key_fotoBukti2, 'data:image/jpeg;base64,' + data.base64);
+                setFotoBukti2(data.uri);
+                setLoading(false);
+                SetButtonCam(false);
+            }else if (type === "Bukti3") {
+                AsyncStorage.setItem(key_fotoBukti3, 'data:image/jpeg;base64,' + data.base64);
+                setFotoBukti3(data.uri);
+                setLoading(false);
+                SetButtonCam(false);
+            }
+        } catch (error) {}
+    };
 
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -134,74 +149,316 @@ const UploadBuktiPem = () => {
                 </View>
             </View>
 
+            {cameraShow === 1 ? (
+            <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
+                {fotoBukti1 === undefined ? (
+                <Camera 
+                ref={camera}
+                style={styles.preview}
+                type={Camera.Constants.Type.back}
+                // flashMode={Camera.Constants.FlashMode.on}
+                androidCameraPermissionOptions={{
+                    title: 'Permission to use camera',
+                    message: 'We need your permission to use your camera',
+                    buttonPositive: 'Ok',
+                    buttonNegative: 'Cancel'
+                }}
+            >
+                {loading &&
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#737A82" />
+                    </View>
+                }
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
+                    <TouchableOpacity 
+                        style={{
+                            flex: 0,
+                            backgroundColor: '#EB3C27',
+                            borderRadius: 5,
+                            padding: 5,
+                            paddingHorizontal: 5,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => setCameraShow(0)
+                    }>
+                        <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                    <TouchableOpacity 
+                        disabled={ buttonCam }
+                        style={{
+                            flex: 0,
+                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                            borderRadius: 5,
+                            padding: 15,
+                            paddingHorizontal: 20,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => takePicture("Bukti1")
+                    }>
+                        <Text style={{ fontSize: 14 }}> Ambil Foto Bukti </Text>
+                    </TouchableOpacity>
+                </View>
+                </Camera>
+                ) : (
+                <View style={{ flex: 1 }}>
+                    <Image source={{ uri: fotoBukti1 }} style={styles.previewPhoto}/>
+                    <View style={{ 
+                        position: 'absolute', 
+                        bottom: 35, 
+                        left: 30, 
+                        backgroundColor: 'white',
+                        borderRadius: 10
+                    }}>
+                        <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoKartuIdentitas(undefined)} >Batal</Text>
+                    </View>
+                    <View style={{ 
+                        position: 'absolute', 
+                        bottom: 35, 
+                        right: 30, 
+                        backgroundColor: 'white',
+                        borderRadius: 10
+                    }}>
+                        <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
+                    </View>
+                    {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
+                    {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
+                </View>
+                )} 
+            </View>
+            
+            ) : cameraShow === 2 ? (
+            
+                <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
+                {fotoBukti2 === undefined ? (
+                <Camera 
+                ref={camera}
+                style={styles.preview}
+                type={Camera.Constants.Type.back}
+                // flashMode={Camera.Constants.FlashMode.on}
+                androidCameraPermissionOptions={{
+                    title: 'Permission to use camera',
+                    message: 'We need your permission to use your camera',
+                    buttonPositive: 'Ok',
+                    buttonNegative: 'Cancel'
+                }}
+            >
+                {loading &&
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#737A82" />
+                    </View>
+                }
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
+                    <TouchableOpacity 
+                        style={{
+                            flex: 0,
+                            backgroundColor: '#EB3C27',
+                            borderRadius: 5,
+                            padding: 5,
+                            paddingHorizontal: 5,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => setCameraShow(0)
+                    }>
+                        <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                    <TouchableOpacity 
+                        disabled={ buttonCam }
+                        style={{
+                            flex: 0,
+                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                            borderRadius: 5,
+                            padding: 15,
+                            paddingHorizontal: 20,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => takePicture("Bukti1")
+                    }>
+                        <Text style={{ fontSize: 14 }}> Ambil Foto Bukti </Text>
+                    </TouchableOpacity>
+                </View>
+                </Camera>
+                ) : (
+                <View style={{ flex: 1 }}>
+                    <Image source={{ uri: fotoBukti2 }} style={styles.previewPhoto}/>
+                    <View style={{ 
+                        position: 'absolute', 
+                        bottom: 35, 
+                        left: 30, 
+                        backgroundColor: 'white',
+                        borderRadius: 10
+                    }}>
+                        <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoKartuIdentitas(undefined)} >Batal</Text>
+                    </View>
+                    <View style={{ 
+                        position: 'absolute', 
+                        bottom: 35, 
+                        right: 30, 
+                        backgroundColor: 'white',
+                        borderRadius: 10
+                    }}>
+                        <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
+                    </View>
+                    {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
+                    {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
+                </View>
+                )} 
+            </View>
+            
+            ) : cameraShow === 3 ? (
+                <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
+                {fotoBukti3 === undefined ? (
+                <Camera 
+                ref={camera}
+                style={styles.preview}
+                type={Camera.Constants.Type.back}
+                // flashMode={Camera.Constants.FlashMode.on}
+                androidCameraPermissionOptions={{
+                    title: 'Permission to use camera',
+                    message: 'We need your permission to use your camera',
+                    buttonPositive: 'Ok',
+                    buttonNegative: 'Cancel'
+                }}
+            >
+                {loading &&
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#737A82" />
+                    </View>
+                }
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
+                    <TouchableOpacity 
+                        style={{
+                            flex: 0,
+                            backgroundColor: '#EB3C27',
+                            borderRadius: 5,
+                            padding: 5,
+                            paddingHorizontal: 5,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => setCameraShow(0)
+                    }>
+                        <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                    <TouchableOpacity 
+                        disabled={ buttonCam }
+                        style={{
+                            flex: 0,
+                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                            borderRadius: 5,
+                            padding: 15,
+                            paddingHorizontal: 20,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => takePicture("Bukti3")
+                    }>
+                        <Text style={{ fontSize: 14 }}> Ambil Foto Bukti </Text>
+                    </TouchableOpacity>
+                </View>
+                </Camera>
+                ) : (
+                <View style={{ flex: 1 }}>
+                    <Image source={{ uri: fotoBukti3 }} style={styles.previewPhoto}/>
+                    <View style={{ 
+                        position: 'absolute', 
+                        bottom: 35, 
+                        left: 30, 
+                        backgroundColor: 'white',
+                        borderRadius: 10
+                    }}>
+                        <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoKartuIdentitas(undefined)} >Batal</Text>
+                    </View>
+                    <View style={{ 
+                        position: 'absolute', 
+                        bottom: 35, 
+                        right: 30, 
+                        backgroundColor: 'white',
+                        borderRadius: 10
+                    }}>
+                        <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
+                    </View>
+                    {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
+                    {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
+                </View>
+                )} 
+            </View>
+            
+            ) : (
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <SafeAreaView style={{flex: 1}}>
                     <ScrollView>
                         <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
                             <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Bukti Nota Pembelian</Text>
 
-                            <Text style={{fontSize: 14, fontWeight: 'bold'}}>Produk Pembiayaan</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Plafond</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Term Pembiayaan</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Jumlah UP</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Total Pencairan</Text>
-                            <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
-                                returnKeyType="done"
-                            />
-                            
-                            <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
-                                <Button
-                                    title="SIMPAN"
-                                    onPress={() => submitHandler()}
-                                    buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
-                                    titleStyle={{fontSize: 20, fontWeight: 'bold'}}
-                                />
+                            <Text style={{fontSize: 14, fontWeight: 'bold'}}>Upload Nota Pembelian</Text>
+                            <View style={{margin: 20}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Pencairan(*)</Text>
+                                
+                                <TouchableOpacity onPress={() => setCameraShow(1)}>
+                                    <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
+                                        {fotoBukti1 === undefined ? (
+                                            <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                                <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                            </View>
+                                        ) : (
+                                            <Image source={{ uri: fotoBukti1 }} style={styles.thumbnailPhoto}/>
+                                        )}
+                                    </View>
+                                </TouchableOpacity>
                             </View>
+
+                            <Text style={{fontSize: 14, fontWeight: 'bold'}}>Upload Nota Pembelian</Text>
+                            <View style={{margin: 20}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Pencairan(*)</Text>
+                                
+                                <TouchableOpacity onPress={() => setCameraShow(2)}>
+                                    <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
+                                        {fotoBukti2 === undefined ? (
+                                            <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                                <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                            </View>
+                                        ) : (
+                                            <Image source={{ uri: fotoBukti2 }} style={styles.thumbnailPhoto}/>
+                                        )}
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
+                            <Text style={{fontSize: 14, fontWeight: 'bold'}}>Upload Nota Pembelian</Text>
+                            <View style={{margin: 20}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Pencairan(*)</Text>
+                                
+                                <TouchableOpacity onPress={() => setCameraShow(3)}>
+                                    <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
+                                        {fotoBukti3 === undefined ? (
+                                            <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                                <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                            </View>
+                                        ) : (
+                                            <Image source={{ uri: fotoBukti3 }} style={styles.thumbnailPhoto}/>
+                                        )}
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+
                         </View>
                     </ScrollView>
                 </SafeAreaView>
             </View>
+            )}
         </View>
     )
 }
@@ -219,6 +476,13 @@ const styles = StyleSheet.create({
         shadowColor: '#003049',
         shadowOpacity: 0.3,
         shadowOffset: { height: 10 },
+    },
+    label: {
+        margin: 8,
+        fontSize:18
+      },
+    checkbox: {
+        alignSelf: "center",
     },
     menu: {
         backgroundColor: '#003049'
@@ -260,4 +524,61 @@ const styles = StyleSheet.create({
         // shadowRadius: 4,
         // elevation: 5,
       },
+      preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        margin: 20,
+    },
+    capture: {
+        flex: 0,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 15,
+        paddingHorizontal: 20,
+        alignSelf: 'center',
+        margin: 20,
+    },
+    cancel: {
+        position: 'absolute',
+        right: 20,
+        top: 20,
+        backgroundColor: 'transparent',
+        color: '#FFF',
+        fontWeight: '600',
+        fontSize: 17,
+    },
+    next: {
+        position: 'absolute',
+        left: 20,
+        top: 20,
+        backgroundColor: 'transparent',
+        color: '#FFF',
+        fontWeight: '600',
+        fontSize: 17,
+    },
+    previewPhoto: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        margin: 20
+    },
+    thumbnailPhoto: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        margin: 5,
+        borderRadius: 10
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        opacity: 0.5,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 })
