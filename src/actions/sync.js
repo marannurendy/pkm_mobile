@@ -660,9 +660,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + uk_client_data[i].Jenis_Pembiayaan
                     + "','"
-                    + uk_client_data[i].Nama_Produk
+                    + uk_client_data[i].ID_Produk
                     + "','"
-                    + uk_client_data[i].Produk_Pembiayaan
+                    + uk_client_data[i].ID_Produk_Pembiayaan
                     + "','"
                     + uk_client_data[i].Jumlah_Pinjaman
                     + "','"
@@ -728,37 +728,37 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + uk_client_data[i].Nomor_Identitas
                     + "','"
-                    + uk_client_data[i].PendapatanKotor_perHari
+                    + parseInt(uk_client_data[i].PendapatanKotor_perHari || 0)
                     + "','"
-                    + uk_client_data[i].PengeluaranKel_perHari
+                    + parseInt(uk_client_data[i].PengeluaranKel_perHari || 0)
                     + "','"
-                    + uk_client_data[i].PendapatanBersih_perHari
+                    + parseInt(uk_client_data[i].PendapatanBersih_perHari || 0)
                     + "','"
                     + uk_client_data[i].JmlHariUsaha_perBulan
                     + "','"
-                    + uk_client_data[i].PendapatanBersih_perBulan
+                    + parseInt(uk_client_data[i].PendapatanBersih_perBulan || 0)
                     + "','"
-                    + uk_client_data[i].PendapatanBersih_perMinggu
+                    + parseInt(uk_client_data[i].PendapatanBersih_perMinggu || 0)
                     + "','"
-                    + uk_client_data[i].Nama_Pembiayaan_Lembaga_Lain
+                    + uk_client_data[i].Is_AdaPembiayaanLain
                     + "','"
                     + uk_client_data[i].Nama_Pembiayaan_Lembaga_Lain
                     + "','"
                     + ""
                     + "','"
-                    + uk_client_data[i].Kemampuan_Angsuran
+                    + parseInt(uk_client_data[i].Kemampuan_Angsuran || 0)
                     + "','"
-                    + uk_client_data[i].PendapatanKotor_perHari_Suami
+                    + parseInt(uk_client_data[i].PendapatanKotor_perHari_Suami || 0)
                     + "','"
-                    + uk_client_data[i].PengeluaranKel_perHari_Suami
+                    + parseInt(uk_client_data[i].PengeluaranKel_perHari_Suami || 0)
                     + "','"
-                    + uk_client_data[i].PendapatanBersih_perHari_Suami
+                    + parseInt(uk_client_data[i].PendapatanBersih_perHari_Suami || 0)
                     + "','"
                     + uk_client_data[i].JmlHariUsaha_perBulan_Suami
                     + "','"
-                    + uk_client_data[i].PendapatanBersih_perBulan_Suami
+                    + parseInt(uk_client_data[i].PendapatanBersih_perBulan_Suami || 0)
                     + "','"
-                    + uk_client_data[i].PendapatanBersih_perMinggu_Suami
+                    + parseInt(uk_client_data[i].PendapatanBersih_perMinggu_Suami || 0)
                     + "','"
                     + uk_client_data[i].ID_Prospek
                     + "')";
@@ -786,13 +786,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + key_tandaTanganKetuaKelompok
                     + "','"
-                    + ""
+                    + uk_client_data[i].Nama_TTD_Nasabah
                     + "','"
-                    + ""
+                    + uk_client_data[i].Nama_TTD_Penjamin
                     + "','"
-                    + ""
+                    + uk_client_data[i].Nama_TTD_KSK
                     + "','"
-                    + ""
+                    + uk_client_data[i].Nama_TTD_KK
                     + "','"
                     + uk_client_data[i].ID_Prospek
                     + "')";
@@ -863,6 +863,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK SEKTOR EKONOMI INSERT TRANSACTION ERROR:', error);
                     }, function() {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK SEKTOR EKONOMI INSERT TRANSACTION DONE');
+                    }
+                );
+                db.transaction(
+                    tx => { tx.executeSql(queryUKPendapatanNasabah); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK PENDAPATAN NASABAH INSERT TRANSACTION ERROR:', error);
+                    }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK PENDAPATAN NASABAH INSERT TRANSACTION DONE');
                     }
                 );
                 db.transaction(

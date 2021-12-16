@@ -45,12 +45,12 @@ const ProdukPembiayaan = ({ route }) => {
 
     useEffect(() => {
         setInfo();
-        getUKProdukPembiayaan();
         getStorageJenisPembiayaan();
         getStorageTipePencairan();
         getStorageTujuanPembiayaan();
         getStorageKategoriTujuanPembiayaan();
         getStorageFrekuensi();
+        getUKProdukPembiayaan()
     }, [])
 
     const setInfo = async () => {
@@ -71,6 +71,7 @@ const ProdukPembiayaan = ({ route }) => {
                         if (__DEV__) console.log('tx.executeSql data:', data);
 
                         const getJenisPembiayaan = () => {
+                            if (__DEV__) console.log('getJenisPembiayaan loaded');
                             return new Promise((resolve, reject) => {
                                 if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') {
                                     setTimeout(() => {
@@ -84,6 +85,7 @@ const ProdukPembiayaan = ({ route }) => {
                         }
 
                         const getNamaProduk = () => {
+                            if (__DEV__) console.log('getNamaProduk loaded');
                             return new Promise((resolve, reject) => {
                                 if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') {
                                     setTimeout(() => {
@@ -97,6 +99,7 @@ const ProdukPembiayaan = ({ route }) => {
                         }
 
                         const getProdukPembiayaan = () => {
+                            if (__DEV__) console.log('getProdukPembiayaan loaded');
                             return new Promise((resolve, reject) => {
                                 if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') {
                                     setTimeout(() => {
