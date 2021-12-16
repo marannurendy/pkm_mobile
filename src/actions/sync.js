@@ -426,6 +426,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 
                 for (let i = 0; i < uk_client_data.length; i++) {
                     let namaNasabah = uk_client_data[i].Nama_Lengkap || '';
+                    let isVerifPass = "";
+                    if ([1,2,3].includes(uk_client_data[i].PostStatus)) isVerifPass = "1";
+                    else isVerifPass = uk_client_data[i].Is_VerifPass;
 
                     const key_dataPenjamin = `formUK_dataPenjamin_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
                     const key_dataSuami = `formUK_dataSuami_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
@@ -444,7 +447,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     AsyncStorage.setItem(key_kartuKeluarga, 'data:image/jpeg;base64,' + uk_client_data[i].Foto_KK);
                     AsyncStorage.setItem(key_keteranganDomisili, 'data:image/jpeg;base64,' + uk_client_data[i].Foto_Suket_Domisili);
 
+                    AsyncStorage.setItem(key_tandaTanganAOSAO, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_AO);
                     AsyncStorage.setItem(key_tandaTanganNasabah, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_Nasabah);
+                    AsyncStorage.setItem(key_tandaTanganSuamiPenjamin, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_Penjamin);
                     AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KSK);
                     AsyncStorage.setItem(key_tandaTanganKetuaKelompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KK);
 
@@ -628,7 +633,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + uk_client_data[i].Is_UKPass
                     + "','"
-                    + uk_client_data[i].Is_VerifPass
+                    + isVerifPass
                     + "','"
                     + uk_client_data[i].ID_Prospek
                     + "','"
@@ -758,11 +763,11 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + uk_client_data[i].Frekuensi_Pembiayaan
                     + "','"
-                    + ""
+                    + key_tandaTanganAOSAO
                     + "','"
                     + key_tandaTanganNasabah
                     + "','"
-                    + ""
+                    + key_tandaTanganSuamiPenjamin
                     + "','"
                     + key_tandaTanganKetuaSubKemlompok
                     + "','"

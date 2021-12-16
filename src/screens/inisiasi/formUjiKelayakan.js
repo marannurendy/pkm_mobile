@@ -145,6 +145,9 @@ const FormUjiKelayakan = ({route}) => {
                             return Alert.alert('Error: Foto Kartu Identitas Penjamin', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
                         }
 
+                        let idProspek = "";
+                        if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
+
                         const body = {
                             "Alamat": data.alamat_Identitas,
                             "AlamatDomisili": data.alamat_Domisili,
@@ -234,7 +237,7 @@ const FormUjiKelayakan = ({route}) => {
                             "TujuanPembiayaan": data.tujuan_Pembiayaan,
                             "TypePencairan": data.type_Pencairan,
                             "IsPernyataanDibaca": data.is_pernyataan_dibaca,
-                            "IdProspek": data.id_prospek
+                            "ID_Prospek": idProspek
                         }
                         // if (__DEV__) console.log('doSubmit body:', body);
 
