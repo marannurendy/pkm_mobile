@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator, ToastAndroid } from 'react-native'
+import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator, ToastAndroid, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -56,54 +56,71 @@ const Verifikasi = ({ route }) => {
 
     const doSync = () => {
         if (data.length > 0) {
-            const nestedPromise = async (items = []) => {
-                return await Promise.all(
-                    items.map(async item => {
-                        const body = await AsyncStorage.getItem(`formVerifikasi_body_${item.idProspek}`);
-                        if (body) {
-                            await fetch(ApiSyncPostInisiasi + 'post_verif_status', {
-                                method: 'POST',
-                                headers: {
-                                    Accept:
-                                        'application/json',
-                                        'Content-Type': 'application/json'
-                                    },
-                                body: body
-                            })
-                            .then((response) => response.json())
-                            .then((responseJSON) => {
-                                if (__DEV__) console.error('$post /post_inisiasi/post_verif_status response', responseJSON);
-
-                                let query = 'UPDATE Table_UK_DataDiri SET status_Verifikasi_Pass = "1" WHERE id_prospek = "' + item.idProspek + '"';
-                                if (__DEV__) console.log('doSave db.transaction update query:', query);
-
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql(query);
-                                    }, function(error) {
-                                        if (__DEV__) console.log('doSave db.transaction insert/update error:', error.message);
-                                    },function() {
-                                        if (__DEV__) console.log('doSave db.transaction update success');
-                                        AsyncStorage.removeItem(`formVerifikasi_body_${item.idProspek}`);
-                                    }
-                                );
-                            })
-                            .catch((error) => {
-                                console.log('$post /post_inisiasi/post_verif_status response', error);
-                                ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
+            Alert.alert(
+                "Sync Verifikasi",
+                "Apakah kamu yakin akan melakukan sync sekarang (pastikan koneksi internet sudah lancar)?",
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => __DEV__ && console.log("cancel pressed"),
+                        style: "cancel"
+                    },
+                    { 
+                        text: "OK", 
+                        onPress: () => {
+                            const nestedPromise = async (items = []) => {
+                                return await Promise.all(
+                                    items.map(async item => {
+                                        const body = await AsyncStorage.getItem(`formVerifikasi_body_${item.idProspek}`);
+                                        if (body) {
+                                            await fetch(ApiSyncPostInisiasi + 'post_verif_status', {
+                                                method: 'POST',
+                                                headers: {
+                                                    Accept:
+                                                        'application/json',
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                body: body
+                                            })
+                                            .then((response) => response.json())
+                                            .then((responseJSON) => {
+                                                if (__DEV__) console.error('$post /post_inisiasi/post_verif_status response', responseJSON);
+                
+                                                let query = 'UPDATE Table_UK_DataDiri SET status_Verifikasi_Pass = "1" WHERE id_prospek = "' + item.idProspek + '"';
+                                                if (__DEV__) console.log('doSave db.transaction update query:', query);
+                
+                                                db.transaction(
+                                                    tx => {
+                                                        tx.executeSql(query);
+                                                    }, function(error) {
+                                                        if (__DEV__) console.log('doSave db.transaction insert/update error:', error.message);
+                                                    },function() {
+                                                        if (__DEV__) console.log('doSave db.transaction update success');
+                                                        AsyncStorage.removeItem(`formVerifikasi_body_${item.idProspek}`);
+                                                    }
+                                                );
+                                            })
+                                            .catch((error) => {
+                                                console.log('$post /post_inisiasi/post_verif_status response', error);
+                                                ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
+                                            });
+                                            return true;
+                                        }
+                                    })
+                                )
+                            }
+                
+                            nestedPromise(data).then(results => {
+                                ToastAndroid.show(`Sync selesai`, ToastAndroid.SHORT);
+                                setTimeout(() => {
+                                    getDataDiri();
+                                }, 600);
                             });
-                            return true;
+                            return;
                         }
-                    })
-                )
-            }
-
-            nestedPromise(data).then(results => {
-                ToastAndroid.show(`Sync selesai`, ToastAndroid.SHORT);
-                setTimeout(() => {
-                    getDataDiri();
-                }, 600);
-            })
+                    }
+                ]
+            );
         } else {
             ToastAndroid.show(`Sync kosong`, ToastAndroid.SHORT);
         }
