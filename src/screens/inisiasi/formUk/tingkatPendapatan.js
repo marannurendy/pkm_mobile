@@ -49,6 +49,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         setInfo();
         getStoragePembiayaanLain();
         getUKPendapatanNasabah();
+        getUKDataDiri();
     }, [])
 
     const setInfo = async () => {
@@ -56,11 +57,30 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         setCurrentDate(tanggal);
     }
 
-    const getUKPendapatanNasabah = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '` + namaNasabah + `';`
+    const getUKDataDiri = () => {
+        let query = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = '` + namaNasabah + `';`
         db.transaction(
             tx => {
-                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                tx.executeSql(query, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
+                })
+            }
+        )
+    }
+
+    const getUKPendapatanNasabah = () => {
+        let query = `SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '` + namaNasabah + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_PendapatanNasabah length:', dataLength);
                     if (dataLength > 0) {
@@ -508,6 +528,15 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         </View>
     )
 
+    const renderFormPendapatanPerkapita = () => (
+        <View style={styles.MT8}>
+            <Text>Pendapatan Perkapita</Text>
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray' }]}>{formatter((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1) || 0) + ((((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0)) / 3)}</Text>
+            </View>
+        </View>
+    )
+
     const renderFormPendapatanSuami = () => (
         <View style={styles.MT8}>
             <Text style={[styles.FS18, styles.MB16]}>PENDAPATAN SUAMI</Text>
@@ -535,6 +564,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
             {renderButtonSaveDraft()}
             {renderSpace()}
             {renderFormPendapatanSuami()}
+            {renderSpace()}
+            {renderFormPendapatanPerkapita()}
         </View>
     )
 

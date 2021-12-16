@@ -190,8 +190,9 @@ const FormUjiKelayakan = ({route}) => {
                             "LokasiUK": groupName,
                             "LuasBangunan": data.luas_Bangunan,
                             "NamaAyah": data.nama_ayah,
+                            "NamaGadisIBU": data.nama_gadis_ibu,
                             "NamaBank": namaBank,
-                            "NamaLengkap": data.nama_lengkap,
+                            "NamaLengkap": data.nama_lengkap, // double
                             "NamaPemilikRekening": pemilikRekening, // double
                             "NamaPenjamin": data.nama_penjamin,
                             "NamaProduk": namaProduk,
@@ -231,7 +232,8 @@ const FormUjiKelayakan = ({route}) => {
                             "TempatLahir": data.tempat_lahir,
                             "TermPembiayaan": data.term_Pembiayaan,
                             "TujuanPembiayaan": data.tujuan_Pembiayaan,
-                            "TypePencairan": data.type_Pencairan
+                            "TypePencairan": data.type_Pencairan,
+                            "IsPernyataanDibaca": data.is_pernyataan_dibaca
                         }
                         // if (__DEV__) console.log('doSubmit body:', body);
 
@@ -246,7 +248,7 @@ const FormUjiKelayakan = ({route}) => {
                         })
                         .then((response) => response.json())
                         .then((responseJSON) => {
-                            console.error('$post /post_inisiasi/post_prospek_uk response', responseJSON);
+                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response', responseJSON);
 
                             if (responseJSON.responseCode === 200) {
                                 const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
@@ -275,7 +277,6 @@ const FormUjiKelayakan = ({route}) => {
                                                     setSubmitted(false);
                                                 },function() {
                                                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-
                                                     if (__DEV__) {
                                                         db.transaction(
                                                             tx => {
@@ -287,6 +288,78 @@ const FormUjiKelayakan = ({route}) => {
                                                             }, function() {}
                                                         );
                                                     }
+
+                                                    const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE namaCalonNasabah = '" + namaNasabah + "'";
+                                                    const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKDataDiri} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKDataDiri} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKProdukPembiayaan, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKKondisiRumah, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKSektorEkonomi, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKPendapatanNasabah, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKPermohonanPembiayaan, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+
                                                     const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
                                                     Alert.alert(responseJSON.responseDescription, message);
                                                     setSubmitted(false);
@@ -436,7 +509,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {groupName: groupName, namaNasabah: namaNasabah, screenState: screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'signature'} size={25} color={'#FFF'} />
                         </View>

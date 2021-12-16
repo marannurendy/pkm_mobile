@@ -310,6 +310,7 @@ db.transaction(tx => {
     tx.executeSql(
         `create table if not exists Table_UK_ProdukPembiayaan(
             nama_lengkap varchar,
+            nomor_Identitas varchar,
             jenis_Pembiayaan varchar,
             nama_Produk varchar, 
             produk_Pembiayaan varchar, 
@@ -322,29 +323,34 @@ db.transaction(tx => {
             status_Rekening_Bank varchar,
             nama_Bank varchar,
             no_Rekening varchar,
-            pemilik_Rekening varchar
+            pemilik_Rekening varchar,
+            id_prospek varchar
         );`
     )
 
     tx.executeSql(
         `create table if not exists Table_UK_KondisiRumah(
             nama_lengkap varchar,
+            nomor_Identitas varchar,
             luas_Bangunan varchar,
             kondisi_Bangunan varchar,
             jenis_Atap varchar,
             dinding varchar,
             lantai varchar,
             sanitasi_Akses_AirBersih varchar,
-            sanitasi_KamarMandi varchar
+            sanitasi_KamarMandi varchar,
+            id_prospek varchar
         );`
     )
 
     tx.executeSql(
         `create table if not exists Table_UK_SektorEkonomi(
             nama_lengkap varchar,
+            nomor_Identitas varchar,
             sektor_Ekonomi varchar,
             sub_Sektor_Ekonomi varchar,
-            jenis_Usaha varchar
+            jenis_Usaha varchar,
+            id_prospek varchar
         );`
     )
 
@@ -354,6 +360,7 @@ db.transaction(tx => {
     tx.executeSql(
         `create table if not exists Table_UK_PendapatanNasabah(
             nama_lengkap varchar,
+            nomor_Identitas varchar,
             pendapatan_Kotor_perhari varchar,
             pengeluaran_Keluarga_Perhari varchar,
             pendapatan_Bersih_Perhari varchar,
@@ -369,13 +376,15 @@ db.transaction(tx => {
             pendapatanSuami_Pendapatan_Bersih_Perhari varchar,
             pendapatanSuami_jumlah_Hari_Usaha_Perbulan varchar,
             pendapatanSuami_pendapatan_Bersih_Perbulan varchar,
-            pendapatanSuami_pendapatan_Bersih_Perminggu varchar
+            pendapatanSuami_pendapatan_Bersih_Perminggu varchar,
+            id_prospek varchar
         )`
     )
 
     tx.executeSql(
         `create table if not exists Table_UK_PermohonanPembiayaan(
             nama_lengkap varchar,
+            nomor_Identitas varchar,
             produk_Pembiayaan varchar,
             jumlah_Pembiayaan_Diajukan varchar,
             jangka_Waktu varchar,
@@ -388,7 +397,8 @@ db.transaction(tx => {
             nama_tanda_Tangan_Nasabah varchar,
             nama_tanda_Tangan_SuamiPenjamin varchar,
             nama_tanda_Tangan_Ketua_SubKelompok varchar,
-            nama_tanda_Tangan_Ketua_Kelompok varchar
+            nama_tanda_Tangan_Ketua_Kelompok varchar,
+            id_prospek varchar
         )`
     )
 

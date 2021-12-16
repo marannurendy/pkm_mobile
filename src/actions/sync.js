@@ -415,26 +415,26 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (uk_client_data.length > 0) {
             try {
                 var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek) values ';
-                var queryUKPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening) values ';
-                var queryUKKondisiRumah = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi) values ';
-                var queryUKSektorEkonomi = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha) values ';
-                var queryUKPendapatanNasabah = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu) values ';
-                var queryUKPermohonanPembiayaan = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok) values ';
+                var queryUKPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, nomor_Identitas, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, id_prospek) values ';
+                var queryUKKondisiRumah = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, nomor_Identitas, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, id_prospek) values ';
+                var queryUKSektorEkonomi = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, nomor_Identitas, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha, id_prospek) values ';
+                var queryUKPendapatanNasabah = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, nomor_Identitas, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu, id_prospek) values ';
+                var queryUKPermohonanPembiayaan = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, nomor_Identitas, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok, id_prospek) values ';
                 
                 for (let i = 0; i < uk_client_data.length; i++) {
                     let namaNasabah = uk_client_data[i].Nama_Lengkap || '';
 
-                    const key_dataPenjamin = `formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
-                    const key_dataSuami = `formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`;
-                    const key_kartuKeluarga = `formUK_kartuKeluarga_${namaNasabah.replace(/\s+/g, '')}`;
-                    const key_keteranganDomisili = `formUK_keteranganDomisili_${namaNasabah.replace(/\s+/g, '')}`;
-                    const key_kartuIdentitas = `formUK_kartuIdentitas_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_dataPenjamin = `formUK_dataPenjamin_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_dataSuami = `formUK_dataSuami_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_kartuKeluarga = `formUK_kartuKeluarga_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_keteranganDomisili = `formUK_keteranganDomisili_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_kartuIdentitas = `formUK_kartuIdentitas_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
 
-                    const key_tandaTanganAOSAO = `formUK_tandaTanganAOSAO_${namaNasabah.replace(/\s+/g, '')}`;
-                    const key_tandaTanganNasabah = `formUK_tandaTanganNasabah_${namaNasabah.replace(/\s+/g, '')}`;
-                    const key_tandaTanganSuamiPenjamin = `formUK_tandaTanganSuamiPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
-                    const key_tandaTanganKetuaSubKemlompok = `formUK_tandaTanganKetuaSubKemlompok_${namaNasabah.replace(/\s+/g, '')}`;
-                    const key_tandaTanganKetuaKelompok = `formUK_tandaTanganKetuaKelompok_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_tandaTanganAOSAO = `formUK_tandaTanganAOSAO_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_tandaTanganNasabah = `formUK_tandaTanganNasabah_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_tandaTanganSuamiPenjamin = `formUK_tandaTanganSuamiPenjamin_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_tandaTanganKetuaSubKemlompok = `formUK_tandaTanganKetuaSubKemlompok_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
+                    const key_tandaTanganKetuaKelompok = `formUK_tandaTanganKetuaKelompok_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
 
                     AsyncStorage.setItem(key_kartuIdentitas, 'data:image/jpeg;base64,' + uk_client_data[i].Foto_Kartu_Identitas);
                     AsyncStorage.setItem(key_dataSuami, 'data:image/jpeg;base64,' + uk_client_data[i].Foto_KTP_Suami);
@@ -444,6 +444,71 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     AsyncStorage.setItem(key_tandaTanganNasabah, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_Nasabah);
                     AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KSK);
                     AsyncStorage.setItem(key_tandaTanganKetuaKelompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KK);
+
+
+                    /* ============== START: HAPUS UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
+                    const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+                    const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+                    const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+                    const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+                    const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+                    const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeleteUKDataDiri} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeleteUKDataDiri} ERROR:`, error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeleteUKProdukPembiayaan, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} ERROR:`, error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeleteUKKondisiRumah, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} ERROR:`, error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeleteUKSektorEkonomi, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} ERROR:`, error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeleteUKPendapatanNasabah, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} ERROR:`, error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeleteUKPermohonanPembiayaan, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
+                        }, function() {}
+                    );
+                    /* ============== FINISH: HAPUS UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
+
 
                     queryUKDataDiri = queryUKDataDiri + "('"
                     + key_dataPenjamin
@@ -518,6 +583,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     queryUKPembiayaan = queryUKPembiayaan + "('"
                     + uk_client_data[i].Nama_Lengkap
                     + "','"
+                    + uk_client_data[i].Nomor_Identitas
+                    + "','"
                     + uk_client_data[i].Jenis_Pembiayaan
                     + "','"
                     + uk_client_data[i].Nama_Produk
@@ -543,10 +610,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + uk_client_data[i].No_Rekening
                     + "','"
                     + uk_client_data[i].Pemilik_Rekening
+                    + "','"
+                    + uk_client_data[i].ID_Prospek
                     + "')";
 
                     queryUKKondisiRumah = queryUKKondisiRumah + "('"
                     + uk_client_data[i].Nama_Lengkap
+                    + "','"
+                    + uk_client_data[i].Nomor_Identitas
                     + "','"
                     + uk_client_data[i].Luas_Bangunan
                     + "','"
@@ -561,20 +632,28 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + uk_client_data[i].Is_AdaAksesAirBersih
                     + "','"
                     + uk_client_data[i].Is_AdaAdaToiletPribadi
+                    + "','"
+                    + uk_client_data[i].ID_Prospek
                     + "')";
 
                     queryUKSektorEkonomi = queryUKSektorEkonomi + "('"
                     + uk_client_data[i].Nama_Lengkap
+                    + "','"
+                    + uk_client_data[i].Nomor_Identitas
                     + "','"
                     + uk_client_data[i].ID_SektorEkonomi
                     + "','"
                     + uk_client_data[i].ID_SubSektorEkonomi
                     + "','"
                     + uk_client_data[i].Jenis_Usaha
+                    + "','"
+                    + uk_client_data[i].ID_Prospek
                     + "')";
 
                     queryUKPendapatanNasabah = queryUKPendapatanNasabah + "('"
                     + uk_client_data[i].Nama_Lengkap
+                    + "','"
+                    + uk_client_data[i].Nomor_Identitas
                     + "','"
                     + uk_client_data[i].PendapatanKotor_perHari
                     + "','"
@@ -607,10 +686,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + uk_client_data[i].PendapatanBersih_perBulan_Suami
                     + "','"
                     + uk_client_data[i].PendapatanBersih_perMinggu_Suami
+                    + "','"
+                    + uk_client_data[i].ID_Prospek
                     + "')";
 
                     queryUKPermohonanPembiayaan = queryUKPermohonanPembiayaan + "('"
                     + uk_client_data[i].Nama_Lengkap
+                    + "','"
+                    + uk_client_data[i].Nomor_Identitas
                     + "','"
                     + uk_client_data[i].Produk_Pembiayaan
                     + "','"
@@ -637,6 +720,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + ""
                     + "','"
                     + ""
+                    + "','"
+                    + uk_client_data[i].ID_Prospek
                     + "')";
 
                     if (i != uk_client_data.length - 1) {

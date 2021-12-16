@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, ToastAndroid, Modal, KeyboardAvoidingView, TextInput, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, ToastAndroid, Modal, KeyboardAvoidingView, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -48,6 +48,10 @@ const VerifikasiFormReview = ({ route }) => {
     const doSave = (image = '', status = '') => {
         if (__DEV__) console.log('doSave loaded');
 
+        let message = 'Approve';
+        if (status === '2') message = 'Reject';
+        if (status === '3') message = 'Revisi';
+
         let query = 'UPDATE Table_UK_DataDiri SET sync_Verif = "1" WHERE id_prospek = "' + idProspek + '"';
         if (__DEV__) console.log('doSave db.transaction update query:', query);
 
@@ -69,7 +73,7 @@ const VerifikasiFormReview = ({ route }) => {
                 };
                 if (__DEV__) console.log('doSave body:', body);
 
-                ToastAndroid.show('Berhasil Approve', ToastAndroid.SHORT);
+                ToastAndroid.show('Berhasil ' + message, ToastAndroid.SHORT);
 
                 AsyncStorage.setItem(`formVerifikasi_body_${idProspek}`, JSON.stringify(body)).then(() => {
                     setTimeout(() => {
@@ -122,7 +126,21 @@ const VerifikasiFormReview = ({ route }) => {
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => {
-                    doSave('', '3');
+                    Alert.alert(
+                        "Revisi",
+                        "Apakah kamu yakin, akan melakukan revisi?",
+                        [
+                            {
+                                text: "Cancel",
+                                onPress: () => __DEV__ && console.log("cancel pressed"),
+                                style: "cancel"
+                            },
+                            { 
+                                text: "OK",
+                                onPress: () => doSave('', '3')
+                            }
+                        ]
+                    );
                 }}
                 style={[styles.F1, styles.ML16]}
             >
@@ -219,6 +237,7 @@ const VerifikasiFormReview = ({ route }) => {
                     style={styles.F1}
                 />
             </View>
+            <Text style={[styles.MH16, styles.MT16, { fontSize: 11 }]}>{`http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=${idProspek}`}</Text>
             {renderButton()}
         </View>
     )
