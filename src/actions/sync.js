@@ -301,119 +301,120 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_kelompok:', persetujuan_pembiayaan_kelompok.length);
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
         
-        if (sosialisai.length > 0) {
-            try {
-                var query = 'INSERT INTO Sosialisasi_Database (tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type) values ';
-                for (let i = 0; i < sosialisai.length; i++) {
-                    query = query + "('" + null + "','" + null + "','" + sosialisai[i].CalonNasabah + "','" + null + "','" + null + "','" + sosialisai[i].TanggalSos + "','" + sosialisai[i].Lokasi_Sos + "','" + null + "')";
-                    if (i != sosialisai.length - 1) query = query + ",";
-                }
-                query = query + ";";
-                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
+        // if (sosialisai.length > 0) {
+        //     try {
+        //         var query = 'INSERT INTO Sosialisasi_Database (tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type) values ';
+        //         for (let i = 0; i < sosialisai.length; i++) {
+        //             query = query + "('" + null + "','" + null + "','" + sosialisai[i].CalonNasabah + "','" + null + "','" + null + "','" + sosialisai[i].TanggalSos + "','" + sosialisai[i].Lokasi_Sos + "','" + null + "')";
+        //             if (i != sosialisai.length - 1) query = query + ",";
+        //         }
+        //         query = query + ";";
+        //         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
     
-                db.transaction(
-                    tx => { tx.executeSql(query); }, function(error) {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
-                    }, function() {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION DONE');
-                    }
-                );
+        //         db.transaction(
+        //             tx => { tx.executeSql(query); }, function(error) {
+        //                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
+        //             }, function() {
+        //                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION DONE');
+        //             }
+        //         );
 
-                if (__DEV__) {
-                    db.transaction(
-                        tx => {
-                            tx.executeSql("SELECT * FROM Sosialisasi_Database", [], (tx, results) => {
-                                if (__DEV__) console.log('SOSIALISASI MOBILE RESPONSE:', results.rows);
-                            })
-                        }, function(error) {
-                            if (__DEV__) console.log('SOSIALISASI MOBILE ERROR:', error);
-                        }, function() {}
-                    );
-                }
+        //         if (__DEV__) {
+        //             db.transaction(
+        //                 tx => {
+        //                     tx.executeSql("SELECT * FROM Sosialisasi_Database", [], (tx, results) => {
+        //                         if (__DEV__) console.log('SOSIALISASI MOBILE RESPONSE:', results.rows);
+        //                     })
+        //                 }, function(error) {
+        //                     if (__DEV__) console.log('SOSIALISASI MOBILE ERROR:', error);
+        //                 }, function() {}
+        //             );
+        //         }
 
-                return;
-            } catch (error) {
-                truncat(reject, 'SOSIALISASI MOBILE');
-                return;
-            }
-        }
+        //         return;
+        //     } catch (error) {
+        //         truncat(reject, 'SOSIALISASI MOBILE');
+        //         return;
+        //     }
+        // }
 
-        if (uk.length > 0) {
-            try {
-                var query = 'INSERT INTO Table_UK (date, lokasiSos) values ';
-                for (let i = 0; i < uk.length; i++) {
-                    query = query + "('" + uk[i].date + "','" + uk[i].lokasiSos + "')";
-                    if (i != uk.length - 1) query = query + ",";
-                }
-                query = query + ";";
-                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK INSERT QUERY:', query);
+        // if (uk.length > 0) {
+        //     try {
+        //         var query = 'INSERT INTO Table_UK (date, lokasiSos) values ';
+        //         for (let i = 0; i < uk.length; i++) {
+        //             query = query + "('" + uk[i].date + "','" + uk[i].lokasiSos + "')";
+        //             if (i != uk.length - 1) query = query + ",";
+        //         }
+        //         query = query + ";";
+        //         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK INSERT QUERY:', query);
     
-                db.transaction(
-                    tx => { tx.executeSql(query); }, function(error) {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK INSERT TRANSACTION ERROR:', error);
-                    }, function() {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK INSERT TRANSACTION DONE');
-                    }
-                );
+        //         db.transaction(
+        //             tx => { tx.executeSql(query); }, function(error) {
+        //                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK INSERT TRANSACTION ERROR:', error);
+        //             }, function() {
+        //                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK INSERT TRANSACTION DONE');
+        //             }
+        //         );
 
-                if (__DEV__) {
-                    db.transaction(
-                        tx => {
-                            tx.executeSql("SELECT * FROM Table_UK", [], (tx, results) => {
-                                if (__DEV__) console.log('SOSIALISASI MOBILE UK RESPONSE:', results.rows);
-                            })
-                        }, function(error) {
-                            if (__DEV__) console.log('SOSIALISASI MOBILE UK ERROR:', error);
-                        }, function() {}
-                    );
-                }
+        //         if (__DEV__) {
+        //             db.transaction(
+        //                 tx => {
+        //                     tx.executeSql("SELECT * FROM Table_UK", [], (tx, results) => {
+        //                         if (__DEV__) console.log('SOSIALISASI MOBILE UK RESPONSE:', results.rows);
+        //                     })
+        //                 }, function(error) {
+        //                     if (__DEV__) console.log('SOSIALISASI MOBILE UK ERROR:', error);
+        //                 }, function() {}
+        //             );
+        //         }
 
-                return;
-            } catch (error) {
-                truncat(reject, 'SOSIALISASI MOBILE UK');
-                return;
-            }
-        }
+        //         return;
+        //     } catch (error) {
+        //         truncat(reject, 'SOSIALISASI MOBILE UK');
+        //         return;
+        //     }
+        // }
 
-        if (uk_detail.length > 0) {
-            try {
-                var query = 'INSERT INTO Table_UK_Detail (date, lokasiSos, namaProspek) values ';
-                for (let i = 0; i < uk_detail.length; i++) {
-                    query = query + "('" + uk_detail[i].date + "','" + uk_detail[i].lokasiSos + "','" + uk_detail[i].namaProspek + "')";
-                    if (i != uk_detail.length - 1) query = query + ",";
-                }
-                query = query + ";";
-                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DETAIL INSERT QUERY:', query);
+        // if (uk_detail.length > 0) {
+        //     try {
+        //         var query = 'INSERT INTO Table_UK_Detail (date, lokasiSos, namaProspek) values ';
+        //         for (let i = 0; i < uk_detail.length; i++) {
+        //             query = query + "('" + uk_detail[i].date + "','" + uk_detail[i].lokasiSos + "','" + uk_detail[i].namaProspek + "')";
+        //             if (i != uk_detail.length - 1) query = query + ",";
+        //         }
+        //         query = query + ";";
+        //         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DETAIL INSERT QUERY:', query);
 
-                db.transaction(
-                    tx => { tx.executeSql(query); }, function(error) {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DETAIL INSERT TRANSACTION ERROR:', error);
-                    }, function() {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DETAIL INSERT TRANSACTION DONE');
-                    }
-                );
+        //         db.transaction(
+        //             tx => { tx.executeSql(query); }, function(error) {
+        //                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DETAIL INSERT TRANSACTION ERROR:', error);
+        //             }, function() {
+        //                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DETAIL INSERT TRANSACTION DONE');
+        //             }
+        //         );
 
-                if (__DEV__) {
-                    db.transaction(
-                        tx => {
-                            tx.executeSql("SELECT * FROM Table_UK_Detail", [], (tx, results) => {
-                                if (__DEV__) console.log('SOSIALISASI MOBILE UK DETAIL RESPONSE:', results.rows);
-                            })
-                        }, function(error) {
-                            if (__DEV__) console.log('SOSIALISASI MOBILE UK DETAIL ERROR:', error);
-                        }, function() {}
-                    );
-                }
+        //         if (__DEV__) {
+        //             db.transaction(
+        //                 tx => {
+        //                     tx.executeSql("SELECT * FROM Table_UK_Detail", [], (tx, results) => {
+        //                         if (__DEV__) console.log('SOSIALISASI MOBILE UK DETAIL RESPONSE:', results.rows);
+        //                     })
+        //                 }, function(error) {
+        //                     if (__DEV__) console.log('SOSIALISASI MOBILE UK DETAIL ERROR:', error);
+        //                 }, function() {}
+        //             );
+        //         }
 
-                return;
-            } catch (error) {
-                truncat(reject, 'SOSIALISASI MOBILE UK DETAIL');
-                return;
-            }
-        }
+        //         return;
+        //     } catch (error) {
+        //         truncat(reject, 'SOSIALISASI MOBILE UK DETAIL');
+        //         return;
+        //     }
+        // }
 
         if (uk_client_data.length > 0) {
             try {
+                var query = 'INSERT INTO Sosialisasi_Database (tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, verifikasiTanggal, verifikasiStatus, verifikasiReason) values ';
                 var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek) values ';
                 var queryUKPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, nomor_Identitas, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, id_prospek) values ';
                 var queryUKKondisiRumah = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, nomor_Identitas, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, id_prospek) values ';
@@ -445,14 +446,33 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KSK);
                     AsyncStorage.setItem(key_tandaTanganKetuaKelompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KK);
 
-
-                    /* ============== START: HAPUS UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
+                    /* ============== START: HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
+                    const queryDelete = "DELETE FROM Sosialisasi_Database WHERE namaCalonNasabah = '" + uk_client_data[i].Nama_Lengkap + "'";
+                    const queryDeleteUKMaster = "DELETE FROM Table_UK_Master WHERE namaNasabah = '" + uk_client_data[i].Nama_Lengkap + "'";
                     const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDelete, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDelete} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDelete} ERROR:`, error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeleteUKMaster, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeleteUKMaster} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeleteUKMaster} ERROR:`, error);
+                        }, function() {}
+                    );
                     db.transaction(
                         tx => {
                             tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
@@ -507,8 +527,31 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
                         }, function() {}
                     );
-                    /* ============== FINISH: HAPUS UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
-
+                    /* ============== FINISH: HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
+                    
+                    query = query + "('"
+                    + '2021-12-16' 
+                    + "','"
+                    + ""
+                    + "','"
+                    + uk_client_data[i].Nama_Lengkap
+                    + "','"
+                    + ""
+                    + "','"
+                    + ""
+                    + "','"
+                    + '2021-12-16' 
+                    + "','"
+                    + uk_client_data[i].Lokasi_Sos
+                    + "','"
+                    + ""
+                    + "','"
+                    + uk_client_data[i].Tanggal_Verif
+                    + "','"
+                    + uk_client_data[i].PostStatus
+                    + "','"
+                    + uk_client_data[i].Reason
+                    + "')";
 
                     queryUKDataDiri = queryUKDataDiri + "('"
                     + key_dataPenjamin
@@ -539,37 +582,37 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + uk_client_data[i].Nama_KelurahanDesa
                     + "','"
-                    + ""
+                    + key_kartuKeluarga
+                    + "','"
+                    + uk_client_data[i].No_KK
+                    + "','"
+                    + uk_client_data[i].Nama_Ayah
+                    + "','"
+                    + uk_client_data[i].No_Telp
+                    + "','"
+                    + uk_client_data[i].Jml_Anak
+                    + "','"
+                    + uk_client_data[i].Jml_Tanggungan
+                    + "','"
+                    + uk_client_data[i].StatusRumah
+                    + "','"
+                    + uk_client_data[i].Lama_Tinggal
+                    + "','"
+                    + uk_client_data[i].Nama_Suami
                     + "','"
                     + ""
                     + "','"
                     + ""
                     + "','"
-                    + ""
+                    + key_dataSuami
                     + "','"
                     + ""
                     + "','"
                     + ""
                     + "','"
-                    + ""
+                    + uk_client_data[i].Nama_Penjamin
                     + "','"
-                    + ""
-                    + "','"
-                    + ""
-                    + "','"
-                    + ""
-                    + "','"
-                    + ""
-                    + "','"
-                    + ""
-                    + "','"
-                    + ""
-                    + "','"
-                    + ""
-                    + "','"
-                    + ""
-                    + "','"
-                    + ""
+                    + key_dataPenjamin
                     + "','"
                     + uk_client_data[i].Is_Layak
                     + "','"
@@ -725,6 +768,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "')";
 
                     if (i != uk_client_data.length - 1) {
+                        query = query + ",";
                         queryUKDataDiri = queryUKDataDiri + ",";
                         queryUKPembiayaan = queryUKPembiayaan + ",";
                         queryUKKondisiRumah = queryUKKondisiRumah + ",";
@@ -734,6 +778,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     }
                 }
 
+                query = query + ";";
                 queryUKDataDiri = queryUKDataDiri + ";";
                 queryUKPembiayaan = queryUKPembiayaan + ";";
                 queryUKKondisiRumah = queryUKKondisiRumah + ";";
@@ -741,6 +786,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 queryUKPendapatanNasabah = queryUKPendapatanNasabah + ";";
                 queryUKPermohonanPembiayaan = queryUKPermohonanPembiayaan + ";";
 
+                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA DIRI INSERT QUERY:', queryUKDataDiri);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA PEMBIAYAAN INSERT QUERY:', queryUKPembiayaan);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK KONDISI RUMAH INSERT QUERY:', queryUKKondisiRumah);
@@ -748,6 +794,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK PENDAPATAN NASABAH INSERT QUERY:', queryUKPendapatanNasabah);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK PERMOHONAN PEMBIAYAAN INSERT QUERY:', queryUKPermohonanPembiayaan);
 
+                db.transaction(
+                    tx => { tx.executeSql(query); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
+                    }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION DONE');
+                    }
+                );
                 db.transaction(
                     tx => { tx.executeSql(queryUKDataDiri); }, function(error) {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA DIRI INSERT TRANSACTION ERROR:', error);
