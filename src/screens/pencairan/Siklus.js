@@ -104,7 +104,7 @@ const Siklus = () => {
     
     // Simpan Handler
     const submitHandler = () => {
-        navigation.replace("Pencairan")
+        navigation.navigate("FormFP4")
     }
 
     return(

@@ -71,7 +71,10 @@ import {
     FinalPencairan,
     Siklus,
     Perjanjian,
-    TandaTanganPencairan
+    TandaTanganPencairan,
+    SyncPencairan,
+    Preview,
+    FormFP4
 } from '../screens/pencairan/index'
 
 
@@ -672,6 +675,9 @@ export default function AppNavigator() {
                 <Stack.Screen name="Siklus" component={Siklus} options={{ headerShown: false }} />
                 <Stack.Screen name="Perjanjian" component={Perjanjian} options={{ headerShown: false }} />
                 <Stack.Screen name="TandaTanganPencairan" component={TandaTanganPencairan} options={{ headerShown: false }} />
+                <Stack.Screen name="SyncPencairan" component={SyncPencairan} options={{ headerShown: false }} />
+                <Stack.Screen name="Preview" component={Preview} options={{ headerShown: false }} />
+                <Stack.Screen name="FormFP4" component={FormFP4} options={{ headerShown: false }} />
 
           </Stack.Navigator>
       </NavigationContainer>

@@ -1,29 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, ActivityIndicator, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import ActionButton from 'react-native-action-button'
-import { scale, verticalScale } from 'react-native-size-matters'
-
+import { WebView } from 'react-native-webview';
 import db from '../../database/Database'
+import { Button } from 'react-native-elements';
 
-const MenuflowPencairan = () => {
-
+const Preview = ({route}) => {
+    const { idProspek } = route.params;
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
 
     let [branchId, setBranchId] = useState();
     let [branchName, setBranchName] = useState();
-    let [uname, setUname] = useState("");
+    let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
-    let [menuShow, setMenuShow] = useState(0);
-    let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [kelom, setKelom] = useState();
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
+        setKelom(route.params.groupName)
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -33,12 +31,10 @@ const MenuflowPencairan = () => {
                 setBranchName(data.namaCabang);
                 setUname(data.userName);
                 setAoName(data.AOname);
-                console.log(data)
             });
         }
 
         getUserData();
-        getSosialisasiDatabase();
 
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
@@ -76,27 +72,6 @@ const MenuflowPencairan = () => {
         // })
     }, []);
 
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
-
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
-        db.transaction(
-            tx => {
-                tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
-                    }
-                    setData(ah);
-                })
-            }
-        )
-    }
-
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
             <View
@@ -125,47 +100,38 @@ const MenuflowPencairan = () => {
             </View>
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Pencairan</Text>
-                
-                <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{groupName: "TOTO"})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
-                    </TouchableOpacity>
+                <View style={styles.bodyContainer}>
+                    <View style={styles.F1}>
+                        <WebView
+                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4` }}
+                            startInLoadingState={true}
+                            style={styles.F1}
+                        />
+                    </View>
                 </View>
-
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Preview', {idProspek : "90091228"})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.navigate('SyncPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
-                    </TouchableOpacity>
+                <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
+                    <Button
+                        title="OK"
+                        onPress={() => submitHandler()}
+                        buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
+                        titleStyle={{fontSize: 20, fontWeight: 'bold'}}
+                    />
                 </View>
-                {uname.includes("SY") ? 
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="upload" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Upload Nota Pembelian</Text>
-                    </TouchableOpacity>
-                </View>
-                :null}
             </View>
         </View>
     )
 }
 
-export default MenuflowPencairan
+export default Preview
 
 const styles = StyleSheet.create({
+    bodyContainer: {
+        flex: 1,
+        marginVertical: 16,
+        borderRadius: 16,
+        marginHorizontal: 16,
+        backgroundColor: 'white'
+    },
     button: {
         width: 60,
         height: 60,
@@ -184,5 +150,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         height: 22,
         color: 'white',
+    },
+    F1: {
+        flex: 1
     },
 })

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, ActivityIndicator, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, CheckBox, SafeAreaView, ActivityIndicator, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -37,6 +37,7 @@ const FinalPencairan = ({route}) => {
     const [signatureKetuaKel, setSignatureKetuaKel] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
     let [buttonCam, SetButtonCam] = useState(false);
+    const [isSelected, setSelection] = useState(false);
     let [fotoDataPencairan, setFotoDataPencairan] = useState();
     const [hasPermission, setHasPermission] = useState(null);
 
@@ -55,7 +56,7 @@ const FinalPencairan = ({route}) => {
         }
         
         getUserData();
-        getSosialisasiDatabase();
+        //getSosialisasiDatabase();
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
 
@@ -92,27 +93,7 @@ const FinalPencairan = ({route}) => {
         // })
         
     }, []);
-
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
-
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
-        db.transaction(
-            tx => {
-                tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
-                    }
-                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
-                })
-            }
-        )
-    }
+    
 
 
     const takePicture = async (type) => {
@@ -420,6 +401,15 @@ const FinalPencairan = ({route}) => {
                             </Card>
                         </View>
 
+                        <View style={{alignItems: 'center', flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                            <CheckBox
+                                value={isSelected}
+                                onValueChange={setSelection}
+                                style={styles.checkbox}
+                            />
+                            <Text style={styles.label}>Sudah Dicairkan</Text>
+                        </View>
+
                         <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                             <Button
                                 title="SIMPAN"
@@ -448,6 +438,13 @@ const styles = StyleSheet.create({
         shadowColor: '#003049',
         shadowOpacity: 0.3,
         shadowOffset: { height: 10 },
+    },
+    label: {
+        margin: 8,
+        fontSize:18
+      },
+    checkbox: {
+        alignSelf: "center",
     },
     menu: {
         backgroundColor: '#003049'

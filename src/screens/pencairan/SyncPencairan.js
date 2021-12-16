@@ -9,14 +9,14 @@ import { scale, verticalScale } from 'react-native-size-matters'
 
 import db from '../../database/Database'
 
-const MenuflowPencairan = () => {
+const SyncPencairan = () => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
 
     let [branchId, setBranchId] = useState();
     let [branchName, setBranchName] = useState();
-    let [uname, setUname] = useState("");
+    let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
@@ -33,7 +33,6 @@ const MenuflowPencairan = () => {
                 setBranchName(data.namaCabang);
                 setUname(data.userName);
                 setAoName(data.AOname);
-                console.log(data)
             });
         }
 
@@ -91,9 +90,49 @@ const MenuflowPencairan = () => {
                         let data = results.rows.item(a);
                         ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
                     }
-                    setData(ah);
+                    setData([{'groupName' :'Toto', 'totalnasabah': '10', 'date': '08-09-2021'}]);
                 })
             }
+        )
+    }
+
+    // LIST VIEW PENCAIRAN
+    const renderItemSos = ({ item }) => (
+        <ItemSos data={item} />  
+    )
+
+    const ItemSos = ({ data }) => (
+        <TouchableOpacity 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            onPress={() => navigation.navigate('FlowPencairan', {groupName: data.groupName})}
+        >
+            <View style={{alignItems: 'flex-start'}}>
+                <ListMessageSos groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
+            </View>
+        </TouchableOpacity>
+    )
+    const ListMessageSos = ({ groupName, date, totalNasabah }) => {
+        return(
+            <View style={{ flex: 1, margin: 20}}>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
+                <Text>{date}</Text>
+                <Text>Total Nasabah : {totalNasabah}</Text>
+            </View>
+        )
+    }
+    // END LIST VIEW PENCAIRAN
+
+    const _listEmptyComponent = () => {
+        return (
+            <View
+                style={
+                    {
+                        padding: 16
+                    }
+                }
+            >
+                <Text>Data kosong</Text>
+            </View>
         )
     }
 
@@ -125,45 +164,51 @@ const MenuflowPencairan = () => {
             </View>
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Pencairan</Text>
-                
-                <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{groupName: "TOTO"})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
-                    </TouchableOpacity>
+                <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Sync Data</Text>
+                    <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
+                        <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
+                        <TextInput 
+                            placeholder={"Cari Kelompok"} 
+                            style={
+                                {
+                                    flex: 1,
+                                    padding: 5,
+                                    borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20
+                                }
+                            }
+                            onChangeText={(text) => setKeyword(text)}
+                            value={keyword}
+                            returnKeyType="done"
+                            onSubmitEditing={() => getSosialisasiDatabase()}
+                        />
+                    </View>
                 </View>
 
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Preview', {idProspek : "90091228"})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.navigate('SyncPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
-                    </TouchableOpacity>
-                </View>
-                {uname.includes("SY") ? 
-                <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                    <TouchableOpacity style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                        <FontAwesome5 name="upload" size={50} color="#FFFCFA" />
-                        <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Upload Nota Pembelian</Text>
-                    </TouchableOpacity>
-                </View>
-                :null}
+                <SafeAreaView style={{flex: 1}}>
+                    <View style={{ justifyContent:  'space-between'}}>
+                        <FlatList
+                            // contentContainerStyle={styles.listStyle}
+                            // refreshing={refreshing}
+                            // onRefresh={() => _onRefresh()}
+                            data={data}
+                            keyExtractor={(item, index) => index.toString()}
+                            enabledGestureInteraction={true}
+                            // onEndReachedThreshold={0.1}
+                            // onEndReached={() => handleEndReach()}
+                            renderItem={renderItemSos}
+                            // style={{height: '88.6%'}}
+                            //ListEmptyComponent={_listEmptyComponent}
+                        /> 
+                    </View>
+                </SafeAreaView>
             </View>
         </View>
     )
 }
 
-export default MenuflowPencairan
+export default SyncPencairan
 
 const styles = StyleSheet.create({
     button: {
