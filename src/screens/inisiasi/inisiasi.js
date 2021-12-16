@@ -27,6 +27,12 @@ const Inisasi = () => {
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getUserData();
+            getSosialisasiDatabase();
+            getUKDataDiriVerifikasi();
+        });
+
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -38,14 +44,9 @@ const Inisasi = () => {
                 setAoName(data.AOname);
             });
         }
-
-        getUserData();
-        getSosialisasiDatabase();
-        getUKDataDiriVerifikasi();
-
+        
         const onLoadCheck = async () => {
             const roleUser = await AsyncStorage.getItem('roleUser')
-            
             if(roleUser === 'KC'){
                 setRoleCheck(1)
             }else if(roleUser === 'SAO'){
@@ -56,44 +57,10 @@ const Inisasi = () => {
         }
         
         onLoadCheck()
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
-
         hasLocationPermission();
-    }, []);
+
+        return unsubscribe;
+    }, [navigation]);
 
     const hasLocationPermission = async () => {
         try {
@@ -135,7 +102,8 @@ const Inisasi = () => {
         if (__DEV__) console.log('getUKDataDiri loaded');
         if (__DEV__) console.log('getUKDataDiri keyword', keyword);
 
-        let query = 'SELECT kelurahan, COUNT(kelurahan) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND kelurahan LIKE "%'+ keyword +'%" AND (sync_Verif != "2" OR sync_Verif IS NULL) GROUP BY kelurahan';
+        // let query = 'SELECT alamat_Domisili, COUNT(alamat_Domisili) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass != "1" AND alamat_Domisili LIKE "%'+ keyword +'%" AND (sync_Verif != "2" OR sync_Verif IS NULL) GROUP BY alamat_Domisili';
+        let query = 'SELECT alamat_Domisili, COUNT(alamat_Domisili) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND alamat_Domisili LIKE "%'+ keyword +'%" GROUP BY alamat_Domisili';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -144,7 +112,7 @@ const Inisasi = () => {
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'groupName' : data.kelurahan, 'totalnasabah': data.jumlah, 'date': '08-09-2021'});
+                        ah.push({'groupName' : data.alamat_Domisili, 'totalnasabah': data.jumlah, 'date': '08-09-2021'});
                     }
                     setDataVerifikasi(ah);
                 })

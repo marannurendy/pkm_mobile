@@ -30,7 +30,8 @@ const Verifikasi = ({ route }) => {
         if (__DEV__) console.log('getDataDiri loaded');
         if (__DEV__) console.log('getDataDiri keyword:', keyword);
 
-        let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND kelurahan = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%" AND (sync_Verif != "2" OR sync_Verif IS NULL)';
+        // let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass != "1" AND alamat_Domisili = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%" AND (sync_Verif != "2" OR sync_Verif IS NULL)';
+        let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND alamat_Domisili = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -40,7 +41,7 @@ const Verifikasi = ({ route }) => {
                     var ah = [];
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({ "namaNasabah": data.nama_lengkap, "nomorHandphone": data.no_tlp_nasabah, "status": data.status_Verif, "groupName": data.kelurahan, "idProspek": data.id_prospek, "syncVerif": data.sync_Verif });
+                        ah.push({ "namaNasabah": data.nama_lengkap, "nomorHandphone": data.no_tlp_nasabah, "status": data.status_Verif, "groupName": data.alamat_Domisili, "idProspek": data.id_prospek, "syncVerif": data.sync_Verif });
                     }
                     setData(ah)
                 })
@@ -73,7 +74,7 @@ const Verifikasi = ({ route }) => {
                             .then((responseJSON) => {
                                 if (__DEV__) console.error('$post /post_inisiasi/post_verif_status response', responseJSON);
 
-                                let query = 'UPDATE Table_UK_DataDiri SET sync_Verif = "2", status_Verifikasi_Pass = "1" WHERE id_prospek = "' + item.idProspek + '"';
+                                let query = 'UPDATE Table_UK_DataDiri SET status_Verifikasi_Pass = "1" WHERE id_prospek = "' + item.idProspek + '"';
                                 if (__DEV__) console.log('doSave db.transaction update query:', query);
 
                                 db.transaction(
@@ -88,7 +89,7 @@ const Verifikasi = ({ route }) => {
                                 );
                             })
                             .catch((error) => {
-                                console.error('$post /post_inisiasi/post_verif_status response', error);
+                                console.log('$post /post_inisiasi/post_verif_status response', error);
                                 ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
                             });
                             return true;

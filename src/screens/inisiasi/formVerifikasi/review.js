@@ -219,6 +219,7 @@ const VerifikasiFormReview = ({ route }) => {
                     style={styles.F1}
                 />
             </View>
+            <Text style={[styles.MH16, styles.MT16, { fontSize: 11 }]}>{`http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=${idProspek}`}</Text>
             {renderButton()}
         </View>
     )
