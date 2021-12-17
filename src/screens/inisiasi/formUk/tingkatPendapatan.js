@@ -43,6 +43,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const [valuePendapatanBersihPermingguSuami, setValuePendapatanBersihPermingguSuami] = useState('0');
     const [valuePembiayaanDariLembaga, setValuePembiayaanDariLembaga] = useState('1');
     const [submmitted, setSubmmitted] = useState(false);
+    const [valueJumlahTanggungan, setValueJumlahTanggungan] = useState(0);
     const [dataPembiayaanLain, setDataPembiayaanLain] = useState([]);
 
     useEffect(() => {
@@ -67,6 +68,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     if (dataLength > 0) {
                         
                         let data = results.rows.item(0);
+                        setValueJumlahTanggungan(parseInt(data.jumlah_tanggungan))
                         if (__DEV__) console.log('tx.executeSql data:', data);
                     }
                 }, function(error) {
@@ -536,7 +538,10 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         <View style={styles.MT8}>
             <Text>Pendapatan Perkapita</Text>
             <View style={styles.F1}>
-                <Text style={[styles.P4, { color: 'gray' }]}>{formatter((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1) || 0) + ((((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0)) / 3)}</Text>
+                <Text style={[styles.P4, { color: 'gray', paddingLeft: 0, fontSize: 18 }]}>{formatter((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 0) || 0) + ((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 0) | 0)) / valueJumlahTanggungan)}</Text>
+                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Istri : {(parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 0)}</Text>
+                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Suami : {(parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 0)}</Text>
+                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Jumlang Tanggungan : {valueJumlahTanggungan}</Text>
             </View>
         </View>
     )
