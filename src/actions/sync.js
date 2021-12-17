@@ -417,7 +417,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
             try {
                 var sosialisasiDatabaseCount = 0;
                 var query = 'INSERT INTO Sosialisasi_Database (tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, verifikasiTanggal, verifikasiStatus, verifikasiReason) values ';
-                var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, agama, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek, is_pernyataan_dibaca) values ';
+                var queryUKMaster = 'INSERT INTO Table_UK_Master (namaNasabah, status) values ';
+                var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, longitude, latitude, agama, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek, is_pernyataan_dibaca) values ';
                 var queryUKPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, nomor_Identitas, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, id_prospek) values ';
                 var queryUKKondisiRumah = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, nomor_Identitas, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, id_prospek) values ';
                 var queryUKSektorEkonomi = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, nomor_Identitas, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha, id_prospek) values ';
@@ -549,9 +550,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     );
                     /* ============== FINISH HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
                     
-                    if (["3", 3].includes(uk_client_data[i].PostStatus)) {
+                    if ([3].includes(uk_client_data[i].PostStatus)) {
                         query = query + "('"
-                        + moment(uk_client_data[i].Tanggal_Sos).format('YYYY-MM-DD')
+                        + moment(uk_client_data[i].Tanggal_Input).format('YYYY-MM-DD')
                         + "','"
                         + ""
                         + "','"
@@ -572,6 +573,12 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         + uk_client_data[i].PostStatus
                         + "','"
                         + uk_client_data[i].Reason
+                        + "')";
+
+                        queryUKMaster = queryUKMaster + "('"
+                        + uk_client_data[i].Nama_Lengkap
+                        + "','"
+                        + "6"
                         + "')";
 
                         sosialisasiDatabaseCount += 1;
@@ -639,6 +646,10 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + uk_client_data[i].Nama_Penjamin
                     + "','"
                     + key_dataPenjamin
+                    + "','"
+                    + uk_client_data[i].Longitude
+                    + "','"
+                    + uk_client_data[i].Latitude
                     + "','"
                     + uk_client_data[i].ID_Agama
                     + "','"
@@ -798,8 +809,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "')";
 
                     if (i != uk_client_data.length - 1) {
-                        if (["3", 3].includes(uk_client_data[i].PostStatus)) {
+                        if ([3].includes(uk_client_data[i].PostStatus)) {
                             query = query + ",";
+                            queryUKMaster = queryUKMaster + ",";
                         }
                         
                         queryUKDataDiri = queryUKDataDiri + ",";
@@ -812,6 +824,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 }
 
                 query = query + ";";
+                queryUKMaster = queryUKMaster + ";";
                 queryUKDataDiri = queryUKDataDiri + ";";
                 queryUKPembiayaan = queryUKPembiayaan + ";";
                 queryUKKondisiRumah = queryUKKondisiRumah + ";";
@@ -821,6 +834,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE COUNT:', sosialisasiDatabaseCount);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
+                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT UK MASTER QUERY:', queryUKMaster);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA DIRI INSERT QUERY:', queryUKDataDiri);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA PEMBIAYAAN INSERT QUERY:', queryUKPembiayaan);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK KONDISI RUMAH INSERT QUERY:', queryUKKondisiRumah);
@@ -834,6 +848,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
                         }, function() {
                             if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION DONE');
+                        }
+                    );
+                    db.transaction(
+                        tx => { tx.executeSql(queryUKMaster); }, function(error) {
+                            if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK MASTER INSERT TRANSACTION ERROR:', error);
+                        }, function() {
+                            if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK MASTER INSERT TRANSACTION DONE');
                         }
                     );
                 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator, ToastAndroid, Alert } from 'react-native'
+import { View, Text, ImageBackground, TouchableOpacity, Dimensions, StyleSheet, SafeAreaView, FlatList, TextInput, ActivityIndicator, ToastAndroid, Alert, ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -81,7 +81,7 @@ const Verifikasi = ({ route }) => {
                                         const body = await AsyncStorage.getItem(`formVerifikasi_body_${item.idProspek}`);
                                         if (__DEV__) console.log('doSync nestedPromise:', body);
 
-                                        if (body) {
+                                        if (item.syncVerif === '1' && body) {
                                             return fetch(ApiSyncPostInisiasi + 'post_verif_status', {
                                                 method: 'POST',
                                                 headers: {
@@ -180,9 +180,11 @@ const Verifikasi = ({ route }) => {
                                                 //     }
                                                 // );
                                                 /* FINISH UPDATE STATUS VERIFIKASI PASS */
+
                                             })
                                             .catch((error) => {
-                                                console.log('$post /post_inisiasi/post_verif_status response', error);
+                                                if (__DEV__) console.log('$post /post_inisiasi/post_verif_status response', error);
+
                                                 ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
                                             });
                                         }
@@ -190,14 +192,17 @@ const Verifikasi = ({ route }) => {
                                 )
                             }
                 
-                            nestedPromise(data).then(results => {
+                            nestedPromise(data).then(response => {
+                                if (__DEV__) console.log('nestedPromise response', response);
+
                                 ToastAndroid.show(`Sync selesai`, ToastAndroid.SHORT);
                                 setSubmitted(false);
                                 setTimeout(() => {
                                     getDataDiri();
                                 }, 600);
                             });
-                            return;
+
+                            return 'ASYNC VERIFIKASI DONE';
                         }
                     }
                 ]
@@ -276,16 +281,6 @@ const Verifikasi = ({ route }) => {
             <View style={styles.containerProspek}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={[styles.textProspek, { flex: 1 }]}>Daftar Prospek</Text>
-                    <TouchableOpacity
-                        onPress={() => doSync()}
-                        style={{ marginRight: 16 }}
-                    >
-                        <View
-                            style={{ backgroundColor: '#3CB371', padding: 8, borderRadius: 8 }}
-                        >
-                            <Text style={{ color: 'white' }}>(Sync{submitted && '...'})</Text>
-                        </View>
-                    </TouchableOpacity>
                 </View>
                 <View style={styles.containerSearch}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
@@ -305,22 +300,36 @@ const Verifikasi = ({ route }) => {
                     />
                 </View>
                 <SafeAreaView style={{flex: 1}}>
-                    {data === undefined ? (
-                        <View style={styles.loading}>
-                            <ActivityIndicator size="large" color="#00ff00" />
+                    {data.length === 0 ? (
+                        <View style={{ padding: 16 }}>
+                            {/* <ActivityIndicator size="large" color="#00ff00" /> */}
+                            <Text>Data kosong</Text>
                         </View>
                     ) : (
-                        <View style={styles.containerMain}>
-                            <FlatList
-                                data={data}
-                                keyExtractor={(item, index) => index.toString()}
-                                enabledGestureInteraction={true}
-                                renderItem={renderItem}
-                                ListEmptyComponent={empty}
-                            />
-                        </View>
+                        <ScrollView>
+                            <View style={styles.containerMain}>
+                                <FlatList
+                                    data={data}
+                                    keyExtractor={(item, index) => index.toString()}
+                                    enabledGestureInteraction={true}
+                                    renderItem={renderItem}
+                                    ListEmptyComponent={empty}
+                                />
+                            </View>
+                        </ScrollView>
                     )}
-                    
+                    {data.length > 0 && (
+                        <TouchableOpacity
+                            onPress={() => doSync()}
+                            style={{ margin: 16 }}
+                        >
+                            <View
+                                style={{ backgroundColor: submitted ? 'gray' : '#3CB371', padding: 16, borderRadius: 8 }}
+                            >
+                                <Text style={{ color: 'white', textAlign: 'center' }}>{submitted ? 'LOADING...' : 'TEKAN UNTUK SYNC'}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
                 </SafeAreaView>
             </View>
         </View>
