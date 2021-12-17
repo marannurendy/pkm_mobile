@@ -124,6 +124,7 @@ const DataDiri = ({route}) => {
     
     /* START DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
     const dataPilihan = [
+        {label: '0', value: '0'},
         {label: '1', value: '1'},
         {label: '2', value: '2'},
         {label: '3', value: '3'},
@@ -1356,20 +1357,16 @@ const DataDiri = ({route}) => {
 
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas (*)</Text>
-                            <DropDownPicker
-                                open={openJenisKartuIdentitas}
-                                value={valueJenisKartuIdentitas}
-                                items={itemsJenisKartuIdentitas}
-                                setOpen={setOpenJenisKartuIdentitas}
-                                setValue={setValueJenisKartuIdentitas}
-                                setItems={setItemsJenisKartuIdentitas}
-                                placeholder='Pilih Jenis Kartu Identitas'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                onChangeValue={() => JenisKartuIdentitas(valueJenisKartuIdentitas)}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueJenisKartuIdentitas}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueJenisKartuIdentitas(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsJenisKartuIdentitas.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1453,20 +1450,16 @@ const DataDiri = ({route}) => {
 
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Perkawinan (*)</Text>
-                            <DropDownPicker
-                                open={openStatusPerkawinan}
-                                value={valueStatusPerkawinan}
-                                items={itemsStatusPerkawinan}
-                                setOpen={setOpenStatusPerkawinan}
-                                setValue={setValueStatusPerkawinan}
-                                setItems={setItemsStatusPerkawinan}
-                                placeholder='Pilih Status Perkawinan'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                onChangeValue={() => MarriageStatus(valueStatusPerkawinan)}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueStatusPerkawinan}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueStatusPerkawinan(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsStatusPerkawinan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
                         <View style={{margin: 20, marginBottom: 4}}>
@@ -1713,59 +1706,44 @@ const DataDiri = ({route}) => {
 
                         <View style={{marginHorizontal: 20, marginBottom: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Anak (*)</Text>
-                            <DropDownPicker
-                                open={openJumlahAnak}
-                                value={valueJumlahAnak}
-                                items={itemsJumlahAnak}
-                                setOpen={setOpenJumlahAnak}
-                                setValue={setValueJumlahAnak}
-                                setItems={setItemsJumlahAnak}
-                                placeholder='Pilih Jumlah Anak'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                zIndex={6000}
-                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueJumlahAnak}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueJumlahAnak(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsJumlahAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
                         <View style={{marginHorizontal: 20, marginBottom: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tanggungan (*)</Text>
-                            <DropDownPicker
-                                open={openJumlahTanggungan}
-                                value={valueJumlahTanggungan}
-                                items={itemsJumlahTanggungan}
-                                setOpen={setOpenJumlahTanggungan}
-                                setValue={setValueJumlahTanggungan}
-                                setItems={setItemsJumlahTanggungan}
-                                placeholder='Pilih Jumlah Tanggungan'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                zIndex={5000}
-                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueJumlahTanggungan}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueJumlahTanggungan(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsJumlahTanggungan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
                         <View style={{marginHorizontal: 20, marginBottom: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Rumah Tinggal (*)</Text>
-                            <DropDownPicker
-                                open={openStatusRumahTinggal}
-                                value={valueStatusRumahTinggal}
-                                items={itemsStatusRumahTinggal}
-                                setOpen={setOpenStatusRumahTinggal}
-                                setValue={setValueStatusRumahTinggal}
-                                setItems={setItemsStatusRumahTinggal}
-                                placeholder='Pilih Rumah Tinggal'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                zIndex={4000}
-                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueStatusRumahTinggal}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueStatusRumahTinggal(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsStatusRumahTinggal.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
                         <View style={{margin: 20}}>
