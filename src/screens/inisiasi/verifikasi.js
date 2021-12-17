@@ -31,8 +31,8 @@ const Verifikasi = ({ route }) => {
         if (__DEV__) console.log('getDataDiri loaded');
         if (__DEV__) console.log('getDataDiri keyword:', keyword);
 
-        let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND alamat_Domisili = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
-        // let query = 'SELECT * FROM Table_UK_DataDiri WHERE alamat_Domisili = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
+        let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND lokasi_sosialisasi = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
+        // let query = 'SELECT * FROM Table_UK_DataDiri WHERE lokasi_sosialisasi = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -42,7 +42,7 @@ const Verifikasi = ({ route }) => {
                     var ah = [];
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({ "namaNasabah": data.nama_lengkap, "nomorHandphone": data.no_tlp_nasabah, "status": data.status_Verif, "groupName": data.alamat_Domisili, "idProspek": data.id_prospek, "syncVerif": data.sync_Verif });
+                        ah.push({ "namaNasabah": data.nama_lengkap, "nomorHandphone": data.no_tlp_nasabah, "status": data.status_Verif, "groupName": data.lokasi_sosialisasi, "idProspek": data.id_prospek, "syncVerif": data.sync_Verif });
                     }
                     setData(ah)
                 })

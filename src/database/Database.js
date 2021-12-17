@@ -306,7 +306,8 @@ db.transaction(tx => {
             status_Verifikasi_Pass varchar,
             sync_Verif varchar,
             id_prospek varchar,
-            is_pernyataan_dibaca varchar
+            is_pernyataan_dibaca varchar,
+            lokasi_sosialisasi varchar
         );`
     )
 

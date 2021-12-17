@@ -102,8 +102,8 @@ const Inisasi = () => {
         if (__DEV__) console.log('getUKDataDiri loaded');
         if (__DEV__) console.log('getUKDataDiri keyword', keyword);
 
-        let query = 'SELECT alamat_Domisili, COUNT(alamat_Domisili) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND alamat_Domisili LIKE "%'+ keyword +'%" GROUP BY alamat_Domisili';
-        // let query = 'SELECT alamat_Domisili, COUNT(alamat_Domisili) as jumlah FROM Table_UK_DataDiri WHERE alamat_Domisili LIKE "%'+ keyword +'%" GROUP BY alamat_Domisili';
+        let query = 'SELECT lokasi_sosialisasi, COUNT(lokasi_sosialisasi) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND lokasi_sosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasi_sosialisasi';
+        // let query = 'SELECT lokasi_sosialisasi, COUNT(lokasi_sosialisasi) as jumlah FROM Table_UK_DataDiri WHERE lokasi_sosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasi_sosialisasi';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -112,7 +112,7 @@ const Inisasi = () => {
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'groupName' : data.alamat_Domisili, 'totalnasabah': data.jumlah, 'date': '08-09-2021'});
+                        ah.push({'groupName' : data.lokasi_sosialisasi, 'totalnasabah': data.jumlah, 'date': '08-09-2021'});
                     }
                     setDataVerifikasi(ah);
                 })
