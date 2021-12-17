@@ -27,6 +27,7 @@ const AkadWakalah = ({route}) => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [akadmenu, setakadmenu] = useState(0);
     let [dataNasabah, setDataNasabah] = useState();
     const [keyword, setKeyword] = useState('');
     const [modalVisibleAO, setModalVisibleAO] = useState(false);
@@ -110,7 +111,7 @@ const AkadWakalah = ({route}) => {
     
     // Simpan Handler
     const submitHandler = () => {
-        navigation.navigate("AkadMurabahah", {data: dataNasabah})
+        navigation.navigate("FinalPencairan", {data: dataNasabah})
     }
 
     function ModalSignAO(text, onOK){
@@ -248,7 +249,7 @@ const AkadWakalah = ({route}) => {
                     </ImageBackground>
                 </View>
             </View>
-
+            {akadmenu == 0 ?(
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <SafeAreaView style={{flex: 1}}>
                     <ScrollView>
@@ -312,6 +313,106 @@ const AkadWakalah = ({route}) => {
                             <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                                 <Button
                                     title="SIMPAN"
+                                    onPress={() => setakadmenu(1)}
+                                    buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
+                                    titleStyle={{fontSize: 20, fontWeight: 'bold'}}
+                                />
+                            </View>
+                        </View>
+                    </ScrollView>
+                </SafeAreaView>
+            </View>
+            ) : (
+                <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
+                <SafeAreaView style={{flex: 1}}>
+                    <ScrollView>
+                        <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
+                            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Akad Murabahah </Text>
+                            <Image style={{width: '100%', height: 75, resizeMode : 'contain', marginBottom: 10 }} 
+                            source={bismillah}/>
+                            <Text style={{fontSize: 14}}>Akad Murabahah ini dibuat dan ditandatangani di {<Text style={{fontSize: 14, color:"#0645AD"}}>Jakarta </Text>} 
+                            pada tanggal {<Text style={{fontSize: 14, color:"#0645AD"}}>14 Juni 2021</Text>}  oleh dan antara:{"\n"}{"\n"}
+                            1. PT. Permodalan Nasional Madani, berkedudukan 
+                            dan berkantor pusat di Jakarta, dalam hal ini diwakili oleh 
+                            Istiqomah selaku Kepala Cabang/SAO Mekaar, selanjutnya 
+                            disebut PNM.{"\n"}{"\n"}
+                            2. Sri Rahayu bertempat Tinggal di JL. Mamalia Raya Gang
+                            Kelinci No. 4, RT 04 RW 10, KTP No. 3674000100020003,
+                            selanjutnya disebut Nasabah.{"\n"}{"\n"}
+                            Nasabah dengan perseyujuan penjamin, yaitu Ahmad Sanusi, 
+                            sebagaimana dalam permohonan pembiayaan, telah 
+                            menerima fasilitas pembiayaan Murabahah dari PNM 
+                            dengan ketentuan sebagai berikut:{"\n"}
+                            a. Harga Beli Barang                : 3.000.000 {"\n"}
+                            b. Margin                                   : 250.000 {"\n"}
+                            c. Harga Jual Barang               : 3.250.000 {"\n"}
+                            d. Jangka Waktu                      : 25 Minggu {"\n"}
+                            e. Angsuran per Minggu          : 150.000 {"\n"}{"\n"}
+
+                            Kewajiban Nasabah{"\n"}
+                            a. Hadir tepat waktu dalam pertemuan Kelompok{"\n"}
+                            b. Membayar angsuran Mingguan sesuai kewajiban{"\n"}
+                            c. Menggunakan pembiayaan ini untuk Modal Usaha{"\n"}
+                            d. Hasil usaha untuk kesejahteraan bangsa{"\n"}
+                            e. Bertanggung jawab bersama, bila ada nasabah dalam
+                                kelompok yang tidak memenuhi kewajiban{"\n"}
+                            f. Mematuhi, menerima semua keputusan/peraturan yang
+                            berlaku di PNM{"\n"}
+                            g. Menyetujui penggunaan Dana Titipan dan/atau Uang
+                                Pertanggungjawaban oleh PNM sebagai pelunasan
+                                apabila timbul tunggakan pinjaman.{"\n"}
+                            h. Menyetujui pengelolaan uang titipan sukarela dan/atau
+                                Uang Pertanggungjawaban dalam jangka waktu tertentu
+                                dilakukan oleh PNM apabila karena sebab apapun,
+                                nasabah/ahli waris nasabah tidak dapat ditemui/menolak
+                                pengembalian.{"\n"}
+                            i. Menyetujui segala konsekuensi biaya yang timbul terkait
+                            dengan pengelolaan uang titipan sukarela dan/atau Uang
+                            Pertanggungjawaban sebagai dimaksud pada huruf h.{"\n"}{"\n"}
+                            Kewajiban PNM{"\n"}
+                            a. Memberikan pembiayaan Modal Usaha{"\n"}
+                            b. Mengembalikan Dana Titipan dan Uang
+                                Pertanggungjawaban setelah melunasi pinjaman{"\n"}
+                            c. Menginformasikan sisa Dana Titipan dan Uang
+                            Pertanggungjawaban setelah dikurangi tunggakan
+                            pinjaman yang timbul.{"\n"}{"\n"}
+                            
+                            Setiap perselisihan akan diselesaikan secara musyawarah
+                            mufakat dan para pihak sepakat memilih domisili hokum
+                            dan kantor panitera Pengadilan Negeri di seluruh wilayah
+                            Hukum Negara Indonesia. Perjanjian ini telah disesuaikan
+                            dengan ketentuan peraturan perundang-undangan termasuk
+                            peraturan Otoritas Jasa Keuangan.</Text>
+                            <Card>
+                                <Card.Divider />
+                                <View style={{marginBottom: 10}}>
+                                    <Text style={{ fontWeight: 'bold' }}>Tanda Tangan Nasabah(*)</Text>
+                                    <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
+                                        <Button 
+                                            icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
+                                            title= {signatureNasabah === undefined ? "Add Signature" : "Change Signature" }  
+                                            buttonStyle= {{margin: 10, backgroundColor: signatureNasabah === undefined ? '#2196F3' : '#ff6347'}}
+                                            onPress={() => setModalVisibleNasabah(!modalVisibleNasabah)}
+                                        />
+                                        <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
+                                    </View>
+                                </View>
+                                <View style={{marginBottom: 10}}>
+                                    <Text style={{ fontWeight: 'bold' }}>Tanda Tangan KC/SAO(*)</Text>
+                                    <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
+                                        <Button 
+                                            icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
+                                            title= {signatureAO === undefined ? "Add Signature" : "Change Signature" }  
+                                            buttonStyle= {{margin: 10, backgroundColor: signatureAO === undefined ? '#2196F3' : '#ff6347'}}
+                                            onPress={() => setModalVisibleAO(!modalVisibleAO)}
+                                        />
+                                        <Card.Image source={{uri: signatureAO}} style={{margin: 10}} />
+                                    </View>
+                                </View>
+                            </Card>
+                            <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
+                                <Button
+                                    title="SIMPAN"
                                     onPress={() => submitHandler()}
                                     buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                                     titleStyle={{fontSize: 20, fontWeight: 'bold'}}
@@ -321,6 +422,8 @@ const AkadWakalah = ({route}) => {
                     </ScrollView>
                 </SafeAreaView>
             </View>
+            )}
+            
         </View>
     )
 }

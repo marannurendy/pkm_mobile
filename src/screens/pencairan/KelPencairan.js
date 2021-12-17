@@ -37,16 +37,7 @@ const KelPencairan = () => {
         }
 
         getUserData();
-        getSosialisasiDatabase();
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
+        getKelompokPencairan();
 
         // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
         // db.transaction(
@@ -75,22 +66,22 @@ const KelPencairan = () => {
         // })
     }, []);
 
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
+    const getKelompokPencairan = () => {
+        if (__DEV__) console.log('getKelompokPencairan loaded');
+        if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
 
         let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
+                    if (__DEV__) console.log('getKelompokPencairan results:', results.rows);
                     let dataLength = results.rows.length
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
                         ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
                     }
-                    setData([{'groupName' :'TOTO', 'totalnasabah': '10', 'date': '08-09-2021'}]);
+                    setData([{'groupName' :'Toto', 'totalnasabah': '10', 'date': '08-09-2021'}]);
                 })
             }
         )
@@ -107,16 +98,16 @@ const KelPencairan = () => {
             onPress={() => navigation.navigate('FlowPencairan', {groupName: data.groupName})}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessageSos groupName={data.groupName} date={data.date} totalNasabah={data.totalNasabah} />
+                <ListMessageSos groupName={data.groupName} date={data.date} totalnasabah={data.totalnasabah} />
             </View>
         </TouchableOpacity>
     )
-    const ListMessageSos = ({ groupName, date, totalNasabah }) => {
+    const ListMessageSos = ({ groupName, date, totalnasabah }) => {
         return(
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
-                <Text>Total Nasabah : {totalNasabah}</Text>
+                <Text>Total Nasabah : {totalnasabah}</Text>
             </View>
         )
     }

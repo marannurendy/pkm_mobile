@@ -39,7 +39,7 @@ const ListPencairan = ({route}) => {
         }
 
         getUserData();
-        getSosialisasiDatabase();
+        getPencairanDatabase();
 
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
@@ -77,7 +77,7 @@ const ListPencairan = ({route}) => {
         // })
     }, []);
 
-    const getSosialisasiDatabase = () => {
+    const getPencairanDatabase = () => {
         if (__DEV__) console.log('getSosialisasiDatabase loaded');
         if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
 
@@ -150,7 +150,7 @@ const ListPencairan = ({route}) => {
                 <View style={{height: dimension.height/4, marginHorizontal: 10, borderRadius: 20, marginTop: 30, flex: 1}}>
                     <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover"}} imageStyle={{borderRadius: 20}}>
 
-                        <TouchableOpacity onPress={() => navigation.replace('FrontHome')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
                             <View>
                                 <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                             </View>
@@ -166,8 +166,11 @@ const ListPencairan = ({route}) => {
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
-                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan {" " + kelom}</Text>
-                    <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
+                    <View style={{flexDirection: 'column'}}>
+                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan</Text>
+                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>{kelom}</Text>
+                    </View>
+                    <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, maxHeight:50}}>
                         <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
                         <TextInput 
                             placeholder={"Cari Kelompok"} 
