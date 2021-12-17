@@ -161,6 +161,27 @@ export default function FrontHomeSync(props) {
         })
     }
 
+    const LogOutButton = () => {
+        Alert.alert(
+            "Logout Alert",
+            "Apakah anda yakin ingin keluar ?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("cancel pressed"),
+                    style: "cancel"
+                },
+                { 
+                    text: "OK", 
+                    onPress: () => {
+                        AsyncStorage.removeItem('userData');
+                        navigation.replace('Login');
+                    }
+                }
+            ]
+        );
+    }
+
     const renderHeaderMenu = () => (
         <View
             style={styles.containerHeader}
@@ -170,11 +191,16 @@ export default function FrontHomeSync(props) {
     )
 
     const renderHeaderProfile = () => (
-        <View style={{marginHorizontal: scale(15)}}>
-            <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.PUTIH}}>Hi, {props.aoname}</Text>
-            <Text style={{color: colors.PUTIH}}>{props.username}</Text>
-            <Text style={{color: colors.PUTIH}}>{props.namacabang}</Text>
-            <Text style={{color: colors.PUTIH}}>{now}</Text>
+        <View style={{marginHorizontal: scale(15), flexDirection: 'row', alignItems: 'flex-end'}}>
+            <View style={{ flex: 1 }}>
+                <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.PUTIH}}>Hi, {props.aoname}</Text>
+                <Text style={{color: colors.PUTIH}}>{props.username}</Text>
+                <Text style={{color: colors.PUTIH}}>{props.namacabang}</Text>
+                <Text style={{color: colors.PUTIH}}>{now}</Text>
+            </View>
+            <View>
+                <Text style={{ color: 'white', fontSize: 18 }} onPress={() => LogOutButton()}>Logout</Text>
+            </View>
         </View>
     )
 
