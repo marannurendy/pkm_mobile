@@ -3,13 +3,8 @@ import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, 
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import ActionButton from 'react-native-action-button'
-import { scale, verticalScale } from 'react-native-size-matters'
-import { Card, Divider } from 'react-native-elements';
-import SignatureScreen from "react-native-signature-canvas";
+import { WebView } from 'react-native-webview';
 import { Button } from 'react-native-elements';
-import bismillah from '../../images/bismillah.png';
 
 import db from '../../database/Database'
 
@@ -27,6 +22,7 @@ const Siklus = () => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [akadmenu, setakadmenu] = useState(0);
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
@@ -133,7 +129,7 @@ const Siklus = () => {
                     </ImageBackground>
                 </View>
             </View>
-
+            {akadmenu == 0 ?(
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <SafeAreaView style={{flex: 1}}>
                     <ScrollView>
@@ -193,7 +189,7 @@ const Siklus = () => {
                             <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                                 <Button
                                     title="SIMPAN"
-                                    onPress={() => submitHandler()}
+                                    onPress={() => setakadmenu(1)}
                                     buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                                     titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                                 />
@@ -202,6 +198,29 @@ const Siklus = () => {
                     </ScrollView>
                 </SafeAreaView>
             </View>
+            ) : (
+            <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
+                <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10}}>
+                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan Pembiayaan {"\n"}Form FP 4</Text>
+                </View>
+                <View style={styles.bodyContainer}>
+                    <View style={styles.F1}>
+                        <WebView
+                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4` }}
+                            startInLoadingState={true}
+                            style={styles.F1}
+                        />
+                    </View>
+                </View>
+                <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
+                    <Button
+                        title="OK"
+                        buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
+                        titleStyle={{fontSize: 20, fontWeight: 'bold'}}
+                    />
+                </View>
+            </View>
+            )}
         </View>
     )
 }
@@ -260,4 +279,14 @@ const styles = StyleSheet.create({
         // shadowRadius: 4,
         // elevation: 5,
       },
+      bodyContainer: {
+        flex: 1,
+        marginVertical: 16,
+        borderRadius: 16,
+        marginHorizontal: 16,
+        backgroundColor: 'white'
+    },
+    F1: {
+        flex: 1
+    },
 })
