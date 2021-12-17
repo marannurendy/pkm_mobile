@@ -102,8 +102,8 @@ const Inisasi = () => {
         if (__DEV__) console.log('getUKDataDiri loaded');
         if (__DEV__) console.log('getUKDataDiri keyword', keyword);
 
-        // let query = 'SELECT alamat_Domisili, COUNT(alamat_Domisili) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass != "1" AND alamat_Domisili LIKE "%'+ keyword +'%" AND (sync_Verif != "2" OR sync_Verif IS NULL) GROUP BY alamat_Domisili';
         let query = 'SELECT alamat_Domisili, COUNT(alamat_Domisili) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND alamat_Domisili LIKE "%'+ keyword +'%" GROUP BY alamat_Domisili';
+        // let query = 'SELECT alamat_Domisili, COUNT(alamat_Domisili) as jumlah FROM Table_UK_DataDiri WHERE alamat_Domisili LIKE "%'+ keyword +'%" GROUP BY alamat_Domisili';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {

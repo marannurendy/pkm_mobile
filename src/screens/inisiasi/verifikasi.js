@@ -32,6 +32,7 @@ const Verifikasi = ({ route }) => {
         if (__DEV__) console.log('getDataDiri keyword:', keyword);
 
         let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND alamat_Domisili = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
+        // let query = 'SELECT * FROM Table_UK_DataDiri WHERE alamat_Domisili = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -70,6 +71,9 @@ const Verifikasi = ({ route }) => {
                     { 
                         text: "OK", 
                         onPress: () => {
+                            if (__DEV__) console.log("doSync loaded");
+                            if (__DEV__) console.log("doSync data:", data);
+
                             setSubmitted(true);
                             const nestedPromise = async (items = []) => {
                                 return await Promise.all(
@@ -90,20 +94,92 @@ const Verifikasi = ({ route }) => {
                                             .then((response) => response.json())
                                             .then((responseJSON) => {
                                                 if (__DEV__) console.error('$post /post_inisiasi/post_verif_status response', responseJSON);
-                
-                                                let query = 'UPDATE Table_UK_DataDiri SET status_Verifikasi_Pass = "1" WHERE id_prospek = "' + item.idProspek + '"';
-                                                if (__DEV__) console.log('doSave db.transaction update query:', query);
-                
+
+                                                const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE namaCalonNasabah = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE nama_lengkap = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE nama_lengkap = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE nama_lengkap = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = '" + item.namaNasabah + "'";
                                                 db.transaction(
                                                     tx => {
-                                                        tx.executeSql(query);
+                                                        tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                                                            if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                                                        })
                                                     }, function(error) {
-                                                        if (__DEV__) console.log('doSave db.transaction insert/update error:', error.message);
-                                                    },function() {
-                                                        if (__DEV__) console.log('doSave db.transaction update success');
-                                                        AsyncStorage.removeItem(`formVerifikasi_body_${item.idProspek}`);
-                                                    }
+                                                        if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                                    }, function() {}
                                                 );
+                                                db.transaction(
+                                                    tx => {
+                                                        tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
+                                                            if (__DEV__) console.log(`${queryDeleteUKDataDiri} RESPONSE:`, results.rows);
+                                                        })
+                                                    }, function(error) {
+                                                        if (__DEV__) console.log(`${queryDeleteUKDataDiri} ERROR:`, error);
+                                                    }, function() {}
+                                                );
+                                                db.transaction(
+                                                    tx => {
+                                                        tx.executeSql(queryDeleteUKProdukPembiayaan, [], (tx, results) => {
+                                                            if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} RESPONSE:`, results.rows);
+                                                        })
+                                                    }, function(error) {
+                                                        if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} ERROR:`, error);
+                                                    }, function() {}
+                                                );
+                                                db.transaction(
+                                                    tx => {
+                                                        tx.executeSql(queryDeleteUKKondisiRumah, [], (tx, results) => {
+                                                            if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} RESPONSE:`, results.rows);
+                                                        })
+                                                    }, function(error) {
+                                                        if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} ERROR:`, error);
+                                                    }, function() {}
+                                                );
+                                                db.transaction(
+                                                    tx => {
+                                                        tx.executeSql(queryDeleteUKSektorEkonomi, [], (tx, results) => {
+                                                            if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} RESPONSE:`, results.rows);
+                                                        })
+                                                    }, function(error) {
+                                                        if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} ERROR:`, error);
+                                                    }, function() {}
+                                                );
+                                                db.transaction(
+                                                    tx => {
+                                                        tx.executeSql(queryDeleteUKPendapatanNasabah, [], (tx, results) => {
+                                                            if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} RESPONSE:`, results.rows);
+                                                        })
+                                                    }, function(error) {
+                                                        if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} ERROR:`, error);
+                                                    }, function() {}
+                                                );
+                                                db.transaction(
+                                                    tx => {
+                                                        tx.executeSql(queryDeleteUKPermohonanPembiayaan, [], (tx, results) => {
+                                                            if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} RESPONSE:`, results.rows);
+                                                        })
+                                                    }, function(error) {
+                                                        if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
+                                                    }, function() {}
+                                                );
+                                                
+                                                /* START UPDATE STATUS VERIFIKASI PASS */
+                                                // let query = 'UPDATE Table_UK_DataDiri SET status_Verifikasi_Pass = "1" WHERE id_prospek = "' + item.idProspek + '"';
+                                                // if (__DEV__) console.log('doSave db.transaction update query:', query);
+                                                // db.transaction(
+                                                //     tx => {
+                                                //         tx.executeSql(query);
+                                                //     }, function(error) {
+                                                //         if (__DEV__) console.log('doSave db.transaction insert/update error:', error.message);
+                                                //     },function() {
+                                                //         if (__DEV__) console.log('doSave db.transaction update success');
+                                                //         AsyncStorage.removeItem(`formVerifikasi_body_${item.idProspek}`);
+                                                //     }
+                                                // );
+                                                /* FINISH UPDATE STATUS VERIFIKASI PASS */
                                             })
                                             .catch((error) => {
                                                 console.log('$post /post_inisiasi/post_verif_status response', error);

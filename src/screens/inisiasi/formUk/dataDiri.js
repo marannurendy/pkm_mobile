@@ -19,6 +19,7 @@ import db from '../../../database/Database'
 
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 8;
+var uniqueNumber = (new Date().getTime()).toString(36);
 
 const DataDiri = ({route}) => {
 
@@ -165,11 +166,11 @@ const DataDiri = ({route}) => {
     const [valueReligion, setValueReligion] = useState(null);
     const [itemsReligion, setItemsReligion] = useState([]);
     const [namaGadisIbu, setNamaGadisIbu] = useState('');
-    const [key_dataPenjamin, setKey_dataPenjamin] = useState(`formUK_dataPenjamin_${namaNasabah.replace(/\s+/g, '')}`);
-    const [key_dataSuami, setKey_dataSuami] = useState(`formUK_dataSuami_${namaNasabah.replace(/\s+/g, '')}`);
-    const [key_kartuKeluarga, setKey_kartuKeluarga] = useState(`formUK_kartuKeluarga_${namaNasabah.replace(/\s+/g, '')}`);
-    const [key_keteranganDomisili, setKey_keteranganDomisili] = useState(`formUK_keteranganDomisili_${namaNasabah.replace(/\s+/g, '')}`);
-    const [key_kartuIdentitas, setKey_kartuIdentitas] = useState(`formUK_kartuIdentitas_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_dataPenjamin, setKey_dataPenjamin] = useState(`formUK_dataPenjamin_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_dataSuami, setKey_dataSuami] = useState(`formUK_dataSuami_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_kartuKeluarga, setKey_kartuKeluarga] = useState(`formUK_kartuKeluarga_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_keteranganDomisili, setKey_keteranganDomisili] = useState(`formUK_keteranganDomisili_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_kartuIdentitas, setKey_kartuIdentitas] = useState(`formUK_kartuIdentitas_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -1599,7 +1600,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Kartu Keluarga (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={nomorKartuKeluarga} onChangeText={(text) => setNomorKartuKeluarga(text)} placeholder="Masukkan Nomor KK" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={nomorKartuKeluarga} keyboardType='numeric' onChangeText={(text) => setNomorKartuKeluarga(text)} placeholder="Masukkan Nomor KK" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'id-card'} size={18} />

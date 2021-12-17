@@ -18,6 +18,7 @@ const dataPilihan = [
     { label: '5', value: '5' }
 ];
 const withTextInput = dimension.width - (20 * 4) + 8;
+var uniqueNumber = (new Date().getTime()).toString(36);
 
 const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const { groupName, namaNasabah, screenState } = route.params;
@@ -39,11 +40,11 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
     const [valueNamaTandaTanganKetuaKelompok, setValueNamaTandaTanganKetuaKelompok] = useState('');
     const [aoName, setAoName] = useState('');
-    const [key_tandaTanganAOSAO, setKey_tandaTanganAOSAO] = useState(`formUK_tandaTanganAOSAO_${namaNasabah.replace(/\s+/g, '')}`);
-    const [key_tandaTanganNasabah, setKey_tandaTanganNasabah] = useState(`formUK_tandaTanganNasabah_${namaNasabah.replace(/\s+/g, '')}`);
-    const [key_tandaTanganSuamiPenjamin, setKey_tandaTanganSuamiPenjamin] = useState(`formUK_tandaTanganSuamiPenjamin_${namaNasabah.replace(/\s+/g, '')}`);
-    const [key_tandaTanganKetuaSubKemlompok, setKey_tandaTanganKetuaSubKemlompok] = useState(`formUK_tandaTanganKetuaSubKemlompok_${namaNasabah.replace(/\s+/g, '')}`);
-    const [key_tandaTanganKetuaKelompok, setKey_tandaTanganKetuaKelompok] = useState(`formUK_tandaTanganKetuaKelompok_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganAOSAO, setKey_tandaTanganAOSAO] = useState(`formUK_tandaTanganAOSAO_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganNasabah, setKey_tandaTanganNasabah] = useState(`formUK_tandaTanganNasabah_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganSuamiPenjamin, setKey_tandaTanganSuamiPenjamin] = useState(`formUK_tandaTanganSuamiPenjamin_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganKetuaSubKemlompok, setKey_tandaTanganKetuaSubKemlompok] = useState(`formUK_tandaTanganKetuaSubKemlompok_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganKetuaKelompok, setKey_tandaTanganKetuaKelompok] = useState(`formUK_tandaTanganKetuaKelompok_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
 
     useEffect(() => {
         getUserData();
