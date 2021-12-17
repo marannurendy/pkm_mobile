@@ -145,12 +145,14 @@ export default function FrontHomeSync(props) {
                 "Sukses",
                 "Sync berhasil dilakukan, Anda akan memasuki menu utama",
                 [
-                    { text: "OK", onPress: () => {
-                        props.onSuccess();
-                    }}
+                    { 
+                        text: "OK", 
+                        onPress: () => __DEV__ && console.log('onPress loaded')
+                    }
                 ],
                 { cancelable: false }
             )
+            props.onSuccess()
             setSubmitted(false);
         }).catch((error) => {
             if (__DEV__) console.log('doSubmit getSyncData error:', error);
