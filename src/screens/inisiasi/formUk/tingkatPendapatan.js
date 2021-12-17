@@ -95,7 +95,9 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         if (data.pendapatan_Bersih_Perminggu !== null && typeof data.pendapatan_Bersih_Perminggu !== 'undefined') setValuePendapatanBersihPerminggu(data.pendapatan_Bersih_Perminggu);
                         // if (data.pembiayaan_Dari_Lembaga !== null && typeof data.pembiayaan_Dari_Lembaga !== 'undefined') setValuePembiayaanDariLembaga(data.pembiayaan_Dari_Lembaga);
                         if (data.Pembiayaan_Dari_LembagaLain !== null && typeof data.Pembiayaan_Dari_LembagaLain !== 'undefined') setValuePembiayaanLembagaLain(data.Pembiayaan_Dari_LembagaLain === 'null' ? '1' : data.Pembiayaan_Dari_LembagaLain);
-                        if (data.Pembiayaan_Dari_LembagaLainFreetext !== null && typeof data.Pembiayaan_Dari_LembagaLainFreetext !== 'undefined') setIPembiayaanLembagaLainFreetext(data.Pembiayaan_Dari_LembagaLainFreetext);
+                        if (data.Pembiayaan_Dari_LembagaLainFreetext !== null && typeof data.Pembiayaan_Dari_LembagaLainFreetext !== 'undefined') {
+                            if (data.Pembiayaan_Dari_LembagaLain === '3') setIPembiayaanLembagaLainFreetext(data.Pembiayaan_Dari_LembagaLainFreetext);
+                        }
                         if (data.jumlah_Angsuran !== null && typeof data.jumlah_Angsuran !== 'undefined') setValueJumlahAngsuran(data.jumlah_Angsuran);
                         if (data.pendapatanSuami_Kotor_Perhari !== null && typeof data.pendapatanSuami_Kotor_Perhari !== 'undefined') setValuePedapatanKotorPerhariSuami(data.pendapatanSuami_Kotor_Perhari);
                         if (data.pendapatanSuami_Pengeluaran_Keluarga_Perhari !== null && typeof data.pendapatanSuami_Pengeluaran_Keluarga_Perhari !== 'undefined') setValuePengeluaranKeluargaPerhariSuami(data.pendapatanSuami_Pengeluaran_Keluarga_Perhari);
@@ -219,42 +221,44 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
-                    let query = '';
                     if (dataLengthFind === 0) {
                         alert('UK Master not found');
                         navigation.goBack();
                         return;
                     }
 
-                    query = 'UPDATE Table_UK_Master SET status = "5" WHERE namaNasabah = "' + namaNasabah + '"';
+                    if (screenState === 4) {
+                        let query = 'UPDATE Table_UK_Master SET status = "5" WHERE namaNasabah = "' + namaNasabah + '"';
+                        if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
-                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query);
+                            }, function(error) {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                                setSubmmitted(false);
+                            },function() {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
 
-                    db.transaction(
-                        tx => {
-                            tx.executeSql(query);
-                        }, function(error) {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
-                        },function() {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-
-                            if (__DEV__) {
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
-                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
-                                    }, function() {}
-                                );
+                                if (__DEV__) {
+                                    db.transaction(
+                                        tx => {
+                                            tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                            })
+                                        }, function(error) {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                        }, function() {}
+                                    );
+                                }
                             }
-                            setSubmmitted(false);
-                            alert('Berhasil');
-                            navigation.goBack();
-                        }
-                    );
+                        );
+                    }
+
+                    setSubmmitted(false);
+                    alert('Berhasil');
+                    navigation.goBack();
+                    
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
                     setSubmmitted(false);

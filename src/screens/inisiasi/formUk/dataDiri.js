@@ -188,17 +188,17 @@ const DataDiri = ({route}) => {
                                 let data = results.rows.item(0);
                                 if (__DEV__) console.log('tx.executeSql data:', data);
 
-                                setKey_dataPenjamin(data.foto_ktp_penjamin);
-                                setKey_dataSuami(data.foto_ktp_suami);
-                                setKey_kartuKeluarga(data.foto_kk);
-                                setKey_keteranganDomisili(data.foto_Surat_Keterangan_Domisili);
-                                setKey_kartuIdentitas(data.foto_Kartu_Identitas);
+                                if (data.foto_ktp_penjamin) setKey_dataPenjamin(data.foto_ktp_penjamin);
+                                if (data.foto_ktp_suami) setKey_dataSuami(data.foto_ktp_suami);
+                                if (data.foto_kk) setKey_kartuKeluarga(data.foto_kk);
+                                if (data.foto_Surat_Keterangan_Domisili) setKey_keteranganDomisili(data.foto_Surat_Keterangan_Domisili);
+                                if (data.foto_Kartu_Identitas) setKey_kartuIdentitas(data.foto_Kartu_Identitas);
 
-                                const fotoDataPenjamin = await AsyncStorage.getItem(data.foto_ktp_penjamin);
-                                const fotoDataSuami = await AsyncStorage.getItem(data.foto_ktp_suami);
-                                const fotoKartuKeluarga = await AsyncStorage.getItem(data.foto_kk);
-                                const fotoKeteranganDomisili = await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili);
-                                const fotoKartuIdentitas = await AsyncStorage.getItem(data.foto_Kartu_Identitas);
+                                const fotoDataPenjamin = data.foto_ktp_penjamin ? await AsyncStorage.getItem(data.foto_ktp_penjamin) : '';
+                                const fotoDataSuami = data.foto_ktp_suami ? await AsyncStorage.getItem(data.foto_ktp_suami) : '';
+                                const fotoKartuKeluarga = data.foto_kk ? await AsyncStorage.getItem(data.foto_kk) : '';
+                                const fotoKeteranganDomisili = data.foto_Surat_Keterangan_Domisili ? await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili) : '';
+                                const fotoKartuIdentitas = data.foto_Kartu_Identitas ? await AsyncStorage.getItem(data.foto_Kartu_Identitas) : '';
 
                                 if (__DEV__) console.log('fotoDataPenjamin :', data.foto_ktp_penjamin, fotoDataPenjamin);
                                 if (__DEV__) console.log('fotoDataSuami :', data.foto_ktp_suami, fotoDataSuami);

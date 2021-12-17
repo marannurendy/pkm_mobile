@@ -90,11 +90,11 @@ const FormUjiKelayakan = ({route}) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
 
-                        let fotoDataPenjamin = await AsyncStorage.getItem(data.foto_ktp_penjamin);
-                        let fotoDataSuami = await AsyncStorage.getItem(data.foto_ktp_suami);
-                        let fotoKartuKeluarga = await AsyncStorage.getItem(data.foto_kk);
-                        let fotoKeteranganDomisili = await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili);
-                        let fotoKartuIdentitas = await AsyncStorage.getItem(data.foto_Kartu_Identitas);
+                        let fotoDataPenjamin = data.foto_ktp_penjamin ? await AsyncStorage.getItem(data.foto_ktp_penjamin) : 'data:image/jpeg;base64,';
+                        let fotoDataSuami = data.foto_ktp_suami ?  await AsyncStorage.getItem(data.foto_ktp_suami) : 'data:image/jpeg;base64,';
+                        let fotoKartuKeluarga = data.foto_kk ? await AsyncStorage.getItem(data.foto_kk) : 'data:image/jpeg;base64,';
+                        let fotoKeteranganDomisili = data.foto_Surat_Keterangan_Domisili ? await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili) : 'data:image/jpeg;base64,';
+                        let fotoKartuIdentitas = data.foto_Kartu_Identitas ? await AsyncStorage.getItem(data.foto_Kartu_Identitas) : 'data:image/jpeg;base64,';
 
                         const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
                         const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
@@ -242,7 +242,7 @@ const FormUjiKelayakan = ({route}) => {
                             "IDProdukPembiayaan": data.value_produk_Pembiayaan,
                             "Nama_TTD_AO": aoName,
                             "Nama_TTD_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
-                            "Nama_TTD_KSK": data.nama_tanda_Tangan_Ketua_Kelompok,
+                            "Nama_TTD_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok,
                             "Nama_TTD_Nasabah": data.nama_tanda_Tangan_Nasabah,
                             "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin
                         }
