@@ -9,7 +9,7 @@ import { scale, verticalScale } from 'react-native-size-matters'
 
 import db from '../../database/Database'
 
-const KelPencairan = () => {
+const ListPencairan = ({route}) => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -18,10 +18,34 @@ const KelPencairan = () => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
-    let [data, setData] = useState([]);
+    let [menuShow, setMenuShow] = useState(0);
+    let [menuToggle, setMenuToggle] = useState(false);
+    let [data, setData] = useState([{
+        "Alamat_Domisili": "di JL. Mamalia Raya Gang Kelinci No. 4, RT 04 RW 10",
+        "Angsuran_Per_Minggu": "150000",
+        "Foto_Pencairan": {},
+        "Jasa": "750000",
+        "Jenis_Pembiayaan": "Modal Usaha",
+        "Jumlah_Pinjaman": "3000000",
+        "Kelompok_ID": "string",
+        "LRP_TTD_AO": {},
+        "LRP_TTD_Nasabah": {},
+        "Nama_Kelompok": "Toto",
+        "Nama_Penjamin": "Supriyadi",
+        "Nama_Prospek": 'Vina binti Supardi (K)',
+        "Nomor_Identitas": '3674000100020003',
+        "TTD_KC": {},
+        "TTD_KK": {},
+        "TTD_KSK": {},
+        "TTD_Nasabah": {},
+        "TTD_Nasabah_2": {},
+        "Term_Pembiayaan": "Pertama"
+      }]);
+    let [kelom, setKelom] = useState();
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
+        setKelom(route.params.groupName)
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -35,7 +59,16 @@ const KelPencairan = () => {
         }
 
         getUserData();
-        getKelompokPencairan();
+        getPencairanDatabase();
+
+        // AsyncStorage.getItem('userData', (error, result) => {
+        //     let dt = JSON.parse(result)
+
+        //     setBranchId(dt.kodeCabang)
+        //     setBranchName(dt.namaCabang)
+        //     setUname(dt.userName)
+        //     setAoName(dt.AOname)
+        // })
 
         // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
         // db.transaction(
@@ -64,22 +97,21 @@ const KelPencairan = () => {
         // })
     }, []);
 
-    const getKelompokPencairan = () => {
-        if (__DEV__) console.log('getKelompokPencairan loaded');
-        if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
+    const getPencairanDatabase = () => {
+        if (__DEV__) console.log('getSosialisasiDatabase loaded');
+        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
 
-        let query = 'SELECT kelompok_Id, Nama_Kelompok, Jumlah_Kelompok FROM Table_Pencairan WHERE Nama_Kelompok LIKE "%'+ keyword +'%"';
+        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getKelompokPencairan results:', results.rows);
+                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
                     let dataLength = results.rows.length
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'Jumlah_Kelompok': data.Jumlah_Kelompok});
+                        ah.push({'Nama' : data.Nama_Prospek, 'Nomor_Identitas': '08-09-2021'});
                     }
-                    setData([{'Nama_Kelompok' :'Toto', 'Jumlah_Kelompok': '10'}]);
                 })
             }
         )
@@ -93,18 +125,18 @@ const KelPencairan = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('FlowPencairan', {data : data})}
+            onPress={() => navigation.replace('Perjanjian', {data: data})}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} Jumlah_Kelompok={data.Jumlah_Kelompok} />
+                <ListMessageSos Nama={data.Nama_Prospek} Nomor_Identitas={data.Nomor_Identitas} />
             </View>
         </TouchableOpacity>
     )
-    const ListMessageSos = ({ Nama_Kelompok, Jumlah_Kelompok }) => {
+    const ListMessageSos = ({ Nama, Nomor_Identitas }) => {
         return(
             <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama_Kelompok}</Text>
-                <Text>Total Prospek : {Jumlah_Kelompok}</Text>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama}</Text>
+                <Text>{Nomor_Identitas}</Text>
             </View>
         )
     }
@@ -137,7 +169,7 @@ const KelPencairan = () => {
                 <View style={{height: dimension.height/4, marginHorizontal: 10, borderRadius: 20, marginTop: 30, flex: 1}}>
                     <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover"}} imageStyle={{borderRadius: 20}}>
 
-                        <TouchableOpacity onPress={() => navigation.replace('FrontHome')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
                             <View>
                                 <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                             </View>
@@ -153,8 +185,11 @@ const KelPencairan = () => {
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
-                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan</Text>
-                    <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
+                    <View style={{flexDirection: 'column'}}>
+                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan</Text>
+                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>{kelom}</Text>
+                    </View>
+                    <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, maxHeight:50}}>
                         <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
                         <TextInput 
                             placeholder={"Cari Kelompok"} 
@@ -169,7 +204,7 @@ const KelPencairan = () => {
                             onChangeText={(text) => setKeyword(text)}
                             value={keyword}
                             returnKeyType="done"
-                            onSubmitEditing={() => getKelompokPencairan()}
+                            onSubmitEditing={() => getSosialisasiDatabase()}
                         />
                     </View>
                 </View>
@@ -196,7 +231,7 @@ const KelPencairan = () => {
     )
 }
 
-export default KelPencairan
+export default ListPencairan
 
 const styles = StyleSheet.create({
     button: {

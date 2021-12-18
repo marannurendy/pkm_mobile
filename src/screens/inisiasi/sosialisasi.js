@@ -98,7 +98,7 @@ const Sosialisasi = () => {
         if(tanggalInput === null || tanggalInput === undefined) {
             flashNotification("Alert", "Silahkan pilih tanggal input", "#ff6347", "#fff")
         }else if(sumberDana === null || sumberDana === undefined) {
-            flashNotification("Alert", "Silahkan pilih sumber dana", "#ff6347", "#fff")
+            flashNotification("Alert", "Silahkan pilih sumber informasi", "#ff6347", "#fff")
         }else if(namaNasabah === null || namaNasabah === undefined) {
             flashNotification("Alert", "Silahkan masukkan nama nasabah", "#ff6347", "#fff")
         }else if(statusNasabah === null || statusNasabah === undefined) {

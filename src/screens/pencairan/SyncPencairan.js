@@ -9,7 +9,7 @@ import { scale, verticalScale } from 'react-native-size-matters'
 
 import db from '../../database/Database'
 
-const KelPencairan = () => {
+const SyncPencairan = () => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -18,6 +18,8 @@ const KelPencairan = () => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
+    let [menuShow, setMenuShow] = useState(0);
+    let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
     const [keyword, setKeyword] = useState('');
 
@@ -35,7 +37,16 @@ const KelPencairan = () => {
         }
 
         getUserData();
-        getKelompokPencairan();
+        getSosialisasiDatabase();
+
+        // AsyncStorage.getItem('userData', (error, result) => {
+        //     let dt = JSON.parse(result)
+
+        //     setBranchId(dt.kodeCabang)
+        //     setBranchName(dt.namaCabang)
+        //     setUname(dt.userName)
+        //     setAoName(dt.AOname)
+        // })
 
         // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
         // db.transaction(
@@ -64,22 +75,22 @@ const KelPencairan = () => {
         // })
     }, []);
 
-    const getKelompokPencairan = () => {
-        if (__DEV__) console.log('getKelompokPencairan loaded');
-        if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
+    const getSosialisasiDatabase = () => {
+        if (__DEV__) console.log('getSosialisasiDatabase loaded');
+        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
 
-        let query = 'SELECT kelompok_Id, Nama_Kelompok, Jumlah_Kelompok FROM Table_Pencairan WHERE Nama_Kelompok LIKE "%'+ keyword +'%"';
+        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getKelompokPencairan results:', results.rows);
+                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
                     let dataLength = results.rows.length
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'Jumlah_Kelompok': data.Jumlah_Kelompok});
+                        ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
                     }
-                    setData([{'Nama_Kelompok' :'Toto', 'Jumlah_Kelompok': '10'}]);
+                    setData([{'groupName' :'Toto', 'totalnasabah': '10', 'date': '08-09-2021'}]);
                 })
             }
         )
@@ -93,18 +104,19 @@ const KelPencairan = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('FlowPencairan', {data : data})}
+            onPress={() => navigation.navigate('FlowPencairan', {groupName: data.groupName})}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} Jumlah_Kelompok={data.Jumlah_Kelompok} />
+                <ListMessageSos groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
             </View>
         </TouchableOpacity>
     )
-    const ListMessageSos = ({ Nama_Kelompok, Jumlah_Kelompok }) => {
+    const ListMessageSos = ({ groupName, date, totalNasabah }) => {
         return(
             <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama_Kelompok}</Text>
-                <Text>Total Prospek : {Jumlah_Kelompok}</Text>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
+                <Text>{date}</Text>
+                <Text>Total Nasabah : {totalNasabah}</Text>
             </View>
         )
     }
@@ -153,7 +165,7 @@ const KelPencairan = () => {
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
-                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan</Text>
+                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Sync Data</Text>
                     <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
                         <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
                         <TextInput 
@@ -169,7 +181,7 @@ const KelPencairan = () => {
                             onChangeText={(text) => setKeyword(text)}
                             value={keyword}
                             returnKeyType="done"
-                            onSubmitEditing={() => getKelompokPencairan()}
+                            onSubmitEditing={() => getSosialisasiDatabase()}
                         />
                     </View>
                 </View>
@@ -187,7 +199,7 @@ const KelPencairan = () => {
                             // onEndReached={() => handleEndReach()}
                             renderItem={renderItemSos}
                             // style={{height: '88.6%'}}
-                            ListEmptyComponent={_listEmptyComponent}
+                            //ListEmptyComponent={_listEmptyComponent}
                         /> 
                     </View>
                 </SafeAreaView>
@@ -196,7 +208,7 @@ const KelPencairan = () => {
     )
 }
 
-export default KelPencairan
+export default SyncPencairan
 
 const styles = StyleSheet.create({
     button: {

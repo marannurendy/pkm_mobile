@@ -80,7 +80,7 @@ const FormUjiKelayakan = ({route}) => {
 
         setSubmitted(true);
 
-        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.nama_lengkap = b.nama_lengkap LEFT JOIN Table_UK_KondisiRumah c ON a.nama_lengkap = c.nama_lengkap LEFT JOIN Table_UK_SektorEkonomi d ON a.nama_lengkap = d.nama_lengkap LEFT JOIN Table_UK_PendapatanNasabah e ON a.nama_lengkap = e.nama_lengkap LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.nama_lengkap = f.nama_lengkap WHERE a.nama_lengkap = "' + namaNasabah + '"';
+        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.nama_lengkap = b.nama_lengkap LEFT JOIN Table_UK_KondisiRumah c ON a.nama_lengkap = c.nama_lengkap LEFT JOIN Table_UK_SektorEkonomi d ON a.nama_lengkap = d.nama_lengkap LEFT JOIN Table_UK_PendapatanNasabah e ON a.nama_lengkap = e.nama_lengkap LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.nama_lengkap = f.nama_lengkap WHERE a.nama_lengkap = "' + namaNasabah + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
@@ -90,11 +90,11 @@ const FormUjiKelayakan = ({route}) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
 
-                        let fotoDataPenjamin = await AsyncStorage.getItem(data.foto_ktp_penjamin);
-                        let fotoDataSuami = await AsyncStorage.getItem(data.foto_ktp_suami);
-                        let fotoKartuKeluarga = await AsyncStorage.getItem(data.foto_kk);
-                        let fotoKeteranganDomisili = await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili);
-                        let fotoKartuIdentitas = await AsyncStorage.getItem(data.foto_Kartu_Identitas);
+                        let fotoDataPenjamin = data.foto_ktp_penjamin ? await AsyncStorage.getItem(data.foto_ktp_penjamin) : 'data:image/jpeg;base64,';
+                        let fotoDataSuami = data.foto_ktp_suami ?  await AsyncStorage.getItem(data.foto_ktp_suami) : 'data:image/jpeg;base64,';
+                        let fotoKartuKeluarga = data.foto_kk ? await AsyncStorage.getItem(data.foto_kk) : 'data:image/jpeg;base64,';
+                        let fotoKeteranganDomisili = data.foto_Surat_Keterangan_Domisili ? await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili) : 'data:image/jpeg;base64,';
+                        let fotoKartuIdentitas = data.foto_Kartu_Identitas ? await AsyncStorage.getItem(data.foto_Kartu_Identitas) : 'data:image/jpeg;base64,';
 
                         const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
                         const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
@@ -121,29 +121,11 @@ const FormUjiKelayakan = ({route}) => {
                             pembiayaan_Dari_Lembaga = '1';
                             Pembiayaan_Dari_LembagaLain = data.Pembiayaan_Dari_LembagaLain;
                         }
-
-                        let namaProduk = data.produk_Pembiayaan;
                         
-                        if (fotoKartuIdentitas === null) {
-                            setSubmitted(false);
-                            return Alert.alert('Error: Foto Kartu Identitas', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-                        if (fotoKeteranganDomisili === null) {
-                            setSubmitted(true);
-                            return Alert.alert('Error: Foto Surat Keterangan Domisili', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-                        if (fotoKartuKeluarga === null) {
-                            setSubmitted(false);
-                            return Alert.alert('Error: Foto Kartu Keluarga', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-                        if (fotoDataSuami === null) {
-                            setSubmitted(false);
-                            return Alert.alert('Error: Foto Kartu Identitas Suami', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-                        if (fotoDataPenjamin === null) {
-                            setSubmitted(false);
-                            return Alert.alert('Error: Foto Kartu Identitas Penjamin', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
+                        let namaProduk = data.produk_Pembiayaan;
+
+                        let idProspek = "";
+                        if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
 
                         const body = {
                             "Alamat": data.alamat_Identitas,
@@ -154,11 +136,11 @@ const FormUjiKelayakan = ({route}) => {
                             "CreatedBy": uname,
                             "CreatedNIP": nip,
                             "Dinding": data.dinding,
-                            "FotoKK": fotoKartuKeluarga.split(',')[1] || 'null',
-                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1] || 'null',
-                            "FotoKTPSuami": fotoDataSuami.split(',')[1] || 'null',
-                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1] || 'null',
-                            "FotoSuketDomisili": fotoKeteranganDomisili.split(',')[1] || 'null',
+                            "FotoKK": fotoKartuKeluarga.split(',')[1],
+                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1],
+                            "FotoKTPSuami": fotoDataSuami === null || fotoDataSuami === 'null' ? '' : fotoDataSuami.split(',')[1],
+                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
+                            "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
                             "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
                             "ID_SektorEkonomi": data.sektor_Ekonomi,
                             "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi,
@@ -190,8 +172,9 @@ const FormUjiKelayakan = ({route}) => {
                             "LokasiUK": groupName,
                             "LuasBangunan": data.luas_Bangunan,
                             "NamaAyah": data.nama_ayah,
+                            "NamaGadisIBU": data.nama_gadis_ibu,
                             "NamaBank": namaBank,
-                            "NamaLengkap": data.nama_lengkap,
+                            "NamaLengkap": data.nama_lengkap, // double
                             "NamaPemilikRekening": pemilikRekening, // double
                             "NamaPenjamin": data.nama_penjamin,
                             "NamaProduk": namaProduk,
@@ -231,9 +214,18 @@ const FormUjiKelayakan = ({route}) => {
                             "TempatLahir": data.tempat_lahir,
                             "TermPembiayaan": data.term_Pembiayaan,
                             "TujuanPembiayaan": data.tujuan_Pembiayaan,
-                            "TypePencairan": data.type_Pencairan
+                            "TypePencairan": data.type_Pencairan,
+                            "IsPernyataanDibaca": data.is_pernyataan_dibaca,
+                            "ID_Prospek": idProspek,
+                            "IDProduk": data.nama_Produk,
+                            "IDProdukPembiayaan": data.value_produk_Pembiayaan,
+                            "Nama_TTD_AO": aoName,
+                            "Nama_TTD_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
+                            "Nama_TTD_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok,
+                            "Nama_TTD_Nasabah": data.nama_tanda_Tangan_Nasabah,
+                            "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin
                         }
-                        // if (__DEV__) console.log('doSubmit body:', body);
+                        if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
 
                         fetch(ApiSyncPostInisiasi + 'post_prospek_uk', {
                             method: 'POST',
@@ -246,7 +238,7 @@ const FormUjiKelayakan = ({route}) => {
                         })
                         .then((response) => response.json())
                         .then((responseJSON) => {
-                            console.error('$post /post_inisiasi/post_prospek_uk response', responseJSON);
+                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response', responseJSON);
 
                             if (responseJSON.responseCode === 200) {
                                 const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
@@ -275,7 +267,6 @@ const FormUjiKelayakan = ({route}) => {
                                                     setSubmitted(false);
                                                 },function() {
                                                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-
                                                     if (__DEV__) {
                                                         db.transaction(
                                                             tx => {
@@ -287,6 +278,92 @@ const FormUjiKelayakan = ({route}) => {
                                                             }, function() {}
                                                         );
                                                     }
+
+                                                    const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE namaCalonNasabah = '" + namaNasabah + "'";
+                                                    const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKDataDiri} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKDataDiri} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKProdukPembiayaan, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKKondisiRumah, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKSektorEkonomi, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKPendapatanNasabah, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKPermohonanPembiayaan, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    
+                                                    /* ============ START REMOVE STORAGE ============ */
+                                                    AsyncStorage.removeItem(data.foto_ktp_penjamin);
+                                                    AsyncStorage.removeItem(data.foto_ktp_suami);
+                                                    AsyncStorage.removeItem(data.foto_kk);
+                                                    AsyncStorage.removeItem(data.foto_Surat_Keterangan_Domisili);
+                                                    AsyncStorage.removeItem(data.foto_Kartu_Identitas);
+
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_AOSAO);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Nasabah);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Ketua_SubKelompok);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Ketua_Kelompok);
+                                                    /* ============ FINISH REMOVE STORAGE ============ */
+
                                                     const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
                                                     Alert.alert(responseJSON.responseDescription, message);
                                                     setSubmitted(false);
@@ -436,7 +513,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {groupName: groupName, namaNasabah: namaNasabah, screenState: screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'signature'} size={25} color={'#FFF'} />
                         </View>

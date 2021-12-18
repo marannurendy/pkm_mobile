@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, ActivityIndicator, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import ActionButton from 'react-native-action-button'
-import { scale, verticalScale } from 'react-native-size-matters'
-
+import { WebView } from 'react-native-webview';
 import db from '../../database/Database'
+import { Button } from 'react-native-elements';
 
-const KelPencairan = () => {
-
+const Preview = ({route}) => {
+    const { idProspek } = route.params;
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
 
@@ -19,9 +17,11 @@ const KelPencairan = () => {
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
     let [data, setData] = useState([]);
+    let [kelom, setKelom] = useState();
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
+        setKelom(route.params.groupName)
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -35,7 +35,15 @@ const KelPencairan = () => {
         }
 
         getUserData();
-        getKelompokPencairan();
+
+        // AsyncStorage.getItem('userData', (error, result) => {
+        //     let dt = JSON.parse(result)
+
+        //     setBranchId(dt.kodeCabang)
+        //     setBranchName(dt.namaCabang)
+        //     setUname(dt.userName)
+        //     setAoName(dt.AOname)
+        // })
 
         // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
         // db.transaction(
@@ -63,66 +71,6 @@ const KelPencairan = () => {
         //     console.log(result)
         // })
     }, []);
-
-    const getKelompokPencairan = () => {
-        if (__DEV__) console.log('getKelompokPencairan loaded');
-        if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
-
-        let query = 'SELECT kelompok_Id, Nama_Kelompok, Jumlah_Kelompok FROM Table_Pencairan WHERE Nama_Kelompok LIKE "%'+ keyword +'%"';
-        db.transaction(
-            tx => {
-                tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getKelompokPencairan results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'Jumlah_Kelompok': data.Jumlah_Kelompok});
-                    }
-                    setData([{'Nama_Kelompok' :'Toto', 'Jumlah_Kelompok': '10'}]);
-                })
-            }
-        )
-    }
-
-    // LIST VIEW PENCAIRAN
-    const renderItemSos = ({ item }) => (
-        <ItemSos data={item} />  
-    )
-
-    const ItemSos = ({ data }) => (
-        <TouchableOpacity 
-            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('FlowPencairan', {data : data})}
-        >
-            <View style={{alignItems: 'flex-start'}}>
-                <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} Jumlah_Kelompok={data.Jumlah_Kelompok} />
-            </View>
-        </TouchableOpacity>
-    )
-    const ListMessageSos = ({ Nama_Kelompok, Jumlah_Kelompok }) => {
-        return(
-            <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama_Kelompok}</Text>
-                <Text>Total Prospek : {Jumlah_Kelompok}</Text>
-            </View>
-        )
-    }
-    // END LIST VIEW PENCAIRAN
-
-    const _listEmptyComponent = () => {
-        return (
-            <View
-                style={
-                    {
-                        padding: 16
-                    }
-                }
-            >
-                <Text>Data kosong</Text>
-            </View>
-        )
-    }
 
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -152,53 +100,38 @@ const KelPencairan = () => {
             </View>
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
-                <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
-                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan</Text>
-                    <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
-                        <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
-                        <TextInput 
-                            placeholder={"Cari Kelompok"} 
-                            style={
-                                {
-                                    flex: 1,
-                                    padding: 5,
-                                    borderBottomLeftRadius: 20,
-                                    borderBottomRightRadius: 20
-                                }
-                            }
-                            onChangeText={(text) => setKeyword(text)}
-                            value={keyword}
-                            returnKeyType="done"
-                            onSubmitEditing={() => getKelompokPencairan()}
+                <View style={styles.bodyContainer}>
+                    <View style={styles.F1}>
+                        <WebView
+                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4` }}
+                            startInLoadingState={true}
+                            style={styles.F1}
                         />
                     </View>
                 </View>
-
-                <SafeAreaView style={{flex: 1}}>
-                    <View style={{ justifyContent:  'space-between'}}>
-                        <FlatList
-                            // contentContainerStyle={styles.listStyle}
-                            // refreshing={refreshing}
-                            // onRefresh={() => _onRefresh()}
-                            data={data}
-                            keyExtractor={(item, index) => index.toString()}
-                            enabledGestureInteraction={true}
-                            // onEndReachedThreshold={0.1}
-                            // onEndReached={() => handleEndReach()}
-                            renderItem={renderItemSos}
-                            // style={{height: '88.6%'}}
-                            ListEmptyComponent={_listEmptyComponent}
-                        /> 
-                    </View>
-                </SafeAreaView>
+                <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
+                    <Button
+                        title="OK"
+                        onPress={() => submitHandler()}
+                        buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
+                        titleStyle={{fontSize: 20, fontWeight: 'bold'}}
+                    />
+                </View>
             </View>
         </View>
     )
 }
 
-export default KelPencairan
+export default Preview
 
 const styles = StyleSheet.create({
+    bodyContainer: {
+        flex: 1,
+        marginVertical: 16,
+        borderRadius: 16,
+        marginHorizontal: 16,
+        backgroundColor: 'white'
+    },
     button: {
         width: 60,
         height: 60,
@@ -217,5 +150,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         height: 22,
         color: 'white',
+    },
+    F1: {
+        flex: 1
     },
 })

@@ -16,7 +16,7 @@ const images = {
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const ProdukPembiayaan = ({ route }) => {
-    const { groupName, namaNasabah } = route.params;
+    const { groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
@@ -45,12 +45,12 @@ const ProdukPembiayaan = ({ route }) => {
 
     useEffect(() => {
         setInfo();
-        getUKProdukPembiayaan();
         getStorageJenisPembiayaan();
         getStorageTipePencairan();
         getStorageTujuanPembiayaan();
         getStorageKategoriTujuanPembiayaan();
         getStorageFrekuensi();
+        getUKProdukPembiayaan()
     }, [])
 
     const setInfo = async () => {
@@ -71,6 +71,7 @@ const ProdukPembiayaan = ({ route }) => {
                         if (__DEV__) console.log('tx.executeSql data:', data);
 
                         const getJenisPembiayaan = () => {
+                            if (__DEV__) console.log('getJenisPembiayaan loaded');
                             return new Promise((resolve, reject) => {
                                 if (data.jenis_Pembiayaan !== null && typeof data.jenis_Pembiayaan !== 'undefined') {
                                     setTimeout(() => {
@@ -84,6 +85,7 @@ const ProdukPembiayaan = ({ route }) => {
                         }
 
                         const getNamaProduk = () => {
+                            if (__DEV__) console.log('getNamaProduk loaded');
                             return new Promise((resolve, reject) => {
                                 if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') {
                                     setTimeout(() => {
@@ -97,6 +99,7 @@ const ProdukPembiayaan = ({ route }) => {
                         }
 
                         const getProdukPembiayaan = () => {
+                            if (__DEV__) console.log('getProdukPembiayaan loaded');
                             return new Promise((resolve, reject) => {
                                 if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') {
                                     setTimeout(() => {
@@ -124,7 +127,7 @@ const ProdukPembiayaan = ({ route }) => {
                             if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
                             if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
                             if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
-                            if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' ? true : false);
+                            if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' || data.status_Rekening_Bank === '1' || data.status_Rekening_Bank === '0' ? true : false);
                             if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
                             if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
                             if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
@@ -400,42 +403,44 @@ const ProdukPembiayaan = ({ route }) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
-                    let query = '';
                     if (dataLengthFind === 0) {
                         alert('UK Master not found');
                         navigation.goBack();
                         return;
                     }
 
-                    query = 'UPDATE Table_UK_Master SET status = "2" WHERE namaNasabah = "' + namaNasabah + '"';
+                    if (screenState === 1) {
+                        let query = 'UPDATE Table_UK_Master SET status = "2" WHERE namaNasabah = "' + namaNasabah + '"';
+                        if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
-                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query);
+                            }, function(error) {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                                setSubmmitted(false);
+                            },function() {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
 
-                    db.transaction(
-                        tx => {
-                            tx.executeSql(query);
-                        }, function(error) {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
-                        },function() {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-
-                            if (__DEV__) {
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
-                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
-                                    }, function() {}
-                                );
+                                if (__DEV__) {
+                                    db.transaction(
+                                        tx => {
+                                            tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                            })
+                                        }, function(error) {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                        }, function() {}
+                                    );
+                                }
                             }
-                            setSubmmitted(false);
-                            alert('Berhasil');
-                            navigation.goBack();
-                        }
-                    );
+                        );
+                    }
+
+                    setSubmmitted(false);
+                    alert('Berhasil');
+                    navigation.goBack();
+                    
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
                     setSubmmitted(false);

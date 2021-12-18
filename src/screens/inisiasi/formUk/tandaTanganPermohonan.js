@@ -18,6 +18,7 @@ const dataPilihan = [
     { label: '5', value: '5' }
 ];
 const withTextInput = dimension.width - (20 * 4) + 8;
+var uniqueNumber = (new Date().getTime()).toString(36);
 
 const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const { groupName, namaNasabah, screenState } = route.params;
@@ -39,12 +40,11 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
     const [valueNamaTandaTanganKetuaKelompok, setValueNamaTandaTanganKetuaKelompok] = useState('');
     const [aoName, setAoName] = useState('');
-
-    const key_tandaTanganAOSAO = `formUK_tandaTanganAOSAO_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_tandaTanganNasabah = `formUK_tandaTanganNasabah_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_tandaTanganSuamiPenjamin = `formUK_tandaTanganSuamiPenjamin_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_tandaTanganKetuaSubKemlompok = `formUK_tandaTanganKetuaSubKemlompok_${namaNasabah.replace(/\s+/g, '')}`;
-    const key_tandaTanganKetuaKelompok = `formUK_tandaTanganKetuaKelompok_${namaNasabah.replace(/\s+/g, '')}`;
+    const [key_tandaTanganAOSAO, setKey_tandaTanganAOSAO] = useState(`formUK_tandaTanganAOSAO_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganNasabah, setKey_tandaTanganNasabah] = useState(`formUK_tandaTanganNasabah_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganSuamiPenjamin, setKey_tandaTanganSuamiPenjamin] = useState(`formUK_tandaTanganSuamiPenjamin_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganKetuaSubKemlompok, setKey_tandaTanganKetuaSubKemlompok] = useState(`formUK_tandaTanganKetuaSubKemlompok_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_tandaTanganKetuaKelompok, setKey_tandaTanganKetuaKelompok] = useState(`formUK_tandaTanganKetuaKelompok_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
 
     useEffect(() => {
         getUserData();
@@ -80,11 +80,23 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
 
-                        const tandaTanganAOSAO = await AsyncStorage.getItem(key_tandaTanganAOSAO);
-                        const tandaTanganNasabah = await AsyncStorage.getItem(key_tandaTanganNasabah);
-                        const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(key_tandaTanganSuamiPenjamin);
-                        const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(key_tandaTanganKetuaSubKemlompok);
-                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(key_tandaTanganKetuaKelompok);
+                        setKey_tandaTanganAOSAO(data.tanda_Tangan_AOSAO);
+                        setKey_tandaTanganNasabah(data.tanda_Tangan_Nasabah);
+                        setKey_tandaTanganSuamiPenjamin(data.tanda_Tangan_SuamiPenjamin);
+                        setKey_tandaTanganKetuaSubKemlompok(data.tanda_Tangan_Ketua_SubKelompok);
+                        setKey_tandaTanganKetuaKelompok(data.tanda_Tangan_Ketua_Kelompok);
+
+                        const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
+                        const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
+                        const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
+                        const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
+                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
+
+                        if (__DEV__) console.log('tandaTanganAOSAO :', data.tanda_Tangan_AOSAO, tandaTanganAOSAO);
+                        if (__DEV__) console.log('tandaTanganNasabah :', data.tanda_Tangan_Nasabah, tandaTanganNasabah);
+                        if (__DEV__) console.log('tandaTanganSuamiPenjamin :', data.tanda_Tangan_SuamiPenjamin, tandaTanganSuamiPenjamin);
+                        if (__DEV__) console.log('tandaTanganKetuaSubKemlompok :', data.tanda_Tangan_Ketua_SubKelompok, tandaTanganKetuaSubKemlompok);
+                        if (__DEV__) console.log('tandaTanganKetuaKelompok :', data.tanda_Tangan_Ketua_Kelompok, tandaTanganKetuaKelompok);
 
                         if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
                         if (data.frekuensi_Pembiayaan !== null && typeof data.frekuensi_Pembiayaan !== 'undefined') setValueFrekuensiPembiayaan(data.frekuensi_Pembiayaan);
@@ -267,42 +279,44 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
-                    let query = '';
                     if (dataLengthFind === 0) {
                         alert('UK Master not found');
                         navigation.goBack();
                         return;
                     }
 
-                    query = 'UPDATE Table_UK_Master SET status = "6" WHERE namaNasabah = "' + namaNasabah + '"';
+                    if (screenState === 5) {
+                        let query = 'UPDATE Table_UK_Master SET status = "6" WHERE namaNasabah = "' + namaNasabah + '"';
+                        if (__DEV__) console.log('doSubmitSave db.transaction insert/update query:', query);
 
-                    if (__DEV__) console.log('doSubmitSave db.transaction insert/update query:', query);
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query);
+                            }, function(error) {
+                                if (__DEV__) console.log('doSubmitSave db.transaction insert/update error:', error.message);
+                                setSubmmitted(false);
+                            },function() {
+                                if (__DEV__) console.log('doSubmitSave db.transaction insert/update success');
 
-                    db.transaction(
-                        tx => {
-                            tx.executeSql(query);
-                        }, function(error) {
-                            if (__DEV__) console.log('doSubmitSave db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
-                        },function() {
-                            if (__DEV__) console.log('doSubmitSave db.transaction insert/update success');
-
-                            if (__DEV__) {
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
-                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
-                                    }, function() {}
-                                );
+                                if (__DEV__) {
+                                    db.transaction(
+                                        tx => {
+                                            tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                            })
+                                        }, function(error) {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                        }, function() {}
+                                    );
+                                }
                             }
-                            setSubmmitted(false);
-                            alert('Berhasil');
-                            navigation.goBack();
-                        }
-                    );
+                        );
+                    }
+
+                    setSubmmitted(false);
+                    alert('Berhasil');
+                    navigation.goBack();
+                    
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitSave db.transaction find error:', error.message);
                     setSubmmitted(false);

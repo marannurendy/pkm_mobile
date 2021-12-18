@@ -24,31 +24,33 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const { groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [valuePedapatanKotorPerhari, setValuePedapatanKotorPerhari] = useState('');
-    const [valuePengeluaranKeluargaPerhari, setValuePengeluaranKeluargaPerhari] = useState('');
-    const [valuePendapatanBersihPerhari, setValuePendapatanBersihPerhari] = useState('');
-    const [valueJumlahHariUsahPerbulan, setValueJumlahHariUsahPerbulan] = useState('');
-    const [valuePendapatanBersihPerbulan, setValuePendapatanBersihPerbulan] = useState('');
-    const [valuePendapatanBersihPerminggu, setValuePendapatanBersihPerminggu] = useState('');
+    const [valuePedapatanKotorPerhari, setValuePedapatanKotorPerhari] = useState('0');
+    const [valuePengeluaranKeluargaPerhari, setValuePengeluaranKeluargaPerhari] = useState('0');
+    const [valuePendapatanBersihPerhari, setValuePendapatanBersihPerhari] = useState('0');
+    const [valueJumlahHariUsahPerbulan, setValueJumlahHariUsahPerbulan] = useState('0');
+    const [valuePendapatanBersihPerbulan, setValuePendapatanBersihPerbulan] = useState('0');
+    const [valuePendapatanBersihPerminggu, setValuePendapatanBersihPerminggu] = useState('0');
     const [openPembiayaanLembagaLain, setOpenPembiayaanLembagaLain] = useState(false);
     const [valuePembiayaanLembagaLain, setValuePembiayaanLembagaLain] = useState(null);
     const [valuePembiayaanLembagaLainFreetext, setIPembiayaanLembagaLainFreetext] = useState('');
     const [itemsPembiayaanLembagaLain, setItemsPembiayaanLembagaLain] = useState(dataPembiayaanLembagaLain);
-    const [valueJumlahAngsuran, setValueJumlahAngsuran] = useState('');
-    const [valuePedapatanKotorPerhariSuami, setValuePedapatanKotorPerhariSuami] = useState('');
-    const [valuePengeluaranKeluargaPerhariSuami, setValuePengeluaranKeluargaPerhariSuami] = useState('');
-    const [valuePendapatanBersihPerhariSuami, setValuePendapatanBersihPerhariSuami] = useState('');
-    const [valueJumlahHariUsahPerbulanSuami, setValueJumlahHariUsahPerbulanSuami] = useState('');
-    const [valuePendapatanBersihPerbulanSuami, setValuePendapatanBersihPerbulanSuami] = useState('');
-    const [valuePendapatanBersihPermingguSuami, setValuePendapatanBersihPermingguSuami] = useState('');
+    const [valueJumlahAngsuran, setValueJumlahAngsuran] = useState('0');
+    const [valuePedapatanKotorPerhariSuami, setValuePedapatanKotorPerhariSuami] = useState('0');
+    const [valuePengeluaranKeluargaPerhariSuami, setValuePengeluaranKeluargaPerhariSuami] = useState('0');
+    const [valuePendapatanBersihPerhariSuami, setValuePendapatanBersihPerhariSuami] = useState('0');
+    const [valueJumlahHariUsahPerbulanSuami, setValueJumlahHariUsahPerbulanSuami] = useState('0');
+    const [valuePendapatanBersihPerbulanSuami, setValuePendapatanBersihPerbulanSuami] = useState('0');
+    const [valuePendapatanBersihPermingguSuami, setValuePendapatanBersihPermingguSuami] = useState('0');
     const [valuePembiayaanDariLembaga, setValuePembiayaanDariLembaga] = useState('1');
     const [submmitted, setSubmmitted] = useState(false);
+    const [valueJumlahTanggungan, setValueJumlahTanggungan] = useState(0);
     const [dataPembiayaanLain, setDataPembiayaanLain] = useState([]);
 
     useEffect(() => {
         setInfo();
         getStoragePembiayaanLain();
         getUKPendapatanNasabah();
+        getUKDataDiri();
     }, [])
 
     const setInfo = async () => {
@@ -56,11 +58,33 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         setCurrentDate(tanggal);
     }
 
-    const getUKPendapatanNasabah = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '` + namaNasabah + `';`
+    const getUKDataDiri = () => {
+        let query = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = '` + namaNasabah + `';`
         db.transaction(
             tx => {
-                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                tx.executeSql(query, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        let jumlah_tanggungan = data.jumlah_tanggungan;
+                        if (data.jumlah_tanggungan === "0" || data.jumlah_tanggungan === "null") jumlah_tanggungan = "1";
+                        setValueJumlahTanggungan(parseInt(jumlah_tanggungan))
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
+                })
+            }
+        )
+    }
+
+    const getUKPendapatanNasabah = () => {
+        let query = `SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '` + namaNasabah + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_PendapatanNasabah length:', dataLength);
                     if (dataLength > 0) {
@@ -73,9 +97,11 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         if (data.jumlah_Hari_Usaha_Perbulan !== null && typeof data.jumlah_Hari_Usaha_Perbulan !== 'undefined') setValueJumlahHariUsahPerbulan(data.jumlah_Hari_Usaha_Perbulan);
                         if (data.pendapatan_Bersih_Perbulan !== null && typeof data.pendapatan_Bersih_Perbulan !== 'undefined') setValuePendapatanBersihPerbulan(data.pendapatan_Bersih_Perbulan);
                         if (data.pendapatan_Bersih_Perminggu !== null && typeof data.pendapatan_Bersih_Perminggu !== 'undefined') setValuePendapatanBersihPerminggu(data.pendapatan_Bersih_Perminggu);
-                        if (data.pembiayaan_Dari_Lembaga !== null && typeof data.pembiayaan_Dari_Lembaga !== 'undefined') setValuePembiayaanDariLembaga(data.pembiayaan_Dari_Lembaga);
-                        if (data.Pembiayaan_Dari_LembagaLain !== null && typeof data.Pembiayaan_Dari_LembagaLain !== 'undefined') setValuePembiayaanLembagaLain(data.Pembiayaan_Dari_LembagaLain);
-                        if (data.Pembiayaan_Dari_LembagaLainFreetext !== null && typeof data.Pembiayaan_Dari_LembagaLainFreetext !== 'undefined') setIPembiayaanLembagaLainFreetext(data.Pembiayaan_Dari_LembagaLainFreetext);
+                        // if (data.pembiayaan_Dari_Lembaga !== null && typeof data.pembiayaan_Dari_Lembaga !== 'undefined') setValuePembiayaanDariLembaga(data.pembiayaan_Dari_Lembaga);
+                        if (data.Pembiayaan_Dari_LembagaLain !== null && typeof data.Pembiayaan_Dari_LembagaLain !== 'undefined') setValuePembiayaanLembagaLain(data.Pembiayaan_Dari_LembagaLain === 'null' ? '1' : data.Pembiayaan_Dari_LembagaLain);
+                        if (data.Pembiayaan_Dari_LembagaLainFreetext !== null && typeof data.Pembiayaan_Dari_LembagaLainFreetext !== 'undefined') {
+                            if (data.Pembiayaan_Dari_LembagaLain === '3') setIPembiayaanLembagaLainFreetext(data.Pembiayaan_Dari_LembagaLainFreetext);
+                        }
                         if (data.jumlah_Angsuran !== null && typeof data.jumlah_Angsuran !== 'undefined') setValueJumlahAngsuran(data.jumlah_Angsuran);
                         if (data.pendapatanSuami_Kotor_Perhari !== null && typeof data.pendapatanSuami_Kotor_Perhari !== 'undefined') setValuePedapatanKotorPerhariSuami(data.pendapatanSuami_Kotor_Perhari);
                         if (data.pendapatanSuami_Pengeluaran_Keluarga_Perhari !== null && typeof data.pendapatanSuami_Pengeluaran_Keluarga_Perhari !== 'undefined') setValuePengeluaranKeluargaPerhariSuami(data.pendapatanSuami_Pengeluaran_Keluarga_Perhari);
@@ -199,42 +225,44 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
-                    let query = '';
                     if (dataLengthFind === 0) {
                         alert('UK Master not found');
                         navigation.goBack();
                         return;
                     }
 
-                    query = 'UPDATE Table_UK_Master SET status = "5" WHERE namaNasabah = "' + namaNasabah + '"';
+                    if (screenState === 4) {
+                        let query = 'UPDATE Table_UK_Master SET status = "5" WHERE namaNasabah = "' + namaNasabah + '"';
+                        if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
-                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query);
+                            }, function(error) {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                                setSubmmitted(false);
+                            },function() {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
 
-                    db.transaction(
-                        tx => {
-                            tx.executeSql(query);
-                        }, function(error) {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
-                        },function() {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-
-                            if (__DEV__) {
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
-                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
-                                    }, function() {}
-                                );
+                                if (__DEV__) {
+                                    db.transaction(
+                                        tx => {
+                                            tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                            })
+                                        }, function(error) {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                        }, function() {}
+                                    );
+                                }
                             }
-                            setSubmmitted(false);
-                            alert('Berhasil');
-                            navigation.goBack();
-                        }
-                    );
+                        );
+                    }
+
+                    setSubmmitted(false);
+                    alert('Berhasil');
+                    navigation.goBack();
+                    
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
                     setSubmmitted(false);
@@ -508,6 +536,18 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         </View>
     )
 
+    const renderFormPendapatanPerkapita = () => (
+        <View style={styles.MT8}>
+            <Text>Pendapatan Perkapita</Text>
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray', paddingLeft: 0, fontSize: 18 }]}>{formatter((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 0) || 0) + ((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 0) | 0)) / valueJumlahTanggungan)}</Text>
+                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Istri : {(parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 0)}</Text>
+                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Suami : {(parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 0)}</Text>
+                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Jumlah Tanggungan : {valueJumlahTanggungan}</Text>
+            </View>
+        </View>
+    )
+
     const renderFormPendapatanSuami = () => (
         <View style={styles.MT8}>
             <Text style={[styles.FS18, styles.MB16]}>PENDAPATAN SUAMI</Text>
@@ -535,6 +575,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
             {renderButtonSaveDraft()}
             {renderSpace()}
             {renderFormPendapatanSuami()}
+            {renderSpace()}
+            {renderFormPendapatanPerkapita()}
         </View>
     )
 

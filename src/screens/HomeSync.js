@@ -57,7 +57,8 @@ export default function FrontHomeSync(props) {
 
         const syncBy = await AsyncStorage.getItem('SyncBy')
         let dataRole = await JSON.parse(syncBy)
-        let lengthData = dataRole.filter((x) => x.userName === userName).length || 0
+        let lengthData = 0;
+        if (dataRole !== null) lengthData = dataRole.filter((x) => x.userName === userName).length || 0;
 
         AsyncStorage.getItem('SyncDate', (error, syncDate) => {
             if (syncDate !== now || lengthData === 0) {
@@ -144,18 +145,41 @@ export default function FrontHomeSync(props) {
                 "Sukses",
                 "Sync berhasil dilakukan, Anda akan memasuki menu utama",
                 [
-                    { text: "OK", onPress: () => {
-                        props.onSuccess();
-                    }}
+                    { 
+                        text: "OK", 
+                        onPress: () => __DEV__ && console.log('onPress loaded')
+                    }
                 ],
                 { cancelable: false }
             )
+            props.onSuccess()
             setSubmitted(false);
         }).catch((error) => {
             if (__DEV__) console.log('doSubmit getSyncData error:', error);
             ToastAndroid.show(JSON.stringify(error), ToastAndroid.SHORT);
             setSubmitted(false);
         })
+    }
+
+    const LogOutButton = () => {
+        Alert.alert(
+            "Logout Alert",
+            "Apakah anda yakin ingin keluar ?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("cancel pressed"),
+                    style: "cancel"
+                },
+                { 
+                    text: "OK", 
+                    onPress: () => {
+                        AsyncStorage.removeItem('userData');
+                        navigation.replace('Login');
+                    }
+                }
+            ]
+        );
     }
 
     const renderHeaderMenu = () => (
@@ -167,11 +191,16 @@ export default function FrontHomeSync(props) {
     )
 
     const renderHeaderProfile = () => (
-        <View style={{marginHorizontal: scale(15)}}>
-            <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.PUTIH}}>Hi, {props.aoname}</Text>
-            <Text style={{color: colors.PUTIH}}>{props.username}</Text>
-            <Text style={{color: colors.PUTIH}}>{props.namacabang}</Text>
-            <Text style={{color: colors.PUTIH}}>{now}</Text>
+        <View style={{marginHorizontal: scale(15), flexDirection: 'row', alignItems: 'flex-end'}}>
+            <View style={{ flex: 1 }}>
+                <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.PUTIH}}>Hi, {props.aoname}</Text>
+                <Text style={{color: colors.PUTIH}}>{props.username}</Text>
+                <Text style={{color: colors.PUTIH}}>{props.namacabang}</Text>
+                <Text style={{color: colors.PUTIH}}>{now}</Text>
+            </View>
+            <View>
+                <Text style={{ color: 'white', fontSize: 18 }} onPress={() => LogOutButton()}>Logout</Text>
+            </View>
         </View>
     )
 
@@ -357,7 +386,6 @@ export default function FrontHomeSync(props) {
             {renderProspekFilter()}
             {renderProspekButton()}
             {renderProspekResult()}
-            <Text>{JSON.stringify(selectedItemsProspek)}</Text>
         </>
     )
 
@@ -365,7 +393,8 @@ export default function FrontHomeSync(props) {
         <View
             style={
                 {
-                    flexDirection: 'row'
+                    flexDirection: 'row',
+                    marginTop: 16
                 }
             }
         >
@@ -410,6 +439,7 @@ export default function FrontHomeSync(props) {
         >
             {renderProspek()}
             {renderButton()}
+            <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text>
         </View>
     )
 

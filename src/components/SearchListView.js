@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -56,14 +57,13 @@ export default({
             style={
                 {
                     flexDirection: 'row',
-                    marginBottom: 16
+                    marginBottom: 16,
+                    alignItems: 'center'
                 }
             }
         >
-            <Text style={{ flex: 1 }}>
-                {title}
-            </Text>
-            <Text onPress={() => onDismiss()}>Close</Text>
+            <Text style={{ flex: 1, fontSize: 18 }}>{title}</Text>
+            <FontAwesome5 name="times-circle" size={22} color="#2e2e2e" onPress={() => onDismiss()} />
         </View>
     )
 
@@ -77,7 +77,7 @@ export default({
                     borderColor: colors.HITAM,
                     borderRadius: 8,
                     paddingHorizontal: 8,
-                    marginBottom: 16
+                    marginBottom: 12
                 }
             }
         >
@@ -86,7 +86,8 @@ export default({
                 style={
                     {
                         flex: 1,
-                        marginLeft: 8
+                        marginLeft: 8,
+                        height: 36
                     }
                 }
                 placeholder={placeholderTitle}
@@ -128,7 +129,7 @@ export default({
                     }>
                         {getSelectedProspek(item) ? <FontAwesomeIcon name="check" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
                     </View>
-                    <Text>{item.Nama}</Text>
+                    <Text style={{ flex: 1 }} numberOfLines={1}>{item.Nama}</Text>
                 </View>
             </TouchableOpacity>
         ))
@@ -140,6 +141,15 @@ export default({
             <ScrollView>
                 {renderProspekResultList()}
             </ScrollView>
+            <View 
+                style={
+                    {
+                        borderWidth: 1,
+                        height: 1,
+                        borderColor: 'whitesmoke'
+                    }
+                }
+            />
             {button()}
         </View>
     )
@@ -153,7 +163,7 @@ export default({
                     width: 60,
                     padding: 8,
                     borderRadius: 8,
-                    marginTop: 16
+                    marginTop: 8
                 }
             }
         >
@@ -190,7 +200,7 @@ const styles = StyleSheet.create({
     },
     container: {
         width: windowWidth - 32,
-        height: 300,
+        height: 450,
         backgroundColor: 'white',
         padding: 16,
         borderRadius: 4,

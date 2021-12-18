@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, Platform, PermissionsAndroid, ScrollView, ToastAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -21,11 +21,18 @@ const Inisasi = () => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [dataVerifikasi, setDataVerifikasi] = useState([]);
 
     let [roleCheck, setRoleCheck] = useState(0)
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getUserData();
+            getSosialisasiDatabase();
+            getUKDataDiriVerifikasi();
+        });
+
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -37,13 +44,9 @@ const Inisasi = () => {
                 setAoName(data.AOname);
             });
         }
-
-        getUserData();
-        getSosialisasiDatabase();
-
+        
         const onLoadCheck = async () => {
             const roleUser = await AsyncStorage.getItem('roleUser')
-            
             if(roleUser === 'KC'){
                 setRoleCheck(1)
             }else if(roleUser === 'SAO'){
@@ -54,48 +57,31 @@ const Inisasi = () => {
         }
         
         onLoadCheck()
+        hasLocationPermission();
 
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
+        return unsubscribe;
+    }, [navigation]);
 
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
-    }, []);
+    const hasLocationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                ToastAndroid.show("You can use the location", ToastAndroid.SHORT);
+            } else {
+                ToastAndroid.show("Location permission denied", ToastAndroid.SHORT);
+            }
+        } catch (err) {
+            console.log('hasLocationPermission error:', err);
+        }
+    };
 
     const getSosialisasiDatabase = () => {
         if (__DEV__) console.log('getSosialisasiDatabase loaded');
         if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
 
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
+        let query = 'SELECT a.lokasiSosialisasi, COUNT(a.namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database a WHERE a.lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY a.lokasiSosialisasi';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -107,6 +93,28 @@ const Inisasi = () => {
                         ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
                     }
                     setData(ah);
+                })
+            }
+        )
+    }
+
+    const getUKDataDiriVerifikasi = () => {
+        if (__DEV__) console.log('getUKDataDiri loaded');
+        if (__DEV__) console.log('getUKDataDiri keyword', keyword);
+
+        let query = 'SELECT lokasi_sosialisasi, COUNT(lokasi_sosialisasi) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND lokasi_sosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasi_sosialisasi';
+        // let query = 'SELECT lokasi_sosialisasi, COUNT(lokasi_sosialisasi) as jumlah FROM Table_UK_DataDiri WHERE lokasi_sosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasi_sosialisasi';
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    if (__DEV__) console.log('getUKDataDiri results:', results.rows);
+                    let dataLength = results.rows.length
+                    var ah = []
+                    for(let a = 0; a < dataLength; a++) {
+                        let data = results.rows.item(a);
+                        ah.push({'groupName' : data.lokasi_sosialisasi, 'totalnasabah': data.jumlah, 'date': '08-09-2021'});
+                    }
+                    setDataVerifikasi(ah);
                 })
             }
         )
@@ -154,7 +162,7 @@ const Inisasi = () => {
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
-                <Text>Total Nasabah : {totalNasabah}</Text>
+                {/* <Text>Total Nasabah : {totalNasabah}</Text> */}
             </View>
         )
     }
@@ -180,6 +188,7 @@ const Inisasi = () => {
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
+                {/* <Text>Total Nasabah : {totalNasabah}</Text> */}
             </View>
         )
     }
@@ -204,9 +213,10 @@ const Inisasi = () => {
     )
     const ListMessageVerif = ({ groupName, date, totalNasabah }) => {
         return(
-            <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
+            <View style={{ margin: 20}}>
+                <Text numberOfLines={1} style={{ fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851' }}>{groupName}</Text>
                 <Text>{date}</Text>
+                <Text>Total Nasabah : {totalNasabah}</Text>
             </View>
         )
     }
@@ -239,7 +249,7 @@ const Inisasi = () => {
                 <View style={{height: menuShow === 0 ? dimension.height/2.5 : dimension.height/4, marginHorizontal: 10, borderRadius: 20, marginTop: 30, flex: 1}}>
                     <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover"}} imageStyle={{borderRadius: 20}}>
 
-                        <TouchableOpacity onPress={() => navigation.replace('FrontHome')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
                             <View>
                                 <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                             </View>
@@ -441,7 +451,7 @@ const Inisasi = () => {
                                 onChangeText={(text) => setKeyword(text)}
                                 value={keyword}
                                 returnKeyType="done"
-                                onSubmitEditing={() => getSosialisasiDatabase()}
+                                onSubmitEditing={() => getUKDataDiriVerifikasi()}
                             />
                         </View>
                     </View>
@@ -449,16 +459,10 @@ const Inisasi = () => {
                     <SafeAreaView style={{flex: 1}}>
                         <View style={{ justifyContent:  'space-between'}}>
                             <FlatList
-                                // contentContainerStyle={styles.listStyle}
-                                // refreshing={refreshing}
-                                // onRefresh={() => _onRefresh()}
-                                data={data}
+                                data={dataVerifikasi}
                                 keyExtractor={(item, index) => index.toString()}
                                 enabledGestureInteraction={true}
-                                // onEndReachedThreshold={0.1}
-                                // onEndReached={() => handleEndReach()}
                                 renderItem={renderItemVerif}
-                                // style={{height: '88.6%'}}
                                 ListEmptyComponent={_listEmptyComponent}
                             /> 
                         </View>

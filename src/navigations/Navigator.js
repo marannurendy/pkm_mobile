@@ -65,7 +65,18 @@ import {
 
 import { 
     KelompokPencairan, 
-    FlowPencairan 
+    FlowPencairan, 
+    ListPencairan,
+    AkadWakalah,
+    AkadMurabahah,
+    FinalPencairan,
+    Siklus,
+    Perjanjian,
+    TandaTanganPencairan,
+    SyncPencairan,
+    Preview,
+    FormFP4,
+    UploadBuktiPem
 } from '../screens/pencairan/index'
 
 
@@ -645,6 +656,17 @@ export default function AppNavigator() {
                 {/* Pencairan */}
                 <Stack.Screen name="Pencairan" component={KelompokPencairan} options={{ headerShown: false }} />
                 <Stack.Screen name="FlowPencairan" component={FlowPencairan} options={{ headerShown: false }} />
+                <Stack.Screen name="ListPencairan" component={ListPencairan} options={{ headerShown: false }} />
+                <Stack.Screen name="AkadWakalah" component={AkadWakalah} options={{ headerShown: false }} />
+                <Stack.Screen name="AkadMurabahah" component={AkadMurabahah} options={{ headerShown: false }} />
+                <Stack.Screen name="FinalPencairan" component={FinalPencairan} options={{ headerShown: false }} />
+                <Stack.Screen name="Siklus" component={Siklus} options={{ headerShown: false }} />
+                <Stack.Screen name="Perjanjian" component={Perjanjian} options={{ headerShown: false }} />
+                <Stack.Screen name="TandaTanganPencairan" component={TandaTanganPencairan} options={{ headerShown: false }} />
+                <Stack.Screen name="SyncPencairan" component={SyncPencairan} options={{ headerShown: false }} />
+                <Stack.Screen name="Preview" component={Preview} options={{ headerShown: false }} />
+                <Stack.Screen name="FormFP4" component={FormFP4} options={{ headerShown: false }} />
+                <Stack.Screen name="UploadBuktiPem" component={UploadBuktiPem} options={{ headerShown: false }} />
 
           </Stack.Navigator>
       </NavigationContainer>

@@ -180,42 +180,44 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
-                    let query = '';
                     if (dataLengthFind === 0) {
                         alert('UK Master not found');
                         navigation.goBack();
                         return;
                     }
 
-                    query = 'UPDATE Table_UK_Master SET status = "3" WHERE namaNasabah = "' + namaNasabah + '"';
+                    if (screenState === 2) {
+                        let query = 'UPDATE Table_UK_Master SET status = "3" WHERE namaNasabah = "' + namaNasabah + '"';
+                        if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
-                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
-
-                    db.transaction(
-                        tx => {
-                            tx.executeSql(query);
-                        }, function(error) {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                            setSubmmitted(false);
-                        },function() {
-                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-                            
-                            if (__DEV__) {
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
-                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
-                                    }, function() {}
-                                );
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query);
+                            }, function(error) {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                                setSubmmitted(false);
+                            },function() {
+                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                                
+                                if (__DEV__) {
+                                    db.transaction(
+                                        tx => {
+                                            tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                            })
+                                        }, function(error) {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                        }, function() {}
+                                    );
+                                }
                             }
-                            setSubmmitted(false);
-                            alert('Berhasil');
-                            navigation.goBack();
-                        }
-                    );
+                        );
+                    }
+
+                    setSubmmitted(false);
+                    alert('Berhasil');
+                    navigation.goBack();
+                    
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
                     setSubmmitted(false);
