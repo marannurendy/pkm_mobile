@@ -20,7 +20,27 @@ const ListPencairan = ({route}) => {
     let [aoName, setAoName] = useState();
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
-    let [data, setData] = useState([]);
+    let [data, setData] = useState([{
+        "Alamat_Domisili": "di JL. Mamalia Raya Gang Kelinci No. 4, RT 04 RW 10",
+        "Angsuran_Per_Minggu": "150000",
+        "Foto_Pencairan": {},
+        "Jasa": "750000",
+        "Jenis_Pembiayaan": "Modal Usaha",
+        "Jumlah_Pinjaman": "3000000",
+        "Kelompok_ID": "string",
+        "LRP_TTD_AO": {},
+        "LRP_TTD_Nasabah": {},
+        "Nama_Kelompok": "Toto",
+        "Nama_Penjamin": "Supriyadi",
+        "Nama_Prospek": 'Vina binti Supardi (K)',
+        "Nomor_Identitas": '3674000100020003',
+        "TTD_KC": {},
+        "TTD_KK": {},
+        "TTD_KSK": {},
+        "TTD_Nasabah": {},
+        "TTD_Nasabah_2": {},
+        "Term_Pembiayaan": "Pertama"
+      }]);
     let [kelom, setKelom] = useState();
     const [keyword, setKeyword] = useState('');
 
@@ -90,9 +110,8 @@ const ListPencairan = ({route}) => {
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
+                        ah.push({'Nama' : data.Nama_Prospek, 'Nomor_Identitas': '08-09-2021'});
                     }
-                    setData([{'kelName' :'Vina binti Supardi (SY)', 'Nomor': '900900102/3000000/25'}, {'kelName' :'Vina binti Supardi (K)', 'Nomor': '900900102/3000000/25'}]);
                 })
             }
         )
@@ -106,18 +125,18 @@ const ListPencairan = ({route}) => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => data.kelName.includes("(SY)") ? navigation.navigate('AkadWakalah', {data: data}) : navigation.navigate('Perjanjian', {data: data})}
+            onPress={() => navigation.replace('Perjanjian', {data: data})}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessageSos kelName={data.kelName} Nomor={data.Nomor} />
+                <ListMessageSos Nama={data.Nama_Prospek} Nomor_Identitas={data.Nomor_Identitas} />
             </View>
         </TouchableOpacity>
     )
-    const ListMessageSos = ({ kelName, Nomor }) => {
+    const ListMessageSos = ({ Nama, Nomor_Identitas }) => {
         return(
             <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{kelName}</Text>
-                <Text>{Nomor}</Text>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama}</Text>
+                <Text>{Nomor_Identitas}</Text>
             </View>
         )
     }
@@ -203,7 +222,7 @@ const ListPencairan = ({route}) => {
                             // onEndReached={() => handleEndReach()}
                             renderItem={renderItemSos}
                             // style={{height: '88.6%'}}
-                            //ListEmptyComponent={_listEmptyComponent}
+                            ListEmptyComponent={_listEmptyComponent}
                         /> 
                     </View>
                 </SafeAreaView>

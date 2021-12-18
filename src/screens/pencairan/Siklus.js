@@ -10,7 +10,7 @@ import db from '../../database/Database'
 
 const window = Dimensions.get('window');
 
-const Siklus = () => {
+const Siklus = ({route}) => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -19,9 +19,8 @@ const Siklus = () => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
-    let [menuShow, setMenuShow] = useState(0);
-    let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [dataNasabah, setDataNasabah] = useState(route.params.data);
     let [akadmenu, setakadmenu] = useState(0);
     const [keyword, setKeyword] = useState('');
 
@@ -138,51 +137,41 @@ const Siklus = () => {
 
                             <Text style={{fontSize: 14, fontWeight: 'bold'}}>Produk Pembiayaan</Text>
                             <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
                                 style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
+                                editable={false} selectTextOnFocus={false}
+                                value={dataNasabah.Jenis_Pembiayaan}
                                 returnKeyType="done"
                             />
 
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Plafond</Text>
                             <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
                                 style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
+                                editable={false} selectTextOnFocus={false}
+                                value={dataNasabah.Jumlah_Pinjaman}
                                 returnKeyType="done"
                             />
 
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Term Pembiayaan</Text>
                             <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
+                                editable={false} selectTextOnFocus={false}
                                 style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
+                                value={dataNasabah.Term_Pembiayaan}
                                 returnKeyType="done"
                             />
 
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Jumlah UP</Text>
                             <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
+                                editable={false} selectTextOnFocus={false}
+                                value={((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100).toString()}
                                 style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
                                 returnKeyType="done"
                             />
 
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Total Pencairan</Text>
                             <TextInput 
-                                placeholder={"Wadah, Tepung Terigu dll"} 
+                                editable={false} selectTextOnFocus={false}
+                                value={(parseInt(dataNasabah.Jumlah_Pinjaman) - ((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100)).toString()}
                                 style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                // onChangeText={(value) => {
-                                //     searchHandler(value, memberList)
-                                // }}
                                 returnKeyType="done"
                             />
                             

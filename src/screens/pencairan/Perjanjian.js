@@ -4,18 +4,16 @@ import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import ActionButton from 'react-native-action-button'
-import { scale, verticalScale } from 'react-native-size-matters'
+import moment from 'moment'
 import { Card, Divider } from 'react-native-elements';
 import SignatureScreen from "react-native-signature-canvas";
 import { Button } from 'react-native-elements';
-import bismillah from '../../images/bismillah.png';
 
 import db from '../../database/Database'
 
 const window = Dimensions.get('window');
 
-const AkadMurabahah = ({route}) => {
+const Perjanjian = ({route}) => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -27,15 +25,16 @@ const AkadMurabahah = ({route}) => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
-    let [dataNasabah, setDataNasabah] = useState();
+    let [dataNasabah, setDataNasabah] = useState(route.params.data);
     const [keyword, setKeyword] = useState('');
     const [modalVisibleAO, setModalVisibleAO] = useState(false);
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
     const [signatureAO, setSignatureAO] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
+    moment.locale('id');
+    var hariIni = moment(new Date()).format('DD-MM-YYYY')
 
     useEffect(() => {
-        setDataNasabah(route.params.data)
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -49,7 +48,6 @@ const AkadMurabahah = ({route}) => {
         }
 
         getUserData();
-        getSosialisasiDatabase();
 
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
@@ -86,27 +84,6 @@ const AkadMurabahah = ({route}) => {
         //     console.log(result)
         // })
     }, []);
-
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
-
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
-        db.transaction(
-            tx => {
-                tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
-                    }
-                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
-                })
-            }
-        )
-    }
 
     const submitHandler = () => {
         navigation.navigate("FinalPencairan", {data: dataNasabah})
@@ -254,23 +231,24 @@ const AkadMurabahah = ({route}) => {
                         <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
                             <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Perjanjian Pembiayaan</Text>
                             <Text style={{fontSize: 14}}>Perjanjian Pembiayaan ini dibuat dan ditandatangani di {<Text style={{fontSize: 14, color:"#0645AD"}}>Jakarta </Text>} 
-                            pada tanggal {<Text style={{fontSize: 14, color:"#0645AD"}}>14 Juni 2021</Text>}  oleh dan antara:{"\n"}{"\n"}
+                            pada tanggal {<Text style={{fontSize: 14, color:"#0645AD"}}>{hariIni}</Text>}  oleh dan antara:{"\n"}{"\n"}
                             1. PT. Permodalan Nasional Madani, berkedudukan 
                             dan berkantor pusat di Jakarta, dalam hal ini diwakili oleh 
-                            Istiqomah selaku Kepala Cabang/SAO Mekaar, selanjutnya 
+                            {<Text style={{fontSize: 14, color:"#0645AD"}}>{" "+aoName}</Text>} selaku Kepala Cabang/SAO Mekaar, selanjutnya 
                             disebut PNM.{"\n"}{"\n"}
-                            2. Sri Rahayu bertempat Tinggal di JL. Mamalia Raya Gang
-                            Kelinci No. 4, RT 04 RW 10, KTP No. 3674000100020003,
+                            2. <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Nama_Prospek} </Text> 
+                            bertempat Tinggal <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Alamat_Domisili}, </Text> 
+                            KTP No. <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Nomor_Identitas}</Text>,
                             selanjutnya disebut Nasabah.{"\n"}{"\n"}
-                            Nasabah dengan perseyujuan penjamin, yaitu Ahmad Sanusi, 
+                            Nasabah dengan persetujuan penjamin, yaitu <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Nama_Penjamin}</Text>, 
                             sebagaimana dalam permohonan pembiayaan, telah 
                             menerima fasilitas pembiayaan dari PNM 
                             dengan ketentuan sebagai berikut:{"\n"}
-                            a. Jumlah Pembiayaan            : 3.000.000 {"\n"}
-                            b. Jenis Pembiayaan              : 250.000 {"\n"}
-                            c. Jasa                             : 3.250.000 {"\n"}
-                            d. Jangka Waktu                      : 25 Minggu {"\n"}
-                            e. Angsuran per Minggu          : 150.000 {"\n"}{"\n"}
+                            a. Jumlah Pembiayaan            :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jumlah_Pinjaman}</Text> {"\n"}
+                            b. Jenis Pembiayaan                 :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jenis_Pembiayaan}</Text> {"\n"}
+                            c. Jasa                                             :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jasa}</Text> {"\n"}
+                            d. Jangka Waktu                         :  <Text style={{fontSize: 14, color:"#0645AD"}}>{(parseInt(dataNasabah.Jumlah_Pinjaman) + parseInt(dataNasabah.Jasa)) / parseInt(dataNasabah.Angsuran_Per_Minggu)} Minggu</Text> {"\n"}
+                            e. Angsuran per Minggu          :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Angsuran_Per_Minggu}</Text> {"\n"}{"\n"}
 
                             Kewajiban Nasabah{"\n"}
                             a. Hadir tepat waktu dalam pertemuan Kelompok{"\n"}
@@ -319,7 +297,7 @@ const AkadMurabahah = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Tanda Tangan KC/SAO(*)</Text>
@@ -351,7 +329,7 @@ const AkadMurabahah = ({route}) => {
     )
 }
 
-export default AkadMurabahah
+export default Perjanjian
 
 const styles = StyleSheet.create({
     button: {

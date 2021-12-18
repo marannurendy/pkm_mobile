@@ -14,6 +14,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
     var getPKMIndividual = ApiSync + 'GetCollectionListPKMIndividual' + '/' + params.cabangid + '/' + params.username;
     var getMasterData = ApiSyncInisiasi + 'GetMasterData/' + params.cabangid;
     var postGetSosialisasiMobile = ApiSyncInisiasi + 'GetSosialisasiMobile';
+    var getDataPencairan = ApiSyncInisiasi + 'GetPencairanMobile/'+ params.cabangid + '/' + params.username;
     if (__DEV__) console.log('ACTIONS GET SYNC DATA VARIABEL', getListGroup, getListCollection, queryUP, getPAR, getPKMIndividual, getMasterData);
 
     const truncat = (reject, source) => {
@@ -44,6 +45,52 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
     const clearData = () => new Promise((resolve, reject) => {
         resolve(truncat(reject, 'GROUP'));
+    });
+
+    const insertKelompokPencairan = (responseJson) => new Promise((resolve, reject) => {
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT');
+        // if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT:', responseJson);
+
+        try {
+            if(responseJson.data.pencairan.length  > 0) {
+                let query = 'INSERT INTO Table_Pencairan (kelompok_Id, Nama_Kelompok, Jumlah_Kelompok, syncby) values ';
+                for (let i = 0; i < responseJson.data.pencairan.length; i++) {
+                    query = query + "('"
+                    + responseJson[i].Kelompok_ID
+                    + "','"
+                    + responseJson[i].Nama_Kelompok
+                    + "','"
+                    + responseJson[i].Jml_ID_Prospek
+                    + "','"
+                    + params.username
+                    + "')";
+
+                    if (i != responseJson.length - 1) query = query + ",";
+                }
+                query = query + ";";
+                if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT QUERY:', query);
+    
+                db.transaction(
+                    tx => {
+                        tx.executeSql(query);
+                    }, function(error) {
+                        if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT TRANSACTION ERROR:', error);
+                        reject('GAGAL INPUT DATA GROUP');
+                    }, function() {
+                        resolve('BERHASIL');
+                    }
+                );
+                return;
+            } else {
+                // truncat(reject, 'GROUP');
+                resolve('BERHASIL');
+                return;
+            } 
+        } catch(error) {
+            if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT TRANSACTION TRY CATCH ERROR:', error);
+            reject('GAGAL INPUT DATA GROUP KE LOCALSTORAGE');
+            return;
+        }
     });
 
     const insertListGroup = (responseJson) => new Promise((resolve, reject) => {
@@ -1045,6 +1092,11 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const MasterData = await fetch(getMasterData);
         const jsonMasterData = await MasterData.json(MasterData);
         if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
+
+        const PencairanData = await fetch(getDataPencairan);
+        const jsonPencairanData = await PencairanData.json(PencairanData);
+        await insertKelompokPencairan(jsonPencairanData);
+        if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonPencairanData);
 
         // let dataLogin = [{
         //     userName: params.username
