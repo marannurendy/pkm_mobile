@@ -1223,10 +1223,10 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const jsonMasterData = await MasterData.json(MasterData);
         // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
 
-        const PencairanData = await fetch(getDataPencairan);
-        const jsonPencairanData = await PencairanData.json(PencairanData);
-        await insertKelompokPencairan(jsonPencairanData);
-        if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonPencairanData);
+        // const PencairanData = await fetch(getDataPencairan);
+        // const jsonPencairanData = await PencairanData.json(PencairanData);
+        // await insertKelompokPencairan(jsonPencairanData);
+        // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonPencairanData);
 
         // let dataLogin = [{
         //     userName: params.username
