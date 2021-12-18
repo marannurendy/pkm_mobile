@@ -3,20 +3,77 @@ import { View, Text, ImageBackground, TouchableOpacity, Dimensions, KeyboardAvoi
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
+import db from '../../../database/Database';
+import { getSyncData } from '../../../actions/sync';
 
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 16;
 
 const InisiasiFormPPKelompokSub = ({ route }) => {
+    const { groupName } = route.params;
     const navigation = useNavigation();
     const [date, setDate] = useState(new Date());
-    const [inputList, setInputList] = useState([{ value: "Kelinci 1" }, { value: "Kelinci 2" }]);
+
+    // const [inputList, setInputList] = useState([{ value: "Kelinci 1" }, { value: "Kelinci 2" }]);
+    const [inputList, setInputList] = useState([]);
+
     const [visible, setVisible] = useState(false);
     const [selectedData, setSelectedData] = useState(null);
 
+    let [branchid, setBranchid] = useState()
+    let [currentDate, setCurrrentDate] = useState()
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            getInfoData()
+            getDataSubKelompok()
+        })
+
+        return unsubscribe
+    }, [])
+
+    const getInfoData = async () => {
+        const tanggal = await AsyncStorage.getItem('TransactionDate');
+
+        const detailBranch = await AsyncStorage.getItem('userData')
+        let branchid = JSON.parse(detailBranch).kodeCabang
+
+        setBranchid(branchid)
+        setCurrrentDate(tanggal)
+    }
+
+    const getDataSubKelompok = async () => {
+        let querySubKelompok = "SELECT subKelompok, num, subKelompok || ' ' || num AS namaSub, branchid, status FROM Table_PP_SubKelompok WHERE subKelompok = '" + groupName + "'"
+
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(querySubKelompok, [], (tx, results) => {
+                            let dataLength = results.rows.length
+                            
+                            var data = []
+                            for(let a = 0; a < dataLength; a++) {
+                                var list = results.rows.item(a)
+                                data.push(list)
+                            }
+                            console.log(data)
+                            setInputList(data)
+                        })
+                    }
+                )
+            }catch(error){
+                console.log(error)
+            }
+    }
+
     const handleRemove = (index) => {
+        let a = index
+        let b = inputList[a].num
+        let queryDelete = "DELETE FROM Table_PP_SubKelompok WHERE kelompok = '" + groupName + "' AND num = '" + b + "'"
+
         Alert.alert(
             'Konfirmasi',
             `Hapus sub kelompok no. ${index + 1}?`,
@@ -32,6 +89,18 @@ const InisiasiFormPPKelompokSub = ({ route }) => {
                         const list = [...inputList];
                         list.splice(index, 1);
                         setInputList(list);
+
+                        try{
+                            db.transaction(
+                                tx => {
+                                    tx.executeSql(queryDelete)
+                                }, function(error) {
+                                    alert(error)
+                                }
+                            )
+                        }catch(error){
+                            alert(error)
+                        }
                     }
                 }
             ]
@@ -39,14 +108,54 @@ const InisiasiFormPPKelompokSub = ({ route }) => {
         
     } 
 
-    const handleAdd = () => navigation.navigate('InisiasiFormPPKelompokSubForm')
+    // const handleAdd = () => navigation.navigate('InisiasiFormPPKelompokSubForm', {groupName: groupName})
+    const handleAdd = () => {
+        let x = inputList.map(function(x) {return Number(x.num)})
+        let y = Math.max.apply(null, x)
+
+        let b = groupName + " " + (y + 1)
+        let c = y + 1
+        console.log(c)
+        let newData = [...inputList]
+        newData.push({branchid: branchid, namaSub: b, num: c, status: 0, subKelompok: groupName})
+        setInputList([...newData])
+
+        let InsertDataSub = 'INSERT INTO Table_PP_SubKelompok ( kelompok_Id, subKelompok_Id, kelompok, subKelompok, num, branchid, status ) VALUES '
+            + "( '"
+            + ""
+            + "', '"
+            + ""
+            + "', '"
+            + groupName
+            + "', '"
+            + groupName
+            + "', '"
+            + c
+            + "', '"
+            + branchid
+            + "', '"
+            + 0
+            + "' );"
+
+        try{
+            db.transaction(
+                tx => {
+                    tx.executeSql(InsertDataSub)
+                }, function(error) {
+                    alert(error)
+                }
+            )
+        }catch(error){
+            alert(error)
+        }
+    }
 
     const renderFormNamaKelompok = () => (
         <View style={styles.MT8}>
             <Text>Nama Kelompok (*)</Text>
             <View style={[styles.textInputContainer, { width: withTextInput, backgroundColor: 'whitesmoke' }]}>
                 <View style={styles.F1}>
-                    <Text>Gang Kelinci</Text>
+                    <Text>{groupName}</Text>
                 </View>
                 <View />
             </View>
@@ -57,21 +166,12 @@ const InisiasiFormPPKelompokSub = ({ route }) => {
         if (i > 0) {
             return (
                 <View style={styles.FDRow}>
-                    <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormPPKelompokSubForm')}>
-                        <FontAwesome5 name="edit" size={16} color={colors.OREN} />
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleRemove(i)} style={styles.ML8}>
                         <FontAwesome5 name="trash" size={16} color={colors.MERAH} />
                     </TouchableOpacity>
                 </View>
             )
         }
-
-        return (
-            <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormPPKelompokSubForm')}>
-                <FontAwesome5 name="edit" size={16} color={colors.OREN} />
-            </TouchableOpacity>
-        )
     }
 
     const renderSubList = () => inputList.map((x, i) => (
@@ -85,9 +185,10 @@ const InisiasiFormPPKelompokSub = ({ route }) => {
                 onPress={() => {
                     setSelectedData(x);
                     setVisible(true);
+                    // console.log(x)
                 }}
             >
-                {x.value}
+                {x.namaSub}
             </Text>
             {renderSubListRemove(i)}
         </View>

@@ -8,6 +8,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
+import { showMessage } from "react-native-flash-message"
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import db from '../../../database/Database';
+
 
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 16;
@@ -56,6 +60,25 @@ const InisiasiFormPPKelompok = ({ route }) => {
         }
     ]);
     const [lokasiPertemuan, setLokasiPertemuan] = useState('');
+
+    let [branchid, setBranchid] = useState();
+    let [currentDate, setCurrentDate] = useState();
+
+    useEffect(() => {
+        GetInfo();
+    }, [])
+
+    const GetInfo = async () => {
+        const tanggal = await AsyncStorage.getItem('TransactionDate');
+
+        const detailBranch = await AsyncStorage.getItem('userData')
+        let branchid = JSON.parse(detailBranch).kodeCabang
+
+        // console.log(branchid)
+        
+        setBranchid(branchid)
+        setCurrentDate(tanggal)
+    }
 
     const tanggalPKMPertamaDatePickerHandler = (event, date) => {
         let dateValue = moment(date).format('YYYY-MM-DD');
@@ -208,10 +231,103 @@ const InisiasiFormPPKelompok = ({ route }) => {
         </View>
     )
 
+    const flashNotification = (title, message, backgroundColor, color) => {
+        showMessage({
+            message: title,
+            description: message,
+            type: "info",
+            duration: 3500,
+            statusBarHeight: 20,
+            backgroundColor: backgroundColor,
+            color: color
+        });
+      }
+
+    const SubmitHandler = () => {
+        if (!namaKelompok || typeof namaKelompok === 'undefined' || namaKelompok === '' || namaKelompok === 'null') return flashNotification("Alert", "Nama kelompok tidak boleh kosong", "#ff6347", "#fff");
+        if (!valueGroupProduk || typeof valueGroupProduk === 'undefined' || valueGroupProduk === '' || valueGroupProduk === 'null') return flashNotification("Alert", "Silahkan pilih group product", "#ff6347", "#fff");
+        if (!tanggalPKMPertama || typeof tanggalPKMPertama === 'undefined' || tanggalPKMPertama === '' || tanggalPKMPertama === 'null') return flashNotification("Alert", "Tanggal PKM pertama tidak boleh kosong", "#ff6347", "#fff");
+        if (!valueHariPertemuan || typeof valueHariPertemuan === 'undefined' || valueHariPertemuan === '' || valueHariPertemuan === 'null') return flashNotification("Alert", "Silahkan pilih hari pertemuan", "#ff6347", "#fff");
+        if (!valueWaktuPertemuan || typeof valueWaktuPertemuan === 'undefined' || valueWaktuPertemuan === '' || valueWaktuPertemuan === 'null') return flashNotification("Alert", "Silahkan pilih waktu pertemuan", "#ff6347", "#fff");
+        if (!lokasiPertemuan || typeof lokasiPertemuan === 'undefined' || lokasiPertemuan === '' || lokasiPertemuan === 'null') return flashNotification("Alert", "Lokasi pertemuan tidak boleh kosong", "#ff6347", "#fff");
+
+        let queryInsertKelompokBaru = "INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, group_Produk, tanggal_Pertama, hari_Pertemuan, waktu_Pertemuan, lokasi_Pertemuan, branchid, input_Date, status ) VALUES "
+            + "( '"
+            + ""
+            + "', '"
+            + namaKelompok
+            + "', '"
+            + valueGroupProduk
+            + "', '"
+            + tanggalPKMPertama
+            + "', '"
+            + valueHariPertemuan
+            + "', '"
+            + valueWaktuPertemuan
+            + "', '"
+            + lokasiPertemuan
+            + "', '"
+            + branchid
+            + "', '"
+            + currentDate
+            + "', '"
+            + "0"
+            + "' );"
+
+        let queryInsertSubKelompokBaru = "INSERT INTO Table_PP_SubKelompok ( kelompok_Id, subKelompok_Id, kelompok, subKelompok, num, branchid, status ) VALUES "
+            + "( '"
+            + ""
+            + "', '"
+            + ""
+            + "', '"
+            + namaKelompok
+            + "', '"
+            + namaKelompok
+            + "', '"
+            + 1
+            + "', '"
+            + branchid
+            + "', '"
+            + 0
+            + "' );"
+        
+        try {
+            db.transaction(
+                tx => {
+                    tx.executeSql(queryInsertKelompokBaru)
+                }, function(error) {
+                    flashNotification("Error", error, "#ff6347", "#fff")
+                    return
+                }, function() {
+                    try{
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(queryInsertSubKelompokBaru)
+                            }, function(error) {
+                                flashNotification("Error", error, "#ff6347", "#fff")
+                                return
+                            }, function() {
+                                flashNotification("Success", 'Kelompok berhasil ditambahkan', "#1F8327", "#fff")
+                                navigation.goBack()
+                            }
+                        )
+                    }catch(error){
+                        flashNotification("Error", error, "#ff6347", "#fff")
+                        return
+                    }
+                }
+            )
+        }catch(error){
+            flashNotification("Error", error, "#ff6347", "#fff")
+            return
+        }
+        
+    }
+
     const renderButton = () => (
         <View style={styles.P16}>
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => SubmitHandler()}
             >
                 <View style={styles.buttonSubmitContainer}>
                     <Text style={styles.buttonSubmitText}>SIMPAN</Text>
