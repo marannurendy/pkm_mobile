@@ -162,7 +162,7 @@ const Inisasi = () => {
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
-                {/* <Text>Total Nasabah : {totalNasabah}</Text> */}
+                <Text>Total Nasabah : {totalNasabah}</Text>
             </View>
         )
     }
@@ -188,7 +188,7 @@ const Inisasi = () => {
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
-                {/* <Text>Total Nasabah : {totalNasabah}</Text> */}
+                <Text>Total Nasabah : {totalNasabah}</Text>
             </View>
         )
     }
