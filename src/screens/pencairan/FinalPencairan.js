@@ -15,6 +15,7 @@ import db from '../../database/Database'
 
 const window = Dimensions.get('window');
 const dimension = Dimensions.get('screen');
+var uniqueNumber = (new Date().getTime()).toString(36);
 
 const FinalPencairan = ({route}) => {
 
@@ -39,8 +40,8 @@ const FinalPencairan = ({route}) => {
     const [signatureNasabah, setSignatureNasabah] = useState();
     const [statusMelakukan, setStatusMelakukan] = useState(false)
     const [hasPermission, setHasPermission] = useState(null);
-    
-    const key_dataPenjamin = `formUK_dataPenjamin_`;
+    const [key_dataPencairan, setkey_dataPencairan] = useState(`foto_dataPencairan_${uniqueNumber}_${route.params.data.Nama_Prospek.replace(/\s+/g, '')}`);
+    const key_dataPencairan = `foto_dataPencairan_`;
     moment.locale('id');
     var Tanggal = moment(new Date()).format('DD-MMM-YYYY')
     var hariIni = moment(new Date()).format('dddd')
@@ -115,9 +116,8 @@ const FinalPencairan = ({route}) => {
             const data = await camera.current.takePictureAsync(options)
 
             if (type === "FotoPencairan") {
-                AsyncStorage.setItem(key_dataPenjamin, 'data:image/jpeg;base64,' + data.base64);
                 setFotoDataPencairan(data.uri);
-                setPostPencairan({...postPencairan, "Foto_Pencairan":data.uri})
+                setPostPencairan({...postPencairan, "Foto_Pencairan":'data:image/jpeg;base64,' + data.base64})
                 setLoading(false);
                 SetButtonCam(false);
             }
