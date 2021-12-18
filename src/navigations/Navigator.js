@@ -59,7 +59,9 @@ import {
     InisiasiFormPPH,
     InisiasiFormPP,
     InisiasiFormPPList,
-    InisiasiFormPPForm
+    InisiasiFormPPForm,
+    InisiasiFormProspekLamaList,
+    InisiasiFormProspekLama
 } from '../screens/inisiasi/index'
 
 import { 
@@ -665,7 +667,9 @@ export default function AppNavigator() {
                 <Stack.Screen name="InisiasiFormPP" component={InisiasiFormPP} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPList" component={InisiasiFormPPList} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPForm" component={InisiasiFormPPForm} options={{ headerShown: false }} />
-
+                <Stack.Screen name="InisiasiFormProspekLamaList" component={InisiasiFormProspekLamaList} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormProspekLama" component={InisiasiFormProspekLama} options={{ headerShown: false }} />
+                
                 {/* Pencairan */}
                 <Stack.Screen name="Pencairan" component={KelompokPencairan} options={{ headerShown: false }} />
                 <Stack.Screen name="FlowPencairan" component={FlowPencairan} options={{ headerShown: false }} />

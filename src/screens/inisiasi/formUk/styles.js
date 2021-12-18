@@ -262,13 +262,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 16
     },
     MV2: {
-        marginHorizontal: 2
+        marginVertical: 2
     },
     MV4: {
-        marginHorizontal: 4
+        marginVertical: 4
     },
     MV8: {
-        marginHorizontal: 8
+        marginVertical: 8
     },
     MV16: {
         marginVertical: 16
