@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView, Image, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -20,6 +20,25 @@ const InisiasiFormProspekLama = ({ route }) => {
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [checked, setChecked] = useState('first');
+    const [valuePembiayaanDiajukan, setValuePembiayaanDiajukan] = useState(null);
+    const [itemsPembiayaanDiajukan, setItemsPembiayaanDiajukan] = useState([]);
+    const [valueJangkaWaktuPembiayaanDiajukan, setValueJangkaWaktuPembiayaanDiajukan] = useState(null);
+    const [itemsJangkaWaktuPembiayaanDiajukan, setItemsJangkaWaktuPembiayaanDiajukan] = useState([]);
+    const [valueTempatTinggalNasabah, setValueTempatTinggalNasabah] = useState(null);
+    const [itemsTempatTinggalNasabah, setItemsTempatTinggalNasabah] = useState([]);
+    const [valuePerubahanStatusPernikahan, setValuePerubahanStatusPernikahan] = useState(null);
+    const [itemsPerubahanStatusPernikahan, setItemsPerubahanStatusPernikahan] = useState([]);
+    const [valuePerubahanStatusTanggungan, setValuePerubahanStatusTanggungan] = useState(null);
+    const [itemsPerubahanStatusTanggungan, setItemsPerubahanStatusTanggungan] = useState([]);setValueKehadiranPKM
+    const [valueKehadiranPKM, setValueKehadiranPKM] = useState(null);
+    const [itemsKehadiranPKM, setItemsKehadiranPKM] = useState([]);
+    const [valuePembayaran, setValuePembayaran] = useState(null);
+    const [itemsPembayaran, setItemsPembayaran] = useState([]);
+    const [valuePerubahanUsaha, setValuePerubahanUsaha] = useState(null);
+    const [itemsPerubahanUsaha, setItemsPerubahanUsaha] = useState([]);
+    const [valueTandaTanganKetuaSubKelompok, setValueTandaTanganKetuaSubKelompok] = useState(null);
+    const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKelompok] = useState(null);
+    const [valueTandaTanganAO, setValueTandaTanganAO] = useState(null);
     
 
     useEffect(() => {
@@ -38,6 +57,16 @@ const InisiasiFormProspekLama = ({ route }) => {
         const tanggal = await AsyncStorage.getItem('TransactionDate');
         setCurrentDate(tanggal);
     }
+
+    const onSelectSign = (key, data) => {
+        if (__DEV__) console.log('onSelectSign loaded');
+        if (__DEV__) console.log('onSelectSign key:', key);
+        if (__DEV__) console.log('onSelectSign data:', data);
+
+        if (key === 'tandaTanganKetuaSubKelompok') setValueTandaTanganKetuaSubKelompok(data);
+        if (key === 'tandaTanganKetuaKelompok') setValueTandaTanganKetuaKelompok(data);
+        if (key === 'tandaTanganAO') setValueTandaTanganAO(data);
+    };
 
     const doSubmit = () => {
         if (__DEV__) console.log('doSubmit loaded');
@@ -91,8 +120,14 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
             <Text style={{ width: 130 }}>Pembiayaan Tahap</Text>
             <Text style={styles.MH8}>:</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
-                <Text>2</Text>
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Picker
+                    selectedValue={valuePembiayaanDiajukan}
+                    onValueChange={(itemValue, itemIndex) => setValuePembiayaanDiajukan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsPembiayaanDiajukan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
             </View>
         </View>
     )
@@ -112,7 +147,13 @@ const InisiasiFormProspekLama = ({ route }) => {
             <Text style={{ width: 130 }}>Jangka Waktu Pembiayaan Diajukan</Text>
             <Text style={styles.MH8}>:</Text>
             <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
-                <Text>25</Text>
+                <Picker
+                    selectedValue={valueJangkaWaktuPembiayaanDiajukan}
+                    onValueChange={(itemValue, itemIndex) => setValueJangkaWaktuPembiayaanDiajukan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsJangkaWaktuPembiayaanDiajukan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
             </View>
         </View>
     )
@@ -122,7 +163,13 @@ const InisiasiFormProspekLama = ({ route }) => {
             <Text style={{ width: 130 }}>Tempat Tinggal Nasabah</Text>
             <Text style={styles.MH8}>:</Text>
             <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
-                <Text>Sewa</Text>
+                <Picker
+                    selectedValue={valueTempatTinggalNasabah}
+                    onValueChange={(itemValue, itemIndex) => setValueTempatTinggalNasabah(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsTempatTinggalNasabah.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
             </View>
         </View>
     )
@@ -132,7 +179,45 @@ const InisiasiFormProspekLama = ({ route }) => {
             <Text style={{ width: 130 }}>Perubahan Status Pernikahan</Text>
             <Text style={styles.MH8}>:</Text>
             <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
-                <Text>Tidak</Text>
+                <Picker
+                    selectedValue={valuePerubahanStatusPernikahan}
+                    onValueChange={(itemValue, itemIndex) => setValuePerubahanStatusPernikahan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsPerubahanStatusPernikahan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormPerubahanStatusTanggungan = () => (
+        <View style={[styles.FDRow, styles.MV4, styles.MT16, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Perubahan Status Tanggungan</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Picker
+                    selectedValue={valuePerubahanStatusTanggungan}
+                    onValueChange={(itemValue, itemIndex) => setValuePerubahanStatusTanggungan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsPerubahanStatusTanggungan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormKehadiranPKM = () => (
+        <View style={[styles.FDRow, styles.MV4, styles.MT16, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Kehadiran PKM</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Picker
+                    selectedValue={valueKehadiranPKM}
+                    onValueChange={(itemValue, itemIndex) => setValueKehadiranPKM(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsKehadiranPKM.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
             </View>
         </View>
     )
@@ -146,7 +231,149 @@ const InisiasiFormProspekLama = ({ route }) => {
         </View>
     )
 
-    const renderForm = () => (
+    const renderFormPembayaran = () => (
+        <View style={[styles.FDRow, styles.MV4, styles.MT16, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Pembayaran</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Picker
+                    selectedValue={valuePembayaran}
+                    onValueChange={(itemValue, itemIndex) => setValuePembayaran(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsPembayaran.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormPerubahanUsaha = () => (
+        <View style={[styles.FDRow, styles.MV4, styles.MT16, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Perubahan Usaha</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Picker
+                    selectedValue={valuePerubahanUsaha}
+                    onValueChange={(itemValue, itemIndex) => setValuePerubahanUsaha(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsPerubahanUsaha.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormAggrement = () => (
+        <Text>Dengan ini kelompok kami MENYETUJUI nasabah tersebut untuk diajukan menerima pembiayaan Mekaar Tahap Lanjutan, dan kami bersedia bertanggung jawab Bersama apabila nasabah tersebut diatas tidak memenuhi kewajiban.</Text>
+    )
+
+    const renderFormDate = () => (
+        <View style={[styles.FDRow,  styles.MV16, { alignItems: 'center' }]}>
+            <TextInput
+                placeholder='Jakarta'
+                style={[styles.F1, styles.MR16, { borderWidth: 1, height: 38 }]}
+            />
+            <Text>, 14 Juni 2021</Text>
+        </View>
+    )
+
+    const renderFormTandaTanganKetuaSubKelompok = () => (
+        <View style={styles.MT8}>
+            <Text>Tanda Tangan Ketua Sub Kelompok</Text>
+            <View style={[stylesheet.boxTTD, styles.MT8]}>
+                {valueTandaTanganKetuaSubKelompok && (
+                    <Image
+                        resizeMode={"contain"}
+                        style={{ width: 335, height: 215 }}
+                        source={{ uri: valueTandaTanganKetuaSubKelompok }}
+                    />
+                )}
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <Picker
+                            selectedValue={valuePerubahanUsaha}
+                            onValueChange={(itemValue, itemIndex) => setValuePerubahanUsaha(itemValue)}
+                        >
+                            <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                            {itemsPerubahanUsaha.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                        </Picker>
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginVertical: 16}]}>*isi tanda tangan dengan benar</Text>
+                <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaSubKelompok', onSelectSign: onSelectSign })} />
+            </View>
+        </View>
+    )
+
+    const renderFormTandaTanganKetuaKelompok = () => (
+        <View style={styles.MT8}>
+            <Text>Tanda Tangan Ketua Kelompok</Text>
+            <View style={[stylesheet.boxTTD, styles.MT8]}>
+                {valueTandaTanganKetuaKelompok && (
+                    <Image
+                        resizeMode={"contain"}
+                        style={{ width: 335, height: 215 }}
+                        source={{ uri: valueTandaTanganKetuaKelompok }}
+                    />
+                )}
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <Picker
+                            selectedValue={valuePerubahanUsaha}
+                            onValueChange={(itemValue, itemIndex) => setValuePerubahanUsaha(itemValue)}
+                        >
+                            <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                            {itemsPerubahanUsaha.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                        </Picker>
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginVertical: 16}]}>*isi tanda tangan dengan benar</Text>
+                <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaKelompok', onSelectSign: onSelectSign })} />
+            </View>
+        </View>
+    )
+
+    const renderFormTandaTanganAO = () => (
+        <View style={styles.MT8}>
+            <Text>Account Officer</Text>
+            <View style={[stylesheet.boxTTD, styles.MT8]}>
+                {valueTandaTanganAO && (
+                    <Image
+                        resizeMode={"contain"}
+                        style={{ width: 335, height: 215 }}
+                        source={{ uri: valueTandaTanganAO }}
+                    />
+                )}
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <Picker
+                            selectedValue={valuePerubahanUsaha}
+                            onValueChange={(itemValue, itemIndex) => setValuePerubahanUsaha(itemValue)}
+                        >
+                            <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                            {itemsPerubahanUsaha.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                        </Picker>
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 16 }]}>*isi tanda tangan dengan benar</Text>
+                <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganAO', onSelectSign: onSelectSign })} />
+            </View>
+        </View>
+    )
+
+    const renderFormTTD = () => (
+        <View style={styles.MV16}>
+            <Text style={styles.MB16}>Disetujui atas nama Kelompok Gang Kancil</Text>
+            {renderFormTandaTanganKetuaSubKelompok()}
+            {renderFormTandaTanganKetuaKelompok()}
+            {renderFormTandaTanganAO()}
+        </View>
+    )
+
+    const renderFormOne = () => (
         <View style={[styles.MV16]}>
             {renderFormPembiayaanTahap()}
             {renderFormPembiayaanDiajukan()}
@@ -154,39 +381,53 @@ const InisiasiFormProspekLama = ({ route }) => {
             {renderFormTempatTinggalNasabah()}
             {renderFormPerubahanStatusPernikahan()}
             {renderFormKeterangan()}
+            {renderFormPerubahanStatusTanggungan()}
+            {renderFormKeterangan()}
+            {renderFormKehadiranPKM()}
+            {renderButtonSaveDraft()}
         </View>
     )
 
-    const renderLanjutUK = () => (
-        <View style={styles.MT16}>
-            <Text>Lanjut UK?</Text>
-            <View style={[styles.FDRow, { alignItems: 'center' }]}>
-                <RadioButton
-                    value="first"
-                    status={ checked === 'first' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('first')}
-                />
-                <Text>Iya</Text>
-                <RadioButton
-                    value="second"
-                    status={ checked === 'second' ? 'checked' : 'unchecked' }
-                    onPress={() => setChecked('second')}
-                />
-                <Text>Tidak</Text>
-            </View>
+    const renderFormTwo = () => (
+        <View style={[styles.MV16]}>
+            {renderFormPembayaran()}
+            {renderFormPerubahanUsaha()}
+            {renderFormKeterangan()}
+            {renderButtonSaveDraft()}
+            {renderFormAggrement()}
+            {renderFormDate()}
+            {renderSpace()}
+            {renderFormTTD()}
         </View>
     )
 
-    const renderButton = () => (
-        <TouchableOpacity
-            onPress={() => alert('ok')}
-        >
-            <View
-                style={{ backgroundColor: '#3CB371', padding: 16, borderRadius: 8 }}
+    const renderButtonSaveDraft = () => (
+        <View style={styles.buttonContainer}>
+            <View style={styles.F1} />
+            <TouchableOpacity
+                onPress={() => null}
             >
-                <Text style={{ color: 'white', textAlign: 'center' }}>Simpan</Text>
-            </View>
-        </TouchableOpacity>
+                <View style={styles.button}>
+                    <Text style={{ color: 'white' }}>Save Draft</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    const renderButtonSimpan = () => (
+        <View style={styles.MT16}>
+            <TouchableOpacity
+                onPress={() => null}
+            >
+                <View style={styles.buttonSubmitContainer}>
+                    <Text style={styles.buttonSubmitText}>SUBMIT</Text>
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    const renderSpace = () => (
+        <View style={styles.spaceGray} />
     )
 
     const renderBody = () => (
@@ -196,10 +437,12 @@ const InisiasiFormProspekLama = ({ route }) => {
                 {renderInformasiNama()}
                 {renderInformasiIdentitas()}
                 {renderInformasiKelompok()}
-                {renderForm()}
-                {renderLanjutUK()}
+                {renderFormOne()}
+                {renderSpace()}
+                {renderFormTwo()}
+                {renderSpace()}
+                {renderButtonSimpan()}
             </ScrollView>
-            {renderButton()}
         </View>
     )
 
@@ -212,6 +455,10 @@ const InisiasiFormProspekLama = ({ route }) => {
 }
 
 const stylesheet = StyleSheet.create({
+    boxTTD: {
+        borderRadius: 6,
+        borderWidth: 1
+    }
 })
 
 export default InisiasiFormProspekLama;
