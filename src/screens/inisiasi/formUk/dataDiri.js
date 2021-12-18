@@ -35,6 +35,7 @@ const DataDiri = ({route}) => {
     let [fotokartuIdentitas, setFotoKartuIdentitas] = useState()
     let [jenisKartuIdentitas, setJenisKartuIdentitas] = useState()
     let [nomorIdentitas, setNomorIdentitas] = useState()
+    let [namaNasabahSosialisasi, setNamaNasabahSosialisasi] = useState(namaNasabah)
     let [namaCalonNasabah, setNamaCalonNasabah] = useState(namaNasabah)
     let [tempatLahir, setTempatLahir] = useState()
     let [tanggalLahir, setTanggalLahir] = useState()
@@ -123,6 +124,7 @@ const DataDiri = ({route}) => {
     
     /* START DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
     const dataPilihan = [
+        {label: '0', value: '0'},
         {label: '1', value: '1'},
         {label: '2', value: '2'},
         {label: '3', value: '3'},
@@ -150,18 +152,13 @@ const DataDiri = ({route}) => {
         }
     ]);
     const [openStatusHubunganKeluarga, setOpenStatusHubunganKeluarga] = useState(false);
-    const [valueStatusHubunganKeluarga, setValueStatusHubunganKeluarga] = useState(null);
-    const [itemsStatusHubunganKeluarga, setItemsStatusHubunganKeluarga] = useState([
-        {
-            label: 'Suami',
-            value: '1'
-        }
-    ]);
+    const [valueStatusHubunganKeluarga, setValueStatusHubunganKeluarga] = useState('1');
+    const [itemsStatusHubunganKeluarga, setItemsStatusHubunganKeluarga] = useState([]);
     const [submmitted, setSubmmitted] = useState(false);
     const [dataWilayahMobile, setDataWilayahMobile] = useState([]);
     const [statusAgreement, setStatusAgreement] = useState(false);
     const [usahaPekerjaanSuami, setUsahaPekerjaanSuami] = useState('');
-    const [jumlahTenagaKerjaSuami, setJumlahTenagaKerjaSuami] = useState('');
+    const [jumlahTenagaKerjaSuami, setJumlahTenagaKerjaSuami] = useState('0');
     const [location, setLocation] = useState(null);
     const [valueReligion, setValueReligion] = useState(null);
     const [itemsReligion, setItemsReligion] = useState([]);
@@ -171,6 +168,7 @@ const DataDiri = ({route}) => {
     const [key_kartuKeluarga, setKey_kartuKeluarga] = useState(`formUK_kartuKeluarga_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     const [key_keteranganDomisili, setKey_keteranganDomisili] = useState(`formUK_keteranganDomisili_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     const [key_kartuIdentitas, setKey_kartuIdentitas] = useState(`formUK_kartuIdentitas_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [addressDomisiliLikeIdentitas, setAddressDomisiliLikeIdentitas] = useState(false);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -238,7 +236,8 @@ const DataDiri = ({route}) => {
                                 if (data.status_hubungan_keluarga !== null && typeof data.status_hubungan_keluarga !== 'undefined') setValueStatusHubunganKeluarga(data.status_hubungan_keluarga);
                                 if (data.nama_penjamin !== null && typeof data.nama_penjamin !== 'undefined') setNamaPenjamin(data.nama_penjamin);
                                 if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined') setFotoDataPenjamin(fotoDataPenjamin);
-                                if (data.is_pernyataan_dibaca !== null && typeof data.is_pernyataan_dibaca !== 'undefined') setStatusAgreement(data.is_pernyataan_dibaca === '1' ? true : false);
+                                if (data.is_pernyataan_dibaca !== null && typeof data.is_pernyataan_dibaca !== 'undefined') setStatusAgreement(data.suami_diluar_kota === 'true' || data.is_pernyataan_dibaca === '1' ? true : false);
+                                if (data.is_alamat_domisili_sesuai_ktp !== null && typeof data.is_alamat_domisili_sesuai_ktp !== 'undefined') setAddressDomisiliLikeIdentitas(data.is_alamat_domisili_sesuai_ktp === 'true' || data.is_alamat_domisili_sesuai_ktp === '1' ? true : false);
                             }
                             return true;
                         }, function(error) {
@@ -681,8 +680,13 @@ const DataDiri = ({route}) => {
             if (__DEV__) console.log('doSubmitDataIdentitasDiri latitude:', location?.coords?.latitude ?? '0');
             if (__DEV__) console.log('doSubmitDataIdentitasDiri statusAgreement:', statusAgreement);
 
-            const long = location?.coords?.longitude ?? '0';
-            const lat = location?.coords?.latitude ?? '0';
+            if (addressDomisiliLikeIdentitas) {
+                alamatDomisili = alamatIdentitas;
+                fotoSuratKeteranganDomisili = 'data:image/jpeg;base64,';
+            }
+
+            const longitude = location?.coords?.longitude ?? '0';
+            const latitude = location?.coords?.latitude ?? '0';
             const status_agreement = statusAgreement ? '1' : '0';
 
             const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
@@ -694,9 +698,9 @@ const DataDiri = ({route}) => {
     
                         let query = '';
                         if (dataLengthFind === 0) {
-                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + long + '","' + lat + '","' + status_agreement + '")';
+                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca, is_alamat_domisili_sesuai_ktp) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + longitude + '","' + latitude + '","' + status_agreement + '","' + addressDomisiliLikeIdentitas + '")';
                         } else {
-                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + long + '", latitude = "' + lat + '", is_pernyataan_dibaca = "' + status_agreement + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + longitude + '", latitude = "' + latitude + '", is_pernyataan_dibaca = "' + status_agreement + '", is_alamat_domisili_sesuai_ktp = "' + addressDomisiliLikeIdentitas + '" WHERE nama_lengkap = "' + namaNasabah + '"';
                         }
     
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
@@ -746,8 +750,10 @@ const DataDiri = ({route}) => {
         if (!tanggalLahir || typeof tanggalLahir === 'undefined' || tanggalLahir === '' || tanggalLahir === 'null') return alert('Tanggal Lahir (*) tidak boleh kosong');
         if (!valueStatusPerkawinan || typeof valueStatusPerkawinan === 'undefined' || valueStatusPerkawinan === '' || valueStatusPerkawinan === 'null') return alert('Status Perkawinan (*) tidak boleh kosong');
         if (!alamatIdentitas || typeof alamatIdentitas === 'undefined' || alamatIdentitas === '' || alamatIdentitas === 'null') return alert('Alamat Identitas (*) tidak boleh kosong');
-        if (!alamatDomisili || typeof alamatDomisili === 'undefined' || alamatDomisili === '' || alamatDomisili === 'null') return alert('Alamat Domisili (*) tidak boleh kosong');
-        if (!fotoSuratKeteranganDomisili || typeof fotoSuratKeteranganDomisili === 'undefined' || fotoSuratKeteranganDomisili === '' || fotoSuratKeteranganDomisili === 'null') return alert('Foto Surat Keterangan Domisili (*) tidak boleh kosong');
+        if (!addressDomisiliLikeIdentitas) {
+            if (!alamatDomisili || typeof alamatDomisili === 'undefined' || alamatDomisili === '' || alamatDomisili === 'null') return alert('Alamat Domisili (*) tidak boleh kosong');
+            if (!fotoSuratKeteranganDomisili || typeof fotoSuratKeteranganDomisili === 'undefined' || fotoSuratKeteranganDomisili === '' || fotoSuratKeteranganDomisili === 'null') return alert('Foto Surat Keterangan Domisili (*) tidak boleh kosong');
+        }
         if (!dataProvinsi || typeof dataProvinsi === 'undefined' || dataProvinsi === '' || dataProvinsi === 'null') return alert('Provinsi (*) tidak boleh kosong');
         if (!dataKabupaten || typeof dataKabupaten === 'undefined' || dataKabupaten === '' || dataKabupaten === 'null') return alert('Kabupaten (*) tidak boleh kosong');
         if (!dataKecamatan || typeof dataKecamatan === 'undefined' || dataKecamatan === '' || dataKecamatan === 'null') return alert('Kecamatan (*) tidak boleh kosong');
@@ -768,7 +774,6 @@ const DataDiri = ({route}) => {
 
         if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '' || namaSuami === 'null') return alert('Nama Suami (*) tidak boleh kosong');
         if (!usahaPekerjaanSuami || typeof usahaPekerjaanSuami === 'undefined' || usahaPekerjaanSuami === '' || usahaPekerjaanSuami === 'null') return alert('Usaha/Pekerjaan Suami (*) tidak boleh kosong');
-        if (!jumlahTenagaKerjaSuami || typeof jumlahTenagaKerjaSuami === 'undefined' || jumlahTenagaKerjaSuami === '' || jumlahTenagaKerjaSuami === 'null') return alert('Jumlah Tenaga Kerja (*) tidak boleh kosong');
         if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === 'null' || fotoKartuIdentitasSuami === 'null') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
 
         if (!valueStatusHubunganKeluarga || typeof valueStatusHubunganKeluarga === 'undefined' || valueStatusHubunganKeluarga === '' || valueStatusHubunganKeluarga === 'null') return alert('Status Hubungan Keluarga (*) tidak boleh kosong');
@@ -1334,7 +1339,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas (*)</Text>
                             
                             <TouchableOpacity onPress={() => setCameraShow(1)}>
-                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
+                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
                                     {fotokartuIdentitas === undefined ? (
                                         <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
                                             <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
@@ -1352,26 +1357,22 @@ const DataDiri = ({route}) => {
 
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas (*)</Text>
-                            <DropDownPicker
-                                open={openJenisKartuIdentitas}
-                                value={valueJenisKartuIdentitas}
-                                items={itemsJenisKartuIdentitas}
-                                setOpen={setOpenJenisKartuIdentitas}
-                                setValue={setValueJenisKartuIdentitas}
-                                setItems={setItemsJenisKartuIdentitas}
-                                placeholder='Pilih Jenis Kartu Identitas'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                onChangeValue={() => JenisKartuIdentitas(valueJenisKartuIdentitas)}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueJenisKartuIdentitas}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueJenisKartuIdentitas(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsJenisKartuIdentitas.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Identitas (*)</Text>
                             <View style={{flexDirection: 'row'}}>
-                            <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1395,9 +1396,17 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaCalonNasabah} onChangeText={(text) => setNamaCalonNasabah(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }} />
+                                    <TextInput 
+                                        value={namaCalonNasabah} 
+                                        onChangeText={(text) => {
+                                            setFullName(text);
+                                            setNamaCalonNasabah(text);
+                                        }}
+                                        placeholder="Masukkan Nama Lengkap" 
+                                        style={{ fontSize: 15, color: "#545454" }} 
+                                    />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'id-badge'} size={18} />
@@ -1407,7 +1416,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tempat Lahir (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={tempatLahir} onChangeText={(text) => setTempatLahir(text)} placeholder="Masukkan Tempat Lahir" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1419,7 +1428,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tanggal Lahir (*)</Text>
-                            <TouchableOpacity onPress={() => setShowCalendar(true)} style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <TouchableOpacity onPress={() => setShowCalendar(true)} style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={tanggalLahir} placeholder="Pilih tanggal lahir" editable={false} style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1441,25 +1450,21 @@ const DataDiri = ({route}) => {
 
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Perkawinan (*)</Text>
-                            <DropDownPicker
-                                open={openStatusPerkawinan}
-                                value={valueStatusPerkawinan}
-                                items={itemsStatusPerkawinan}
-                                setOpen={setOpenStatusPerkawinan}
-                                setValue={setValueStatusPerkawinan}
-                                setItems={setItemsStatusPerkawinan}
-                                placeholder='Pilih Status Perkawinan'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                onChangeValue={() => MarriageStatus(valueStatusPerkawinan)}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueStatusPerkawinan}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueStatusPerkawinan(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsStatusPerkawinan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
-                        <View style={{margin: 20}}>
+                        <View style={{margin: 20, marginBottom: 4}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Identitas (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={alamatIdentitas} onChangeText={(text) => setAlamatIdentitas(text)} placeholder="Masukkan Alamat Identitas" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1469,37 +1474,51 @@ const DataDiri = ({route}) => {
                             </View>
                         </View>
 
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Domisili (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={alamatDomisili} onChangeText={(text) => setAlamatDomisili(text)} placeholder="Masukkan Alamat Domisili" style={{ fontSize: 15, color: "#545454" }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'address-card'} size={18} />
+                        <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18}}>
+                            <Checkbox
+                                status={addressDomisiliLikeIdentitas ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setAddressDomisiliLikeIdentitas(!addressDomisiliLikeIdentitas);
+                                }}
+                            />
+                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Apakah alamat domisili sesuai dengan KTP</Text>
+                        </View>
+                        
+                        {!addressDomisiliLikeIdentitas && (
+                            <View style={{margin: 20}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Domisili (*)</Text>
+                                <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                                    <View style={{flex: 1}}>
+                                        <TextInput value={alamatDomisili} onChangeText={(text) => setAlamatDomisili(text)} placeholder="Masukkan Alamat Domisili" style={{ fontSize: 15, color: "#545454" }}/>
+                                    </View>
+                                    <View>
+                                        <FontAwesome5 name={'address-card'} size={18} />
+                                    </View>
                                 </View>
                             </View>
-                        </View>
+                        )}
 
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Surat Keterangan Domisili (*)</Text>
-                            
-                            <TouchableOpacity onPress={() => setCameraShow(2)}>
-                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
-                                    {fotoSuratKeteranganDomisili === undefined ? (
-                                        <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
-                                            <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
-                                        </View>
-                                    ) : (
-                                        <Image source={{ uri: fotoSuratKeteranganDomisili }} style={styles.thumbnailPhoto}/>
-                                    )}
+                        {!addressDomisiliLikeIdentitas && (
+                            <View style={{margin: 20}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Surat Keterangan Domisili (*)</Text>
+                                
+                                <TouchableOpacity onPress={() => setCameraShow(2)}>
+                                    <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
+                                        {fotoSuratKeteranganDomisili === undefined ? (
+                                            <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                                <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                            </View>
+                                        ) : (
+                                            <Image source={{ uri: fotoSuratKeteranganDomisili }} style={styles.thumbnailPhoto}/>
+                                        )}
+                                    </View>
+                                </TouchableOpacity>
+
+                                <View style={{marginLeft: 20}}>
+                                    <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
                                 </View>
-                            </TouchableOpacity>
-
-                            <View style={{marginLeft: 20}}>
-                                <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
                             </View>
-                        </View>
+                        )}
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Provinsi (*)</Text>
@@ -1580,7 +1599,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Keluarga (*)</Text>
                             
                             <TouchableOpacity onPress={() => setCameraShow(3)}>
-                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
+                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
                                     {fotoKartuKeluarga === undefined ? (
                                         <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
                                             <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
@@ -1598,7 +1617,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Kartu Keluarga (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={nomorKartuKeluarga} keyboardType='numeric' onChangeText={(text) => setNomorKartuKeluarga(text)} placeholder="Masukkan Nomor KK" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1622,9 +1641,17 @@ const DataDiri = ({route}) => {
                         
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={fullName} onChangeText={(text) => setFullName(text)} placeholder="Masukkan Nama Lengkap" style={{ fontSize: 15, color: "#545454" }} />
+                                    <TextInput
+                                        value={fullName}
+                                        onChangeText={(text) => {
+                                            setFullName(text);
+                                            setNamaCalonNasabah(text);
+                                        }}
+                                        placeholder="Masukkan Nama Lengkap" 
+                                        style={{ fontSize: 15, color: "#545454" }} 
+                                    />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1634,7 +1661,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Ayah (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(text)} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1646,7 +1673,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Gadis Ibu Kandung (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(text)} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1658,7 +1685,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Nasabah (*)</Text>
-                            <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 10}}>
+                            <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 2}}>
                                 <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
                             </View>
                         </View>
@@ -1677,66 +1704,51 @@ const DataDiri = ({route}) => {
                             </View>
                         </View>
 
-                        <View style={{marginHorizontal: 20}}>
+                        <View style={{marginHorizontal: 20, marginBottom: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Anak (*)</Text>
-                            <DropDownPicker
-                                open={openJumlahAnak}
-                                value={valueJumlahAnak}
-                                items={itemsJumlahAnak}
-                                setOpen={setOpenJumlahAnak}
-                                setValue={setValueJumlahAnak}
-                                setItems={setItemsJumlahAnak}
-                                placeholder='Pilih Jumlah Anak'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                zIndex={6000}
-                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueJumlahAnak}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueJumlahAnak(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsJumlahAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
-                        <View style={{marginHorizontal: 20}}>
+                        <View style={{marginHorizontal: 20, marginBottom: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tanggungan (*)</Text>
-                            <DropDownPicker
-                                open={openJumlahTanggungan}
-                                value={valueJumlahTanggungan}
-                                items={itemsJumlahTanggungan}
-                                setOpen={setOpenJumlahTanggungan}
-                                setValue={setValueJumlahTanggungan}
-                                setItems={setItemsJumlahTanggungan}
-                                placeholder='Pilih Jumlah Tanggungan'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                zIndex={5000}
-                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueJumlahTanggungan}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueJumlahTanggungan(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsJumlahTanggungan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
-                        <View style={{marginHorizontal: 20}}>
+                        <View style={{marginHorizontal: 20, marginBottom: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Rumah Tinggal (*)</Text>
-                            <DropDownPicker
-                                open={openStatusRumahTinggal}
-                                value={valueStatusRumahTinggal}
-                                items={itemsStatusRumahTinggal}
-                                setOpen={setOpenStatusRumahTinggal}
-                                setValue={setValueStatusRumahTinggal}
-                                setItems={setItemsStatusRumahTinggal}
-                                placeholder='Pilih Rumah Tinggal'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                zIndex={4000}
-                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueStatusRumahTinggal}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValueStatusRumahTinggal(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsStatusRumahTinggal.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
                         </View>
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1759,7 +1771,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Suami (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={namaSuami} onChangeText={(text) => setNamaSuami(text)} placeholder="Masukkan Nama Suami" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1771,7 +1783,7 @@ const DataDiri = ({route}) => {
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Usaha/Pekerjaan Suami (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={usahaPekerjaanSuami} onChangeText={(text) => setUsahaPekerjaanSuami(text)} placeholder="" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1780,8 +1792,8 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1789,11 +1801,11 @@ const DataDiri = ({route}) => {
                             </View>
                         </View>
 
-                        <View style={{margin: 20}}>
+                        <View style={{margin: 20, marginBottom: 4}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami (*)</Text>
                             
                             <TouchableOpacity onPress={() => setCameraShow(4)}>
-                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
+                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
                                     {fotoKartuIdentitasSuami === undefined ? (
                                         <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
                                             <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
@@ -1809,10 +1821,11 @@ const DataDiri = ({route}) => {
                             </View>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 30, marginBottom: 20}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18, marginBottom: 20}}>
                             <Checkbox
                                 status={statusSuami ? 'checked' : 'unchecked'}
                                 onPress={() => {
+                                    setValueStatusHubunganKeluarga(!statusSuami ? '' : '1');
                                     setStatusSuami(!statusSuami);
                                 }}
                             />
@@ -1833,25 +1846,27 @@ const DataDiri = ({route}) => {
 
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Hubungan Keluarga (*)</Text>
-                            <DropDownPicker
-                                open={openStatusHubunganKeluarga}
-                                value={valueStatusHubunganKeluarga}
-                                items={itemsStatusHubunganKeluarga}
-                                setOpen={setOpenStatusHubunganKeluarga}
-                                setValue={setValueStatusHubunganKeluarga}
-                                setItems={setItemsStatusHubunganKeluarga}
-                                placeholder='Pilih Status Hubungan Keluarga'
-                                placeholderStyle={styles.dropdownPlaceholderStyle}
-                                dropDownContainerStyle={styles.dropdownContainerStyle}
-                                style={styles.dropdownStyle}
-                                labelStyle={styles.dropdownLabelStyle}
-                                onChangeValue={() => __DEV__ && console.log('onChangeValue')}
-                            />
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valueStatusHubunganKeluarga}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        if (itemValue === '1') setStatusSuami(false);
+                                        else setStatusSuami(true);
+                                        
+                                        setValueStatusHubunganKeluarga(itemValue);
+                                    }}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsStatusHubunganKeluarga.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
+
                         </View>
 
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Penjamin (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(text)} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
@@ -1865,7 +1880,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Penjamin (*)</Text>
 
                             <TouchableOpacity onPress={() => setCameraShow(5)}>
-                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
+                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
                                     {fotoDataPenjamin === undefined ? (
                                         <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
                                             <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
@@ -1998,14 +2013,14 @@ const styles = StyleSheet.create({
         color: '#545851'
     },
     dropdownContainerStyle: {
-        marginLeft: 10,
+        marginLeft: 2,
         marginTop: 5,
         borderColor: "#003049",
         width: dimension.width / 1.5,
         borderWidth: 2
     },
     dropdownStyle: {
-        marginLeft: 10,
+        marginLeft: 2,
         borderColor: "black",
         width: dimension.width / 1.5, 
         borderRadius: 10,

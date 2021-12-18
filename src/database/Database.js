@@ -307,7 +307,8 @@ db.transaction(tx => {
             sync_Verif varchar,
             id_prospek varchar,
             is_pernyataan_dibaca varchar,
-            lokasi_sosialisasi varchar
+            lokasi_sosialisasi varchar,
+            is_alamat_domisili_sesuai_ktp varchar
         );`
     )
 
