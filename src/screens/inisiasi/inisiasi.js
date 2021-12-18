@@ -162,7 +162,7 @@ const Inisasi = () => {
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
-                {/* <Text>Total Nasabah : {totalNasabah}</Text> */}
+                <Text>Total Nasabah : {totalNasabah}</Text>
             </View>
         )
     }
@@ -188,7 +188,7 @@ const Inisasi = () => {
             <View style={{ flex: 1, margin: 20}}>
                 <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
                 <Text>{date}</Text>
-                {/* <Text>Total Nasabah : {totalNasabah}</Text> */}
+                <Text>Total Nasabah : {totalNasabah}</Text>
             </View>
         )
     }
@@ -374,7 +374,7 @@ const Inisasi = () => {
                         <ActionButton.Item buttonColor='#D62828' title="Prospek Baru" onPress={() => navigation.navigate('Sosialisasi')}>
                             <FontAwesome5 name="user-plus" style={styles.actionButtonIcon} />
                         </ActionButton.Item>
-                        <ActionButton.Item buttonColor='#F77F00' title="Prospek Lama" onPress={() => {}}>
+                        <ActionButton.Item buttonColor='#F77F00' title="Prospek Lama" onPress={() => navigation.navigate('InisiasiFormProspekLamaList')}>
                             <FontAwesome5 name="user-edit" style={styles.actionButtonIcon} />
                         </ActionButton.Item>
                     </ActionButton>

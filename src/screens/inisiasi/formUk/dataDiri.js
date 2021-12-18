@@ -129,7 +129,12 @@ const DataDiri = ({route}) => {
         {label: '2', value: '2'},
         {label: '3', value: '3'},
         {label: '4', value: '4'},
-        {label: '5', value: '5'}
+        {label: '5', value: '5'},
+        {label: '6', value: '6'},
+        {label: '7', value: '7'},
+        {label: '8', value: '8'},
+        {label: '9', value: '9'},
+        {label: '10', value: '10'}
     ];
     const [openJenisKartuIdentitas, setOpenJenisKartuIdentitas] = useState(false);
     const [valueJenisKartuIdentitas, setValueJenisKartuIdentitas] = useState(null);
@@ -772,7 +777,7 @@ const DataDiri = ({route}) => {
         if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='' || lamaTinggal === 'null') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
         if (!valueReligion || typeof valueReligion === 'undefined' || valueReligion ==='' || valueReligion === 'null') return alert('Agama (*) tidak boleh kosong');
 
-        if (valueStatusPerkawinan !== "4") {
+        if (["4"].includes(valueStatusPerkawinan)) {
             if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '' || namaSuami === 'null') return alert('Nama Suami (*) tidak boleh kosong');
             if (!usahaPekerjaanSuami || typeof usahaPekerjaanSuami === 'undefined' || usahaPekerjaanSuami === '' || usahaPekerjaanSuami === 'null') return alert('Usaha/Pekerjaan Suami (*) tidak boleh kosong');
             if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === 'null' || fotoKartuIdentitasSuami === 'null') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
@@ -1464,7 +1469,7 @@ const DataDiri = ({route}) => {
                                     selectedValue={valueStatusPerkawinan}
                                     style={{ height: 50, width: withTextInput }}
                                     onValueChange={(itemValue, itemIndex) => {
-                                        if (itemValue === "4") {
+                                        if (["2", "3", "4"].indexOf(itemValue)) {
                                             setNamaPenjamin(namaSuami);
                                             setFotoDataPenjamin(fotoKartuIdentitasSuami);
                                             setValueStatusHubunganKeluarga('');
@@ -1784,7 +1789,7 @@ const DataDiri = ({route}) => {
                             />
                         </View>
 
-                    {valueStatusPerkawinan !== "4" && (
+                    {["1"].includes(valueStatusPerkawinan) && (
                         <>
                             <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Suami</Text>
                             <View style={{margin: 20}}>
