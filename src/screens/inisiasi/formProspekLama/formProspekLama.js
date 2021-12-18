@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput} from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import db from '../../../database/Database'
-import { Checkbox } from 'react-native-paper';
+import { RadioButton } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 
 const dimension = Dimensions.get('screen');
@@ -19,9 +19,8 @@ const withTextInput = dimension.width - (20 * 4) + 8;
 const InisiasiFormProspekLama = ({ route }) => {
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [isTahapLanjut, setIsTahapLanjut] = useState(false);
-    const [valuePembiayaanTahap, setValuePembiayaanTahap] = useState(null);
-    const [itemsPembiayaanTahap, setItemsPembiayaanTahap] = useState([]);
+    const [checked, setChecked] = useState('first');
+    
 
     useEffect(() => {
         getUserData();
@@ -38,6 +37,10 @@ const InisiasiFormProspekLama = ({ route }) => {
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate');
         setCurrentDate(tanggal);
+    }
+
+    const doSubmit = () => {
+        if (__DEV__) console.log('doSubmit loaded');
     }
 
     const renderHeader = () => (
@@ -59,64 +62,144 @@ const InisiasiFormProspekLama = ({ route }) => {
 
     const renderInformasiNama = () => (
         <View style={[styles.FDRow, styles.MV4]}>
-            <Text style={{ width: 100 }}>Nama</Text>
-            <Text> : </Text>
+            <Text style={{ width: 130 }}>Nama</Text>
+            <Text style={styles.MH8}>:</Text>
             <Text style={styles.F1}>Bellanissa Zainuddin</Text>
         </View>
     )
 
     const renderInformasiIdentitas = () => (
         <View style={[styles.FDRow, styles.MV4]}>
-            <View style={{ width: 100 }}>
+            <View style={{ width: 130 }}>
                 <Text>No. Identitas</Text>
                 <Text style={{ color: 'gray' }}>KTP/KK</Text>
             </View>
-            <Text> : </Text>
+            <Text style={styles.MH8}>:</Text>
             <Text style={styles.F1}>356500013560001</Text>
         </View>
     )
 
     const renderInformasiKelompok = () => (
         <View style={[styles.FDRow, styles.MV4]}>
-            <Text style={{ width: 100 }}>Nama</Text>
-            <Text> : </Text>
+            <Text style={{ width: 130 }}>Nama</Text>
+            <Text style={styles.MH8}>:</Text>
             <Text style={styles.F1}>Gang Kelinci</Text>
         </View>
     )
 
     const renderFormPembiayaanTahap = () => (
-        <View>
-            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas (*)</Text>
-            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                <Picker
-                    selectedValue={valuePembiayaanTahap}
-                    style={{ height: 50, width: withTextInput }}
-                    onValueChange={(itemValue, itemIndex) => setValuePembiayaanTahap(itemValue)}
-                >
-                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsPembiayaanTahap.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                </Picker>
+        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Pembiayaan Tahap</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Text>2</Text>
+            </View>
+        </View>
+    )
+
+    const renderFormPembiayaanDiajukan = () => (
+        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Pembiayaan Diajukan</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Text>4.000.000</Text>
+            </View>
+        </View>
+    )
+    
+    const renderFormJangkaWaktuPembiayaanDiajukan = () => (
+        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Jangka Waktu Pembiayaan Diajukan</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Text>25</Text>
+            </View>
+        </View>
+    )
+
+    const renderFormTempatTinggalNasabah = () => (
+        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Tempat Tinggal Nasabah</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Text>Sewa</Text>
+            </View>
+        </View>
+    )
+
+    const renderFormPerubahanStatusPernikahan = () => (
+        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
+            <Text style={{ width: 130 }}>Perubahan Status Pernikahan</Text>
+            <Text style={styles.MH8}>:</Text>
+            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Text>Tidak</Text>
+            </View>
+        </View>
+    )
+
+    const renderFormKeterangan = () => (
+        <View style={styles.MT16}>
+            <Text>Keterangan :</Text>
+            <View style={[styles.MT8, styles.P16, { borderWidth: 1, borderRadius: 6, height: 100, width: 250 }]}>
+                <Text>Tidak</Text>
             </View>
         </View>
     )
 
     const renderForm = () => (
-        <>
+        <View style={[styles.MV16]}>
             {renderFormPembiayaanTahap()}
-        </>
+            {renderFormPembiayaanDiajukan()}
+            {renderFormJangkaWaktuPembiayaanDiajukan()}
+            {renderFormTempatTinggalNasabah()}
+            {renderFormPerubahanStatusPernikahan()}
+            {renderFormKeterangan()}
+        </View>
     )
 
-    const renderSpace = () => (
-        <View style={stylesheet.greySpace} />
+    const renderLanjutUK = () => (
+        <View style={styles.MT16}>
+            <Text>Lanjut UK?</Text>
+            <View style={[styles.FDRow, { alignItems: 'center' }]}>
+                <RadioButton
+                    value="first"
+                    status={ checked === 'first' ? 'checked' : 'unchecked' }
+                    onPress={() => setChecked('first')}
+                />
+                <Text>Iya</Text>
+                <RadioButton
+                    value="second"
+                    status={ checked === 'second' ? 'checked' : 'unchecked' }
+                    onPress={() => setChecked('second')}
+                />
+                <Text>Tidak</Text>
+            </View>
+        </View>
+    )
+
+    const renderButton = () => (
+        <TouchableOpacity
+            onPress={() => alert('ok')}
+        >
+            <View
+                style={{ backgroundColor: '#3CB371', padding: 16, borderRadius: 8 }}
+            >
+                <Text style={{ color: 'white', textAlign: 'center' }}>Simpan</Text>
+            </View>
+        </TouchableOpacity>
     )
 
     const renderBody = () => (
         <View style={[styles.bodyContainer, styles.P16]}>
-            <Text>Dengan data nasabah sebagai berikut:</Text>
-            {renderInformasiNama()}
-            {renderInformasiIdentitas()}
-            {renderInformasiKelompok()}
-            {renderForm()}
+            <ScrollView>
+                <Text style={styles.MB16}>Dengan data nasabah sebagai berikut:</Text>
+                {renderInformasiNama()}
+                {renderInformasiIdentitas()}
+                {renderInformasiKelompok()}
+                {renderForm()}
+                {renderLanjutUK()}
+            </ScrollView>
+            {renderButton()}
         </View>
     )
 

@@ -6,47 +6,61 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
+import db from '../../../database/Database';
+import { getSyncData } from '../../../actions/sync';
 
 const InisiasiFormPPList = ({ route }) => {
     const { groupName } = route.params;
     const navigation = useNavigation();
-    const [data, setData] = useState([
-        {
-            name: 'Vina Rosmawaty (Syariah)'
-        },
-        {
-            name: 'Vivie Anggraini'
-        },
-        {
-            name: 'Wanti Riana'
-        },
-        {
-            name: 'Sriyati Rahayu'
-        },
-        {
-            name: 'Sri Rezeki'
-        },
-        {
-            name: 'Lusianawati'
-        },
-        {
-            name: 'Miranti Ekadini'
-        },
-        {
-            name: 'Baiq Rachmawaty'
-        }
-    ]);
+    const [data, setData] = useState([])
     const [keyword, setKeyword] = useState('');
     const [fetching, setFetching] = useState(false);
     const [currentDate, setCurrentDate] = useState()
 
     useEffect(() => {
-        GetInfo();
+        const unsubscribe = navigation.addListener('focus', () => {
+            GetInfo();
+            getData();
+        })
+
+        return unsubscribe
     }, []);
 
     const GetInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate');
         setCurrentDate(tanggal)
+    }
+
+    const getData = async () => {
+        console.log(groupName)
+        let queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "'"
+
+        const ListData = (queryList) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryList, [], (tx, results) => {
+                            let dataLength = results.rows.length
+                            let dataList = []
+
+                            for(let a = 0; a < dataLength; a++) {
+                                let i = results.rows.item(a)
+
+                                dataList.push(i)
+                            }
+
+                            resolve(dataList)
+                        })
+                    }
+                )
+            }catch(error){
+                alert(error)
+            }
+        }))
+
+        const DataList = await ListData(queryList)
+        console.log(DataList)
+        setData(DataList)
     }
 
     const renderHeader = () => (
@@ -74,7 +88,7 @@ const InisiasiFormPPList = ({ route }) => {
             onPress={() => navigation.navigate('InisiasiFormPPForm', { ...data, groupName })}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessage name={data.name} />
+                <ListMessage name={data.Nama_Nasabah} />
             </View>
         </TouchableOpacity>
     )
