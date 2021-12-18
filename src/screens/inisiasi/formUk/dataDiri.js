@@ -138,7 +138,7 @@ const DataDiri = ({route}) => {
     const [valueStatusPerkawinan, setValueStatusPerkawinan] = useState(null);
     const [itemsStatusPerkawinan, setItemsStatusPerkawinan] = useState([]);
     const [openJumlahAnak, setOpenJumlahAnak] = useState(false);
-    const [valueJumlahAnak, setValueJumlahAnak] = useState(null);
+    const [valueJumlahAnak, setValueJumlahAnak] = useState('0');
     const [itemsJumlahAnak, setItemsJumlahAnak] = useState(dataPilihan);
     const [openJumlahTanggungan, setOpenJumlahTanggungan] = useState(false);
     const [valueJumlahTanggungan, setValueJumlahTanggungan] = useState(null);
@@ -228,7 +228,7 @@ const DataDiri = ({route}) => {
                                 if (data.jumlah_tanggungan !== null && typeof data.jumlah_tanggungan !== 'undefined') setValueJumlahTanggungan(data.jumlah_tanggungan);
                                 if (data.status_rumah_tinggal !== null && typeof data.status_rumah_tinggal !== 'undefined') setValueStatusRumahTinggal(data.status_rumah_tinggal);
                                 if (data.lama_tinggal !== null && typeof data.lama_tinggal !== 'undefined') setLamaTinggal(data.lama_tinggal);
-                                if (data.nama_suami !== null && typeof data.nama_suami !== 'undefined') setNamaSuami(data.nama_suami);
+                                if (data.nama_suami !== null && typeof data.nama_suami !== 'undefined' && data.foto_Kartu_Identitas !== 'undefined') setNamaSuami(data.nama_suami);
                                 if (data.usaha_pekerjaan_suami !== null && typeof data.usaha_pekerjaan_suami !== 'undefined') setUsahaPekerjaanSuami(data.usaha_pekerjaan_suami);
                                 if (data.jumlah_tenaga_kerja_suami !== null && typeof data.jumlah_tenaga_kerja_suami !== 'undefined') setJumlahTenagaKerjaSuami(data.jumlah_tenaga_kerja_suami);
                                 if (data.foto_ktp_suami !== null && typeof data.foto_ktp_suami !== 'undefined') setFotoKartuIdentitasSuami(fotoDataSuami);
@@ -772,9 +772,11 @@ const DataDiri = ({route}) => {
         if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='' || lamaTinggal === 'null') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
         if (!valueReligion || typeof valueReligion === 'undefined' || valueReligion ==='' || valueReligion === 'null') return alert('Agama (*) tidak boleh kosong');
 
-        if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '' || namaSuami === 'null') return alert('Nama Suami (*) tidak boleh kosong');
-        if (!usahaPekerjaanSuami || typeof usahaPekerjaanSuami === 'undefined' || usahaPekerjaanSuami === '' || usahaPekerjaanSuami === 'null') return alert('Usaha/Pekerjaan Suami (*) tidak boleh kosong');
-        if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === 'null' || fotoKartuIdentitasSuami === 'null') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
+        if (valueStatusPerkawinan !== "4") {
+            if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '' || namaSuami === 'null') return alert('Nama Suami (*) tidak boleh kosong');
+            if (!usahaPekerjaanSuami || typeof usahaPekerjaanSuami === 'undefined' || usahaPekerjaanSuami === '' || usahaPekerjaanSuami === 'null') return alert('Usaha/Pekerjaan Suami (*) tidak boleh kosong');
+            if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === 'null' || fotoKartuIdentitasSuami === 'null') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
+        }
 
         if (!valueStatusHubunganKeluarga || typeof valueStatusHubunganKeluarga === 'undefined' || valueStatusHubunganKeluarga === '' || valueStatusHubunganKeluarga === 'null') return alert('Status Hubungan Keluarga (*) tidak boleh kosong');
         if (!namaPenjamin || typeof namaPenjamin === 'undefined' || namaPenjamin === '' || namaPenjamin === 'null') return alert('Nama Penjamin (*) tidak boleh kosong');
@@ -854,6 +856,11 @@ const DataDiri = ({route}) => {
                 setLoading(false);
                 SetButtonCam(false);
             }else if (type === "dataSuami") {
+                if (!statusSuami) {
+                    AsyncStorage.setItem(key_dataPenjamin, 'data:image/jpeg;base64,' + data.base64);
+                    setFotoDataPenjamin(data.uri);
+                }
+
                 AsyncStorage.setItem(key_dataSuami, 'data:image/jpeg;base64,' + data.base64);
                 setFotoKartuIdentitasSuami(data.uri);
                 setLoading(false);
@@ -1432,10 +1439,12 @@ const DataDiri = ({route}) => {
                                 <View style={{flex: 1}}>
                                     <TextInput value={tanggalLahir} placeholder="Pilih tanggal lahir" editable={false} style={{ fontSize: 15, color: "#545454" }}/>
                                 </View>
-                                <View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={{ marginHorizontal: 8 }}>{moment().diff(moment(moment(tanggalLahir).format("DD-MM-YYYY"), "DD-MM-YYYY"), 'years') || '0'} tahun</Text>
                                     <FontAwesome5 name={'id-badge'} size={18} />
                                 </View>
                             </TouchableOpacity>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum 17-57 tahun.</Text>
                             {showCalendar && (
                                 <DateTimePicker
                                     value={date}
@@ -1454,7 +1463,16 @@ const DataDiri = ({route}) => {
                                 <Picker
                                     selectedValue={valueStatusPerkawinan}
                                     style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setValueStatusPerkawinan(itemValue)}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        if (itemValue === "4") {
+                                            setNamaPenjamin(namaSuami);
+                                            setFotoDataPenjamin(fotoKartuIdentitasSuami);
+                                            setValueStatusHubunganKeluarga('');
+                                            setStatusSuami(true);
+                                        }
+
+                                        setValueStatusPerkawinan(itemValue);
+                                    }}
                                 >
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {itemsStatusPerkawinan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
@@ -1481,7 +1499,7 @@ const DataDiri = ({route}) => {
                                     setAddressDomisiliLikeIdentitas(!addressDomisiliLikeIdentitas);
                                 }}
                             />
-                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Apakah alamat domisili sesuai dengan KTP</Text>
+                            <Text style={{flex: 1, fontSize: 15, fontWeight: 'bold'}}>Apakah alamat domisili sesuai dengan KTP</Text>
                         </View>
                         
                         {!addressDomisiliLikeIdentitas && (
@@ -1712,7 +1730,6 @@ const DataDiri = ({route}) => {
                                     style={{ height: 50, width: withTextInput }}
                                     onValueChange={(itemValue, itemIndex) => setValueJumlahAnak(itemValue)}
                                 >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {itemsJumlahAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                                 </Picker>
                             </View>
@@ -1767,99 +1784,119 @@ const DataDiri = ({route}) => {
                             />
                         </View>
 
-                    <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Suami</Text>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Suami (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={namaSuami} onChangeText={(text) => setNamaSuami(text)} placeholder="Masukkan Nama Suami" style={{ fontSize: 15, color: "#545454" }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'address-card'} size={18} />
+                    {valueStatusPerkawinan !== "4" && (
+                        <>
+                            <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Suami</Text>
+                            <View style={{margin: 20}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Suami (*)</Text>
+                                <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                                    <View style={{flex: 1}}>
+                                        <TextInput 
+                                            value={namaSuami} 
+                                            onChangeText={(text) => {
+                                                if (!statusSuami) setNamaPenjamin(text);
+                                                setNamaSuami(text);
+                                            }} 
+                                            placeholder="Masukkan Nama Suami" 
+                                            style={{ fontSize: 15, color: "#545454" }}
+                                        />
+                                    </View>
+                                    <View>
+                                        <FontAwesome5 name={'address-card'} size={18} />
+                                    </View>
                                 </View>
                             </View>
-                        </View>
 
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Usaha/Pekerjaan Suami (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={usahaPekerjaanSuami} onChangeText={(text) => setUsahaPekerjaanSuami(text)} placeholder="" style={{ fontSize: 15, color: "#545454" }}/>
+                            <View style={{margin: 20}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Usaha/Pekerjaan Suami (*)</Text>
+                                <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                                    <View style={{flex: 1}}>
+                                        <TextInput value={usahaPekerjaanSuami} onChangeText={(text) => setUsahaPekerjaanSuami(text)} placeholder="" style={{ fontSize: 15, color: "#545454" }}/>
+                                    </View>
+                                    <View />
                                 </View>
-                                <View />
                             </View>
-                        </View>
 
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
+                            <View style={{margin: 20}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja</Text>
+                                <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                                    <View style={{flex: 1}}>
+                                        <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
+                                    </View>
+                                    <View />
                                 </View>
-                                <View />
                             </View>
-                        </View>
 
-                        <View style={{margin: 20, marginBottom: 4}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami (*)</Text>
-                            
-                            <TouchableOpacity onPress={() => setCameraShow(4)}>
-                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
-                                    {fotoKartuIdentitasSuami === undefined ? (
-                                        <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
-                                            <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
-                                        </View>
-                                    ) : (
-                                        <Image source={{ uri: fotoKartuIdentitasSuami }} style={styles.thumbnailPhoto}/>
-                                    )}
+                            <View style={{margin: 20, marginBottom: 4}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami (*)</Text>
+                                
+                                <TouchableOpacity onPress={() => setCameraShow(4)}>
+                                    <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
+                                        {fotoKartuIdentitasSuami === undefined ? (
+                                            <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                                <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                            </View>
+                                        ) : (
+                                            <Image source={{ uri: fotoKartuIdentitasSuami }} style={styles.thumbnailPhoto}/>
+                                        )}
+                                    </View>
+                                </TouchableOpacity>
+
+                                <View style={{marginLeft: 20}}>
+                                    <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
                                 </View>
-                            </TouchableOpacity>
-
-                            <View style={{marginLeft: 20}}>
-                                <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
                             </View>
-                        </View>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18, marginBottom: 20}}>
-                            <Checkbox
-                                status={statusSuami ? 'checked' : 'unchecked'}
-                                onPress={() => {
-                                    setValueStatusHubunganKeluarga(!statusSuami ? '' : '1');
-                                    setStatusSuami(!statusSuami);
-                                }}
-                            />
-                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Suami di luar kota / tidak di tempat</Text>
-                        </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18, marginBottom: 20}}>
+                                <Checkbox
+                                    status={statusSuami ? 'checked' : 'unchecked'}
+                                    onPress={() => {
+                                        if (statusSuami) {
+                                            setNamaPenjamin(namaSuami);
+                                            setFotoDataPenjamin(fotoKartuIdentitasSuami);
+                                            setValueStatusHubunganKeluarga('1');
+                                        } else {
+                                            setNamaPenjamin('');
+                                            setFotoDataPenjamin();
+                                            setValueStatusHubunganKeluarga('')
+                                        }
 
-                        <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
-                            <Button
-                                title="Save Draft"
-                                buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
-                                titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => doSubmitDataSuami()}
-                            />
-                        </View>
+                                        setStatusSuami(!statusSuami);
+                                    }}
+                                />
+                                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Suami di luar kota / tidak di tempat</Text>
+                            </View>
 
+                            <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
+                                <Button
+                                    title="Save Draft"
+                                    buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
+                                    titleStyle={{fontSize: 10, fontWeight: 'bold'}}
+                                    onPress={() => doSubmitDataSuami()}
+                                />
+                            </View>
+                        </>
+                    )}
 
                     <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1, marginBottom: 20}}>Data Penjamin (1)</Text>
 
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Hubungan Keluarga (*)</Text>
                             <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={valueStatusHubunganKeluarga}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        if (itemValue === '1') setStatusSuami(false);
-                                        else setStatusSuami(true);
-                                        
-                                        setValueStatusHubunganKeluarga(itemValue);
-                                    }}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {itemsStatusHubunganKeluarga.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                </Picker>
+                                {valueStatusHubunganKeluarga === '1' ? (
+                                    <Text style={{ padding: 16 }}>SUAMI</Text>
+                                ) : (
+                                    <Picker
+                                        selectedValue={valueStatusHubunganKeluarga}
+                                        style={{ height: 50, width: withTextInput }}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            setValueStatusHubunganKeluarga(itemValue);
+                                        }}
+                                    >
+                                        <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                        {itemsStatusHubunganKeluarga.filter((x) => statusSuami && x.value !== '1').map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                    </Picker>
+                                )}
                             </View>
 
                         </View>

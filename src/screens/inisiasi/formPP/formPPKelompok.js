@@ -28,7 +28,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
     const [valueHariPertemuan, setValueHariPertemuan] = useState(null);
     const [itemsHariPertemuan, setItemsHariPertemuan] = useState([
         {
-            label: 'Sennin',
+            label: 'Senin',
             value: '1'
         },
         {
