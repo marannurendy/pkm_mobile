@@ -4,91 +4,6 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('dataBaase.db');
 
 db.transaction(tx => {
-
-    // tx.executeSql('DROP TABLE IF EXISTS Sosialisasi_Database');
-    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PendapatanNasabah');
-    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_ProdukPembiayaan');
-    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_KondisiRumah');
-    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_SektorEkonomi');
-    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_Master');
-    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PermohonanPembiayaan');
-    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_DataDiri');
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS PAR_AccountList;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS parTransaction;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS ListGroup;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS DetailKehadiran;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS UpAccountList;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS GroupList;'
-    //     // 'create table if not exists GroupList(OurBranchID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar, AnggotaAktif varchar, JumlahTagihan varchar, MeetingPlace varchar, MeetingTime varchar, CreditOfficerID varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS AccountList;'
-    //     // 'create table if not exists AccountList(OurBranchID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar, MeetingPlace varchar, MeetingTime varchar, ClientID varchar, ClientName varchar, AccountID varchar, InstallmentAmount varchar, VolSavingsBal varchar, CompSavingsBal varchar);'
-    // );
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS Totalpkm;'
-    //     // 'create table if not exists Totalpkm(GroupID varchar, MeetingDay varchar, TotalSetoran varchar, TotalAngsuran varchar, TotalTitipan varchar);'
-    // )
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS LisDetailpkmtGroup;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS pkmTransaction;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS DetailUP;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS DetailPAR;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    //     tx.executeSql(
-    //     'DROP TABLE IF EXISTS Sosialisasi_Database;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    //     tx.executeSql(
-    //     'DROP TABLE IF EXISTS Sosialisasi_Database;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
     
     tx.executeSql(
         `create table if not exists ListGroup(
@@ -394,7 +309,10 @@ db.transaction(tx => {
             tanggal_Pertama varchar,
             hari_Pertemuan varchar,
             waktu_Pertemuan varchar,
-            lokasi_Pertemuan varchar
+            lokasi_Pertemuan varchar,
+            branchid varchar,
+            input_Date varchar,
+            status varchar
         );`
     )
 
@@ -402,7 +320,11 @@ db.transaction(tx => {
         `create table if not exists Table_PP_SubKelompok(
             kelompok_Id varchar,
             subKelompok_Id varchar,
-            subKelompok varchar
+            kelompok varchar,
+            subKelompok varchar,
+            num varchar,
+            branchid varchar,
+            status varchar
         );`
     )
 
@@ -410,90 +332,56 @@ db.transaction(tx => {
         `create table if not exists Table_PP_ListNasabah(
             kelompok_Id varchar,
             subKelompok_Id varchar,
+            kelompok varchar,
+            subKelompok varchar,
             Nasabah_Id varchar,
             Nama_Nasabah varchar,
             is_Ketua_Kelompok varchar,
-            is_KetuaSubKelompok varchar
+            is_KetuaSubKelompok varchar,
+            lokasiSos varchar,
+            branchid varchar,
+            syncBy varchar,
+            isPP varchar,
+            isPP1 varchar,
+            isPP2 varchar,
+            AbsPP varchar,
+            AbsPP1 varchar,
+            AbsPP2 varchar,
+            jumlah_pembiayaan varchar,
+            jangka_waktu varchar,
+            jasa varchar,
+            Angsuran_per_minggu varchar,
+            status varchar
         )`
     )
 
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS PAR_AccountList;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS parTransaction;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS ListGroup;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS DetailKehadiran;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS UpAccountList;'
-    //     // 'create table if not exists ListGroup(GroupID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     // 'DROP TABLE IF EXISTS GroupList'
-    //     'DROP TABLE IF EXISTS GroupList;'
-    //     // 'create table if not exists GroupList(OurBranchID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar, AnggotaAktif varchar, JumlahTagihan varchar, MeetingPlace varchar, MeetingTime varchar, CreditOfficerID varchar);'        
-    // );
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS AccountList;'
-    //     // 'create table if not exists AccountList(OurBranchID varchar, GroupName varchar, GroupID varchar, MeetingDay varchar, MeetingPlace varchar, MeetingTime varchar, ClientID varchar, ClientName varchar, AccountID varchar, InstallmentAmount varchar, VolSavingsBal varchar, CompSavingsBal varchar);'
-    // );
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS Totalpkm;'
-    //     // 'create table if not exists Totalpkm(GroupID varchar, MeetingDay varchar, TotalSetoran varchar, TotalAngsuran varchar, TotalTitipan varchar);'
-    // )
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS LisDetailpkmtGroup;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS pkmTransaction;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS DetailUP;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    // tx.executeSql(
-    //     'DROP TABLE IF EXISTS DetailPAR;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    //     tx.executeSql(
-    //     'DROP TABLE IF EXISTS Sosialisasi_Database;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
-    //     tx.executeSql(
-    //     'DROP TABLE IF EXISTS Sosialisasi_Database;'
-    //     // 'create table if not exists Detailpkm(GroupID varchar, MeetingDay varchar, ClientID varchar, ClientName varchar, Attendance varchar, Angsuran varchar, Setoran varchar, Titipan varchar, TotalSetor varchar);'
-    // )
-
+    // tx.executeSql('DROP TABLE IF EXISTS ListGroup')
+    // tx.executeSql('DROP TABLE IF EXISTS GroupList')
+    // tx.executeSql('DROP TABLE IF EXISTS UpAccountList')
+    // tx.executeSql('DROP TABLE IF EXISTS PAR_AccountList')
+    // tx.executeSql('DROP TABLE IF EXISTS AccountList')
+    // tx.executeSql('DROP TABLE IF EXISTS Totalpkm')
+    // tx.executeSql('DROP TABLE IF EXISTS Detailpkm')
+    // tx.executeSql('DROP TABLE IF EXISTS pkmTransaction')
+    // tx.executeSql('DROP TABLE IF EXISTS parTransaction')
+    // tx.executeSql('DROP TABLE IF EXISTS DetailKehadiran')
+    // tx.executeSql('DROP TABLE IF EXISTS DetailUP')
+    // tx.executeSql('DROP TABLE IF EXISTS DetailPAR')
+    // tx.executeSql('DROP TABLE IF EXISTS Survei_Detail')
+    // tx.executeSql('DROP TABLE IF EXISTS Survei_Jawaban')
+    // tx.executeSql('DROP TABLE IF EXISTS Sosialisasi_Database')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_Detail')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_Master')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_DataDiri')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_ProdukPembiayaan')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_KondisiRumah')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_SektorEkonomi')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PendapatanNasabah')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PermohonanPembiayaan')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_PP_Kelompok')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_PP_SubKelompok')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_PP_ListNasabah')
 
 },function(error) {
             console.log('Transaction ERROR: ' + error.message);

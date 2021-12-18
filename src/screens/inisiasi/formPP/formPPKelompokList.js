@@ -7,44 +7,70 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import ActionButton from 'react-native-action-button';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
+import db from '../../../database/Database';
 
 const dimension = Dimensions.get('screen');
 
 const InisiasiFormPPKelompokList = ({ route }) => {
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [data, setData] = useState([
-        {
-            groupName: 'Mawar Merah',
-            jumlahNasabah: '2'
-        },
-        {
-            groupName: 'Bayam Hijau',
-            jumlahNasabah: '4'
-        },
-        {
-            groupName: 'Mekaar I',
-            jumlahNasabah: '6'
-        },
-        {
-            groupName: 'Mekaar IV',
-            jumlahNasabah: '5'
-        },
-        {
-            groupName: 'Gang Kelinci',
-            jumlahNasabah: '6'
-        }
-    ]);
+    const [data, setData] = useState([]);
     const [keyword, setKeyword] = useState('');
     const [fetching, setFetching] = useState(false);
 
+    let [branchid, setBranchid] = useState();
+
     useEffect(() => {
-        GetInfo();
+        const unsubscribe = navigation.addListener('focus', () => {
+            GetInfo();
+        })
+
+        return unsubscribe
     }, []);
 
     const GetInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate');
+
+        const detailBranch = await AsyncStorage.getItem('userData')
+        let branchid = JSON.parse(detailBranch).kodeCabang
+        
+        setBranchid(branchid)
         setCurrentDate(tanggal)
+
+        SetData()
+    }
+
+    const SetData = async () => {
+        let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok GROUP BY a.kelompok"
+
+        const getDataGroup = (queryGetGroup) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryGetGroup, [], (tx, results) => {
+                            let dataLength = results.rows.length
+
+                            var dataArr = []
+                            for(let a = 0; a < dataLength; a++) {
+                                let data = results.rows.item(a)
+                                dataArr.push(data)
+                            }
+
+                            resolve(dataArr)
+
+                        })
+                    }, function(error) {
+                        reject(error)
+                    }
+                )
+            }catch(error){
+                reject(error)
+            }
+        }))
+
+        const ListData = await getDataGroup(queryGetGroup)
+
+        setData(ListData)
     }
 
     const renderHeader = () => (

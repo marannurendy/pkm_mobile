@@ -238,13 +238,21 @@ export default function FrontHome() {
 
         const syncBy = await AsyncStorage.getItem('SyncBy')
         let dataRole = await JSON.parse(syncBy)
-        let lengthData = dataRole.filter((x) => x.userName === userName).length || 0
 
-        // if (dataRole.userName === username) {
+        console.log("this " + dataRole)
 
-        // console.log("ini " + userName)
+        try{
+            var lengthData = dataRole.filter((x) => x.userName === userName).length || 0
+        }catch{
+            var lengthData = 0
+        }
+
+        // if(dataRole === undefined || dataRole === null) {
+        //     var lengthData = 0
+        // }else{
+        // }
         
-        console.log(lengthData)
+        console.log("ini ==> " + lengthData)
 
         AsyncStorage.getItem('SyncDate', (error, syncDate) => {
             if (syncDate !== now || lengthData === 0) {

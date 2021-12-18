@@ -144,6 +144,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingVertical: 18
     },
+    RadioStyle: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
     F1: {
         flex: 1
     },
@@ -284,6 +288,9 @@ const styles = StyleSheet.create({
     },
     FDRow: {
         flexDirection: 'row'
+    },
+    FDColumn: {
+        flexDirection: 'column'
     }
 });
 
