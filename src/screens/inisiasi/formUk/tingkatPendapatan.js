@@ -68,7 +68,9 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     if (dataLength > 0) {
                         
                         let data = results.rows.item(0);
-                        setValueJumlahTanggungan(parseInt(data.jumlah_tanggungan))
+                        let jumlah_tanggungan = data.jumlah_tanggungan;
+                        if (data.jumlah_tanggungan === "0" || data.jumlah_tanggungan === "null") jumlah_tanggungan = "1";
+                        setValueJumlahTanggungan(parseInt(jumlah_tanggungan))
                         if (__DEV__) console.log('tx.executeSql data:', data);
                     }
                 }, function(error) {
@@ -541,7 +543,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <Text style={[styles.P4, { color: 'gray', paddingLeft: 0, fontSize: 18 }]}>{formatter((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 0) || 0) + ((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 0) | 0)) / valueJumlahTanggungan)}</Text>
                 <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Istri : {(parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 0)}</Text>
                 <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Suami : {(parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 0)}</Text>
-                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Jumlang Tanggungan : {valueJumlahTanggungan}</Text>
+                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Jumlah Tanggungan : {valueJumlahTanggungan}</Text>
             </View>
         </View>
     )

@@ -20,12 +20,15 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Checkbox } from 'react-native-paper';
 import moment from 'moment';
+import { showMessage } from "react-native-flash-message"
 import 'moment/locale/id';
+import { ApiSyncPostInisiasi } from '../../../../dataconfig/apisync/apisync';
 
 import db from '../../../database/Database';
 import { style } from 'styled-system';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
+import { getSyncData } from '../../../actions/sync';
 
 const dimension = Dimensions.get('screen');
 
@@ -33,20 +36,21 @@ const InisiasiFormPPH = ({ route }) => {
     const { source } = route.params;
     const navigation = useNavigation();
     const [date, setDate] = useState('');
-    const [data, setData] = useState([
-        {
-            groupName: 'Bogor',
-            jumlahNasabah: '10'
-        },
-        {
-            groupName: 'Depok',
-            jumlahNasabah: '1'
-        },
-        {
-            groupName: 'Jakarta',
-            jumlahNasabah: '4'
-        }
-    ]);
+    // const [data, setData] = useState([
+    //     {
+    //         groupName: 'Bogor',
+    //         jumlahNasabah: '10'
+    //     },
+    //     {
+    //         groupName: 'Depok',
+    //         jumlahNasabah: '1'
+    //     },
+    //     {
+    //         groupName: 'Jakarta',
+    //         jumlahNasabah: '4'
+    //     }
+    // ]);
+    const [data, setData] = useState([])
     const [keyword, setKeyword] = useState('');
     const [fetching, setFetching] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -54,14 +58,282 @@ const InisiasiFormPPH = ({ route }) => {
     const [statusMelakukan, setStatusMelakukan] = useState(false)
 
     useEffect(() => {
-        generateDate();
+        const unsubscribe = navigation.addListener('focus', () => {
+            generateDate();
+            getData(source)
+        })
+
+        return unsubscribe
     }, []);
+
+    const getData = async (val) => {
+        let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + val + " GROUP BY a.kelompok "
+
+        const listData = (queryGetGroup) => (new Promise ((resolve,reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryGetGroup, [], (tx, results) => {
+                            let dataLength = results.rows.length
+                            let dataArr = []
+
+                            for(let a = 0; a < dataLength; a++) {
+                                let data = results.rows.item(a)
+                                dataArr.push(data)
+                            }
+                            resolve(dataArr)
+                        })
+                    }, function(error) {
+                        alert(error)
+                    }
+                )
+            }catch(error){
+                alert(error)
+            }
+        }))
+
+        const listDataGet = await listData(queryGetGroup)
+        console.log(listDataGet)
+        setData(listDataGet)
+    }
 
     const generateDate = () => {
         if (source === '2') return setDate(moment(new Date()).add(1, 'days'));
         if (source === '3') return setDate(moment(new Date()).add(2, 'days'));
 
         setDate(new Date());
+    }
+
+    const actionItemhandler = (data) => {
+        let param = {
+            groupName : data.groupName,
+            jumlahNasabah : data.jumlahNasabah,
+            val : source
+        }
+
+        navigation.navigate('InisiasiFormPPAbsen', {param})
+    }
+
+    const flashNotification = (title, message, backgroundColor, color) => {
+        showMessage({
+            message: title,
+            description: message,
+            type: "info",
+            duration: 3500,
+            statusBarHeight: 20,
+            backgroundColor: backgroundColor,
+            color: color
+        });
+      }
+
+    const syncHandler = async (val) => {
+            let queryGetDataPP = "SELECT * FROM Table_PP_ListNasabah WHERE isPP = '" + val + "'"
+            let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah WHERE isPP = '" + val + "'"
+            console.log(queryGetDataPP)
+            var listKelompok = []
+
+            const getDataKelompok = (queryGetGroupPP) => (new Promise ((resolve, reject) => {
+                try{
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryGetGroupPP, [], (tx, results) => {
+                                let dataLength = results.rows.length
+                                let dataGroup = []
+
+                                for(let a = 0; a < dataLength; a++) {
+                                    let data = results.rows.item(a)
+                                    dataGroup.push({groupName : data.kelompok})
+                                }
+                                resolve(dataGroup)
+                            })
+                        }, function(error){
+                            alert(error)
+                        }
+                    )
+                }catch(error){
+                    alert(error)
+                }
+            }))
+
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryGetDataPP, [], (tx, results) => {
+                            let length = results.rows.length
+
+                            console.log(length)
+
+                            for(let a = 0; a < length; a++) {
+                                let data = results.rows.item(a)
+                                let ketAbsen = data.AbsPP === '1' ? "Hadir" : data.AbsPP === '2' ? "Tidak Hadir" : "Tanpa Keterangan"
+                                let dataSend = {ID_Absen: data.AbsPP, ID_MPP: val, ID_Prospek: data.Nasabah_Id, Keterangan_Absen: ketAbsen, Nama_Kelompok: data.kelompok, Sub_Kelompok: data.subKelompok}
+
+                                listKelompok.push(data.groupName)
+
+                                // console.log(dataSend)
+
+                                try{
+                                    fetch(ApiSyncPostInisiasi + "post_pp", {
+                                            method: 'POST',
+                                            headers: {
+                                                Accept: 'application/json',
+                                                        'Content-Type': 'application/json'
+                                                },
+                                            body: JSON.stringify(dataSend)
+                                        })
+                                    .then((response) => response.json())
+                                    .then((responseJson) => {
+                                        console.log("second")
+                    
+                                        console.log(responseJson)
+                                        if(responseJson.code === 200) {
+                                            flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                                            if(val === '1' || val === 1) {
+                                                var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 2, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                            }else if(val === '2' || val === 2) {
+                                                var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 3, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                            }else if(val === '3' || val === 3) {
+                                                var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                            }
+                    
+                                            db.transaction(
+                                                tx => {
+                                                    // tx.executeSql("DELETE FROM Table_PP_ListNasabah WHERE Nasabah_Id = '" + data.Nasabah_Id + "'")
+                                                    // tx.executeSql("DELETE FROM Table_PP_Kelompok WHERE kelompok = '" + kelompok + "'")
+                                                    tx.executeSql(queryUpdate)
+                                                },function(error) {
+                                                    console.log('Transaction ERROR: ' + error.message);
+                                                  }, function() {
+                                                    console.log('Delete Table OK');
+                                              }
+                                            )
+
+                                        }else{
+                                            setLoading(false)
+                                            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
+                                        }
+                                    }).catch((error) => {
+                                        setLoading(false)
+                                        flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
+                                    })
+                                }catch(error){
+                                    console.log("disini")
+                                    setLoading(false)
+                                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+                                }
+
+                            }
+                        })
+                    }, function(error){
+                        alert(error)
+                    }
+                )
+            }catch(error){
+                alert(error)
+            }
+
+            if(val === 1 || val === '1') {
+                const dataGroup = await getDataKelompok(queryGetGroupPP)
+
+                let dataLength = dataGroup.length
+
+                // console.log(dataLength)
+                // let queryGetGroupDetail = "SELECT * FROM Table_PP_Kelompok WHERE kelompok = '" + dataGroup[0].groupName + "'"
+                // console.log(queryGetGroupDetail)
+                const getDataKelompokPP = (query) => (new Promise((resolve, reject) => {
+                    try{
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query, [], (tx, results) => {
+                                    let length = results.rows.length
+                                    for(let a = 0; a < length; a++) {
+                                        let b = results.rows.item(a)
+
+                                        resolve(b)
+                                    }
+                                })
+                            }, function(error){
+                                alert(error)
+                            }
+                        )
+                    }catch(error){
+                        alert(error)
+                    }
+                }))
+
+                const getDataJumlahPP = (query) => (new Promise((resolve, reject) => {
+                    try{
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query, [], (tx, results) => {
+                                    let length = results.rows.length
+                                    for(let a = 0; a < length; a++) {
+                                        let b = results.rows.item(a)
+
+                                        resolve(b)
+                                    }
+                                })
+                            }, function(error){
+                                alert(error)
+                            }
+                        )
+                    }catch(error){
+                        alert(error)
+                    }
+                }))
+
+                try{
+                    for(let a = 0; a < dataLength; a++) {
+                        console.log(dataGroup[a].groupName)
+                        let groupName = dataGroup[a].groupName
+                        let queryGetGroupDetail = "SELECT * FROM Table_PP_Kelompok WHERE kelompok = '" + groupName + "'"
+                        let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.kelompok = '" + groupName + "' GROUP BY a.kelompok "
+
+                        // console.log(queryGetGroup)
+                        const dataGroupCollect = await getDataKelompokPP(queryGetGroupDetail)
+                        const dataGroupTotal = await getDataJumlahPP(queryGetGroup)
+
+                        console.log(dataGroupCollect)
+                        console.log(dataGroupTotal)
+
+                        let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah, GroupProduct: dataGroupCollect.group_Product, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
+
+                        console.log(dataSend)
+
+                        try{
+                            fetch(ApiSyncPostInisiasi + "post_data_kelompok", {
+                                    method: 'POST',
+                                    headers: {
+                                        Accept: 'application/json',
+                                                'Content-Type': 'application/json'
+                                        },
+                                    body: JSON.stringify(dataSend)
+                                })
+                            .then((response) => response.json())
+                            .then((responseJson) => {
+                                console.log("second")
+            
+                                console.log(responseJson)
+                                if(responseJson.code === 200) {
+                                    flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                                }else{
+                                    setLoading(false)
+                                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
+                                }
+                            }).catch((error) => {
+                                setLoading(false)
+                                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
+                            })
+                        }catch(error){
+                            console.log("disini")
+                            setLoading(false)
+                            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+                        }
+                    }
+                }catch(error){
+                    alert(error)
+                }
+            }
     }
 
     const renderHeader = () => (
@@ -85,24 +357,56 @@ const InisiasiFormPPH = ({ route }) => {
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={stylesheet.containerItem} 
-            onPress={() => setVisible(true)}
+            onPress={() => actionItemhandler(data)}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} />
+                <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} status={data.status} />
             </View>
         </TouchableOpacity>
     )
 
-    const ListMessage = ({ groupName, jumlahNasabah }) => {
-        return (
-            <View style={stylesheet.containerList}>
-                <FontAwesome5 name="users" size={32} color="#2e2e2e" />
-                <View style={styles.ML16}>
-                    <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
-                    <Text>{jumlahNasabah} Orang</Text>
+    const ListMessage = ({ groupName, jumlahNasabah, status }) => {
+        if(source === '1') {
+            return (
+                <View style={stylesheet.containerList}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <FontAwesome5 name="users" size={32} color="#2e2e2e" />
+                        <View style={styles.ML16}>
+                            <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
+                            <Text>{jumlahNasabah} Orang</Text>
+                        </View>
+                    </View>
+                    {status === "0" ? (<View></View>) : (<FontAwesome5 name="check" size={20} color="#17BEBB" />)}
                 </View>
-            </View>
-        )
+            )
+        }else if(source === '2') {
+            return (
+                <View style={stylesheet.containerList}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <FontAwesome5 name="users" size={32} color="#2e2e2e" />
+                        <View style={styles.ML16}>
+                            <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
+                            <Text>{jumlahNasabah} Orang</Text>
+                        </View>
+                    </View>
+                    {status === "2" ? (<FontAwesome5 name="check" size={20} color="#17BEBB" />) : (<View></View>)}
+                </View>
+            )
+        }else if(source === '3') {
+            return (
+                <View style={stylesheet.containerList}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <FontAwesome5 name="users" size={32} color="#2e2e2e" />
+                        <View style={styles.ML16}>
+                            <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
+                            <Text>{jumlahNasabah} Orang</Text>
+                        </View>
+                    </View>
+                    {status === "3" ? (<FontAwesome5 name="check" size={20} color="#17BEBB" />) : (<View></View>)}
+                </View>
+            )
+        }
+        
     }
 
     const empty = () => (
@@ -114,7 +418,12 @@ const InisiasiFormPPH = ({ route }) => {
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <View style={stylesheet.containerProspek}>
-                <Text style={stylesheet.textProspek}>Persiapan Pembiayaan {source}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20}}>
+                    <Text style={stylesheet.textProspek}>Persiapan Pembiayaan {source}</Text>
+                    <TouchableOpacity onPress={() => syncHandler(source)} style={{ alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, justifyContent: 'center' }}>
+                        <Text style={{ textAlign: 'center', borderRadius: 20, fontSize: 16, fontWeight: 'bold', marginHorizontal: 20}}>SYNC</Text>
+                    </TouchableOpacity>
+                </View>
                 <View style={stylesheet.containerSearch}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={styles.MH8} />
                     <TextInput 
@@ -239,7 +548,7 @@ const stylesheet = StyleSheet.create({
     textProspek: { 
         fontSize: 18, 
         fontWeight: 'bold', 
-        margin: 16
+        margin: 5
     },
     containerSearch: { 
         ...styles.FDRow,
@@ -267,7 +576,8 @@ const stylesheet = StyleSheet.create({
         ...styles.M16,
         width: "85%",
         alignContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     textList: {
         ...styles.MB4,

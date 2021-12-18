@@ -124,27 +124,6 @@ const FormUjiKelayakan = ({route}) => {
                         
                         let namaProduk = data.produk_Pembiayaan;
 
-                        if (fotoKartuIdentitas === null) {
-                            setSubmitted(false);
-                            return Alert.alert('Error: Foto Kartu Identitas', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-                        if (fotoKeteranganDomisili === null) {
-                            setSubmitted(true);
-                            return Alert.alert('Error: Foto Surat Keterangan Domisili', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-                        if (fotoKartuKeluarga === null) {
-                            setSubmitted(false);
-                            return Alert.alert('Error: Foto Kartu Keluarga', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-                        if (fotoDataSuami === null) {
-                            setSubmitted(false);
-                            return Alert.alert('Error: Foto Kartu Identitas Suami', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-                        if (fotoDataPenjamin === null) {
-                            setSubmitted(false);
-                            return Alert.alert('Error: Foto Kartu Identitas Penjamin', `[Unhandled promise rejection: Error: database or disk is full (code 13 SQLITE_FULL)]`);
-                        }
-
                         let idProspek = "";
                         if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
 
@@ -157,11 +136,11 @@ const FormUjiKelayakan = ({route}) => {
                             "CreatedBy": uname,
                             "CreatedNIP": nip,
                             "Dinding": data.dinding,
-                            "FotoKK": fotoKartuKeluarga.split(',')[1] || 'null',
-                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1] || 'null',
-                            "FotoKTPSuami": fotoDataSuami.split(',')[1] || 'null',
-                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1] || 'null',
-                            "FotoSuketDomisili": fotoKeteranganDomisili.split(',')[1] || 'null',
+                            "FotoKK": fotoKartuKeluarga.split(',')[1],
+                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1],
+                            "FotoKTPSuami": fotoDataSuami === null || fotoDataSuami === 'null' ? '' : fotoDataSuami.split(',')[1],
+                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
+                            "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
                             "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
                             "ID_SektorEkonomi": data.sektor_Ekonomi,
                             "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi,

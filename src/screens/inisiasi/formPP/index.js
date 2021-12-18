@@ -9,6 +9,7 @@ import InisiasiFormPPH from "./formPPH";
 import InisiasiFormPP from "./formPP";
 import InisiasiFormPPList from "./formPPList";
 import InisiasiFormPPForm from "./formPPForm";
+import InisiasiFormPPAbsen from "./formPPAbsen";
 
 export { 
     InisiasiFormPPKelompok,
@@ -21,5 +22,6 @@ export {
     InisiasiFormPPH,
     InisiasiFormPP,
     InisiasiFormPPList,
-    InisiasiFormPPForm
+    InisiasiFormPPForm,
+    InisiasiFormPPAbsen
 }

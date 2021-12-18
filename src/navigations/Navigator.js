@@ -59,7 +59,10 @@ import {
     InisiasiFormPPH,
     InisiasiFormPP,
     InisiasiFormPPList,
-    InisiasiFormPPForm
+    InisiasiFormPPForm,
+    InisiasiFormProspekLamaList,
+    InisiasiFormProspekLama,
+    InisiasiFormPPAbsen
 } from '../screens/inisiasi/index'
 
 import { 
@@ -224,6 +227,7 @@ function CustomDrawerContent(props) {
 
     const LogOutButton = () => {
         AsyncStorage.removeItem('userData')
+        // AsyncStorage.removeItem('SyncBy')
         navigation.replace('Login')
     }
 
@@ -238,7 +242,7 @@ function CustomDrawerContent(props) {
         );
     }
 
-    const ClearDataHandler = () => {
+    const ClearDataHandler = async () => {
         Alert.alert(
             "Logout Alert",
             "Apakah anda yakin ingin Menghapus Semua Data ?",
@@ -246,61 +250,45 @@ function CustomDrawerContent(props) {
               { text: "OK", onPress: () => {
                   db.transaction(
                         tx => {
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS PAR_AccountList;'
-                            );
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS parTransaction;'
-                            );
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS ListGroup;'
-                            );
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS DetailKehadiran;'
-                            );
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS UpAccountList;'
-                            );
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS GroupList;'
-                            );
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS AccountList;'
-                            );
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS Totalpkm;'
-                            )
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS LisDetailpkmtGroup;'
-                            )
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS pkmTransaction;'
-                            )
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS DetailUP;'
-                            )
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS DetailPAR;'
-                            )
-                        
-                            tx.executeSql(
-                                'DROP TABLE IF EXISTS Sosialisasi_Database;'
-                            )
+                            tx.executeSql('DELETE FROM ListGroup');
+                            tx.executeSql('DELETE FROM GroupList');
+                            tx.executeSql('DELETE FROM UpAccountList');
+                            tx.executeSql('DELETE FROM PAR_AccountList');
+                            tx.executeSql('DELETE FROM AccountList');
+                            tx.executeSql('DELETE FROM Totalpkm');
+                            tx.executeSql('DELETE FROM Detailpkm');
+                            tx.executeSql('DELETE FROM pkmTransaction');
+                            tx.executeSql('DELETE FROM parTransaction');
+                            tx.executeSql('DELETE FROM DetailKehadiran');
+                            tx.executeSql('DELETE FROM DetailUP');
+                            tx.executeSql('DELETE FROM DetailPAR');
+                            tx.executeSql('DELETE FROM Survei_Detail');
+                            tx.executeSql('DELETE FROM Survei_Jawaban');
+                            tx.executeSql('DELETE FROM Sosialisasi_Database');
+                            tx.executeSql('DELETE FROM Table_UK');
+                            tx.executeSql('DELETE FROM Table_UK_Detail');
+                            tx.executeSql('DELETE FROM Table_UK_Master');
+                            tx.executeSql('DELETE FROM Table_UK_DataDiri');
+                            tx.executeSql('DELETE FROM Table_UK_ProdukPembiayaan');
+                            tx.executeSql('DELETE FROM Table_UK_KondisiRumah');
+                            tx.executeSql('DELETE FROM Table_UK_SektorEkonomi');
+                            tx.executeSql('DELETE FROM Table_UK_PendapatanNasabah');
+                            tx.executeSql('DELETE FROM Table_UK_PermohonanPembiayaan');
+                            tx.executeSql('DELETE FROM Table_PP_Kelompok');
+                            tx.executeSql('DELETE FROM Table_PP_SubKelompok');
+                            tx.executeSql('DELETE FROM Table_PP_ListNasabah');
                         },function(error) {
                             alert('Transaction ERROR: ' + error.message);
-                        }, function() {
+                        }, async function() {
+                            let keys = await AsyncStorage.getAllKeys()
+                            try{
+                                AsyncStorage.multiRemove(keys)
+                            }catch(error){
+                                alert(error)
+                            }
+
                             alert('Data Berhasil Di hapus');
+                            navigation.replace('Login')
                         }
                   )
               }}
@@ -314,7 +302,7 @@ function CustomDrawerContent(props) {
         <DrawerItemList {...props} />
         <DrawerItem label="About"/>
         <DrawerItem label="Log Out" onPress={() => LogOuthandler()} />
-        {/* <DrawerItem label="Clear Data" onPress={() => ClearDataHandler()} /> */}
+        <DrawerItem label="Clear Data" onPress={() => ClearDataHandler()} />
       </DrawerContentScrollView>
     );
   }
@@ -665,6 +653,10 @@ export default function AppNavigator() {
                 <Stack.Screen name="InisiasiFormPP" component={InisiasiFormPP} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPList" component={InisiasiFormPPList} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormPPForm" component={InisiasiFormPPForm} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormProspekLamaList" component={InisiasiFormProspekLamaList} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormProspekLama" component={InisiasiFormProspekLama} options={{ headerShown: false }} />
+                
+                <Stack.Screen name="InisiasiFormPPAbsen" component={InisiasiFormPPAbsen} options={{ headerShown: false }} />
 
                 {/* Pencairan */}
                 <Stack.Screen name="Pencairan" component={KelompokPencairan} options={{ headerShown: false }} />

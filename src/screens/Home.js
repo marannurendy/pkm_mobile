@@ -241,11 +241,12 @@ export default function FrontHome() {
         let lengthData = 0;
         if (dataRole !== null) lengthData = dataRole.filter((x) => x.userName === userName).length || 0;
 
-        // if (dataRole.userName === username) {
-
-        // console.log("ini " + userName)
+        // if(dataRole === undefined || dataRole === null) {
+        //     var lengthData = 0
+        // }else{
+        // }
         
-        console.log(lengthData)
+        console.log("ini ==> " + lengthData)
 
         AsyncStorage.getItem('SyncDate', (error, syncDate) => {
             if (syncDate !== now || lengthData === 0) {
