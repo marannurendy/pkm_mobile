@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity, Dimensions, Image, ScrollView, StyleSheet, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 
@@ -9,11 +10,31 @@ const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 16;
 
 const InisiasiFormPPForm = ({ route }) => {
-    const { groupName, name } = route.params;
+    const { groupName, Nama_Nasabah, Nasabah_Id, branchid, jangka_waktu, jasa, jumlah_pembiayaan, kelompok, Angsuran_per_minggu } = route.params;
     const navigation = useNavigation();
     const [date, setDate] = useState(new Date());
     const [valueTandaTanganKetuaAO, setValueTandaTanganKetuaAO] = useState(null);
     const [valueTandaTanganKCSAO, setValueTandaTanganKCSAO] = useState(null);
+
+    let [cabangid, setCabangid] = useState()
+    let [namaCabang, setNamacabang] = useState()
+    let [username, setUsername] = useState()
+    let [aoname, setAoname] = useState()
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', async () => {
+            const syncStatus = await AsyncStorage.getItem('userData')
+            
+            let DetailData = JSON.parse(syncStatus)
+
+            setCabangid(DetailData.kodeCabang)
+            setNamacabang(DetailData.namaCabang)
+            setUsername(DetailData.userName)
+            setAoname(DetailData.AOname)
+        })
+
+        return unsubscribe
+    })
 
     const onSelectSign = (key, data) => {
         if (__DEV__) console.log('onSelectSign loaded');
@@ -26,7 +47,7 @@ const InisiasiFormPPForm = ({ route }) => {
         <View style={[styles.FDRow, styles.MT8]}>
             <Text style={styles.F1}>Jumlah Pembiayaan Yang Disetujui</Text>
             <Text style={styles.MH8}>:</Text>
-            <Text style={{ width: 100 }}>3.00.000</Text>
+            <Text style={{ width: 100 }}>{jumlah_pembiayaan}</Text>
         </View>
     )
 
@@ -34,7 +55,7 @@ const InisiasiFormPPForm = ({ route }) => {
         <View style={[styles.FDRow, styles.MT8]}>
             <Text style={styles.F1}>Jangka Waktu</Text>
             <Text style={styles.MH8}>:</Text>
-            <Text style={{ width: 100 }}>25 Minggu</Text>
+            <Text style={{ width: 100 }}>{jangka_waktu} Minggu</Text>
         </View>
     )
 
@@ -42,7 +63,7 @@ const InisiasiFormPPForm = ({ route }) => {
         <View style={[styles.FDRow, styles.MT8]}>
             <Text style={styles.F1}>JASA</Text>
             <Text style={styles.MH8}>:</Text>
-            <Text style={{ width: 100 }}>750.000</Text>
+            <Text style={{ width: 100 }}>{jasa}</Text>
         </View>
     )
 
@@ -50,7 +71,7 @@ const InisiasiFormPPForm = ({ route }) => {
         <View style={[styles.FDRow, styles.MT8, styles.MB32]}>
             <Text style={styles.F1}>Angsuran Per Minggu</Text>
             <Text style={styles.MH8}>:</Text>
-            <Text style={{ width: 100 }}>150.000</Text>
+            <Text style={{ width: 100 }}>{Angsuran_per_minggu}</Text>
         </View>
     )
 
@@ -65,7 +86,7 @@ const InisiasiFormPPForm = ({ route }) => {
                         source={{ uri: valueTandaTanganKetuaAO }}
                     />
                 )}
-                <Text style={[styles.MH16, styles.MV16, { color: 'black' }]}>(Muhamad Yusup Hamdani)</Text>
+                <Text style={[styles.MH16, styles.MV16, { color: 'black' }]}>({aoname})</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaAO', onSelectSign: onSelectSign })} />
             </View>
             <Text style={[styles.note, styles.MB8, { marginLeft: 0, color: 'red' }]}>*isi tanda tangan dengan benar</Text>
@@ -83,7 +104,7 @@ const InisiasiFormPPForm = ({ route }) => {
                         source={{ uri: valueTandaTanganKCSAO }}
                     />
                 )}
-                <Text style={[styles.MH16, styles.MV16, { color: 'black' }]}>(Rengganis Samudera Asa)</Text>
+                <Text style={[styles.MH16, styles.MV16, { color: 'black' }]}>({Nama_Nasabah})</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKCSAO', onSelectSign: onSelectSign })} />
             </View>
             <Text style={[styles.note, styles.MB8, { marginLeft: 0, color: 'red' }]}>*isi tanda tangan dengan benar</Text>
@@ -133,7 +154,7 @@ const InisiasiFormPPForm = ({ route }) => {
                     <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     <Text style={styles.headerTitle}>BACK</Text>
                 </TouchableOpacity>
-                <Text style={{ color: colors.PUTIH }}>{groupName} {`>`} {name}</Text>
+                <Text style={{ color: colors.PUTIH }}>{groupName} {`>`} {Nama_Nasabah}</Text>
             </View>
         </ImageBackground>
     )

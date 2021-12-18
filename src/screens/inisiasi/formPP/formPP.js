@@ -4,32 +4,60 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import db from '../../../database/Database';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 
 const InisiasiFormPP = ({ route }) => {
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [data, setData] = useState([
-        {
-            groupName: 'Mekaar VI',
-            jumlahNasabah: '10'
-        },
-        {
-            groupName: 'Gang Kelinci',
-            jumlahNasabah: '1'
-        }
-    ]);
+    const [data, setData] = useState([])
     const [keyword, setKeyword] = useState('');
     const [fetching, setFetching] = useState(false);
 
     useEffect(() => {
-        GetInfo();
+        const unsubscribe = navigation.addListener('focus', () => {
+            GetInfo();
+            getData();
+        })
+
+        return unsubscribe
     }, []);
 
     const GetInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate');
         setCurrentDate(tanggal)
+    }
+
+    const getData = async () => {
+        let queryGetdataGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + 4 + " GROUP BY a.kelompok "
+
+        const getDataPembiayaan = (queryGetdataGroup) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryGetdataGroup, [], (tx, results) => {
+                            let dataLength = results.rows.length
+                            let data = []
+
+                            for(let a = 0; a < dataLength; a++) {
+                                let i = results.rows.item(a)
+
+                                data.push(i)
+                            }
+
+                            resolve(data)
+                        })
+                    }
+                )
+            }catch(error){
+                alert(error)
+            }
+        }))
+
+        const data = await getDataPembiayaan(queryGetdataGroup)
+
+        setData(data)
     }
 
     const renderHeader = () => (
