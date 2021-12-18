@@ -4,13 +4,11 @@ import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import ActionButton from 'react-native-action-button'
-import { scale, verticalScale } from 'react-native-size-matters'
 import { Card, Divider } from 'react-native-elements';
 import SignatureScreen from "react-native-signature-canvas";
 import { Button } from 'react-native-elements';
 import { Camera } from 'expo-camera'
-import bismillah from '../../images/bismillah.png';
+import moment from 'moment'
 
 import db from '../../database/Database'
 
@@ -28,7 +26,7 @@ const FinalPencairan = ({route}) => {
     let [aoName, setAoName] = useState();
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
-    let [data, setData] = useState([]);
+    let [dataNasabah, setDataNasabah] = useState(route.params.data);
     const [keyword, setKeyword] = useState('');
     const [modalVisibleSubKel, setModalVisibleSubKel] = useState(false);
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
@@ -42,6 +40,11 @@ const FinalPencairan = ({route}) => {
     const [hasPermission, setHasPermission] = useState(null);
     let [cameraShow, setCameraShow] = useState(false)
     const key_dataPenjamin = `formUK_dataPenjamin_`;
+    moment.locale('id');
+    var Tanggal = moment(new Date()).format('DD-MMM-YYYY')
+    var hariIni = moment(new Date()).format('dddd')
+    var Jam = moment(new Date()).format('HH:mm')
+
 
     useEffect(() => {
         const getUserData = () => {
@@ -396,17 +399,17 @@ const FinalPencairan = ({route}) => {
                                 <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
                                         <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Pencairan Pembiayaan </Text>
                                         <Text style={{fontSize: 14}}>Saya yang bertanda Tangan dibawah ini:{"\n"}{"\n"}
-                                        Nama         :  SRI RAHAYU{"\n"}
+                                        Nama            :  {dataNasabah.Nama_Prospek}{"\n"}
                                         Dengan ini menyatakan telah menerima pembiayaan
                                         sebesar: 3.000.000 rupiah, dan bersedia untuk
                                         bertanggung jawab sampai pelunasan pembiayaan,
                                         serta mematuhi dan menerima semua keputusan / peraturan
                                         yang berlaku di PT. Permodalan Nasional Madani.{"\n"}{"\n"}
 
-                                        Hari            :  Senin {"\n"}
-                                        Tanggal      :  14-Juni-2021 {"\n"}
-                                        Jam            :  13.24 {"\n"}
-                                        Kelompok    :  Gang Kelinci {"\n"}</Text>
+                                        Hari                    :  {hariIni} {"\n"}
+                                        Tanggal             :  {Tanggal} {"\n"}
+                                        Jam                     :  {Jam} {"\n"}
+                                        Kelompok          :  Gang Kelinci {"\n"}</Text>
                                         <Card>
                                             <Card.Divider />
                                             <View style={{marginBottom: 10}}>
@@ -420,6 +423,7 @@ const FinalPencairan = ({route}) => {
                                                     />
                                                     <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                                 </View>
+                                                <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                             </View>
                                             <View style={{marginBottom: 10}}>
                                                 <Text style={{ fontWeight: 'bold' }}>Ketua Sub Kelompok(*)</Text>
@@ -432,7 +436,7 @@ const FinalPencairan = ({route}) => {
                                                     />
                                                     <Card.Image source={{uri: signatureSubKel}} style={{margin: 10}} />
                                                 </View>
-                                                <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
+                                                <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                             </View>
                                             <View style={{marginBottom: 10}}>
                                                 <Text style={{ fontWeight: 'bold' }}>Ketua Kelompok(*)</Text>
@@ -479,7 +483,7 @@ const FinalPencairan = ({route}) => {
                                     <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                                         <Button
                                             title="SIMPAN"
-                                            onPress={() => navigation.navigate("Siklus")}
+                                            onPress={() => navigation.navigate("Siklus", {data:dataNasabah})}
                                             buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                                             titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                                         />

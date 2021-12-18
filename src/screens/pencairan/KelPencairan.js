@@ -18,8 +18,6 @@ const KelPencairan = () => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
-    let [menuShow, setMenuShow] = useState(0);
-    let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
     const [keyword, setKeyword] = useState('');
 
@@ -70,7 +68,7 @@ const KelPencairan = () => {
         if (__DEV__) console.log('getKelompokPencairan loaded');
         if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
 
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
+        let query = 'SELECT kelompok_Id, Nama_Kelompok, Jumlah_Kelompok FROM Table_Pencairan WHERE Nama_Kelompok LIKE "%'+ keyword +'%"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -79,9 +77,9 @@ const KelPencairan = () => {
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
+                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'Jumlah_Kelompok': data.Jumlah_Kelompok});
                     }
-                    setData([{'groupName' :'Toto', 'totalnasabah': '10', 'date': '08-09-2021'}]);
+                    setData([{'Nama_Kelompok' :'Toto', 'Jumlah_Kelompok': '10'}]);
                 })
             }
         )
@@ -95,19 +93,18 @@ const KelPencairan = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('FlowPencairan', {groupName: data.groupName})}
+            onPress={() => navigation.navigate('FlowPencairan', {data : data})}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessageSos groupName={data.groupName} date={data.date} totalnasabah={data.totalnasabah} />
+                <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} Jumlah_Kelompok={data.Jumlah_Kelompok} />
             </View>
         </TouchableOpacity>
     )
-    const ListMessageSos = ({ groupName, date, totalnasabah }) => {
+    const ListMessageSos = ({ Nama_Kelompok, Jumlah_Kelompok }) => {
         return(
             <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
-                <Text>{date}</Text>
-                <Text>Total Nasabah : {totalnasabah}</Text>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama_Kelompok}</Text>
+                <Text>Total Prospek : {Jumlah_Kelompok}</Text>
             </View>
         )
     }
@@ -172,7 +169,7 @@ const KelPencairan = () => {
                             onChangeText={(text) => setKeyword(text)}
                             value={keyword}
                             returnKeyType="done"
-                            onSubmitEditing={() => getSosialisasiDatabase()}
+                            onSubmitEditing={() => getKelompokPencairan()}
                         />
                     </View>
                 </View>
@@ -190,7 +187,7 @@ const KelPencairan = () => {
                             // onEndReached={() => handleEndReach()}
                             renderItem={renderItemSos}
                             // style={{height: '88.6%'}}
-                            //ListEmptyComponent={_listEmptyComponent}
+                            ListEmptyComponent={_listEmptyComponent}
                         /> 
                     </View>
                 </SafeAreaView>

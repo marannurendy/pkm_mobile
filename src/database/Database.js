@@ -437,6 +437,15 @@ db.transaction(tx => {
         )`
     )
 
+    tx.executeSql(
+        `create table if not exists Table_Pencairan(
+            kelompok_Id varchar,
+            Nama_Kelompok varchar,
+            Jumlah_Kelompok varchar,
+            syncby varchar
+        )`
+    )
+
 
     // tx.executeSql(
     //     // 'DROP TABLE IF EXISTS GroupList'
