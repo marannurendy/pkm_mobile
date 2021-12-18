@@ -26,7 +26,7 @@ const Perjanjian = ({route}) => {
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
     let [dataNasabah, setDataNasabah] = useState(route.params.data);
-    const [keyword, setKeyword] = useState('');
+    let [postPencairan, setPostPencairan] = useState();
     const [modalVisibleAO, setModalVisibleAO] = useState(false);
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
     const [signatureAO, setSignatureAO] = useState();
@@ -86,7 +86,8 @@ const Perjanjian = ({route}) => {
     }, []);
 
     const submitHandler = () => {
-        navigation.navigate("FinalPencairan", {data: dataNasabah})
+        console.log(postPencairan)
+        navigation.navigate("FinalPencairan", {data: dataNasabah, postPencairan: postPencairan})
     }
 
     function ModalSignAO(text, onOK){
@@ -96,6 +97,7 @@ const Perjanjian = ({route}) => {
         const handleOK = (signature) => {
             setSignatureAO(signature)
             setModalVisibleAO(!modalVisibleAO);
+            setPostPencairan({...postPencairan, "TTD_KC":signature})
         }
 
         const handleEmpty = () => {
@@ -139,6 +141,7 @@ const Perjanjian = ({route}) => {
         const handleOK = (signature) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
+            setPostPencairan({...postPencairan, "TTD_Nasabah":signature})
         }
 
         const handleEmpty = () => {

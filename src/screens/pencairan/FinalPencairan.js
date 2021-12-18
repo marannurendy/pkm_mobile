@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { Card, Divider } from 'react-native-elements';
 import SignatureScreen from "react-native-signature-canvas";
+import { Checkbox } from 'react-native-paper';
 import { Button } from 'react-native-elements';
 import { Camera } from 'expo-camera'
 import moment from 'moment'
@@ -24,9 +25,11 @@ const FinalPencairan = ({route}) => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
-    let [menuShow, setMenuShow] = useState(0);
-    let [menuToggle, setMenuToggle] = useState(false);
     let [dataNasabah, setDataNasabah] = useState(route.params.data);
+    let [postPencairan, setPostPencairan] = useState(route.params.postPencairan);
+    let [buttonCam, SetButtonCam] = useState(false);
+    let [fotoDataPencairan, setFotoDataPencairan] = useState();
+    let [cameraShow, setCameraShow] = useState(false)
     const [keyword, setKeyword] = useState('');
     const [modalVisibleSubKel, setModalVisibleSubKel] = useState(false);
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
@@ -34,11 +37,9 @@ const FinalPencairan = ({route}) => {
     const [signatureSubKel, setSignatureSubKel] = useState();
     const [signatureKetuaKel, setSignatureKetuaKel] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
-    let [buttonCam, SetButtonCam] = useState(false);
-    const [isSelected, setSelection] = useState(false);
-    let [fotoDataPencairan, setFotoDataPencairan] = useState();
+    const [statusMelakukan, setStatusMelakukan] = useState(false)
     const [hasPermission, setHasPermission] = useState(null);
-    let [cameraShow, setCameraShow] = useState(false)
+    
     const key_dataPenjamin = `formUK_dataPenjamin_`;
     moment.locale('id');
     var Tanggal = moment(new Date()).format('DD-MMM-YYYY')
@@ -116,6 +117,7 @@ const FinalPencairan = ({route}) => {
             if (type === "FotoPencairan") {
                 AsyncStorage.setItem(key_dataPenjamin, 'data:image/jpeg;base64,' + data.base64);
                 setFotoDataPencairan(data.uri);
+                setPostPencairan({...postPencairan, "Foto_Pencairan":data.uri})
                 setLoading(false);
                 SetButtonCam(false);
             }
@@ -129,6 +131,7 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureKetuaKel(signature)
             setModalVisibleKetuaKel(!modalVisibleKetuaKel);
+            setPostPencairan({...postPencairan, "TTD_KK":signature})
         }
 
         const handleEmpty = () => {
@@ -172,6 +175,7 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureSubKel(signature)
             setModalVisibleSubKel(!modalVisibleSubKel);
+            setPostPencairan({...postPencairan, "TTD_KSK":signature})
         }
 
         const handleEmpty = () => {
@@ -215,6 +219,7 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
+            setPostPencairan({...postPencairan, "TTD_Nasabah_2":signature})
         }
 
         const handleEmpty = () => {
@@ -249,6 +254,18 @@ const FinalPencairan = ({route}) => {
                 </View>
             </View>            
         )
+    }
+
+    const submitHandlerCheckbox = () => {
+        console.log(postPencairan)
+        let i = !statusMelakukan ? "1" : "0";
+        setStatusMelakukan(!statusMelakukan)
+        setPostPencairan({...postPencairan, "Is_Dicairkan":i})
+        //navigation.navigate("FinalPencairan", {data: dataNasabah, postPencairan: postPencairan})
+    }
+
+    const submitHandler = () => {
+        console.log(postPencairan)
     }
 
     return(
@@ -311,202 +328,105 @@ const FinalPencairan = ({route}) => {
                     </ImageBackground>
                 </View>
             </View>
-                    {cameraShow === true ? (
-                            <View style={{flex: 1, marginTop: 20, borderRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF', marginBottom: 20}}>
-                                {fotoDataPencairan === undefined ? (
-                                <Camera 
-                                ref={camera}
-                                style={styles.preview}
-                                type={Camera.Constants.Type.back}
-                                // flashMode={Camera.Constants.FlashMode.on}
-                                androidCameraPermissionOptions={{
-                                    title: 'Permission to use camera',
-                                    message: 'We need your permission to use your camera',
-                                    buttonPositive: 'Ok',
-                                    buttonNegative: 'Cancel'
-                                }}
-                            >
-                                {loading &&
-                                    <View style={styles.loading}>
-                                        <ActivityIndicator size="large" color="#737A82" />
-                                    </View>
-                                }
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
-                                    <TouchableOpacity 
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: '#EB3C27',
-                                            borderRadius: 5,
-                                            padding: 5,
-                                            paddingHorizontal: 5,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }} 
-                                        onPress={() => setCameraShow(false)
-                                    }>
-                                        <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
-                                    </TouchableOpacity>
-                                </View>
+            {cameraShow === true ? (
+                <View style={{flex: 1, marginTop: 20, borderRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF', marginBottom: 20}}>
+                    {fotoDataPencairan === undefined ? (
+                    <Camera 
+                    ref={camera}
+                    style={styles.preview}
+                    type={Camera.Constants.Type.back}
+                    // flashMode={Camera.Constants.FlashMode.on}
+                    androidCameraPermissionOptions={{
+                        title: 'Permission to use camera',
+                        message: 'We need your permission to use your camera',
+                        buttonPositive: 'Ok',
+                        buttonNegative: 'Cancel'
+                    }}
+                >
+                    {loading &&
+                        <View style={styles.loading}>
+                            <ActivityIndicator size="large" color="#737A82" />
+                        </View>
+                    }
+                    <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
+                        <TouchableOpacity 
+                            style={{
+                                flex: 0,
+                                backgroundColor: '#EB3C27',
+                                borderRadius: 5,
+                                padding: 5,
+                                paddingHorizontal: 5,
+                                alignSelf: 'center',
+                                margin: 20,
+                            }} 
+                            onPress={() => setCameraShow(false)
+                        }>
+                            <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
+                        </TouchableOpacity>
+                    </View>
 
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
-                                    <TouchableOpacity 
-                                        disabled={ buttonCam }
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
-                                            borderRadius: 5,
-                                            padding: 15,
-                                            paddingHorizontal: 20,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }} 
-                                        onPress={() => takePicture("FotoPencairan")
-                                    }>
-                                        <Text style={{ fontSize: 14 }}> Ambil Foto Pencairan </Text>
-                                    </TouchableOpacity>
-                                </View>
-                                </Camera>
-                                ) : (
-                                <View style={{ flex: 1 }}>
-                                    <Image source={{ uri: fotoDataPencairan }} style={styles.previewPhoto}/>
-                                    <View style={{ 
-                                        position: 'absolute', 
-                                        bottom: 35, 
-                                        left: 30, 
-                                        backgroundColor: 'white',
-                                        borderRadius: 10
-                                    }}>
-                                        <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoKartuIdentitas(undefined)} >Batal</Text>
-                                    </View>
-                                    <View style={{ 
-                                        position: 'absolute', 
-                                        bottom: 35, 
-                                        right: 30, 
-                                        backgroundColor: 'white',
-                                        borderRadius: 10
-                                    }}>
-                                        <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
-                                    </View>
-                                    {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
-                                    {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
-                                </View>
-                                )} 
-                            </View>
-                            
-                            ) : (
-                            <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
-                                <ScrollView style={{borderTopRightRadius: 20, borderTopLeftRadius: 20}}>
-                                <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
-                                        <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Pencairan Pembiayaan </Text>
-                                        <Text style={{fontSize: 14}}>Saya yang bertanda Tangan dibawah ini:{"\n"}{"\n"}
-                                        Nama            :  {dataNasabah.Nama_Prospek}{"\n"}
-                                        Dengan ini menyatakan telah menerima pembiayaan
-                                        sebesar: 3.000.000 rupiah, dan bersedia untuk
-                                        bertanggung jawab sampai pelunasan pembiayaan,
-                                        serta mematuhi dan menerima semua keputusan / peraturan
-                                        yang berlaku di PT. Permodalan Nasional Madani.{"\n"}{"\n"}
-
-                                        Hari                    :  {hariIni} {"\n"}
-                                        Tanggal             :  {Tanggal} {"\n"}
-                                        Jam                     :  {Jam} {"\n"}
-                                        Kelompok          :  Gang Kelinci {"\n"}</Text>
-                                        <Card>
-                                            <Card.Divider />
-                                            <View style={{marginBottom: 10}}>
-                                                <Text style={{ fontWeight: 'bold' }}>Tanda Tangan Nasabah(*)</Text>
-                                                <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
-                                                    <Button 
-                                                        icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
-                                                        title= {signatureNasabah === undefined ? "Add Signature" : "Change Signature" }  
-                                                        buttonStyle= {{margin: 10, backgroundColor: signatureNasabah === undefined ? '#2196F3' : '#ff6347'}}
-                                                        onPress={() => setModalVisibleNasabah(!modalVisibleNasabah)}
-                                                    />
-                                                    <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
-                                                </View>
-                                                <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
-                                            </View>
-                                            <View style={{marginBottom: 10}}>
-                                                <Text style={{ fontWeight: 'bold' }}>Ketua Sub Kelompok(*)</Text>
-                                                <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
-                                                    <Button 
-                                                        icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
-                                                        title= {signatureSubKel === undefined ? "Add Signature" : "Change Signature" }  
-                                                        buttonStyle= {{margin: 10, backgroundColor: signatureSubKel === undefined ? '#2196F3' : '#ff6347'}}
-                                                        onPress={() => setModalVisibleSubKel(!modalVisibleSubKel)}
-                                                    />
-                                                    <Card.Image source={{uri: signatureSubKel}} style={{margin: 10}} />
-                                                </View>
-                                                <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
-                                            </View>
-                                            <View style={{marginBottom: 10}}>
-                                                <Text style={{ fontWeight: 'bold' }}>Ketua Kelompok(*)</Text>
-                                                <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
-                                                    <Button 
-                                                        icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
-                                                        title= {signatureKetuaKel === undefined ? "Add Signature" : "Change Signature" }  
-                                                        buttonStyle= {{margin: 10, backgroundColor: signatureKetuaKel === undefined ? '#2196F3' : '#ff6347'}}
-                                                        onPress={() => setModalVisibleKetuaKel(!modalVisibleKetuaKel)}
-                                                    />
-                                                    <Card.Image source={{uri: signatureKetuaKel}} style={{margin: 10}} />
-                                                </View>
-                                                <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
-                                            </View>
-                                        </Card>
-                                    </View>
-
-                                    <View style={{margin: 20}}>
-                                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Pencairan(*)</Text>
-                                        
-                                        <TouchableOpacity onPress={() => setCameraShow(true)}>
-                                            <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
-                                                {fotoDataPencairan === undefined ? (
-                                                    <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
-                                                        <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
-                                                    </View>
-                                                ) : (
-                                                    <Image source={{ uri: fotoDataPencairan }} style={styles.thumbnailPhoto}/>
-                                                )}
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-
-
-                                    <View style={{alignItems: 'center', flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
-                                        <CheckBox
-                                            value={isSelected}
-                                            onValueChange={setSelection}
-                                            style={styles.checkbox}
-                                        />
-                                        <Text style={styles.label}>Sudah Dicairkan</Text>
-                                    </View>
-
-                                    <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
-                                        <Button
-                                            title="SIMPAN"
-                                            onPress={() => navigation.navigate("Siklus", {data:dataNasabah})}
-                                            buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
-                                            titleStyle={{fontSize: 20, fontWeight: 'bold'}}
-                                        />
-                                    </View>
-                                
-                                </ScrollView>
-                            </View>
-                        )}
-
-                        {/* <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
+                    <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                        <TouchableOpacity 
+                            disabled={ buttonCam }
+                            style={{
+                                flex: 0,
+                                backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                                borderRadius: 5,
+                                padding: 15,
+                                paddingHorizontal: 20,
+                                alignSelf: 'center',
+                                margin: 20,
+                            }} 
+                            onPress={() => takePicture("FotoPencairan")
+                        }>
+                            <Text style={{ fontSize: 14 }}> Ambil Foto Pencairan </Text>
+                        </TouchableOpacity>
+                    </View>
+                    </Camera>
+                    ) : (
+                    <View style={{ flex: 1 }}>
+                        <Image source={{ uri: fotoDataPencairan }} style={styles.previewPhoto}/>
+                        <View style={{ 
+                            position: 'absolute', 
+                            bottom: 35, 
+                            left: 30, 
+                            backgroundColor: 'white',
+                            borderRadius: 10
+                        }}>
+                            <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoDataPencairan(undefined)} >Batal</Text>
+                        </View>
+                        <View style={{ 
+                            position: 'absolute', 
+                            bottom: 35, 
+                            right: 30, 
+                            backgroundColor: 'white',
+                            borderRadius: 10
+                        }}>
+                            <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
+                        </View>
+                        {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
+                        {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
+                    </View>
+                    )} 
+                </View>
+                
+                ) : (
+                <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
+                    <ScrollView style={{borderTopRightRadius: 20, borderTopLeftRadius: 20}}>
+                    <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
                             <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Pencairan Pembiayaan </Text>
                             <Text style={{fontSize: 14}}>Saya yang bertanda Tangan dibawah ini:{"\n"}{"\n"}
-                            Nama         :  SRI RAHAYU{"\n"}
+                            Nama            :  {dataNasabah.Nama_Prospek}{"\n"}
                             Dengan ini menyatakan telah menerima pembiayaan
                             sebesar: 3.000.000 rupiah, dan bersedia untuk
                             bertanggung jawab sampai pelunasan pembiayaan,
                             serta mematuhi dan menerima semua keputusan / peraturan
                             yang berlaku di PT. Permodalan Nasional Madani.{"\n"}{"\n"}
 
-                            Hari            :  Senin {"\n"}
-                            Tanggal      :  14-Juni-2021 {"\n"}
-                            Jam            :  13.24 {"\n"}
-                            Kelompok    :  Gang Kelinci {"\n"}</Text>
+                            Hari                    :  {hariIni} {"\n"}
+                            Tanggal             :  {Tanggal} {"\n"}
+                            Jam                     :  {Jam} {"\n"}
+                            Kelompok          :  Gang Kelinci {"\n"}</Text>
                             <Card>
                                 <Card.Divider />
                                 <View style={{marginBottom: 10}}>
@@ -520,6 +440,7 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
+                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Ketua Sub Kelompok(*)</Text>
@@ -532,7 +453,7 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureSubKel}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Ketua Kelompok(*)</Text>
@@ -550,10 +471,27 @@ const FinalPencairan = ({route}) => {
                             </Card>
                         </View>
 
+                        <View style={{margin: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Pencairan(*)</Text>
+                            
+                            <TouchableOpacity onPress={() => setCameraShow(true)}>
+                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 10, borderRadius: 10}}>
+                                    {fotoDataPencairan === undefined ? (
+                                        <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                            <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                        </View>
+                                    ) : (
+                                        <Image source={{ uri: fotoDataPencairan }} style={styles.thumbnailPhoto}/>
+                                    )}
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+
+
                         <View style={{alignItems: 'center', flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
-                            <CheckBox
-                                value={isSelected}
-                                onValueChange={setSelection}
+                            <Checkbox
+                                status={statusMelakukan ? 'checked' : 'unchecked'}
+                                onPress={() => submitHandlerCheckbox()}
                                 style={styles.checkbox}
                             />
                             <Text style={styles.label}>Sudah Dicairkan</Text>
@@ -562,13 +500,15 @@ const FinalPencairan = ({route}) => {
                         <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                             <Button
                                 title="SIMPAN"
-                                onPress={() => navigation.navigate("Siklus")}
+                                onPress={() => submitHandler()}
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                                 titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                             />
-                        </View> */}
-                    {/* </ScrollView>
-            </View> */}
+                        </View>
+                    
+                    </ScrollView>
+                </View>
+            )}
         </View>
     )
 }
