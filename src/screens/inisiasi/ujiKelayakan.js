@@ -62,7 +62,7 @@ const UjiKelayakan = ({route}) => {
             onPress={() => navigation.navigate('FormUjiKelayakan', {id: data.id, groupName: data.groupName, namaNasabah: data.namaNasabah, nomorHandphone: data.nomorHandphone})}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <Text>{JSON.stringify(data)}</Text>
+                {/* <Text>{JSON.stringify(data)}</Text> */}
                 <ListMessage namaNasabah={data.namaNasabah} status={data.status} />
             </View>
         </TouchableOpacity>

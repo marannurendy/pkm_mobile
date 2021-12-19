@@ -400,7 +400,33 @@ const DataDiri = ({route}) => {
             setItemsStatusPerkawinan(arrayMarriage);
             
         })();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (__DEV__) console.log('useEffect valueStatusPerkawinan:', valueStatusPerkawinan);
+
+        if (valueStatusPerkawinan !== '1') {
+            setNamaPenjamin('');
+            setFotoDataPenjamin();
+            setValueStatusHubunganKeluarga('');
+        } else {
+            setNamaPenjamin(namaSuami);
+            setFotoDataPenjamin(fotoKartuIdentitasSuami);
+            setValueStatusHubunganKeluarga('1');
+        }
+    }, [valueStatusPerkawinan]);
+
+    useEffect(() => {
+        if (__DEV__) console.log('useEffect statusSuami:', statusSuami);
+
+        if (statusSuami) {
+            setNamaPenjamin('');
+            setFotoDataPenjamin();
+        } else {
+            setNamaPenjamin(namaSuami);
+            setFotoDataPenjamin(fotoKartuIdentitasSuami);
+        }
+    }, [statusSuami]);
 
     if (hasPermission === null) {
         return <View />
@@ -1482,13 +1508,6 @@ const DataDiri = ({route}) => {
                                     selectedValue={valueStatusPerkawinan}
                                     style={{ height: 50, width: withTextInput }}
                                     onValueChange={(itemValue, itemIndex) => {
-                                        if (["2", "3", "4"].indexOf(itemValue)) {
-                                            setNamaPenjamin(namaSuami);
-                                            setFotoDataPenjamin(fotoKartuIdentitasSuami);
-                                            setValueStatusHubunganKeluarga('');
-                                            setStatusSuami(true);
-                                        }
-
                                         setValueStatusPerkawinan(itemValue);
                                     }}
                                 >
@@ -1869,15 +1888,15 @@ const DataDiri = ({route}) => {
                                 <Checkbox
                                     status={statusSuami ? 'checked' : 'unchecked'}
                                     onPress={() => {
-                                        if (statusSuami) {
-                                            setNamaPenjamin(namaSuami);
-                                            setFotoDataPenjamin(fotoKartuIdentitasSuami);
-                                            setValueStatusHubunganKeluarga('1');
-                                        } else {
-                                            setNamaPenjamin('');
-                                            setFotoDataPenjamin();
-                                            setValueStatusHubunganKeluarga('')
-                                        }
+                                        // if (statusSuami) {
+                                        //     setNamaPenjamin(namaSuami);
+                                        //     setFotoDataPenjamin(fotoKartuIdentitasSuami);
+                                        //     setValueStatusHubunganKeluarga('1');
+                                        // } else {
+                                        //     setNamaPenjamin('');
+                                        //     setFotoDataPenjamin();
+                                        //     setValueStatusHubunganKeluarga('')
+                                        // }
 
                                         setStatusSuami(!statusSuami);
                                     }}
@@ -1901,7 +1920,7 @@ const DataDiri = ({route}) => {
                         <View style={{marginHorizontal: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Hubungan Keluarga (*)</Text>
                             <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                {valueStatusHubunganKeluarga === '1' ? (
+                                {valueStatusHubunganKeluarga === '1' && !statusSuami ? (
                                     <Text style={{ padding: 16 }}>SUAMI</Text>
                                 ) : (
                                     <Picker
@@ -1912,7 +1931,7 @@ const DataDiri = ({route}) => {
                                         }}
                                     >
                                         <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                        {itemsStatusHubunganKeluarga.filter((x) => statusSuami && x.value !== '1').map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                        {itemsStatusHubunganKeluarga.filter((x) => x.value !== '1').map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                                     </Picker>
                                 )}
                             </View>

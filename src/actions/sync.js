@@ -1,8 +1,9 @@
 import { ApiSync, ApiSyncInisiasi, Get_Date } from "../../dataconfig";
-import { ToastAndroid } from 'react-native';
+import { ToastAndroid, Alert } from 'react-native';
 import db from '../database/Database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment'
+import moment from 'moment';
+import { fetchWithTimeout } from '../utils/Functions'
 
 export const getSyncData = (params) => new Promise((resolve) => {
     if (__DEV__) console.log('ACTIONS GET SYNC DATA PARAMS', params);
@@ -1063,19 +1064,38 @@ export const getSyncData = (params) => new Promise((resolve) => {
             });
             if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE BODY', body);
 
-            const responseGetSosialisasiMobile = await fetch(postGetSosialisasiMobile, {
-                method: 'POST',
-                headers: {
-                    Accept:
-                        'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                body: body
-            });
+            // const responseGetSosialisasiMobile = await fetch(postGetSosialisasiMobile, {
+            //     method: 'POST',
+            //     headers: {
+            //         Accept:
+            //             'application/json',
+            //             'Content-Type': 'application/json'
+            //         },
+            //     body: body
+            // });
 
-            const jsonGetSosialisasiMobile = await responseGetSosialisasiMobile.json(responseGetSosialisasiMobile);
-            await insertGetSosialisasiMobile(jsonGetSosialisasiMobile);
-            if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE DONE', jsonGetSosialisasiMobile);
+            try {
+                const responseGetSosialisasiMobile = await fetchWithTimeout(postGetSosialisasiMobile, {
+                    timeout: 180000, // 3 menit
+                    method: 'POST',
+                    headers: {
+                        Accept:
+                            'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                    body: body
+                });
+    
+                const jsonGetSosialisasiMobile = await responseGetSosialisasiMobile.json(responseGetSosialisasiMobile);
+                await insertGetSosialisasiMobile(jsonGetSosialisasiMobile);
+                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE DONE', jsonGetSosialisasiMobile);
+            } catch (error) {
+                if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
+                if (error.name === 'AbortError') {
+                    Alert.alert('Error', 'Request timeout');
+                    return 'SYNC FAILED TIMEOUT';
+                }
+            }
         }
 
         const getDate = await fetch(ApiSync+Get_Date);

@@ -8,6 +8,7 @@ import { styles } from './styles';
 import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
 import { Picker } from '@react-native-picker/picker';
+import { inputVal } from '../../../utils/Functions';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -348,6 +349,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         </View>
     )
 
+    
+
     const renderFormJumlahHariUsahPerbulan = () => (
         <View style={styles.MT8}>
             <Text>Jumlah Usaha Hari Per Bulan</Text>
@@ -355,8 +358,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <View style={styles.F1}>
                     <TextInput 
                         value={valueJumlahHariUsahPerbulan} 
-                        onChangeText={(text) => setValueJumlahHariUsahPerbulan(text)}
-                        placeholder='30'
+                        onChangeText={(text) => inputVal(text, 31, setValueJumlahHariUsahPerbulan)}
+                        placeholder='31'
                         style={styles.F1}
                         keyboardType="number-pad"
                     />
@@ -507,8 +510,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <View style={styles.F1}>
                     <TextInput 
                         value={valueJumlahHariUsahPerbulanSuami} 
-                        onChangeText={(text) => setValueJumlahHariUsahPerbulanSuami(text)}
-                        placeholder='30'
+                        onChangeText={(text) => inputVal(text, 31, setValueJumlahHariUsahPerbulanSuami)}
+                        placeholder='31'
                         style={styles.F1}
                         keyboardType="number-pad"
                     />
