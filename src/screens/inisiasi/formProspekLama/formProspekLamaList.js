@@ -48,12 +48,14 @@ const InisiasiFormProspekLamaList = ({ route }) => {
             {
                 id: 1,
                 name: 'Aminah Rasmaini',
-                phone: '081399065432'
+                phone: '081399065432',
+                source: 'UK'
             },
             {
                 id: 2,
                 name: 'Bellanissa Zainuddin',
-                phone: '081809659932'
+                phone: '081809659932',
+                source: 'S1'
             }
         ];
 
@@ -94,7 +96,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
                     onChangeText={(text) => setKeyword(text)}
                     value={keyword}
                     returnKeyType="done"
-                    onSubmitEditing={() => getData()}
+                    onSubmitEditing={() => null}
                 />
             </View>
             <View style={[styles.FDRow, { alignItems: 'center' }]}>
@@ -119,7 +121,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
                     style={[styles.FDRow, styles.P8]}
                 >
                     <Text style={styles.F1}>{x.name}</Text>
-                    <Text style={{ textAlign:'right', color: 'gray' }}>{x.phone}</Text>
+                    <Text style={{ textAlign:'right', color: 'gray' }}>{x.phone} - {x.source}</Text>
                 </View>
             </TouchableOpacity>
             {i !== data.length - 1 && renderSpace()}

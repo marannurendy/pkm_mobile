@@ -137,7 +137,11 @@ const InisiasiFormProspekLama = ({ route }) => {
             <Text style={{ width: 130 }}>Pembiayaan Diajukan</Text>
             <Text style={styles.MH8}>:</Text>
             <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
-                <Text>4.000.000</Text>
+                <TextInput 
+                    onChangeText={(text) => { }}
+                    keyboardType="number-pad" 
+                    style={{ fontSize: 15, color: "#545454" }}
+                />
             </View>
         </View>
     )
@@ -223,10 +227,21 @@ const InisiasiFormProspekLama = ({ route }) => {
     )
 
     const renderFormKeterangan = () => (
-        <View style={styles.MT16}>
+        <View style={styles.MV16}>
             <Text>Keterangan :</Text>
-            <View style={[styles.MT8, styles.P16, { borderWidth: 1, borderRadius: 6, height: 100, width: 250 }]}>
-                <Text>Tidak</Text>
+            <View style={[styles.MT8]}>
+                <TextInput
+                    multiline={true}
+                    numberOfLines={4}
+                    style={{
+                        borderWidth:1,
+                        borderRadius:5,
+                        height: 100, 
+                        width: 250,
+                        padding: 8
+                    }}
+                    textAlignVertical="top"
+                />
             </View>
         </View>
     )
@@ -264,7 +279,7 @@ const InisiasiFormProspekLama = ({ route }) => {
     )
 
     const renderFormAggrement = () => (
-        <Text>Dengan ini kelompok kami MENYETUJUI nasabah tersebut untuk diajukan menerima pembiayaan Mekaar Tahap Lanjutan, dan kami bersedia bertanggung jawab Bersama apabila nasabah tersebut diatas tidak memenuhi kewajiban.</Text>
+        <Text style={styles.MV16}>Dengan ini kelompok kami MENYETUJUI nasabah tersebut untuk diajukan menerima pembiayaan Mekaar Tahap Lanjutan, dan kami bersedia bertanggung jawab Bersama apabila nasabah tersebut diatas tidak memenuhi kewajiban.</Text>
     )
 
     const renderFormDate = () => (
@@ -433,7 +448,7 @@ const InisiasiFormProspekLama = ({ route }) => {
     const renderBody = () => (
         <View style={[styles.bodyContainer, styles.P16]}>
             <ScrollView>
-                <Text style={styles.MB16}>Dengan data nasabah sebagai berikut:</Text>
+                <Text style={[styles.MB16]}>Dengan data nasabah sebagai berikut:</Text>
                 {renderInformasiNama()}
                 {renderInformasiIdentitas()}
                 {renderInformasiKelompok()}
