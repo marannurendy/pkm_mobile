@@ -23,7 +23,7 @@ var uniqueNumber = (new Date().getTime()).toString(36);
 
 const DataDiri = ({route}) => {
 
-    const { groupName, namaNasabah, nomorHandphone, screenState } = route.params
+    const { id, groupName, namaNasabah, nomorHandphone, screenState } = route.params
 
     const navigation = useNavigation()
     const phoneRef = useRef(undefined)
@@ -123,8 +123,20 @@ const DataDiri = ({route}) => {
 
     
     /* START DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
-    const dataPilihan = [
+    const dataPilihanAnak = [
         {label: '0', value: '0'},
+        {label: '1', value: '1'},
+        {label: '2', value: '2'},
+        {label: '3', value: '3'},
+        {label: '4', value: '4'},
+        {label: '5', value: '5'},
+        {label: '6', value: '6'},
+        {label: '7', value: '7'},
+        {label: '8', value: '8'},
+        {label: '9', value: '9'},
+        {label: '10', value: '10'}
+    ];
+    const dataPilihanTanggungan = [
         {label: '1', value: '1'},
         {label: '2', value: '2'},
         {label: '3', value: '3'},
@@ -144,10 +156,10 @@ const DataDiri = ({route}) => {
     const [itemsStatusPerkawinan, setItemsStatusPerkawinan] = useState([]);
     const [openJumlahAnak, setOpenJumlahAnak] = useState(false);
     const [valueJumlahAnak, setValueJumlahAnak] = useState('0');
-    const [itemsJumlahAnak, setItemsJumlahAnak] = useState(dataPilihan);
+    const [itemsJumlahAnak, setItemsJumlahAnak] = useState(dataPilihanAnak);
     const [openJumlahTanggungan, setOpenJumlahTanggungan] = useState(false);
     const [valueJumlahTanggungan, setValueJumlahTanggungan] = useState(null);
-    const [itemsJumlahTanggungan, setItemsJumlahTanggungan] = useState(dataPilihan);
+    const [itemsJumlahTanggungan, setItemsJumlahTanggungan] = useState(dataPilihanTanggungan);
     const [openStatusRumahTinggal, setOpenStatusRumahTinggal] = useState(false);
     const [valueStatusRumahTinggal, setValueStatusRumahTinggal] = useState(null);
     const [itemsStatusRumahTinggal, setItemsStatusRumahTinggal] = useState([
@@ -179,7 +191,7 @@ const DataDiri = ({route}) => {
     useEffect(() => {
         (async () => {
             /* START DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
-            let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = '` + namaNasabah + `';`
+            let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '` + id + `';`
             const getUKDataDiri = () => {
                 db.transaction(
                     tx => {
@@ -246,7 +258,7 @@ const DataDiri = ({route}) => {
                             }
                             return true;
                         }, function(error) {
-                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error 3:', error.message);
+                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
                         })
                     }
                 )
@@ -450,7 +462,7 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataPenjamin namaPenjamin:', namaPenjamin);
         if (__DEV__) console.log('doSubmitDataPenjamin fotoDataPenjamin:', fotoDataPenjamin);
 
-        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -459,9 +471,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin) values ("' + namaNasabah + '","' + namaPenjamin + '","' + fotoKartuIdentitasSuami + '","' + key_dataPenjamin + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, idSosialisasiDatabase) values ("' + namaNasabah + '","' + namaPenjamin + '","' + fotoKartuIdentitasSuami + '","' + key_dataPenjamin + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET status_hubungan_keluarga = "' + valueStatusHubunganKeluarga + '", nama_penjamin = "' + namaPenjamin + '", foto_ktp_penjamin = "' + key_dataPenjamin + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET status_hubungan_keluarga = "' + valueStatusHubunganKeluarga + '", nama_penjamin = "' + namaPenjamin + '", foto_ktp_penjamin = "' + key_dataPenjamin + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataPenjamin db.transaction insert/update query:', query);
@@ -505,7 +517,7 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataSuami fotoKartuIdentitasSuami:', fotoKartuIdentitasSuami);
         if (__DEV__) console.log('doSubmitDataSuami statusSuami:', statusSuami);
 
-        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -514,9 +526,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota) values ("' + namaNasabah + '","' + namaSuami + '","' + key_dataSuami + '","' + statusSuami + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, idSosialisasiDatabase) values ("' + namaNasabah + '","' + namaSuami + '","' + key_dataSuami + '","' + statusSuami + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET nama_suami = "' + namaSuami + '", usaha_pekerjaan_suami = "' + usahaPekerjaanSuami + '", jumlah_tenaga_kerja_suami = "' + jumlahTenagaKerjaSuami + '", foto_ktp_suami = "' + key_dataSuami + '", suami_diluar_kota = "' + statusSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET nama_suami = "' + namaSuami + '", usaha_pekerjaan_suami = "' + usahaPekerjaanSuami + '", jumlah_tenaga_kerja_suami = "' + jumlahTenagaKerjaSuami + '", foto_ktp_suami = "' + key_dataSuami + '", suami_diluar_kota = "' + statusSuami + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataSuami db.transaction insert/update query:', query);
@@ -564,7 +576,7 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataDiriPribadi lamaTinggal:', lamaTinggal);
         if (__DEV__) console.log('doSubmitDataDiriPribadi agama:', valueReligion);
 
-        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -573,9 +585,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, agama) values ("' + namaNasabah + '","' + namaAyah + '","' + namaGadisIbu + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '","' + valueReligion + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, agama, idSosialisasiDatabase) values ("' + namaNasabah + '","' + namaAyah + '","' + namaGadisIbu + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '","' + valueReligion + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", nama_gadis_ibu = "' + namaGadisIbu + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '", agama = "' + valueReligion + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", nama_gadis_ibu = "' + namaGadisIbu + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '", agama = "' + valueReligion + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update query:', query);
@@ -616,7 +628,7 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitKK fotoKartuKeluarga:', fotoKartuKeluarga);
         if (__DEV__) console.log('doSubmitKK nomorKartuKeluarga:', nomorKartuKeluarga);
 
-        const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -625,9 +637,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, foto_kk, no_kk) values ("' + namaNasabah + '","' + key_kartuKeluarga + '","' + nomorKartuKeluarga + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, foto_kk, no_kk, idSosialisasiDatabase) values ("' + namaNasabah + '","' + key_kartuKeluarga + '","' + nomorKartuKeluarga + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET foto_kk = "' + key_kartuKeluarga + '", no_kk = "' + nomorKartuKeluarga + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET foto_kk = "' + key_kartuKeluarga + '", no_kk = "' + nomorKartuKeluarga + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitKK db.transaction insert/update query:', query);
@@ -694,7 +706,7 @@ const DataDiri = ({route}) => {
             const latitude = location?.coords?.latitude ?? '0';
             const status_agreement = statusAgreement ? '1' : '0';
 
-            const find = 'SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = "'+ namaNasabah +'"';
+            const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
             db.transaction(
                 tx => {
                     tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -703,9 +715,9 @@ const DataDiri = ({route}) => {
     
                         let query = '';
                         if (dataLengthFind === 0) {
-                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca, is_alamat_domisili_sesuai_ktp) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + longitude + '","' + latitude + '","' + status_agreement + '","' + addressDomisiliLikeIdentitas + '")';
+                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca, is_alamat_domisili_sesuai_ktp, idSosialisasiDatabase) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + longitude + '","' + latitude + '","' + status_agreement + '","' + addressDomisiliLikeIdentitas + '","' + id + '")';
                         } else {
-                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + longitude + '", latitude = "' + latitude + '", is_pernyataan_dibaca = "' + status_agreement + '", is_alamat_domisili_sesuai_ktp = "' + addressDomisiliLikeIdentitas + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + longitude + '", latitude = "' + latitude + '", is_pernyataan_dibaca = "' + status_agreement + '", is_alamat_domisili_sesuai_ktp = "' + addressDomisiliLikeIdentitas + '" WHERE idSosialisasiDatabase = "' + id + '"';
                         }
     
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
@@ -797,7 +809,7 @@ const DataDiri = ({route}) => {
         await doSubmitDataSuami('submit');
         await doSubmitDataPenjamin('submit');
 
-        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -812,7 +824,7 @@ const DataDiri = ({route}) => {
                         return;
                     }
 
-                    query = 'INSERT INTO Table_UK_Master (namaNasabah, status) values ("' + namaNasabah + '", "1")';
+                    query = 'INSERT INTO Table_UK_Master (namaNasabah, status, idSosialisasiDatabase) values ("' + namaNasabah + '", "1", "' + id + '")';
 
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
@@ -926,6 +938,7 @@ const DataDiri = ({route}) => {
                     <Text style={{marginHorizontal: 35, fontSize: 20, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{groupName}</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{namaNasabah}</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{currentDate}</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{id}</Text>
                 </ImageBackground>
             </View>
 

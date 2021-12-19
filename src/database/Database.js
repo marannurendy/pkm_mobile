@@ -142,6 +142,7 @@ db.transaction(tx => {
 
     tx.executeSql(
         `create table if not exists Sosialisasi_Database(
+            id varchar,
             tanggalInput varchar, 
             sumberId varchar, 
             namaCalonNasabah varchar, 
@@ -152,7 +153,8 @@ db.transaction(tx => {
             type varchar,
             verifikasiTanggal varchar,
             verifikasiStatus varchar,
-            verifikasiReason varchar);`
+            verifikasiReason varchar,
+            id_prospek varchar);`
     )
 
     tx.executeSql(
@@ -173,7 +175,8 @@ db.transaction(tx => {
     tx.executeSql(
         `create table if not exists Table_UK_Master(
             namaNasabah varchar,
-            status varchar
+            status varchar,
+            idSosialisasiDatabase varchar
         );`
     )
     
@@ -223,7 +226,8 @@ db.transaction(tx => {
             id_prospek varchar,
             is_pernyataan_dibaca varchar,
             lokasi_sosialisasi varchar,
-            is_alamat_domisili_sesuai_ktp varchar
+            is_alamat_domisili_sesuai_ktp varchar,
+            idSosialisasiDatabase varchar
         );`
     )
 
@@ -244,7 +248,8 @@ db.transaction(tx => {
             nama_Bank varchar,
             no_Rekening varchar,
             pemilik_Rekening varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         );`
     )
 
@@ -259,7 +264,8 @@ db.transaction(tx => {
             lantai varchar,
             sanitasi_Akses_AirBersih varchar,
             sanitasi_KamarMandi varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         );`
     )
 
@@ -270,7 +276,8 @@ db.transaction(tx => {
             sektor_Ekonomi varchar,
             sub_Sektor_Ekonomi varchar,
             jenis_Usaha varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         );`
     )
 
@@ -297,7 +304,8 @@ db.transaction(tx => {
             pendapatanSuami_jumlah_Hari_Usaha_Perbulan varchar,
             pendapatanSuami_pendapatan_Bersih_Perbulan varchar,
             pendapatanSuami_pendapatan_Bersih_Perminggu varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         )`
     )
 
@@ -318,7 +326,8 @@ db.transaction(tx => {
             nama_tanda_Tangan_SuamiPenjamin varchar,
             nama_tanda_Tangan_Ketua_SubKelompok varchar,
             nama_tanda_Tangan_Ketua_Kelompok varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         )`
     )
 

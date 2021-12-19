@@ -21,7 +21,7 @@ const dataPembiayaanLembagaLain = [
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKTingkatPendapatan = ({ route }) => {
-    const { groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valuePedapatanKotorPerhari, setValuePedapatanKotorPerhari] = useState('0');
@@ -59,7 +59,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     }
 
     const getUKDataDiri = () => {
-        let query = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = '` + namaNasabah + `';`
+        let query = `SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -81,7 +81,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     }
 
     const getUKPendapatanNasabah = () => {
-        let query = `SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '` + namaNasabah + `';`
+        let query = `SELECT * FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -162,7 +162,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         const pendapatanBersihPerBulanSuami = (parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1) || 0;
         const pendapatanBersihPerMingguSuami = (((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0;
 
-        const find = 'SELECT * FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -171,9 +171,9 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu) values ("' + namaNasabah + '","' + valuePedapatanKotorPerhari + '","' + valuePengeluaranKeluargaPerhari + '","' + pendapatanBersihPerHari + '","' + valueJumlahHariUsahPerbulan + '","' + pendapatanBersihPerBulan + '","' + pendapatanBersihPerMinggu + '","' + valuePembiayaanDariLembaga + '","' + valuePembiayaanLembagaLain + '","' + valuePembiayaanLembagaLainFreetext + '","' + valueJumlahAngsuran + '","' + valuePedapatanKotorPerhariSuami + '","' + valuePengeluaranKeluargaPerhariSuami + '","' + pendapatanBersihPerHariSuami + '","' + valueJumlahHariUsahPerbulanSuami + '","' + pendapatanBersihPerBulanSuami + '","' + pendapatanBersihPerMingguSuami + '")';
+                        query = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu, idSosialisasiDatabase) values ("' + namaNasabah + '","' + valuePedapatanKotorPerhari + '","' + valuePengeluaranKeluargaPerhari + '","' + pendapatanBersihPerHari + '","' + valueJumlahHariUsahPerbulan + '","' + pendapatanBersihPerBulan + '","' + pendapatanBersihPerMinggu + '","' + valuePembiayaanDariLembaga + '","' + valuePembiayaanLembagaLain + '","' + valuePembiayaanLembagaLainFreetext + '","' + valueJumlahAngsuran + '","' + valuePedapatanKotorPerhariSuami + '","' + valuePengeluaranKeluargaPerhariSuami + '","' + pendapatanBersihPerHariSuami + '","' + valueJumlahHariUsahPerbulanSuami + '","' + pendapatanBersihPerBulanSuami + '","' + pendapatanBersihPerMingguSuami + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_PendapatanNasabah SET pendapatan_Kotor_perhari = "' + valuePedapatanKotorPerhari + '", pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhari + '", pendapatan_Bersih_Perhari = "' + pendapatanBersihPerHari + '", jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulan + '", pendapatan_Bersih_Perbulan = "' + pendapatanBersihPerBulan + '", pendapatan_Bersih_Perminggu = "' + pendapatanBersihPerMinggu + '", pembiayaan_Dari_Lembaga = "' + valuePembiayaanDariLembaga + '", Pembiayaan_Dari_LembagaLain = "' + valuePembiayaanLembagaLain + '", Pembiayaan_Dari_LembagaLainFreetext = "' + valuePembiayaanLembagaLainFreetext + '", jumlah_Angsuran = "' + valueJumlahAngsuran + '", pendapatanSuami_Kotor_Perhari = "' + valuePedapatanKotorPerhariSuami + '", pendapatanSuami_Pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhariSuami + '", pendapatanSuami_Pendapatan_Bersih_Perhari = "' + pendapatanBersihPerHariSuami + '", pendapatanSuami_jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perbulan = "' + pendapatanBersihPerBulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perminggu = "' + pendapatanBersihPerMingguSuami + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_PendapatanNasabah SET pendapatan_Kotor_perhari = "' + valuePedapatanKotorPerhari + '", pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhari + '", pendapatan_Bersih_Perhari = "' + pendapatanBersihPerHari + '", jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulan + '", pendapatan_Bersih_Perbulan = "' + pendapatanBersihPerBulan + '", pendapatan_Bersih_Perminggu = "' + pendapatanBersihPerMinggu + '", pembiayaan_Dari_Lembaga = "' + valuePembiayaanDariLembaga + '", Pembiayaan_Dari_LembagaLain = "' + valuePembiayaanLembagaLain + '", Pembiayaan_Dari_LembagaLainFreetext = "' + valuePembiayaanLembagaLainFreetext + '", jumlah_Angsuran = "' + valueJumlahAngsuran + '", pendapatanSuami_Kotor_Perhari = "' + valuePedapatanKotorPerhariSuami + '", pendapatanSuami_Pengeluaran_Keluarga_Perhari = "' + valuePengeluaranKeluargaPerhariSuami + '", pendapatanSuami_Pendapatan_Bersih_Perhari = "' + pendapatanBersihPerHariSuami + '", pendapatanSuami_jumlah_Hari_Usaha_Perbulan = "' + valueJumlahHariUsahPerbulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perbulan = "' + pendapatanBersihPerBulanSuami + '", pendapatanSuami_pendapatan_Bersih_Perminggu = "' + pendapatanBersihPerMingguSuami + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -218,7 +218,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
 
         await doSubmitDraft('submit');
 
-        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -232,7 +232,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     }
 
                     if (screenState === 4) {
-                        let query = 'UPDATE Table_UK_Master SET status = "5" WHERE namaNasabah = "' + namaNasabah + '"';
+                        let query = 'UPDATE Table_UK_Master SET status = "5" WHERE idSosialisasiDatabase = "' + id + '"';
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
                         db.transaction(
