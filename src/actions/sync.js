@@ -871,11 +871,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     }
 
                     if (i != uk_client_data.length - 1) {
-                        if (uk_client_data[i].PostStatus === 3) {
-                            query = query + ",";
-                            queryUKMaster = queryUKMaster + ",";
-                        }
-                        
+                        query = query + ",";
+                        queryUKMaster = queryUKMaster + ",";
                         queryUKDataDiri = queryUKDataDiri + ",";
                         queryUKPembiayaan = queryUKPembiayaan + ",";
                         queryUKKondisiRumah = queryUKKondisiRumah + ",";
