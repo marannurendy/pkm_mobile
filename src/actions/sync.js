@@ -498,7 +498,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         query = query + "('"
                         + moment(uk_client_data[i].Tanggal_Input).format('YYYY-MM-DD')
                         + "','"
-                        + ""
+                        + uk_client_data[i].ID_Sumber
                         + "','"
                         + uk_client_data[i].Nama_Lengkap
                         + "','"

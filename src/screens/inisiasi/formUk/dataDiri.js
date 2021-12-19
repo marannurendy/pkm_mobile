@@ -1449,7 +1449,7 @@ const DataDiri = ({route}) => {
                                     <FontAwesome5 name={'id-badge'} size={18} />
                                 </View>
                             </TouchableOpacity>
-                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum 17-57 tahun.</Text>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum 17-63 tahun.</Text>
                             {showCalendar && (
                                 <DateTimePicker
                                     value={date}

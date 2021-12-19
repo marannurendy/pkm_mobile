@@ -8,6 +8,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { Button } from 'react-native-elements'
 import db from '../../database/Database';
 import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync'
+import { fetchWithTimeout } from '../../utils/Functions'
 
 const FormUjiKelayakan = ({route}) => {
     const { groupName, namaNasabah, nomorHandphone } = route.params;
@@ -80,7 +81,7 @@ const FormUjiKelayakan = ({route}) => {
 
         setSubmitted(true);
 
-        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.nama_lengkap = b.nama_lengkap LEFT JOIN Table_UK_KondisiRumah c ON a.nama_lengkap = c.nama_lengkap LEFT JOIN Table_UK_SektorEkonomi d ON a.nama_lengkap = d.nama_lengkap LEFT JOIN Table_UK_PendapatanNasabah e ON a.nama_lengkap = e.nama_lengkap LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.nama_lengkap = f.nama_lengkap WHERE a.nama_lengkap = "' + namaNasabah + '"';
+        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.nama_lengkap = b.nama_lengkap LEFT JOIN Table_UK_KondisiRumah c ON a.nama_lengkap = c.nama_lengkap LEFT JOIN Table_UK_SektorEkonomi d ON a.nama_lengkap = d.nama_lengkap LEFT JOIN Table_UK_PendapatanNasabah e ON a.nama_lengkap = e.nama_lengkap LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.nama_lengkap = f.nama_lengkap LEFT JOIN Sosialisasi_Database g ON a.nama_lengkap = g.namaCalonNasabah WHERE a.nama_lengkap = "' + namaNasabah + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
@@ -128,6 +129,7 @@ const FormUjiKelayakan = ({route}) => {
                         if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
 
                         const body = {
+                            "Sumber": data.sumberId,
                             "Alamat": data.alamat_Identitas,
                             "AlamatDomisili": data.alamat_Domisili,
                             "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
@@ -137,7 +139,7 @@ const FormUjiKelayakan = ({route}) => {
                             "CreatedNIP": nip,
                             "Dinding": data.dinding,
                             "FotoKK": fotoKartuKeluarga.split(',')[1],
-                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1],
+                            "FotoKTPPenjamin": fotoDataPenjamin === null || fotoDataPenjamin === 'null' ? '' : fotoDataPenjamin.split(',')[1],
                             "FotoKTPSuami": fotoDataSuami === null || fotoDataSuami === 'null' ? '' : fotoDataSuami.split(',')[1],
                             "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
                             "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
@@ -226,19 +228,20 @@ const FormUjiKelayakan = ({route}) => {
                             "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin
                         }
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
-
-                        fetch(ApiSyncPostInisiasi + 'post_prospek_uk', {
-                            method: 'POST',
-                            headers: {
-                                Accept:
-                                    'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                            body: JSON.stringify(body)
-                        })
-                        .then((response) => response.json())
-                        .then((responseJSON) => {
-                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response', responseJSON);
+                        
+                        try {
+                            const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
+                                timeout: 180000, // 3 menit
+                                method: 'POST',
+                                headers: {
+                                    Accept:
+                                        'application/json',
+                                        'Content-Type': 'application/json'
+                                    },
+                                body: JSON.stringify(body)
+                            });
+                            const responseJSON = await response.json();
+                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
 
                             if (responseJSON.responseCode === 200) {
                                 const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
@@ -376,18 +379,22 @@ const FormUjiKelayakan = ({route}) => {
                                         })
                                     }
                                 );
-
                                 return true;
                             }
 
                             Alert.alert('Error', responseJSON.responseDescription);
                             setSubmitted(false);
-                        })
-                        .catch((error) => {
-                            console.error('$post /post_inisiasi/post_prospek_uk response', error);
-                            ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
+
+                        } catch (error) {
+                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
+                            if (error.name === 'AbortError') {
+                                Alert.alert('Error', 'Request timeout');
+                            } else {
+                                Alert.alert('Error', error.message || 'Something went wrong');
+                            }
+
                             setSubmitted(false);
-                        });
+                        }
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error 3:', error.message);
