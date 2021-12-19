@@ -110,16 +110,15 @@ const InisiasiFormProspekLama = ({ route }) => {
 
     const renderInformasiKelompok = () => (
         <View style={[styles.FDRow, styles.MV4]}>
-            <Text style={{ width: 130 }}>Nama</Text>
+            <Text style={{ width: 130 }}>Kelompok</Text>
             <Text style={styles.MH8}>:</Text>
             <Text style={styles.F1}>Gang Kelinci</Text>
         </View>
     )
 
     const renderFormPembiayaanTahap = () => (
-        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
-            <Text style={{ width: 130 }}>Pembiayaan Tahap</Text>
-            <Text style={styles.MH8}>:</Text>
+        <View style={[styles.MV4]}>
+            <Text style={styles.MB8}>Pembiayaan Tahap</Text>
             <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valuePembiayaanDiajukan}
@@ -133,9 +132,8 @@ const InisiasiFormProspekLama = ({ route }) => {
     )
 
     const renderFormPembiayaanDiajukan = () => (
-        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
-            <Text style={{ width: 130 }}>Pembiayaan Diajukan</Text>
-            <Text style={styles.MH8}>:</Text>
+        <View style={[styles.MV4]}>
+            <Text style={styles.MB8}>Pembiayaan Diajukan</Text>
             <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <TextInput 
                     onChangeText={(text) => { }}
@@ -147,10 +145,9 @@ const InisiasiFormProspekLama = ({ route }) => {
     )
     
     const renderFormJangkaWaktuPembiayaanDiajukan = () => (
-        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
-            <Text style={{ width: 130 }}>Jangka Waktu Pembiayaan Diajukan</Text>
-            <Text style={styles.MH8}>:</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+        <View style={[styles.MV4]}>
+            <Text style={styles.MB8}>Jangka Waktu Pembiayaan Diajukan</Text>
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valueJangkaWaktuPembiayaanDiajukan}
                     onValueChange={(itemValue, itemIndex) => setValueJangkaWaktuPembiayaanDiajukan(itemValue)}
@@ -163,10 +160,9 @@ const InisiasiFormProspekLama = ({ route }) => {
     )
 
     const renderFormTempatTinggalNasabah = () => (
-        <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
-            <Text style={{ width: 130 }}>Tempat Tinggal Nasabah</Text>
-            <Text style={styles.MH8}>:</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+        <View style={[styles.MV4]}>
+            <Text style={styles.MB8}>Tempat Tinggal Nasbah</Text>
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valueTempatTinggalNasabah}
                     onValueChange={(itemValue, itemIndex) => setValueTempatTinggalNasabah(itemValue)}
@@ -182,7 +178,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.FDRow, styles.MV4, { alignItems: 'center' }]}>
             <Text style={{ width: 130 }}>Perubahan Status Pernikahan</Text>
             <Text style={styles.MH8}>:</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valuePerubahanStatusPernikahan}
                     onValueChange={(itemValue, itemIndex) => setValuePerubahanStatusPernikahan(itemValue)}
@@ -198,7 +194,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.FDRow, styles.MV4, styles.MT16, { alignItems: 'center' }]}>
             <Text style={{ width: 130 }}>Perubahan Status Tanggungan</Text>
             <Text style={styles.MH8}>:</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valuePerubahanStatusTanggungan}
                     onValueChange={(itemValue, itemIndex) => setValuePerubahanStatusTanggungan(itemValue)}
@@ -214,7 +210,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.FDRow, styles.MV4, styles.MT16, { alignItems: 'center' }]}>
             <Text style={{ width: 130 }}>Kehadiran PKM</Text>
             <Text style={styles.MH8}>:</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valueKehadiranPKM}
                     onValueChange={(itemValue, itemIndex) => setValueKehadiranPKM(itemValue)}
@@ -236,8 +232,7 @@ const InisiasiFormProspekLama = ({ route }) => {
                     style={{
                         borderWidth:1,
                         borderRadius:5,
-                        height: 100, 
-                        width: 250,
+                        height: 100,
                         padding: 8
                     }}
                     textAlignVertical="top"
@@ -250,7 +245,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.FDRow, styles.MV4, styles.MT16, { alignItems: 'center' }]}>
             <Text style={{ width: 130 }}>Pembayaran</Text>
             <Text style={styles.MH8}>:</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valuePembayaran}
                     onValueChange={(itemValue, itemIndex) => setValuePembayaran(itemValue)}
@@ -266,7 +261,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.FDRow, styles.MV4, styles.MT16, { alignItems: 'center' }]}>
             <Text style={{ width: 130 }}>Perubahan Usaha</Text>
             <Text style={styles.MH8}>:</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valuePerubahanUsaha}
                     onValueChange={(itemValue, itemIndex) => setValuePerubahanUsaha(itemValue)}
@@ -286,7 +281,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.FDRow,  styles.MV16, { alignItems: 'center' }]}>
             <TextInput
                 placeholder='Jakarta'
-                style={[styles.F1, styles.MR16, { borderWidth: 1, height: 38 }]}
+                style={[styles.F1, styles.MR16, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}
             />
             <Text>, 14 Juni 2021</Text>
         </View>
@@ -303,18 +298,6 @@ const InisiasiFormProspekLama = ({ route }) => {
                         source={{ uri: valueTandaTanganKetuaSubKelompok }}
                     />
                 )}
-                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
-                    <View style={styles.F1}>
-                        <Picker
-                            selectedValue={valuePerubahanUsaha}
-                            onValueChange={(itemValue, itemIndex) => setValuePerubahanUsaha(itemValue)}
-                        >
-                            <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                            {itemsPerubahanUsaha.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                        </Picker>
-                    </View>
-                    <View />
-                </View>
                 <Text style={[styles.note, { color: 'red', marginVertical: 16}]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaSubKelompok', onSelectSign: onSelectSign })} />
             </View>
@@ -332,18 +315,6 @@ const InisiasiFormProspekLama = ({ route }) => {
                         source={{ uri: valueTandaTanganKetuaKelompok }}
                     />
                 )}
-                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
-                    <View style={styles.F1}>
-                        <Picker
-                            selectedValue={valuePerubahanUsaha}
-                            onValueChange={(itemValue, itemIndex) => setValuePerubahanUsaha(itemValue)}
-                        >
-                            <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                            {itemsPerubahanUsaha.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                        </Picker>
-                    </View>
-                    <View />
-                </View>
                 <Text style={[styles.note, { color: 'red', marginVertical: 16}]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaKelompok', onSelectSign: onSelectSign })} />
             </View>
@@ -361,18 +332,6 @@ const InisiasiFormProspekLama = ({ route }) => {
                         source={{ uri: valueTandaTanganAO }}
                     />
                 )}
-                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
-                    <View style={styles.F1}>
-                        <Picker
-                            selectedValue={valuePerubahanUsaha}
-                            onValueChange={(itemValue, itemIndex) => setValuePerubahanUsaha(itemValue)}
-                        >
-                            <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                            {itemsPerubahanUsaha.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                        </Picker>
-                    </View>
-                    <View />
-                </View>
                 <Text style={[styles.note, { color: 'red', marginBottom: 16 }]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganAO', onSelectSign: onSelectSign })} />
             </View>

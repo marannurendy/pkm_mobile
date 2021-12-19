@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput} from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -8,6 +8,7 @@ import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import db from '../../../database/Database'
 import { Checkbox } from 'react-native-paper';
+import { ApiSyncInisiasi } from '../../../../dataconfig/index'
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -21,11 +22,12 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     const [isTahapLanjut, setIsTahapLanjut] = useState(false);
     const [keyword, setKeyword] = useState('');
     const [data, setData] = useState([]);
+    const [fetching, setFetching] = useState(false);
 
     useEffect(() => {
         getUserData();
         setInfo();
-        fetchData();
+        fetchData('');
     }, []);
 
     const getUserData = () => {
@@ -40,26 +42,38 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         setCurrentDate(tanggal);
     }
 
-    const fetchData = () => {
-        if (__DEV__) console.log('getData loaded');
-        if (__DEV__) console.log('getData keyword:', keyword);
+    const fetchData = (keyword = '') => {
+        if (__DEV__) console.log('fetchData loaded');
 
-        const responseJSON = [
-            {
-                id: 1,
-                name: 'Aminah Rasmaini',
-                phone: '081399065432',
-                source: 'UK'
-            },
-            {
-                id: 2,
-                name: 'Bellanissa Zainuddin',
-                phone: '081809659932',
-                source: 'S1'
-            }
-        ];
+        let search = undefined;
+        if (keyword !== '') search = keyword;
 
-        setData(responseJSON);
+        const route = `${ApiSyncInisiasi}GetListClientBRNET/90091/undefined/${search}/1/500`;
+        if (__DEV__) console.log('fetchData route:', route);
+
+        setFetching(true);
+        try {
+            fetch(route, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (__DEV__) console.log('fetchData $get /inisiasi/GetListClientBRNET success:', responseJson);
+                setFetching(false);
+                setData(responseJson);
+            })
+        } catch(error) {
+            if (__DEV__) console.log('fetchData $get /inisiasi/GetListClientBRNET error:', error);
+            setFetching(false);
+        }
+    }
+
+    const getName = (Name) => {
+        return Name.split('-')[1];
     }
 
     const renderHeader = () => (
@@ -96,7 +110,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
                     onChangeText={(text) => setKeyword(text)}
                     value={keyword}
                     returnKeyType="done"
-                    onSubmitEditing={() => null}
+                    onSubmitEditing={() => fetchData(keyword)}
                 />
             </View>
             <View style={[styles.FDRow, { alignItems: 'center' }]}>
@@ -112,20 +126,19 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     )
 
     const renderList = () => data.map((x, i) => (
-        <>
+        <View key={i}>
             <TouchableOpacity
-                key={i}
-                onPress={() => navigation.navigate('InisiasiFormProspekLama')}
+                onPress={() => navigation.navigate('InisiasiFormProspekLama', { ...data })}
             >
                 <View
                     style={[styles.FDRow, styles.P8]}
                 >
-                    <Text style={styles.F1}>{x.name}</Text>
-                    <Text style={{ textAlign:'right', color: 'gray' }}>{x.phone} - {x.source}</Text>
+                    <Text style={[styles.F1, styles.MR16]}>{getName(x.Name)}</Text>
+                    <Text style={{ textAlign:'right', color: 'gray' }}>{x.ClientID}</Text>
                 </View>
             </TouchableOpacity>
-            {i !== data.length - 1 && renderSpace()}
-        </>
+            {renderSpace()}
+        </View>
     ))
 
     const renderSpace = () => (
@@ -135,7 +148,18 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     const renderBody = () => (
         <View style={[styles.bodyContainer, styles.P16]}>
             {renderSearch()}
-            {renderList()}
+            <ScrollView>
+                {renderList()}
+                <View style={[styles.P8]}>
+                    <Text style={{ fontSize: 10, color: colors.MERAH }}>* Jika nasabah tidak ada di list (silahkan cari berdasarkan nama) daftar list di batas per 500 data.</Text>
+                </View>
+            </ScrollView>
+        </View>
+    )
+
+    const renderLoading = () => fetching && (
+        <View style={styles.loading}>
+            <ActivityIndicator size="large" color={colors.DEFAULT} />
         </View>
     )
 
@@ -143,6 +167,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         <View style={styles.mainContainer}>
             {renderHeader()}
             {renderBody()}
+            {renderLoading()}
         </View>
     )
 }

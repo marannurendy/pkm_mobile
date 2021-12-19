@@ -102,6 +102,10 @@ const FormUjiKelayakan = ({route}) => {
                         const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
                         const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
                         const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
+                        const setUKtimeOut = await AsyncStorage.getItem("SetUKtimeOut");
+                        
+                        let timeOut = 360000;
+                        if (setUKtimeOut) timeOut = parseInt(JSON.parse(setUKtimeOut));
 
                         let namaBank = data.nama_Bank;
                         let noRekening = data.no_Rekening;
@@ -231,7 +235,7 @@ const FormUjiKelayakan = ({route}) => {
                         
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
-                                timeout: 360000, // 6 menit
+                                timeout: timeOut, // 6 menit
                                 method: 'POST',
                                 headers: {
                                     Accept:
