@@ -117,7 +117,8 @@ const styles = StyleSheet.create({
         borderRadius: 4
     },
     spaceGray: {
-        borderWidth: 3,
+        borderStyle: 'dotted',
+        borderWidth: 1,
         borderColor: 'gray'
     },
     modalContainer: {
@@ -170,6 +171,9 @@ const styles = StyleSheet.create({
     },
     P8: {
         padding: 8
+    },
+    P12: {
+        padding: 12
     },
     P16: {
         padding: 16

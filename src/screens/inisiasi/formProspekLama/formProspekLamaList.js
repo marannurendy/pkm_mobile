@@ -6,8 +6,6 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
-import db from '../../../database/Database'
-import { Checkbox } from 'react-native-paper';
 import { ApiSyncInisiasi } from '../../../../dataconfig/index'
 
 const dimension = Dimensions.get('screen');
@@ -19,7 +17,6 @@ const withTextInput = dimension.width - (20 * 4) + 8;
 const InisiasiFormProspekLamaList = ({ route }) => {
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [isTahapLanjut, setIsTahapLanjut] = useState(false);
     const [keyword, setKeyword] = useState('');
     const [data, setData] = useState([]);
     const [fetching, setFetching] = useState(false);
@@ -113,15 +110,6 @@ const InisiasiFormProspekLamaList = ({ route }) => {
                     onSubmitEditing={() => fetchData(keyword)}
                 />
             </View>
-            <View style={[styles.FDRow, { alignItems: 'center' }]}>
-                <Checkbox
-                    status={isTahapLanjut ? 'checked' : 'unchecked'}
-                    onPress={() => {
-                        setIsTahapLanjut(!isTahapLanjut);
-                    }}
-                />
-                <Text>Tahap Lanjut</Text>
-            </View>
         </View>
     )
 
@@ -150,9 +138,11 @@ const InisiasiFormProspekLamaList = ({ route }) => {
             {renderSearch()}
             <ScrollView>
                 {renderList()}
-                <View style={[styles.P8]}>
-                    <Text style={{ fontSize: 10, color: colors.MERAH }}>* Jika nasabah tidak ada di list (silahkan cari berdasarkan nama) daftar list di batas per 500 data.</Text>
-                </View>
+                {data.length > 500 && (
+                    <View style={[styles.P8]}>
+                        <Text style={{ fontSize: 10, color: colors.MERAH }}>* Jika nasabah tidak ada di list (silahkan cari berdasarkan nama) daftar list di batas per 500 data.</Text>
+                    </View>
+                )}
             </ScrollView>
         </View>
     )

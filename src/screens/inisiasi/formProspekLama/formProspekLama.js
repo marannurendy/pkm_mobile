@@ -7,8 +7,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import db from '../../../database/Database'
-import { RadioButton } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
+import { ApiSyncInisiasi } from '../../../../dataconfig/index';
+import moment from 'moment';
+import 'moment/locale/id';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -16,16 +18,14 @@ const images = {
 };
 const withTextInput = dimension.width - (20 * 4) + 8;
 const pilihanYaTidak = [{ label: 'Ya', value: '1' }, { label: 'Tidak', value: '0' }];
+const MAX_PEMBIAYAAN_BERTAHAP = 10;
 
 const InisiasiFormProspekLama = ({ route }) => {
     const { name, clientId } = route.params
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [checked, setChecked] = useState('first');
     const [valuePembiayaanDiajukan, setValuePembiayaanDiajukan] = useState(null);
     const [itemsPembiayaanDiajukan, setItemsPembiayaanDiajukan] = useState([]);
-    const [valueJangkaWaktuPembiayaanDiajukan, setValueJangkaWaktuPembiayaanDiajukan] = useState(null);
-    const [itemsJangkaWaktuPembiayaanDiajukan, setItemsJangkaWaktuPembiayaanDiajukan] = useState([]);
     const [valueTempatTinggalNasabah, setValueTempatTinggalNasabah] = useState(null);
     const [itemsTempatTinggalNasabah, setItemsTempatTinggalNasabah] = useState([]);
     const [valuePerubahanStatusPernikahan, setValuePerubahanStatusPernikahan] = useState(null);
@@ -35,18 +35,27 @@ const InisiasiFormProspekLama = ({ route }) => {
     const [valueKehadiranPKM, setValueKehadiranPKM] = useState(null);
     const [itemsKehadiranPKM, setItemsKehadiranPKM] = useState([{ label: '100% H', value: '1' },{ label: '1-5x TH', value: '2' }, { label: '6-10x TH', value: '3' }, { label: '11-15x TH', value: '4' }, { label: '>16x TH', value: '5' }]);
     const [valuePembayaran, setValuePembayaran] = useState(null);
-    const [itemsPembayaran, setItemsPembayaran] = useState([{ label: '100% B', value: '1' }, { label: '3x TR', value: '1' }]);
+    const [itemsPembayaran, setItemsPembayaran] = useState([{ label: '100% B', value: '1' }, { label: '1x TR', value: '2' }, { label: '2x TR', value: '3' }, { label: '3x TR', value: '4' }, { label: '>=4x TR', value: '5' }]);
     const [valuePerubahanUsaha, setValuePerubahanUsaha] = useState(null);
     const [itemsPerubahanUsaha, setItemsPerubahanUsaha] = useState(pilihanYaTidak);
     const [valueTandaTanganKetuaSubKelompok, setValueTandaTanganKetuaSubKelompok] = useState(null);
     const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKelompok] = useState(null);
     const [valueTandaTanganAO, setValueTandaTanganAO] = useState(null);
-    
+    const [valueAddress, setValueAddress] = useState('Jakarta');
+    const [dataDetail, setDataDetail] = useState(null);
+    const [selectedPembiayaanDiajukan, setSelectedPembiayaanDiajukan] = useState(null);
+    const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
+    const [valueNamaTandaTanganKetuaKelompok, setValueNamaTandaTanganKetuaKelompok] = useState('');
+    const [valueNamaTandaTanganAO, setValueNamaTandaTanganAO] = useState('');
+    const [valuePerubahanUsahaKeterangan, setValuePerubahanUsahaKeterangan] = useState('');
+    const [valuePerubahanStatusTanggunganKeterangan, setValuePerubahanStatusTanggunganKeterangan] = useState('');
+    const [valuePerubahanStatusPernikahanKeterangan, setValuePerubahanStatusPernikahanKeterangan] = useState('');
 
     useEffect(() => {
         setInfo();
         getUserData();
         getStorageRumahTinggal();
+        fetchDetail();
     }, []);
 
     const getUserData = () => {
@@ -54,6 +63,36 @@ const InisiasiFormProspekLama = ({ route }) => {
             if (error) __DEV__ && console.log('userData error:', error);
             if (__DEV__) console.log('userData response:', result);
         });
+    }
+
+    const fetchDetail = () => {
+        if (__DEV__) console.log('fetchDetail loaded');
+
+        const body = {
+            "ClientID": [clientId]
+        };
+
+        try {
+            fetch(`${ApiSyncInisiasi}GetSiklusNasabahBrnet`, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (__DEV__) console.log('fetchData $post /inisiasi/GetSiklusNasabahBrnet success:', responseJson);
+                if (responseJson.data.length > 0) {
+                    setDataDetail(responseJson.data[0]);
+                    getStorageProduk(responseJson.data[0]);
+                }
+                else setDataDetail(null);
+            })
+        } catch(error) {
+            if (__DEV__) console.log('fetchData $post /inisiasi/GetSiklusNasabahBrnet error:', error);
+        }
     }
 
     const setInfo = async () => {
@@ -83,6 +122,30 @@ const InisiasiFormProspekLama = ({ route }) => {
         }
     }
 
+    const getStorageProduk = async (rw) => {
+        if (__DEV__) console.log('getStorageProduk loaded');
+        if (__DEV__) console.log('getStorageProduk dataDetail:', rw);
+
+        try {
+            const response = await AsyncStorage.getItem('Product');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
+                if (responseJSON.length > 0) {
+                    var responseFiltered = await responseJSON.filter((x) => x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}M`).map((data, i) => {
+                        return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                    }) ?? [];
+                    if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
+                    setItemsPembiayaanDiajukan(responseFiltered);
+                    return;
+                }
+            }
+            setItemsPembiayaanDiajukan([]);
+        } catch (error) {
+            setItemsPembiayaanDiajukan([]);
+        }
+    }
+
     const onSelectSign = (key, data) => {
         if (__DEV__) console.log('onSelectSign loaded');
         if (__DEV__) console.log('onSelectSign key:', key);
@@ -93,8 +156,94 @@ const InisiasiFormProspekLama = ({ route }) => {
         if (key === 'tandaTanganAO') setValueTandaTanganAO(data);
     };
 
-    const doSubmit = () => {
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
+        if (__DEV__) console.log('doSubmitDraft loaded');
+
+        const find = 'SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = "'+ clientId +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    const inputPembiayaanTahap = `${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`;
+                    const inputJangkaWaktuPembiayaanDiajukan = `${selectedPembiayaanDiajukan?.paymentTerm ?? '-'}`;
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_Prospek_Lama_PP (clientId, clientName, identityNumber, groupId, subGroup, groupName, loanSeries) values ("' + dataDetail?.clientId + '","' + dataDetail?.clientName + '","' + dataDetail?.identityNumber + '","' + dataDetail?.groupId + '","' + dataDetail?.subGroup + '","' + dataDetail?.groupName + '","' + dataDetail?.loanSeries + '")';
+                    } else {
+                        query = 'UPDATE Table_Prospek_Lama_PP SET clientName = "' + dataDetail?.clientName + '", identityNumber = "' + dataDetail?.identityNumber + '", groupId = "' + dataDetail?.groupId + '", subGroup = "' + dataDetail?.subGroup + '", groupName = "' + dataDetail?.groupName + '", loanSeries = "' + dataDetail?.loanSeries + '" WHERE clientId = "' + dataDetail?.clientId + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
+                            return resolve(true);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_Prospek_Lama_PP", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_Prospek_Lama_PP RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_Prospek_Lama_PP ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                            return resolve(true);
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                    return resolve(true);
+                })
+            }
+        );
+    })
+
+    const doSubmit = async () => {
         if (__DEV__) console.log('doSubmit loaded');
+
+        // await doSubmitDraft('submit');
+
+        const body = {
+            clientId: dataDetail?.clientId,
+            clientName: dataDetail?.clientName,
+            identityNumber: dataDetail?.identityNumber,
+            groupId: dataDetail?.groupId,
+            subGroup: dataDetail?.subGroup,
+            groupName: dataDetail?.groupName,
+            loanSeries: dataDetail?.groupName,
+            inputPembiayaanTahap: `${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`,
+            inputJangkaWaktuPembiayaanDiajukan: `${selectedPembiayaanDiajukan?.paymentTerm ?? '-'}`,
+            inputTempatTinggalNasabah: valueTempatTinggalNasabah,
+            inputPerubahanStatusPernikahan: valuePerubahanStatusPernikahan,
+            inputPerubahanStatusPernikahanKeterangan: valuePerubahanStatusPernikahanKeterangan,
+            inputPerubahanStatusTanggungan: valuePerubahanStatusTanggungan,
+            inputPerubahanStatusTanggunganKeterangan: valuePerubahanStatusTanggunganKeterangan,
+            inputKehadiranPKM: valueKehadiranPKM,
+            inputPembayaran: valuePembayaran,
+            inputPerubahanUsaha: valuePerubahanUsaha,
+            inputPerubahanUsahaKeterangan: valuePerubahanUsahaKeterangan,
+            inputAddress: valueAddress,
+            inputDate: moment().format('YYYY-MM-DD'),
+            inputNamaTandaTanganAO: valueNamaTandaTanganAO,
+            inputTandaTanganAO: valueTandaTanganAO,
+            inputNamaTandaTanganKetuaKelompok: valueNamaTandaTanganKetuaKelompok,
+            inputTandaTanganKetuaKelompok: valueTandaTanganKetuaKelompok,
+            inputNamaTandaTanganKetuaSubKelompok: valueNamaTandaTanganKetuaSubKelompok,
+            inputTandaTanganKetuaSubKelompok: valueTandaTanganKetuaSubKelompok
+        };
+
+        if (__DEV__) console.log('doSubmit body:', body);
     }
 
     const renderHeader = () => (
@@ -129,7 +278,7 @@ const InisiasiFormProspekLama = ({ route }) => {
                 <Text style={{ color: 'gray' }}>KTP/KK</Text>
             </View>
             <Text style={styles.MH8}>:</Text>
-            <Text style={styles.F1}>-</Text>
+            <Text style={styles.F1}>{dataDetail?.IdentityNumber ?? ''}</Text>
         </View>
     )
 
@@ -137,21 +286,15 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.FDRow, styles.MV4]}>
             <Text style={{ width: 100 }}>Kelompok</Text>
             <Text style={styles.MH8}>:</Text>
-            <Text style={styles.F1}>-</Text>
+            <Text style={styles.F1}>{dataDetail?.GroupName ?? ''}</Text>
         </View>
     )
 
     const renderFormPembiayaanTahap = () => (
         <View style={[styles.MV4]}>
             <Text style={styles.MB8}>Pembiayaan Tahap</Text>
-            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
-                <Picker
-                    selectedValue={valuePembiayaanDiajukan}
-                    onValueChange={(itemValue, itemIndex) => setValuePembiayaanDiajukan(itemValue)}
-                >
-                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsPembiayaanDiajukan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                </Picker>
+            <View style={[styles.F1, styles.P16, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Text style={{ fontSize: 16 }}>{`${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`}</Text>
             </View>
         </View>
     )
@@ -159,12 +302,17 @@ const InisiasiFormProspekLama = ({ route }) => {
     const renderFormPembiayaanDiajukan = () => (
         <View style={[styles.MV4]}>
             <Text style={styles.MB8}>Pembiayaan Diajukan</Text>
-            <View style={[styles.F1, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
-                <TextInput 
-                    onChangeText={(text) => { }}
-                    keyboardType="number-pad" 
-                    style={{ fontSize: 15, color: "#545454" }}
-                />
+            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Picker
+                    selectedValue={valuePembiayaanDiajukan}
+                    onValueChange={(itemValue, itemIndex) => {
+                        setSelectedPembiayaanDiajukan(itemsPembiayaanDiajukan[itemIndex - 1]);
+                        setValuePembiayaanDiajukan(itemValue);
+                    }}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsPembiayaanDiajukan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
             </View>
         </View>
     )
@@ -172,14 +320,8 @@ const InisiasiFormProspekLama = ({ route }) => {
     const renderFormJangkaWaktuPembiayaanDiajukan = () => (
         <View style={[styles.MV4]}>
             <Text style={styles.MB8}>Jangka Waktu Pembiayaan Diajukan</Text>
-            <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
-                <Picker
-                    selectedValue={valueJangkaWaktuPembiayaanDiajukan}
-                    onValueChange={(itemValue, itemIndex) => setValueJangkaWaktuPembiayaanDiajukan(itemValue)}
-                >
-                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsJangkaWaktuPembiayaanDiajukan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                </Picker>
+            <View style={[styles.F1, styles.P16, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
+                <Text style={{ fontSize: 16 }}>{selectedPembiayaanDiajukan?.paymentTerm ?? '-'}</Text>
             </View>
         </View>
     )
@@ -247,11 +389,55 @@ const InisiasiFormProspekLama = ({ route }) => {
         </View>
     )
 
-    const renderFormKeterangan = () => (
+    const renderFormPerubahanStatusPernikahanKeterangan = () => (
         <View style={styles.MV16}>
             <Text>Keterangan :</Text>
             <View style={[styles.MT8]}>
                 <TextInput
+                    value={valuePerubahanStatusPernikahanKeterangan} 
+                    onChangeText={(text) => setValuePerubahanStatusPernikahanKeterangan(text)}
+                    multiline={true}
+                    numberOfLines={4}
+                    style={{
+                        borderWidth:1,
+                        borderRadius:5,
+                        height: 100,
+                        padding: 8
+                    }}
+                    textAlignVertical="top"
+                />
+            </View>
+        </View>
+    )
+
+    const renderFormPerubahanStatusTanggunganKeterangan = () => (
+        <View style={styles.MV16}>
+            <Text>Keterangan :</Text>
+            <View style={[styles.MT8]}>
+                <TextInput
+                    value={valuePerubahanStatusTanggunganKeterangan} 
+                    onChangeText={(text) => setValuePerubahanStatusTanggunganKeterangan(text)}
+                    multiline={true}
+                    numberOfLines={4}
+                    style={{
+                        borderWidth:1,
+                        borderRadius:5,
+                        height: 100,
+                        padding: 8
+                    }}
+                    textAlignVertical="top"
+                />
+            </View>
+        </View>
+    )
+
+    const renderFormPerubahanUsahaKeterangan = () => (
+        <View style={styles.MV16}>
+            <Text>Keterangan :</Text>
+            <View style={[styles.MT8]}>
+                <TextInput
+                    value={valuePerubahanUsahaKeterangan} 
+                    onChangeText={(text) => setValuePerubahanUsahaKeterangan(text)}
                     multiline={true}
                     numberOfLines={4}
                     style={{
@@ -299,14 +485,16 @@ const InisiasiFormProspekLama = ({ route }) => {
     )
 
     const renderFormAggrement = () => (
-        <Text style={styles.MV16}>Dengan ini kelompok kami MENYETUJUI nasabah tersebut untuk diajukan menerima pembiayaan Mekaar Tahap Lanjutan, dan kami bersedia bertanggung jawab Bersama apabila nasabah tersebut diatas tidak memenuhi kewajiban.</Text>
+        <Text style={[styles.MV16, { fontStyle: 'italic' }]}>Dengan ini kelompok kami MENYETUJUI nasabah tersebut untuk diajukan menerima pembiayaan Mekaar Tahap Lanjutan, dan kami bersedia bertanggung jawab Bersama apabila nasabah tersebut diatas tidak memenuhi kewajiban.</Text>
     )
 
     const renderFormDate = () => (
         <View style={[styles.FDRow,  styles.MV16, { alignItems: 'center' }]}>
             <TextInput
+                value={valueAddress} 
+                onChangeText={(text) => setValueAddress(text)}
                 placeholder='Jakarta'
-                style={[styles.F1, styles.MR16, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}
+                style={[styles.F1, styles.MR16, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}
             />
             <Text>, 14 Juni 2021</Text>
         </View>
@@ -323,7 +511,18 @@ const InisiasiFormProspekLama = ({ route }) => {
                         source={{ uri: valueTandaTanganKetuaSubKelompok }}
                     />
                 )}
-                <Text style={[styles.note, { color: 'red', marginVertical: 16}]}>*isi tanda tangan dengan benar</Text>
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <TextInput 
+                            value={valueNamaTandaTanganKetuaSubKelompok} 
+                            onChangeText={(text) => setValueNamaTandaTanganKetuaSubKelompok(text)}
+                            placeholder='Nama Lengkap (*)'
+                            style={styles.F1}
+                        />
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 8 }]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaSubKelompok', onSelectSign: onSelectSign })} />
             </View>
         </View>
@@ -340,7 +539,18 @@ const InisiasiFormProspekLama = ({ route }) => {
                         source={{ uri: valueTandaTanganKetuaKelompok }}
                     />
                 )}
-                <Text style={[styles.note, { color: 'red', marginVertical: 16}]}>*isi tanda tangan dengan benar</Text>
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <TextInput 
+                            value={valueNamaTandaTanganKetuaKelompok}
+                            onChangeText={(text) => setValueNamaTandaTanganKetuaKelompok(text)}
+                            placeholder='Nama Lengkap (*)'
+                            style={styles.F1}
+                        />
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 8 }]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaKelompok', onSelectSign: onSelectSign })} />
             </View>
         </View>
@@ -357,7 +567,18 @@ const InisiasiFormProspekLama = ({ route }) => {
                         source={{ uri: valueTandaTanganAO }}
                     />
                 )}
-                <Text style={[styles.note, { color: 'red', marginBottom: 16 }]}>*isi tanda tangan dengan benar</Text>
+                <View style={[styles.textInputContainer, { width: withTextInput - 32, marginHorizontal: 16, marginVertical: 8 }]}>
+                    <View style={styles.F1}>
+                        <TextInput 
+                            value={valueNamaTandaTanganAO} 
+                            onChangeText={(text) => setValueNamaTandaTanganAO(text)}
+                            placeholder='Nama Lengkap (*)'
+                            style={styles.F1}
+                        />
+                    </View>
+                    <View />
+                </View>
+                <Text style={[styles.note, { color: 'red', marginBottom: 8 }]}>*isi tanda tangan dengan benar</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganAO', onSelectSign: onSelectSign })} />
             </View>
         </View>
@@ -365,7 +586,7 @@ const InisiasiFormProspekLama = ({ route }) => {
 
     const renderFormTTD = () => (
         <View style={styles.MV16}>
-            <Text style={styles.MB16}>Disetujui atas nama Kelompok Gang Kancil</Text>
+            <Text style={styles.MB16}>Disetujui atas nama Kelompok {dataDetail?.GroupName ?? ''}</Text>
             {renderFormTandaTanganKetuaSubKelompok()}
             {renderFormTandaTanganKetuaKelompok()}
             {renderFormTandaTanganAO()}
@@ -374,14 +595,15 @@ const InisiasiFormProspekLama = ({ route }) => {
 
     const renderFormOne = () => (
         <View style={[styles.MV16]}>
+            {/* <Text>{JSON.stringify(dataDetail)}</Text> */}
             {renderFormPembiayaanTahap()}
             {renderFormPembiayaanDiajukan()}
             {renderFormJangkaWaktuPembiayaanDiajukan()}
             {renderFormTempatTinggalNasabah()}
             {renderFormPerubahanStatusPernikahan()}
-            {renderFormKeterangan()}
+            {renderFormPerubahanStatusPernikahanKeterangan()}
             {renderFormPerubahanStatusTanggungan()}
-            {renderFormKeterangan()}
+            {renderFormPerubahanStatusTanggunganKeterangan()}
             {renderFormKehadiranPKM()}
             {renderButtonSaveDraft()}
         </View>
@@ -391,7 +613,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={[styles.MV16]}>
             {renderFormPembayaran()}
             {renderFormPerubahanUsaha()}
-            {renderFormKeterangan()}
+            {renderFormPerubahanUsahaKeterangan()}
             {renderButtonSaveDraft()}
             {renderFormAggrement()}
             {renderFormDate()}
@@ -416,7 +638,7 @@ const InisiasiFormProspekLama = ({ route }) => {
     const renderButtonSimpan = () => (
         <View style={styles.MT16}>
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmit()}
             >
                 <View style={styles.buttonSubmitContainer}>
                     <Text style={styles.buttonSubmitText}>SUBMIT</Text>

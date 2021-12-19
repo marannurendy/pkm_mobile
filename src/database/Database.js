@@ -395,6 +395,37 @@ db.transaction(tx => {
         )`
     )
 
+    tx.executeSql(
+        `create table if not exists Table_Prospek_Lama_PP(
+            clientId varchar,
+            clientName varchar,
+            identityNumber varchar,
+            groupId varchar,
+            subGroup varchar,
+            groupName varchar,
+            loanSeries varchar,
+            inputPembiayaanTahap varchar,
+            inputJangkaWaktuPembiayaanDiajukan varchar,
+            inputTempatTinggalNasabah varchar,
+            inputPerubahanStatusPernikahan varchar,
+            inputPerubahanStatusPernikahanKeterangan varchar,
+            inputPerubahanStatusTanggungan varchar,
+            inputPerubahanStatusTanggunganKeterangan varchar,
+            inputKehadiranPKM varchar,
+            inputPembayaran varchar,
+            inputPerubahanUsaha varchar,
+            inputPerubahanUsahaKeterangan varchar,
+            inputAddress varchar,
+            inputDate varchar,
+            inputNamaTandaTanganAO varchar,
+            inputTandaTanganAO varchar,
+            inputNamaTandaTanganKetuaKelompok varchar,
+            inputTandaTanganKetuaKelompok varchar,
+            inputNamaTandaTanganKetuaSubKelompok varchar,
+            inputTandaTanganKetuaSubKelompok varchar
+        );`
+    )
+
     // tx.executeSql('DROP TABLE IF EXISTS ListGroup')
     // tx.executeSql('DROP TABLE IF EXISTS GroupList')
     // tx.executeSql('DROP TABLE IF EXISTS UpAccountList')
@@ -422,6 +453,7 @@ db.transaction(tx => {
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_Kelompok')
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_SubKelompok')
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_ListNasabah')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_Prospek_Lama_PP')
 
 },function(error) {
             console.log('Transaction ERROR: ' + error.message);
