@@ -223,7 +223,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                     <Text style={[styles.headerText, { fontSize: 20 }]}>{groupName}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{namaNasabah}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{currentDate}</Text>
-                    <Text style={[styles.headerText, { fontSize: 15 }]}>{id}</Text>
+                    {/* <Text style={[styles.headerText, { fontSize: 15 }]}>{id}</Text> */}
                 </ImageBackground>
             </View>
         </>
