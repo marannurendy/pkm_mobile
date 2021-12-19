@@ -356,7 +356,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (uk_client_data.length > 0) {
             try {
                 var query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, verifikasiTanggal, verifikasiStatus, verifikasiReason, id_prospek) values ';
-                var queryUKMaster = 'INSERT INTO Table_UK_Master (namaNasabah, status, idSosialisasiDatabase) values ';
+                var queryUKMaster = 'INSERT INTO Table_UK_Master (namaNasabah, status, idSosialisasiDatabase, id_prospek) values ';
                 var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, longitude, latitude, agama, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek, is_pernyataan_dibaca, lokasi_sosialisasi, is_alamat_domisili_sesuai_ktp, idSosialisasiDatabase) values ';
                 var queryUKPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, nomor_Identitas, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKKondisiRumah = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, nomor_Identitas, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, id_prospek, idSosialisasiDatabase) values ';
@@ -413,8 +413,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     if (__DEV__) console.log('tandaTanganKetuaKelompok :', key_tandaTanganKetuaKelompok, uk_client_data[i].TTD_KK);
 
                     /* ============== START HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
-                    const queryDelete = "DELETE FROM Sosialisasi_Database WHERE namaCalonNasabah = '" + uk_client_data[i].Nama_Lengkap + "'";
-                    const queryDeleteUKMaster = "DELETE FROM Table_UK_Master WHERE namaNasabah = '" + uk_client_data[i].Nama_Lengkap + "'";
+                    const queryDelete = "DELETE FROM Sosialisasi_Database WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+                    const queryDeleteUKMaster = "DELETE FROM Table_UK_Master WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
@@ -529,6 +529,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         + "6"
                         + "','"
                         + uniqueNumber
+                        + "','"
+                        + uk_client_data[i].ID_Prospek
                         + "')";
                     } else {
                         query = query + "('"
@@ -560,6 +562,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         + "')";
 
                         queryUKMaster = queryUKMaster + "('"
+                        + ""
+                        + "','"
                         + ""
                         + "','"
                         + ""

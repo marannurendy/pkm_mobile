@@ -176,6 +176,7 @@ db.transaction(tx => {
         `create table if not exists Table_UK_Master(
             namaNasabah varchar,
             status varchar,
+            id_prospek varchar,
             idSosialisasiDatabase varchar
         );`
     )
