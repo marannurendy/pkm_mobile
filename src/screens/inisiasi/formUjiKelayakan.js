@@ -231,7 +231,7 @@ const FormUjiKelayakan = ({route}) => {
                         
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
-                                timeout: 180000, // 3 menit
+                                timeout: 360000, // 6 menit
                                 method: 'POST',
                                 headers: {
                                     Accept:

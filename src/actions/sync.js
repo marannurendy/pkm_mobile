@@ -1076,7 +1076,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
             try {
                 const responseGetSosialisasiMobile = await fetchWithTimeout(postGetSosialisasiMobile, {
-                    timeout: 180000, // 3 menit
+                    timeout: 360000, // 6 menit
                     method: 'POST',
                     headers: {
                         Accept:
