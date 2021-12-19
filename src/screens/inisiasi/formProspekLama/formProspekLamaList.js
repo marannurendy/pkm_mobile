@@ -128,7 +128,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     const renderList = () => data.map((x, i) => (
         <View key={i}>
             <TouchableOpacity
-                onPress={() => navigation.navigate('InisiasiFormProspekLama', { ...data })}
+                onPress={() => navigation.navigate('InisiasiFormProspekLama', { name: getName(x.Name), clientId: x.ClientID })}
             >
                 <View
                     style={[styles.FDRow, styles.P8]}

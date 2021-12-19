@@ -15,8 +15,10 @@ const images = {
     banner: require("../../../../assets/Image/Banner.png")
 };
 const withTextInput = dimension.width - (20 * 4) + 8;
+const pilihanYaTidak = [{ label: 'Ya', value: '1' }, { label: 'Tidak', value: '0' }];
 
 const InisiasiFormProspekLama = ({ route }) => {
+    const { name, clientId } = route.params
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [checked, setChecked] = useState('first');
@@ -27,23 +29,24 @@ const InisiasiFormProspekLama = ({ route }) => {
     const [valueTempatTinggalNasabah, setValueTempatTinggalNasabah] = useState(null);
     const [itemsTempatTinggalNasabah, setItemsTempatTinggalNasabah] = useState([]);
     const [valuePerubahanStatusPernikahan, setValuePerubahanStatusPernikahan] = useState(null);
-    const [itemsPerubahanStatusPernikahan, setItemsPerubahanStatusPernikahan] = useState([]);
+    const [itemsPerubahanStatusPernikahan, setItemsPerubahanStatusPernikahan] = useState(pilihanYaTidak);
     const [valuePerubahanStatusTanggungan, setValuePerubahanStatusTanggungan] = useState(null);
-    const [itemsPerubahanStatusTanggungan, setItemsPerubahanStatusTanggungan] = useState([]);setValueKehadiranPKM
+    const [itemsPerubahanStatusTanggungan, setItemsPerubahanStatusTanggungan] = useState(pilihanYaTidak);
     const [valueKehadiranPKM, setValueKehadiranPKM] = useState(null);
-    const [itemsKehadiranPKM, setItemsKehadiranPKM] = useState([]);
+    const [itemsKehadiranPKM, setItemsKehadiranPKM] = useState([{ label: '100% H', value: '1' },{ label: '1-5x TH', value: '2' }, { label: '6-10x TH', value: '3' }, { label: '11-15x TH', value: '4' }, { label: '>16x TH', value: '5' }]);
     const [valuePembayaran, setValuePembayaran] = useState(null);
-    const [itemsPembayaran, setItemsPembayaran] = useState([]);
+    const [itemsPembayaran, setItemsPembayaran] = useState([{ label: '100% B', value: '1' }, { label: '3x TR', value: '1' }]);
     const [valuePerubahanUsaha, setValuePerubahanUsaha] = useState(null);
-    const [itemsPerubahanUsaha, setItemsPerubahanUsaha] = useState([]);
+    const [itemsPerubahanUsaha, setItemsPerubahanUsaha] = useState(pilihanYaTidak);
     const [valueTandaTanganKetuaSubKelompok, setValueTandaTanganKetuaSubKelompok] = useState(null);
     const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKelompok] = useState(null);
     const [valueTandaTanganAO, setValueTandaTanganAO] = useState(null);
     
 
     useEffect(() => {
-        getUserData();
         setInfo();
+        getUserData();
+        getStorageRumahTinggal();
     }, []);
 
     const getUserData = () => {
@@ -56,6 +59,28 @@ const InisiasiFormProspekLama = ({ route }) => {
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate');
         setCurrentDate(tanggal);
+    }
+
+    const getStorageRumahTinggal = async () => {
+        if (__DEV__) console.log('getStorageRumahTinggal loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('HomeStatus');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    var responseFiltered = responseJSON.map((data, i) => {
+                        return { label: data.homeStatusDetail, value: data.id };
+                    }) ?? [];
+                    if (__DEV__) console.log('getStorageRumahTinggal responseFiltered:', responseFiltered);
+                    setItemsTempatTinggalNasabah(responseFiltered);
+                    return;
+                }
+            }
+            setItemsTempatTinggalNasabah([]);
+        } catch (error) {
+            setItemsTempatTinggalNasabah([]);
+        }
     }
 
     const onSelectSign = (key, data) => {
@@ -91,28 +116,28 @@ const InisiasiFormProspekLama = ({ route }) => {
 
     const renderInformasiNama = () => (
         <View style={[styles.FDRow, styles.MV4]}>
-            <Text style={{ width: 130 }}>Nama</Text>
+            <Text style={{ width: 100 }}>Nama</Text>
             <Text style={styles.MH8}>:</Text>
-            <Text style={styles.F1}>Bellanissa Zainuddin</Text>
+            <Text style={styles.F1}>{name}</Text>
         </View>
     )
 
     const renderInformasiIdentitas = () => (
         <View style={[styles.FDRow, styles.MV4]}>
-            <View style={{ width: 130 }}>
+            <View style={{ width: 100 }}>
                 <Text>No. Identitas</Text>
                 <Text style={{ color: 'gray' }}>KTP/KK</Text>
             </View>
             <Text style={styles.MH8}>:</Text>
-            <Text style={styles.F1}>356500013560001</Text>
+            <Text style={styles.F1}>-</Text>
         </View>
     )
 
     const renderInformasiKelompok = () => (
         <View style={[styles.FDRow, styles.MV4]}>
-            <Text style={{ width: 130 }}>Kelompok</Text>
+            <Text style={{ width: 100 }}>Kelompok</Text>
             <Text style={styles.MH8}>:</Text>
-            <Text style={styles.F1}>Gang Kelinci</Text>
+            <Text style={styles.F1}>-</Text>
         </View>
     )
 
