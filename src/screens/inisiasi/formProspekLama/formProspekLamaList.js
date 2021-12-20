@@ -45,7 +45,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         let search = undefined;
         if (keyword !== '') search = keyword;
 
-        const route = `${ApiSyncInisiasi}GetListClientBRNET/90091/undefined/${search}/1/500`;
+        const route = `${ApiSyncInisiasi}GetListClientBRNET/90091/undefined/${search}/1/100`;
         if (__DEV__) console.log('fetchData route:', route);
 
         setFetching(true);
