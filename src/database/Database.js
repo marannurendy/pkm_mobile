@@ -520,6 +520,9 @@ db.transaction(tx => {
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_SubKelompok')
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_ListNasabah')
     // tx.executeSql('DROP TABLE IF EXISTS Table_Prospek_Lama_PP')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Post')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Nasabah')
+    // // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Post')
 
 },function(error) {
             console.log('Transaction ERROR: ' + error.message);

@@ -9,9 +9,10 @@ import { Button } from 'react-native-elements'
 import db from '../../database/Database';
 import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync'
 import { fetchWithTimeout } from '../../utils/Functions'
+import { Picker } from '@react-native-picker/picker';
 
 const FormUjiKelayakan = ({route}) => {
-    const { id, groupName, namaNasabah, nomorHandphone } = route.params;
+    const { id, groupName, namaNasabah, nomorHandphone, statusSosialisasi } = route.params;
     const dimension = Dimensions.get('screen');
     const navigation = useNavigation();
 
@@ -24,12 +25,16 @@ const FormUjiKelayakan = ({route}) => {
     let [uname, setUname] = useState('');
     let [aoName, setAoName] = useState('');
     let [nip, setNip] = useState('');
+    const [valuePilihKelompok, setValuePilihKelompok] = useState('');
+    const [itemsPilihKelompok, setItemsPilihKelompok] = useState([]);
+    const [selectedPilihKelompok, setSelectedPilihKelompok] = useState(null);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             setInfo();
             getUserData();
             getUKMaster();
+            getGroupList();
         });
         return unsubscribe;
     }, [navigation]);
@@ -72,10 +77,35 @@ const FormUjiKelayakan = ({route}) => {
         )
     }
 
+    const getGroupList = () => {
+        let queryUKDataDiri = 'SELECT * FROM GroupList';
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM GroupList results.rows:', results.rows);
+
+                    var datas = [];
+                    for(let a = 0; a < dataLength; a++) {
+                        let data = results.rows.item(a);
+                        datas.push({ "label": data.GroupName, "value": data.GroupID });
+                    }
+                    setItemsPilihKelompok(datas);
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM GroupList error:', error.message);
+                })
+            }
+        )
+    }
+
     const submitHandler = () => null
 
     const doSubmit = () => {
         if (__DEV__) console.log('doSubmit loaded');
+
+        if (statusSosialisasi === '1') {
+            if (!valuePilihKelompok || typeof valuePilihKelompok === 'undefined' || valuePilihKelompok === '' || valuePilihKelompok === 'null') return alert('Pilih Kelompok (*) tidak boleh kosong');
+        }
 
         if (submitted) return true;
 
@@ -131,6 +161,13 @@ const FormUjiKelayakan = ({route}) => {
 
                         let idProspek = "";
                         if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
+
+                        let kelompokID = data.kelompokID;
+                        let namaKelompok = data.namaKelompok;
+                        if (statusSosialisasi === '1') {
+                            kelompokID = selectedPilihKelompok.value;
+                            namaKelompok = selectedPilihKelompok.label;
+                        }
                         
                         const body = {
                             "Sumber": data.sumberId,
@@ -230,8 +267,8 @@ const FormUjiKelayakan = ({route}) => {
                             "Nama_TTD_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok,
                             "Nama_TTD_Nasabah": data.nama_tanda_Tangan_Nasabah,
                             "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin,
-                            "Kelompok_ID": data.kelompokID,
-                            "Nama_Kelompok": data.namaKelompok,
+                            "Kelompok_ID": kelompokID,
+                            "Nama_Kelompok": namaKelompok,
                             "Sub_Kelompok": data.subKelompok,
                             "ClientID": data.clientId
                         }
@@ -521,8 +558,25 @@ const FormUjiKelayakan = ({route}) => {
             <View style={{flex: 1, marginHorizontal: 20, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFF'}}>
                 <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan</Text>
 
-                <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
+                {statusSosialisasi === '1' && (
+                    <View style={{ margin: 16 }}>
+                        <Text>Pilih Kelompok</Text>
+                        <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8 }]}>
+                            <Picker
+                                selectedValue={valuePilihKelompok}
+                                onValueChange={(itemValue, itemIndex) => { 
+                                    setSelectedPilihKelompok(itemsPilihKelompok[itemIndex - 1]);
+                                    setValuePilihKelompok(itemValue);
+                                }}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {itemsPilihKelompok.length > 0 && itemsPilihKelompok.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+                )}
 
+                <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
                     <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'address-card'} size={25} color={'#FFF'} />

@@ -89,7 +89,7 @@ export default function FrontHomeSync(props) {
         let createdBy = undefined;
         if (selectedIndexFilterProspek === 0) createdBy = props.username;
 
-        const route = `${ApiSyncInisiasi}GetListClient/${props.cabangid}/${createdBy}/${search}/1/10000`;
+        const route = `${ApiSyncInisiasi}GetListClient/${props.cabangid}/${createdBy}/${search}/1/100`;
         if (__DEV__) console.log('fetchData route:', route);
 
         setFetching(true);

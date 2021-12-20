@@ -38,7 +38,7 @@ const UjiKelayakan = ({route}) => {
                     var ah = [];
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({"id": data.id, "namaNasabah": data.namaCalonNasabah, "nomorHandphone": data.nomorHandphone, "status": data.verifikasiStatus, "groupName": data.lokasiSosialisasi});
+                        ah.push({"id": data.id, "namaNasabah": data.namaCalonNasabah, "nomorHandphone": data.nomorHandphone, "status": data.verifikasiStatus, "groupName": data.lokasiSosialisasi, "statusSosialisasi": data.status});
                     }
                     setData(ah)
                 })
@@ -59,7 +59,7 @@ const UjiKelayakan = ({route}) => {
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#FFF', flex: 1, borderWidth: 1, marginHorizontal: 15}} 
-            onPress={() => navigation.navigate('FormUjiKelayakan', {id: data.id, groupName: data.groupName, namaNasabah: data.namaNasabah, nomorHandphone: data.nomorHandphone})}
+            onPress={() => navigation.navigate('FormUjiKelayakan', {id: data.id, groupName: data.groupName, namaNasabah: data.namaNasabah, nomorHandphone: data.nomorHandphone, statusSosialisasi: data.statusSosialisasi})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 {/* <Text>{JSON.stringify(data)}</Text> */}

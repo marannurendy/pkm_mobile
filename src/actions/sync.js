@@ -35,9 +35,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 tx.executeSql("DELETE FROM DetailUP");
                 tx.executeSql("DELETE FROM DetailPAR");
                 tx.executeSql("DELETE FROM Detailpkm");
-                tx.executeSql("DELETE FROM Table_Pencairan");
-                tx.executeSql("DELETE FROM Table_Pencairan_Nasabah");
-                tx.executeSql("DELETE FROM Table_Pencairan_Post");
             }, function(error) {
                 ToastAndroid.show("SOMETHING WENT WRONG: " + JSON.stringify(error), ToastAndroid.SHORT);
                 reject('GAGAL MEMPROSES DATA ' + source);
@@ -1240,6 +1237,26 @@ export const getSyncData = (params) => new Promise((resolve) => {
             } catch (error) {
                 if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
                 if (error.name === 'AbortError') {
+                    db.transaction(
+                        tx => {
+                            tx.executeSql("DELETE FROM ListGroup");
+                            tx.executeSql("DELETE FROM GroupList");
+                            tx.executeSql("DELETE FROM UpAccountList");
+                            tx.executeSql("DELETE FROM PAR_AccountList");
+                            tx.executeSql("DELETE FROM AccountList");
+                            tx.executeSql("DELETE FROM Totalpkm");
+                            tx.executeSql("DELETE FROM pkmTransaction");
+                            tx.executeSql("DELETE FROM parTransaction");
+                            tx.executeSql("DELETE FROM DetailKehadiran");
+                            tx.executeSql("DELETE FROM DetailUP");
+                            tx.executeSql("DELETE FROM DetailPAR");
+                            tx.executeSql("DELETE FROM Detailpkm");
+                        }, function(error) {
+                            if (__DEV__) console.log('DELETE FROM * ERROR:', error);
+                        }, function() {
+                            if (__DEV__) console.log('DELETE FROM * NULL');
+                        }
+                    )
                     Alert.alert('Error', 'Request timeout');
                     return 'SYNC FAILED TIMEOUT';
                 }

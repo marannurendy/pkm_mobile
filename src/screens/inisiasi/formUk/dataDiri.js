@@ -1425,7 +1425,7 @@ const DataDiri = ({route}) => {
                             <View style={{flexDirection: 'row'}}>
                             <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'id-badge'} size={18} />
@@ -1456,7 +1456,7 @@ const DataDiri = ({route}) => {
                                             setNamaCalonNasabah(text);
                                         }}
                                         placeholder="Masukkan Nama Lengkap" 
-                                        style={{ fontSize: 15, color: "#545454" }} 
+                                        style={{ fontSize: 15, color: "#545454", height: 38 }} 
                                     />
                                 </View>
                                 <View>
@@ -1469,7 +1469,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tempat Lahir (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={tempatLahir} onChangeText={(text) => setTempatLahir(text)} placeholder="Masukkan Tempat Lahir" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={tempatLahir} onChangeText={(text) => setTempatLahir(text)} placeholder="Masukkan Tempat Lahir" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'id-badge'} size={18} />
@@ -1481,7 +1481,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tanggal Lahir (*)</Text>
                             <TouchableOpacity onPress={() => setShowCalendar(true)} style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={tanggalLahir} placeholder="Pilih tanggal lahir" editable={false} style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={tanggalLahir} placeholder="Pilih tanggal lahir" editable={false} style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Text style={{ marginHorizontal: 8 }}>{moment().diff(moment(moment(tanggalLahir).format("DD-MM-YYYY"), "DD-MM-YYYY"), 'years') || '0'} tahun</Text>
@@ -1521,7 +1521,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Identitas (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={alamatIdentitas} onChangeText={(text) => setAlamatIdentitas(text)} placeholder="Masukkan Alamat Identitas" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={alamatIdentitas} onChangeText={(text) => setAlamatIdentitas(text)} placeholder="Masukkan Alamat Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1544,7 +1544,7 @@ const DataDiri = ({route}) => {
                                 <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Domisili (*)</Text>
                                 <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                     <View style={{flex: 1}}>
-                                        <TextInput value={alamatDomisili} onChangeText={(text) => setAlamatDomisili(text)} placeholder="Masukkan Alamat Domisili" style={{ fontSize: 15, color: "#545454" }}/>
+                                        <TextInput value={alamatDomisili} onChangeText={(text) => setAlamatDomisili(text)} placeholder="Masukkan Alamat Domisili" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                     </View>
                                     <View>
                                         <FontAwesome5 name={'address-card'} size={18} />
@@ -1674,7 +1674,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Kartu Keluarga (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={nomorKartuKeluarga} keyboardType='numeric' onChangeText={(text) => setNomorKartuKeluarga(text)} placeholder="Masukkan Nomor KK" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={nomorKartuKeluarga} keyboardType='numeric' onChangeText={(text) => setNomorKartuKeluarga(text)} placeholder="Masukkan Nomor KK" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'id-card'} size={18} />
@@ -1705,7 +1705,7 @@ const DataDiri = ({route}) => {
                                             setNamaCalonNasabah(text);
                                         }}
                                         placeholder="Masukkan Nama Lengkap" 
-                                        style={{ fontSize: 15, color: "#545454" }} 
+                                        style={{ fontSize: 15, color: "#545454", height: 38 }} 
                                     />
                                 </View>
                                 <View>
@@ -1718,7 +1718,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Ayah (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(text)} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(text)} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1730,7 +1730,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Gadis Ibu Kandung (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(text)} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(text)} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1741,7 +1741,7 @@ const DataDiri = ({route}) => {
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Nasabah (*)</Text>
                             <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 2}}>
-                                <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
+                                <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                             </View>
                         </View>
 
@@ -1804,7 +1804,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'chart-pie'} size={18} />
@@ -1835,7 +1835,7 @@ const DataDiri = ({route}) => {
                                                 setNamaSuami(text);
                                             }} 
                                             placeholder="Masukkan Nama Suami" 
-                                            style={{ fontSize: 15, color: "#545454" }}
+                                            style={{ fontSize: 15, color: "#545454", height: 38 }}
                                         />
                                     </View>
                                     <View>
@@ -1848,7 +1848,7 @@ const DataDiri = ({route}) => {
                                 <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Usaha/Pekerjaan Suami (*)</Text>
                                 <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                     <View style={{flex: 1}}>
-                                        <TextInput value={usahaPekerjaanSuami} onChangeText={(text) => setUsahaPekerjaanSuami(text)} placeholder="" style={{ fontSize: 15, color: "#545454" }}/>
+                                        <TextInput value={usahaPekerjaanSuami} onChangeText={(text) => setUsahaPekerjaanSuami(text)} placeholder="" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                     </View>
                                     <View />
                                 </View>
@@ -1858,7 +1858,7 @@ const DataDiri = ({route}) => {
                                 <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja</Text>
                                 <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                     <View style={{flex: 1}}>
-                                        <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454" }}/>
+                                        <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                     </View>
                                     <View />
                                 </View>
@@ -1942,7 +1942,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Penjamin (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(text)} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454" }}/>
+                                    <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(text)} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
