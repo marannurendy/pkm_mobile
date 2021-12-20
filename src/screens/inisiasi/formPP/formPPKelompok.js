@@ -155,7 +155,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
                     is24Hour={true}
                     display="default"
                     onChange={tanggalPKMPertamaDatePickerHandler}
-                    minimumDate={new Date()}
+                    // minimumDate={new Date()}
                 />
             )}
         </View>
