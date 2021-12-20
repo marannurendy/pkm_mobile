@@ -343,7 +343,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupName:', groupName);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama subGroup:', subGroup);
 
-        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "", "' + moment().format('YYYY-MM-DD') + '", "' + valueAddress + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '")';
+        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "", "' + moment().format('YYYY-MM-DD') + '", "' + groupName + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '")';
 
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama query:', query);
         db.transaction(
