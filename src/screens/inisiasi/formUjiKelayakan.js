@@ -558,25 +558,36 @@ const FormUjiKelayakan = ({route}) => {
             <View style={{flex: 1, marginHorizontal: 20, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFF'}}>
                 <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan</Text>
 
-                {statusSosialisasi === '1' && (
-                    <View style={{ margin: 16 }}>
-                        <Text>Pilih Kelompok</Text>
-                        <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8 }]}>
-                            <Picker
-                                selectedValue={valuePilihKelompok}
-                                onValueChange={(itemValue, itemIndex) => { 
-                                    setSelectedPilihKelompok(itemsPilihKelompok[itemIndex - 1]);
-                                    setValuePilihKelompok(itemValue);
-                                }}
-                            >
-                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                {itemsPilihKelompok.length > 0 && itemsPilihKelompok.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                            </Picker>
-                        </View>
-                    </View>
-                )}
-
                 <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
+                    {statusSosialisasi === '1' && (
+                        <View style={{ marginBottom: 16 }}>
+                            <Text>Pilih Kelompok</Text>
+                            <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8 }]}>
+                                <Picker
+                                    selectedValue={valuePilihKelompok}
+                                    onValueChange={(itemValue, itemIndex) => { 
+                                        setSelectedPilihKelompok(itemsPilihKelompok[itemIndex - 1]);
+                                        setValuePilihKelompok(itemValue);
+                                    }}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsPilihKelompok.length > 0 && itemsPilihKelompok.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
+                        </View>
+                    )}
+                    
+                    {statusSosialisasi === '1' && (
+                        <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKDisiplinNasabah', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                            <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                <FontAwesome5 name={'sign-in-alt'} size={25} color={'#FFF'} />
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Disiplin Nasabah</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+
                     <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'address-card'} size={25} color={'#FFF'} />

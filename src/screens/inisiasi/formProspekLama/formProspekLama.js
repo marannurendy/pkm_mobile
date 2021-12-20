@@ -54,6 +54,7 @@ const InisiasiFormProspekLama = ({ route }) => {
     const [key_tandaTanganKetuaSubKelompok, setKey_tandaTanganKetuaSubKelompok] = useState(`formProspekLama_tandaTanganKetuaSubKelompok_${clientId}`);
     const [key_tandaTanganKetuaKelompok, setKey_tandaTanganKetuaKelompok] = useState(`formProspekLama_tandaTanganKetuaKelompok_${clientId}`);
     const [key_tandaTanganAO, setKey_tandaTanganAO] = useState(`formProspekLama_tandaTanganAO_${clientId}`);
+    const [aoName, setAoName] = useState('');
 
     useEffect(() => {
         setInfo();
@@ -66,6 +67,10 @@ const InisiasiFormProspekLama = ({ route }) => {
         AsyncStorage.getItem('userData', (error, result) => {
             if (error) __DEV__ && console.log('userData error:', error);
             if (__DEV__) console.log('userData response:', result);
+
+            let data = JSON.parse(result);
+            setAoName(data.AOname);
+            setValueNamaTandaTanganAO(data.AOname);
         });
     }
 

@@ -5,6 +5,7 @@ import InisiasiFormUKSektorEkonomi from "./sektorEkonomi";
 import InisiasiFormUKTingkatPendapatan from "./tingkatPendapatan";
 import InisiasiFormUKTandaTanganPermohonan from "./tandaTanganPermohonan";
 import InisiasiFormUKSignatureScreen from "./signature";
+import InisiasiFormUKDisiplinNasabah from "./disiplinNasabah";
 
 export { 
     DataDiri, 
@@ -13,5 +14,6 @@ export {
     InisiasiFormUKSektorEkonomi, 
     InisiasiFormUKTingkatPendapatan, 
     InisiasiFormUKTandaTanganPermohonan,
-    InisiasiFormUKSignatureScreen
+    InisiasiFormUKSignatureScreen,
+    InisiasiFormUKDisiplinNasabah
 }
