@@ -41,7 +41,7 @@ const FinalPencairan = ({route}) => {
     const [statusMelakukan, setStatusMelakukan] = useState(false)
     const [hasPermission, setHasPermission] = useState(null);
     const [key_dataPencairan, setkey_dataPencairan] = useState(`foto_dataPencairan_${uniqueNumber}_${route.params.data.Nama_Prospek.replace(/\s+/g, '')}`);
-    const key_dataPencairan = `foto_dataPencairan_`;
+    //const key_dataPencairan = `foto_dataPencairan_`;
     moment.locale('id');
     var Tanggal = moment(new Date()).format('DD-MMM-YYYY')
     var hariIni = moment(new Date()).format('dddd')
@@ -117,7 +117,7 @@ const FinalPencairan = ({route}) => {
 
             if (type === "FotoPencairan") {
                 setFotoDataPencairan(data.uri);
-                setPostPencairan({...postPencairan, "Foto_Pencairan":'data:image/jpeg;base64,' + data.base64})
+                setPostPencairan({...postPencairan, "Foto_Pencairan":data.base64})
                 setLoading(false);
                 SetButtonCam(false);
             }
@@ -131,7 +131,7 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureKetuaKel(signature)
             setModalVisibleKetuaKel(!modalVisibleKetuaKel);
-            setPostPencairan({...postPencairan, "TTD_KK":signature})
+            setPostPencairan({...postPencairan, "TTD_KK":signature.split(',')[1]})
         }
 
         const handleEmpty = () => {
@@ -175,7 +175,7 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureSubKel(signature)
             setModalVisibleSubKel(!modalVisibleSubKel);
-            setPostPencairan({...postPencairan, "TTD_KSK":signature})
+            setPostPencairan({...postPencairan, "TTD_KSK":signature.split(',')[1]})
         }
 
         const handleEmpty = () => {
@@ -219,7 +219,7 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
-            setPostPencairan({...postPencairan, "TTD_Nasabah_2":signature})
+            setPostPencairan({...postPencairan, "TTD_Nasabah_2":signature.split(',')[1]})
         }
 
         const handleEmpty = () => {
@@ -257,7 +257,6 @@ const FinalPencairan = ({route}) => {
     }
 
     const submitHandlerCheckbox = () => {
-        console.log(postPencairan)
         let i = !statusMelakukan ? "1" : "0";
         setStatusMelakukan(!statusMelakukan)
         setPostPencairan({...postPencairan, "Is_Dicairkan":i})
@@ -265,7 +264,7 @@ const FinalPencairan = ({route}) => {
     }
 
     const submitHandler = () => {
-        console.log(postPencairan)
+        navigation.navigate("Siklus", {data: dataNasabah, postPencairan: postPencairan})
     }
 
     return(
@@ -418,7 +417,7 @@ const FinalPencairan = ({route}) => {
                             <Text style={{fontSize: 14}}>Saya yang bertanda Tangan dibawah ini:{"\n"}{"\n"}
                             Nama            :  {dataNasabah.Nama_Prospek}{"\n"}
                             Dengan ini menyatakan telah menerima pembiayaan
-                            sebesar: 3.000.000 rupiah, dan bersedia untuk
+                            sebesar: {dataNasabah.Jumlah_Pinjaman} rupiah, dan bersedia untuk
                             bertanggung jawab sampai pelunasan pembiayaan,
                             serta mematuhi dan menerima semua keputusan / peraturan
                             yang berlaku di PT. Permodalan Nasional Madani.{"\n"}{"\n"}

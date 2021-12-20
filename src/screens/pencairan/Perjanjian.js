@@ -27,6 +27,7 @@ const Perjanjian = ({route}) => {
     let [data, setData] = useState([]);
     let [dataNasabah, setDataNasabah] = useState(route.params.data);
     let [postPencairan, setPostPencairan] = useState();
+    let [jenpem, setJenPem]= useState();
     const [modalVisibleAO, setModalVisibleAO] = useState(false);
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
     const [signatureAO, setSignatureAO] = useState();
@@ -46,7 +47,7 @@ const Perjanjian = ({route}) => {
                 setAoName(data.AOname);
             });
         }
-
+        getJenisPembiayaan();
         getUserData();
 
         // AsyncStorage.getItem('userData', (error, result) => {
@@ -86,8 +87,16 @@ const Perjanjian = ({route}) => {
     }, []);
 
     const submitHandler = () => {
-        console.log(postPencairan)
         navigation.navigate("FinalPencairan", {data: dataNasabah, postPencairan: postPencairan})
+    }
+
+    const getJenisPembiayaan = async () => {
+        const response = await AsyncStorage.getItem('JenisPembiayaan');
+        if (response !== null) {
+            const responseJSON = JSON.parse(response);
+            let getJP = responseJSON.filter(s => s.id == route.params.data.Jenis_Pembiayaan)
+            setJenPem(getJP[0].namajenispembiayaan)
+        }
     }
 
     function ModalSignAO(text, onOK){
@@ -97,7 +106,7 @@ const Perjanjian = ({route}) => {
         const handleOK = (signature) => {
             setSignatureAO(signature)
             setModalVisibleAO(!modalVisibleAO);
-            setPostPencairan({...postPencairan, "TTD_KC":signature})
+            setPostPencairan({...postPencairan, "TTD_KC":signature.split(',')[1]})
         }
 
         const handleEmpty = () => {
@@ -141,7 +150,7 @@ const Perjanjian = ({route}) => {
         const handleOK = (signature) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
-            setPostPencairan({...postPencairan, "TTD_Nasabah":signature})
+            setPostPencairan({...postPencairan, "TTD_Nasabah":signature.split(',')[1]})
         }
 
         const handleEmpty = () => {
@@ -233,7 +242,7 @@ const Perjanjian = ({route}) => {
                     <ScrollView>
                         <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
                             <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Perjanjian Pembiayaan</Text>
-                            <Text style={{fontSize: 14}}>Perjanjian Pembiayaan ini dibuat dan ditandatangani di {<Text style={{fontSize: 14, color:"#0645AD"}}>Jakarta </Text>} 
+                            <Text style={{fontSize: 14}}>Perjanjian Pembiayaan ini dibuat dan ditandatangani di {<Text style={{fontSize: 14, color:"#0645AD"}}>{branchName} </Text>} 
                             pada tanggal {<Text style={{fontSize: 14, color:"#0645AD"}}>{hariIni}</Text>}  oleh dan antara:{"\n"}{"\n"}
                             1. PT. Permodalan Nasional Madani, berkedudukan 
                             dan berkantor pusat di Jakarta, dalam hal ini diwakili oleh 
@@ -248,9 +257,9 @@ const Perjanjian = ({route}) => {
                             menerima fasilitas pembiayaan dari PNM 
                             dengan ketentuan sebagai berikut:{"\n"}
                             a. Jumlah Pembiayaan            :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jumlah_Pinjaman}</Text> {"\n"}
-                            b. Jenis Pembiayaan                 :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jenis_Pembiayaan}</Text> {"\n"}
+                            b. Jenis Pembiayaan                 :  <Text style={{fontSize: 14, color:"#0645AD"}}>{jenpem}</Text> {"\n"}
                             c. Jasa                                             :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jasa}</Text> {"\n"}
-                            d. Jangka Waktu                         :  <Text style={{fontSize: 14, color:"#0645AD"}}>{(parseInt(dataNasabah.Jumlah_Pinjaman) + parseInt(dataNasabah.Jasa)) / parseInt(dataNasabah.Angsuran_Per_Minggu)} Minggu</Text> {"\n"}
+                            d. Jangka Waktu                         :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Term_Pembiayaan} Minggu</Text> {"\n"}
                             e. Angsuran per Minggu          :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Angsuran_Per_Minggu}</Text> {"\n"}{"\n"}
 
                             Kewajiban Nasabah{"\n"}

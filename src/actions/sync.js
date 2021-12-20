@@ -14,7 +14,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
     var getPKMIndividual = ApiSync + 'GetCollectionListPKMIndividual' + '/' + params.cabangid + '/' + params.username;
     var getMasterData = ApiSyncInisiasi + 'GetMasterData/' + params.cabangid;
     var postGetSosialisasiMobile = ApiSyncInisiasi + 'GetSosialisasiMobile';
-    var getDataPencairan = ApiSyncInisiasi + 'GetPencairanMobile/'+ params.cabangid + '/' + params.username;
+    var getDataPencairan = ApiSyncInisiasi + 'GetPencairanMobile/'+ params.cabangid + '/undefined';
     if (__DEV__) console.log('ACTIONS GET SYNC DATA VARIABEL', getListGroup, getListCollection, queryUP, getPAR, getPKMIndividual, getMasterData);
 
     const truncat = (reject, source) => {
@@ -34,6 +34,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 tx.executeSql("DELETE FROM DetailUP");
                 tx.executeSql("DELETE FROM DetailPAR");
                 tx.executeSql("DELETE FROM Detailpkm");
+                tx.executeSql("DELETE FROM Table_Pencairan");
+                tx.executeSql("DELETE FROM Table_Pencairan_Nasabah");
+                tx.executeSql("DELETE FROM Table_Pencairan_Post");
             }, function(error) {
                 ToastAndroid.show("SOMETHING WENT WRONG: " + JSON.stringify(error), ToastAndroid.SHORT);
                 reject('GAGAL MEMPROSES DATA ' + source);
@@ -48,35 +51,116 @@ export const getSyncData = (params) => new Promise((resolve) => {
     });
 
     const insertKelompokPencairan = (responseJson) => new Promise((resolve, reject) => {
-        if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT');
-        // if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT:', responseJson);
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT');
+        const groupPencairan = responseJson.data?.pencairan || [];
+        const ListPencairan = responseJson.data?.pencairan_nasabah || [];
 
         try {
-            if(responseJson.data.pencairan.length  > 0) {
+            if(groupPencairan.length  > 0 && ListPencairan.length > 0) {
+                let filterTemp = ListPencairan.filter(s => s.Nama_Kelompok.includes("Kelompok wanti"));
                 let query = 'INSERT INTO Table_Pencairan (kelompok_Id, Nama_Kelompok, Jumlah_Kelompok, syncby) values ';
-                for (let i = 0; i < responseJson.data.pencairan.length; i++) {
+                let querylistPencairan = 'INSERT INTO Table_Pencairan_Nasabah (' +
+                    'Alamat_Domisili,' +
+                    'Angsuran_Per_Minggu, ' +
+                    'Foto_Pencairan, ' +
+                    'Jasa, ' +
+                    'Jenis_Pembiayaan, ' +
+                    'Jumlah_Pinjaman, ' +
+                    'Kelompok_ID, ' +
+                    'LRP_TTD_AO, ' +
+                    'LRP_TTD_Nasabah, ' +
+                    'Nama_Kelompok, ' +
+                    'Nama_Penjamin, ' +
+                    'Nama_Prospek, ' +
+                    'Nomor_Identitas, ' +
+                    'TTD_KC, ' +
+                    'TTD_KK, ' +
+                    'TTD_KSK, ' +
+                    'TTD_Nasabah, ' +
+                    'TTD_Nasabah_2, ' +
+                    'Term_Pembiayaan, ClientID, syncby) values ';
+
+                for (let i = 0; i < groupPencairan.length; i++) {
                     query = query + "('"
-                    + responseJson[i].Kelompok_ID
+                    + groupPencairan[i].Kelompok_ID
                     + "','"
-                    + responseJson[i].Nama_Kelompok
+                    + groupPencairan[i].Nama_Kelompok
                     + "','"
-                    + responseJson[i].Jml_ID_Prospek
+                    + groupPencairan[i].Jml_ID_Prospek
                     + "','"
                     + params.username
                     + "')";
 
-                    if (i != responseJson.length - 1) query = query + ",";
+                    if (i != groupPencairan.length - 1) query = query + ",";
                 }
+
+                for (let i = 0; i < 10; i++) {
+                    querylistPencairan = querylistPencairan + "('"
+                    + filterTemp[i].Alamat_Domisili
+                    + "','"
+                    + filterTemp[i].Angsuran_Per_Minggu
+                    + "','"
+                    + filterTemp[i].Foto_Pencairan
+                    + "','"
+                    + filterTemp[i].Jasa
+                    + "','"
+                    + filterTemp[i].Jenis_Pembiayaan
+                    + "','"
+                    + filterTemp[i].Jumlah_Pinjaman
+                    + "','"
+                    + filterTemp[i].Kelompok_ID
+                    + "','"
+                    + filterTemp[i].LRP_TTD_AO
+                    + "','"
+                    + filterTemp[i].LRP_TTD_Nasabah
+                    + "','"
+                    + filterTemp[i].Nama_Kelompok
+                    + "','"
+                    + filterTemp[i].Nama_Penjamin
+                    + "','"
+                    + filterTemp[i].Nama_Prospek
+                    + "','"
+                    + filterTemp[i].Nomor_Identitas
+                    + "','"
+                    + filterTemp[i].TTD_KC
+                    + "','"
+                    + filterTemp[i].TTD_KK
+                    + "','"
+                    + filterTemp[i].TTD_KSK
+                    + "','"
+                    + filterTemp[i].TTD_Nasabah
+                    + "','"
+                    + filterTemp[i].TTD_Nasabah_2
+                    + "','"
+                    + filterTemp[i].Term_Pembiayaan
+                    + "','"
+                    + filterTemp[i].ClientID
+                    + "','"
+                    + params.username
+                    + "')";
+
+                    if (i != 10 - 1) querylistPencairan = querylistPencairan + ",";
+                }
+
                 query = query + ";";
-                if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT QUERY:', query);
+                querylistPencairan = querylistPencairan + ";";
+                if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT QUERY:', query);
     
                 db.transaction(
-                    tx => {
-                        tx.executeSql(query);
-                    }, function(error) {
-                        if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT TRANSACTION ERROR:', error);
+                    tx => { tx.executeSql(query); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN INSERT TRANSACTION ERROR:', error);
                         reject('GAGAL INPUT DATA GROUP');
                     }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN INSERT TRANSACTION DONE');
+                        resolve('BERHASIL');
+                    }
+                );
+                db.transaction(
+                    tx => { tx.executeSql(querylistPencairan); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN LIST INSERT TRANSACTION ERROR:', error);
+                        reject('GAGAL INPUT DATA GROUP');
+                    }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN LIST INSERT TRANSACTION DONE');
                         resolve('BERHASIL');
                     }
                 );
@@ -87,8 +171,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 return;
             } 
         } catch(error) {
-            if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT TRANSACTION TRY CATCH ERROR:', error);
-            reject('GAGAL INPUT DATA GROUP KE LOCALSTORAGE');
+            if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT TRANSACTION TRY CATCH ERROR:', error);
+            reject('GAGAL INPUT DATA PENCAIRAN KE LOCALSTORAGE');
             return;
         }
     });
@@ -1058,9 +1142,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const jsonMasterData = await MasterData.json(MasterData);
         // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
 
-        // const PencairanData = await fetch(getDataPencairan);
-        // const jsonPencairanData = await PencairanData.json(PencairanData);
-        // await insertKelompokPencairan(jsonPencairanData);
+        const PencairanData = await fetch(getDataPencairan);
+        const jsonPencairanData = await PencairanData.json(PencairanData);
+        await insertKelompokPencairan(jsonPencairanData);
         // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonPencairanData);
 
         // let dataLogin = [{

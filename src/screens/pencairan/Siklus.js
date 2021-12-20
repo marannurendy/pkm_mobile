@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, ToastAndroid, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -23,7 +23,10 @@ const Siklus = ({route}) => {
     let [dataNasabah, setDataNasabah] = useState(route.params.data);
     let [akadmenu, setakadmenu] = useState(0);
     const [keyword, setKeyword] = useState('');
-
+    let [postPencairan, setPostPencairan] = useState(route.params.postPencairan);
+    let [jenpem, setJenPem]= useState();
+    let [JumlahUP, setJumlahUP] = useState((parseInt(dataNasabah.Jumlah_Pinjaman) - ((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100)).toString());
+    let [TotalPencairan, setTotalPencairan] =useState((parseInt(dataNasabah.Jumlah_Pinjaman) - ((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100)).toString());
     useEffect(() => {
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
@@ -38,7 +41,7 @@ const Siklus = ({route}) => {
         }
 
         getUserData();
-        getSosialisasiDatabase();
+        getJenisPembiayaan();
 
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
@@ -76,30 +79,50 @@ const Siklus = ({route}) => {
         // })
     }, []);
 
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
+    const getJenisPembiayaan = async () => {
+        const response = await AsyncStorage.getItem('JenisPembiayaan');
+        if (response !== null) {
+            const responseJSON = JSON.parse(response);
+            let getJP = responseJSON.filter(s => s.id == route.params.data.Jenis_Pembiayaan)
+            setJenPem(getJP[0].namajenispembiayaan)
+        }
+    }
 
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
+        if (__DEV__) console.log('ACTIONS POST DATA PENCAIRAN INSERT LOCAL');
+        let query = 'INSERT INTO Table_Pencairan_Post (FP4, Foto_Pencairan, Is_Dicairkan, Jml_RealCair, Jml_UP, TTD_KC, TTD_KK, TTD_KSK, TTD_Nasabah, TTD_Nasabah_2, ID_Prospek) ' +
+                    'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
+                    '"' + TotalPencairan + '","' + JumlahUP + '","' + postPencairan.TTD_KC + '", "' + postPencairan.TTD_KK + '", "' + postPencairan.TTD_KSK + '", "' + postPencairan.TTD_Nasabah + '",'+ 
+                    '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.Nama_Kelompok + '")';
         db.transaction(
             tx => {
-                tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
-                    }
-                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
-                })
+                tx.executeSql(query);
+            }, function(error) {
+                if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error:', error.message);
+                return resolve(true);
+            },function() {
+                if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success');
+                if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                if (__DEV__) {
+                    db.transaction(
+                        tx => {
+                            tx.executeSql("SELECT * FROM Table_Pencairan_Post", [], (tx, results) => {
+                                if (__DEV__) console.log('SELECT * FROM Table_Pencairan_Post RESPONSE:', results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log('SELECT * FROM Table_Pencairan_Post ERROR:', error);
+                        }, function() {}
+                    );
+                }
+                return resolve(true);
             }
-        )
-    }
+        );
+        setakadmenu(1)
+    });
     
     // Simpan Handler
     const submitHandler = () => {
-        navigation.navigate("FormFP4")
+        navigation.navigate("FlowPencairan", {Nama_Kelompok:dataNasabah.Nama_Kelompok})
     }
 
     return(
@@ -137,15 +160,15 @@ const Siklus = ({route}) => {
 
                             <Text style={{fontSize: 14, fontWeight: 'bold'}}>Produk Pembiayaan</Text>
                             <TextInput 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                style={{flex: 1, padding: 5,  color:'#333',fontWeight: 'bold',  borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 editable={false} selectTextOnFocus={false}
-                                value={dataNasabah.Jenis_Pembiayaan}
+                                value={jenpem}
                                 returnKeyType="done"
                             />
 
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Plafond</Text>
                             <TextInput 
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold', borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 editable={false} selectTextOnFocus={false}
                                 value={dataNasabah.Jumlah_Pinjaman}
                                 returnKeyType="done"
@@ -154,7 +177,7 @@ const Siklus = ({route}) => {
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Term Pembiayaan</Text>
                             <TextInput 
                                 editable={false} selectTextOnFocus={false}
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                style={{flex: 1, padding: 5, borderRadius:3, color:'#333',fontWeight: 'bold', borderWidth:1, marginBottom:5, marginTop:5}}
                                 value={dataNasabah.Term_Pembiayaan}
                                 returnKeyType="done"
                             />
@@ -162,23 +185,23 @@ const Siklus = ({route}) => {
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Jumlah UP</Text>
                             <TextInput 
                                 editable={false} selectTextOnFocus={false}
-                                value={((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100).toString()}
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                value={JumlahUP}
+                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold', borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 returnKeyType="done"
                             />
 
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Total Pencairan</Text>
                             <TextInput 
                                 editable={false} selectTextOnFocus={false}
-                                value={(parseInt(dataNasabah.Jumlah_Pinjaman) - ((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100)).toString()}
-                                style={{flex: 1, padding: 5, borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                value={TotalPencairan}
+                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold',  borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 returnKeyType="done"
                             />
                             
                             <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                                 <Button
                                     title="SIMPAN"
-                                    onPress={() => setakadmenu(1)}
+                                    onPress={() => doSubmitDraft()}
                                     buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                                     titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                                 />
@@ -204,6 +227,7 @@ const Siklus = ({route}) => {
                 <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                     <Button
                         title="OK"
+                        onPress={() => submitHandler()}
                         buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                         titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                     />

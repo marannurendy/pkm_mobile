@@ -376,12 +376,66 @@ db.transaction(tx => {
         )`
     )
 
+    /**
+     * Pembiayaan_Dari_LembagaLainFreetext tambahan baru by Muhamad Yusup Hamdani (YPH)
+     */
+
     tx.executeSql(
         `create table if not exists Table_Pencairan(
             kelompok_Id varchar,
             Nama_Kelompok varchar,
             Jumlah_Kelompok varchar,
             syncby varchar
+        )`
+    )
+
+    tx.executeSql(
+        `create table if not exists Table_Pencairan_Nasabah(
+            Alamat_Domisili varchar,
+            Angsuran_Per_Minggu varchar,
+            Foto_Pencairan varchar,
+            Jasa varchar,
+            Jenis_Pembiayaan varchar,
+            Jumlah_Pinjaman varchar,
+            Kelompok_ID varchar,
+            LRP_TTD_AO varchar,
+            LRP_TTD_Nasabah varchar,
+            Nama_Kelompok varchar,
+            Nama_Penjamin varchar,
+            Nama_Prospek varchar,
+            Nomor_Identitas varchar,
+            TTD_KC varchar,
+            TTD_KK varchar,
+            TTD_KSK varchar,
+            TTD_Nasabah varchar,
+            TTD_Nasabah_2 varchar,
+            Term_Pembiayaan varchar,
+            ClientID varchar,
+            syncby varchar
+        )`
+    )
+
+    tx.executeSql(
+        `create table if not exists Table_Pencairan_Post(
+            FP4 varchar,
+            Foto_Kegiatan varchar,
+            Foto_Pencairan varchar,
+            ID_Prospek varchar,
+            Is_Batal varchar,
+            Is_Dicairkan varchar,
+            Is_Ludin varchar,
+            Is_PMU varchar,
+            Jml_Cair_PMU varchar,
+            Jml_RealCair varchar,
+            Jml_Sisa_UP varchar,
+            Jml_UP varchar,
+            LRP_TTD_AO varchar,
+            LRP_TTD_Nasabah varchar,
+            TTD_KC varchar,
+            TTD_KK varchar,
+            TTD_KSK varchar,
+            TTD_Nasabah varchar,
+            TTD_Nasabah_2 varchar
         )`
     )
 

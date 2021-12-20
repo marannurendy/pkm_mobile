@@ -20,32 +20,10 @@ const ListPencairan = ({route}) => {
     let [aoName, setAoName] = useState();
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
-    let [data, setData] = useState([{
-        "Alamat_Domisili": "di JL. Mamalia Raya Gang Kelinci No. 4, RT 04 RW 10",
-        "Angsuran_Per_Minggu": "150000",
-        "Foto_Pencairan": {},
-        "Jasa": "750000",
-        "Jenis_Pembiayaan": "Modal Usaha",
-        "Jumlah_Pinjaman": "3000000",
-        "Kelompok_ID": "string",
-        "LRP_TTD_AO": {},
-        "LRP_TTD_Nasabah": {},
-        "Nama_Kelompok": "Toto",
-        "Nama_Penjamin": "Supriyadi",
-        "Nama_Prospek": 'Vina binti Supardi (K)',
-        "Nomor_Identitas": '3674000100020003',
-        "TTD_KC": {},
-        "TTD_KK": {},
-        "TTD_KSK": {},
-        "TTD_Nasabah": {},
-        "TTD_Nasabah_2": {},
-        "Term_Pembiayaan": "Pertama"
-      }]);
-    let [kelom, setKelom] = useState();
+    let [data, setData] = useState();
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
-        setKelom(route.params.groupName)
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -98,20 +76,41 @@ const ListPencairan = ({route}) => {
     }, []);
 
     const getPencairanDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
-
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
+        if (__DEV__) console.log('getPencairanDatabase loaded');
+        if (__DEV__) console.log('getPencairanDatabase keyword:', keyword);
+        
+        let query = 'SELECT * FROM Table_Pencairan_Nasabah';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
+                    if (__DEV__) console.log('getPencairanDatabase results:', results.rows);
                     let dataLength = results.rows.length
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'Nama' : data.Nama_Prospek, 'Nomor_Identitas': '08-09-2021'});
+                        ah.push({'Kelompok_ID' : data.Kelompok_ID, 
+                            'Nama_Kelompok': data.Nama_Kelompok,
+                            'Alamat_Domisili': data.Alamat_Domisili,
+                            'Nomor_Identitas': data.Nomor_Identitas,
+                            'Nama_Penjamin': data.Nama_Penjamin,
+                            'Jumlah_Pinjaman': data.Jumlah_Pinjaman,
+                            'Jenis_Pembiayaan': data.Jenis_Pembiayaan,
+                            'Jasa': data.Jasa,
+                            'Term_Pembiayaan': data.Term_Pembiayaan,
+                            'Angsuran_Per_Minggu': data.Angsuran_Per_Minggu,
+                            'TTD_Nasabah': data.TTD_Nasabah,
+                            'TTD_KC': data.TTD_KC,
+                            'TTD_Nasabah_2': data.TTD_Nasabah_2,
+                            'TTD_KSK': data.TTD_KSK,
+                            'TTD_KK': data.TTD_KK,
+                            'Foto_Pencairan': data.Foto_Pencairan,
+                            'LRP_TTD_Nasabah': data.LRP_TTD_Nasabah,
+                            'LRP_TTD_AO': data.LRP_TTD_AO,
+                            'ClientID': data.ClientID,
+                            'Nama_Prospek': data.Nama_Prospek,
+                        });
                     }
+                    setData(ah)
                 })
             }
         )
@@ -128,14 +127,14 @@ const ListPencairan = ({route}) => {
             onPress={() => navigation.replace('Perjanjian', {data: data})}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessageSos Nama={data.Nama_Prospek} Nomor_Identitas={data.Nomor_Identitas} />
+                <ListMessageSos Nama_Prospek={data.Nama_Prospek} Nomor_Identitas={data.Nomor_Identitas} />
             </View>
         </TouchableOpacity>
     )
-    const ListMessageSos = ({ Nama, Nomor_Identitas }) => {
+    const ListMessageSos = ({ Nama_Prospek, Nomor_Identitas }) => {
         return(
             <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama}</Text>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama_Prospek}</Text>
                 <Text>{Nomor_Identitas}</Text>
             </View>
         )
@@ -187,7 +186,6 @@ const ListPencairan = ({route}) => {
                 <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
                     <View style={{flexDirection: 'column'}}>
                         <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan</Text>
-                        <Text style={{fontSize: 30, fontWeight: 'bold'}}>{kelom}</Text>
                     </View>
                     <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20, maxHeight:50}}>
                         <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
@@ -204,7 +202,7 @@ const ListPencairan = ({route}) => {
                             onChangeText={(text) => setKeyword(text)}
                             value={keyword}
                             returnKeyType="done"
-                            onSubmitEditing={() => getSosialisasiDatabase()}
+                            onSubmitEditing={() => getPencairanDatabase()}
                         />
                     </View>
                 </View>

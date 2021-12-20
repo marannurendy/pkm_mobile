@@ -277,6 +277,9 @@ function CustomDrawerContent(props) {
                             tx.executeSql('DELETE FROM Table_PP_Kelompok');
                             tx.executeSql('DELETE FROM Table_PP_SubKelompok');
                             tx.executeSql('DELETE FROM Table_PP_ListNasabah');
+                            tx.executeSql('DELETE FROM Table_Pencairan');
+                            tx.executeSql('DELETE FROM Table_Pencairan_Nasabah');
+                            tx.executeSql('DELETE FROM Table_Pencairan_Post');
                         },function(error) {
                             alert('Transaction ERROR: ' + error.message);
                         }, async function() {

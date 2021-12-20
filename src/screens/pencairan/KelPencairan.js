@@ -68,7 +68,7 @@ const KelPencairan = () => {
         if (__DEV__) console.log('getKelompokPencairan loaded');
         if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
 
-        let query = 'SELECT kelompok_Id, Nama_Kelompok, Jumlah_Kelompok FROM Table_Pencairan WHERE Nama_Kelompok LIKE "%'+ keyword +'%"';
+        let query = 'SELECT * FROM Table_Pencairan WHERE Nama_Kelompok LIKE "%'+ keyword +'%"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -79,7 +79,7 @@ const KelPencairan = () => {
                         let data = results.rows.item(a);
                         ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'Jumlah_Kelompok': data.Jumlah_Kelompok});
                     }
-                    setData([{'Nama_Kelompok' :'Toto', 'Jumlah_Kelompok': '10'}]);
+                    setData(ah);
                 })
             }
         )
@@ -87,13 +87,14 @@ const KelPencairan = () => {
 
     // LIST VIEW PENCAIRAN
     const renderItemSos = ({ item }) => (
-        <ItemSos data={item} />  
+        <ItemSos data={item}  >  
+        </ItemSos>
     )
 
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('FlowPencairan', {data : data})}
+            onPress={() => navigation.navigate('FlowPencairan', {Nama_Kelompok:data.Nama_Kelompok})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} Jumlah_Kelompok={data.Jumlah_Kelompok} />

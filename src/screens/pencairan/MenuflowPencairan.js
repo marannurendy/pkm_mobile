@@ -7,7 +7,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
 import db from '../../database/Database'
 
-const MenuflowPencairan = () => {
+const MenuflowPencairan = ({route}) => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -16,7 +16,7 @@ const MenuflowPencairan = () => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState("");
     let [aoName, setAoName] = useState();
-
+    let [data, setData] = useState(route.params.Nama_Kelompok);
     useEffect(() => {
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
@@ -27,7 +27,6 @@ const MenuflowPencairan = () => {
                 setBranchName(data.namaCabang);
                 setUname(data.userName);
                 setAoName(data.AOname);
-                console.log(data)
             });
         }
 
@@ -95,7 +94,7 @@ const MenuflowPencairan = () => {
                         </TouchableOpacity>
                     </View>
                     <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{groupName: "Toto"})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{data: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                             <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
                         </TouchableOpacity>
@@ -112,7 +111,7 @@ const MenuflowPencairan = () => {
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('SyncPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('SyncPencairan',{Nama_Kelompok: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                             <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
                         </TouchableOpacity>

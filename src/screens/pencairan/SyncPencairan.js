@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, ToastAndroid, ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import ActionButton from 'react-native-action-button'
-import { scale, verticalScale } from 'react-native-size-matters'
+import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync'
 
 import db from '../../database/Database'
 
@@ -37,7 +36,7 @@ const SyncPencairan = () => {
         }
 
         getUserData();
-        getSosialisasiDatabase();
+        getSyncDataPencairan();
 
         // AsyncStorage.getItem('userData', (error, result) => {
         //     let dt = JSON.parse(result)
@@ -75,22 +74,93 @@ const SyncPencairan = () => {
         // })
     }, []);
 
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
+    const getSyncDataPencairan = () => {
+        if (__DEV__) console.log('getKelompokPencairan loaded');
+        if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
 
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
+        let query = 'SELECT ID_Prospek as Nama_Kelompok, count(ID_Prospek) as JumlahNasabah FROM Table_Pencairan_Post Group By Nama_Kelompok';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
+                    if (__DEV__) console.log('getKelompokPencairan results:', results.rows);
                     let dataLength = results.rows.length
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'});
+                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'JumlahNasabah': data.JumlahNasabah});
                     }
-                    setData([{'groupName' :'Toto', 'totalnasabah': '10', 'date': '08-09-2021'}]);
+                    setData(ah);
+                    console.log(ah)
+                })
+            }
+        )
+    }
+
+    const doSubmit = () => {
+        if (__DEV__) console.log('post pencairan loaded');
+        if (__DEV__) console.log('post pencairan keyword:', keyword);
+
+        let query = 'SELECT * FROM Table_Pencairan_Post';
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    if (__DEV__) console.log('post pencairan results:', results.rows);
+                    let dataLength = results.rows.length
+                    var ah = []
+                    for(let a = 0; a < dataLength; a++) {
+                        let data = results.rows.item(a);
+                        ah.push({
+                            "FP4": "",
+                            "Foto_Kegiatan": data.Foto_Pencairan,
+                            "Foto_Pencairan": data.Foto_Pencairan,
+                            "ID_Prospek": null,
+                            "Is_Batal": null,
+                            "Is_Dicairkan": data.Is_Dicairkan,
+                            "Is_Ludin": null,
+                            "Is_PMU": null,
+                            "Jml_Cair_PMU": null,
+                            "Jml_RealCair": data.Jml_RealCair,
+                            "Jml_Sisa_UP": null,
+                            "Jml_UP": data.Jml_UP,
+                            "LRP_TTD_AO": data.TTD_KC,
+                            "LRP_TTD_Nasabah": data.TTD_Nasabah,
+                            "TTD_KC": data.TTD_KC,
+                            "TTD_KK": data.TTD_KK,
+                            "TTD_KSK": data.TTD_KSK,
+                            "TTD_Nasabah": data.TTD_Nasabah,
+                            "TTD_Nasabah_2": data.TTD_Nasabah_2
+                        });
+                    }
+                    fetch(ApiSyncPostInisiasi + 'post_pencairan', {
+                        method: 'POST',
+                        headers: {
+                            Accept:
+                                'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                        body: JSON.stringify(ah)
+                    })
+                    .then((response) => response.json())
+                    .then((responseJSON) => {
+                        if (__DEV__) console.error('$post /post_inisiasi/post_pencairan response', responseJSON);
+                        if (responseJSON.code === 200) {
+                            ToastAndroid.show("Sync Data berhasil!", ToastAndroid.SHORT);
+                            if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
+
+                            const queryDeleteSosialisasiDatabase = "DELETE FROM Table_Pencairan_Post";
+                            db.transaction(
+                                tx => {
+                                    tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                                        if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                                    })
+                                }, function(error) {
+                                    if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                }, function() {}
+                            );
+                            navigation.goBack();
+                            return true;
+                        }
+                    })
                 })
             }
         )
@@ -98,25 +168,25 @@ const SyncPencairan = () => {
 
     // LIST VIEW PENCAIRAN
     const renderItemSos = ({ item }) => (
-        <ItemSos data={item} />  
+        <ItemSos data={item}  >  
+        </ItemSos>
     )
 
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('FlowPencairan', {groupName: data.groupName})}
+            onPress={() => doSubmit()}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessageSos groupName={data.groupName} date={data.date} totalNasabah={data.totalnasabah} />
+                <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} JumlahNasabah={data.JumlahNasabah} />
             </View>
         </TouchableOpacity>
     )
-    const ListMessageSos = ({ groupName, date, totalNasabah }) => {
+    const ListMessageSos = ({ Nama_Kelompok, JumlahNasabah }) => {
         return(
             <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{groupName}</Text>
-                <Text>{date}</Text>
-                <Text>Total Nasabah : {totalNasabah}</Text>
+                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama_Kelompok}</Text>
+                <Text>Total Prospek : {JumlahNasabah}</Text>
             </View>
         )
     }
