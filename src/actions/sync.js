@@ -53,119 +53,123 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
     const insertKelompokPencairan = (responseJson) => new Promise((resolve, reject) => {
         if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT');
+        // if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT responseJson:', responseJson);
         const groupPencairan = responseJson.data?.pencairan || [];
         const ListPencairan = responseJson.data?.pencairan_nasabah || [];
 
         try {
             if(groupPencairan.length  > 0 && ListPencairan.length > 0) {
                 let filterTemp = ListPencairan.filter(s => s.Nama_Kelompok.includes("Kelompok wanti"));
-                let query = 'INSERT INTO Table_Pencairan (kelompok_Id, Nama_Kelompok, Jumlah_Kelompok, syncby) values ';
-                let querylistPencairan = 'INSERT INTO Table_Pencairan_Nasabah (' +
-                    'Alamat_Domisili,' +
-                    'Angsuran_Per_Minggu, ' +
-                    'Foto_Pencairan, ' +
-                    'Jasa, ' +
-                    'Jenis_Pembiayaan, ' +
-                    'Jumlah_Pinjaman, ' +
-                    'Kelompok_ID, ' +
-                    'LRP_TTD_AO, ' +
-                    'LRP_TTD_Nasabah, ' +
-                    'Nama_Kelompok, ' +
-                    'Nama_Penjamin, ' +
-                    'Nama_Prospek, ' +
-                    'Nomor_Identitas, ' +
-                    'TTD_KC, ' +
-                    'TTD_KK, ' +
-                    'TTD_KSK, ' +
-                    'TTD_Nasabah, ' +
-                    'TTD_Nasabah_2, ' +
-                    'Term_Pembiayaan, ClientID, syncby) values ';
+                if (filterTemp.length > 0) {
+                    let query = 'INSERT INTO Table_Pencairan (kelompok_Id, Nama_Kelompok, Jumlah_Kelompok, syncby) values ';
+                    let querylistPencairan = 'INSERT INTO Table_Pencairan_Nasabah (' +
+                        'Alamat_Domisili,' +
+                        'Angsuran_Per_Minggu, ' +
+                        'Foto_Pencairan, ' +
+                        'Jasa, ' +
+                        'Jenis_Pembiayaan, ' +
+                        'Jumlah_Pinjaman, ' +
+                        'Kelompok_ID, ' +
+                        'LRP_TTD_AO, ' +
+                        'LRP_TTD_Nasabah, ' +
+                        'Nama_Kelompok, ' +
+                        'Nama_Penjamin, ' +
+                        'Nama_Prospek, ' +
+                        'Nomor_Identitas, ' +
+                        'TTD_KC, ' +
+                        'TTD_KK, ' +
+                        'TTD_KSK, ' +
+                        'TTD_Nasabah, ' +
+                        'TTD_Nasabah_2, ' +
+                        'Term_Pembiayaan, ClientID, syncby) values ';
 
-                for (let i = 0; i < groupPencairan.length; i++) {
-                    query = query + "('"
-                    + groupPencairan[i].Kelompok_ID
-                    + "','"
-                    + groupPencairan[i].Nama_Kelompok
-                    + "','"
-                    + groupPencairan[i].Jml_ID_Prospek
-                    + "','"
-                    + params.username
-                    + "')";
+                    for (let i = 0; i < groupPencairan.length; i++) {
+                        query = query + "('"
+                        + groupPencairan[i].Kelompok_ID
+                        + "','"
+                        + groupPencairan[i].Nama_Kelompok
+                        + "','"
+                        + groupPencairan[i].Jml_ID_Prospek
+                        + "','"
+                        + params.username
+                        + "')";
 
-                    if (i != groupPencairan.length - 1) query = query + ",";
-                }
-
-                for (let i = 0; i < 10; i++) {
-                    querylistPencairan = querylistPencairan + "('"
-                    + filterTemp[i].Alamat_Domisili
-                    + "','"
-                    + filterTemp[i].Angsuran_Per_Minggu
-                    + "','"
-                    + filterTemp[i].Foto_Pencairan
-                    + "','"
-                    + filterTemp[i].Jasa
-                    + "','"
-                    + filterTemp[i].Jenis_Pembiayaan
-                    + "','"
-                    + filterTemp[i].Jumlah_Pinjaman
-                    + "','"
-                    + filterTemp[i].Kelompok_ID
-                    + "','"
-                    + filterTemp[i].LRP_TTD_AO
-                    + "','"
-                    + filterTemp[i].LRP_TTD_Nasabah
-                    + "','"
-                    + filterTemp[i].Nama_Kelompok
-                    + "','"
-                    + filterTemp[i].Nama_Penjamin
-                    + "','"
-                    + filterTemp[i].Nama_Prospek
-                    + "','"
-                    + filterTemp[i].Nomor_Identitas
-                    + "','"
-                    + filterTemp[i].TTD_KC
-                    + "','"
-                    + filterTemp[i].TTD_KK
-                    + "','"
-                    + filterTemp[i].TTD_KSK
-                    + "','"
-                    + filterTemp[i].TTD_Nasabah
-                    + "','"
-                    + filterTemp[i].TTD_Nasabah_2
-                    + "','"
-                    + filterTemp[i].Term_Pembiayaan
-                    + "','"
-                    + filterTemp[i].ClientID
-                    + "','"
-                    + params.username
-                    + "')";
-
-                    if (i != 10 - 1) querylistPencairan = querylistPencairan + ",";
-                }
-
-                query = query + ";";
-                querylistPencairan = querylistPencairan + ";";
-                if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT QUERY:', query);
-    
-                db.transaction(
-                    tx => { tx.executeSql(query); }, function(error) {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN INSERT TRANSACTION ERROR:', error);
-                        reject('GAGAL INPUT DATA GROUP');
-                    }, function() {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN INSERT TRANSACTION DONE');
-                        resolve('BERHASIL');
+                        if (i != groupPencairan.length - 1) query = query + ",";
                     }
-                );
-                db.transaction(
-                    tx => { tx.executeSql(querylistPencairan); }, function(error) {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN LIST INSERT TRANSACTION ERROR:', error);
-                        reject('GAGAL INPUT DATA GROUP');
-                    }, function() {
-                        if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN LIST INSERT TRANSACTION DONE');
-                        resolve('BERHASIL');
+
+                    for (let i = 0; i < 10; i++) {
+                        querylistPencairan = querylistPencairan + "('"
+                        + filterTemp[i].Alamat_Domisili
+                        + "','"
+                        + filterTemp[i].Angsuran_Per_Minggu
+                        + "','"
+                        + filterTemp[i].Foto_Pencairan
+                        + "','"
+                        + filterTemp[i].Jasa
+                        + "','"
+                        + filterTemp[i].Jenis_Pembiayaan
+                        + "','"
+                        + filterTemp[i].Jumlah_Pinjaman
+                        + "','"
+                        + filterTemp[i].Kelompok_ID
+                        + "','"
+                        + filterTemp[i].LRP_TTD_AO
+                        + "','"
+                        + filterTemp[i].LRP_TTD_Nasabah
+                        + "','"
+                        + filterTemp[i].Nama_Kelompok
+                        + "','"
+                        + filterTemp[i].Nama_Penjamin
+                        + "','"
+                        + filterTemp[i].Nama_Prospek
+                        + "','"
+                        + filterTemp[i].Nomor_Identitas
+                        + "','"
+                        + filterTemp[i].TTD_KC
+                        + "','"
+                        + filterTemp[i].TTD_KK
+                        + "','"
+                        + filterTemp[i].TTD_KSK
+                        + "','"
+                        + filterTemp[i].TTD_Nasabah
+                        + "','"
+                        + filterTemp[i].TTD_Nasabah_2
+                        + "','"
+                        + filterTemp[i].Term_Pembiayaan
+                        + "','"
+                        + filterTemp[i].ClientID
+                        + "','"
+                        + params.username
+                        + "')";
+
+                        if (i != 10 - 1) querylistPencairan = querylistPencairan + ",";
                     }
-                );
-                return;
+
+                    query = query + ";";
+                    querylistPencairan = querylistPencairan + ";";
+                    if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT QUERY:', query);
+        
+                    db.transaction(
+                        tx => { tx.executeSql(query); }, function(error) {
+                            if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN INSERT TRANSACTION ERROR:', error);
+                            reject('GAGAL INPUT DATA GROUP');
+                        }, function() {
+                            if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN INSERT TRANSACTION DONE');
+                            resolve('BERHASIL');
+                        }
+                    );
+                    db.transaction(
+                        tx => { tx.executeSql(querylistPencairan); }, function(error) {
+                            if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN LIST INSERT TRANSACTION ERROR:', error);
+                            reject('GAGAL INPUT DATA GROUP');
+                        }, function() {
+                            if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN LIST INSERT TRANSACTION DONE');
+                            resolve('BERHASIL');
+                        }
+                    );
+                    return;
+                }  
+                return resolve('BERHASIL');
             } else {
                 // truncat(reject, 'GROUP');
                 resolve('BERHASIL');
