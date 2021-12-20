@@ -24,7 +24,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
     const [itemsGroupProduk, setItemsGroupProduk] = useState([
         {
             label: 'Mingguan',
-            value: '1'
+            value: 'W'
         }
     ]);
     const [tanggalPKMPertama, setTanggalPKMPertama] = useState('');
@@ -41,6 +41,14 @@ const InisiasiFormPPKelompok = ({ route }) => {
         },
         {
             label: 'Rabu',
+            value: '3'
+        },
+        {
+            label: 'Kamis',
+            value: '4'
+        },
+        {
+            label: "Jum'at",
             value: '3'
         }
     ]);
