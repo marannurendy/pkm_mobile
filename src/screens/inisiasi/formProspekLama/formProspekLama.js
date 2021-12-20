@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView, Image, Button } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView, Image, Button, ToastAndroid, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
@@ -11,6 +10,8 @@ import { Picker } from '@react-native-picker/picker';
 import { ApiSyncInisiasi } from '../../../../dataconfig/index';
 import moment from 'moment';
 import 'moment/locale/id';
+import { fetchWithTimeout } from '../../../utils/Functions';
+import { ApiSyncPostInisiasi } from '../../../../dataconfig/apisync/apisync';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -50,12 +51,15 @@ const InisiasiFormProspekLama = ({ route }) => {
     const [valuePerubahanUsahaKeterangan, setValuePerubahanUsahaKeterangan] = useState('');
     const [valuePerubahanStatusTanggunganKeterangan, setValuePerubahanStatusTanggunganKeterangan] = useState('');
     const [valuePerubahanStatusPernikahanKeterangan, setValuePerubahanStatusPernikahanKeterangan] = useState('');
+    const [key_tandaTanganKetuaSubKelompok, setKey_tandaTanganKetuaSubKelompok] = useState(`formProspekLama_tandaTanganKetuaSubKelompok_${clientId}`);
+    const [key_tandaTanganKetuaKelompok, setKey_tandaTanganKetuaKelompok] = useState(`formProspekLama_tandaTanganKetuaKelompok_${clientId}`);
+    const [key_tandaTanganAO, setKey_tandaTanganAO] = useState(`formProspekLama_tandaTanganAO_${clientId}`);
 
     useEffect(() => {
         setInfo();
         getUserData();
         getStorageRumahTinggal();
-        fetchDetail();
+        init();
     }, []);
 
     const getUserData = () => {
@@ -63,6 +67,80 @@ const InisiasiFormProspekLama = ({ route }) => {
             if (error) __DEV__ && console.log('userData error:', error);
             if (__DEV__) console.log('userData response:', result);
         });
+    }
+
+    const getProspekLama = () => {
+        let queryUKDataDiri = `SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = '` + clientId + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_Prospek_Lama_PP length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+
+                        setKey_tandaTanganAO(data.inputTandaTanganAO);
+                        setKey_tandaTanganKetuaKelompok(data.inputTandaTanganKetuaKelompok);
+                        setKey_tandaTanganKetuaSubKelompok(data.inputTandaTanganKetuaSubKelompok);
+
+                        const tandaTanganAO = await AsyncStorage.getItem(data.inputTandaTanganAO);
+                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.inputTandaTanganKetuaKelompok);
+                        const tandaTanganKetuaSubKelompok = await AsyncStorage.getItem(data.inputTandaTanganKetuaSubKelompok);
+
+                        if (__DEV__) console.log('tandaTanganAO :', data.inputTandaTanganAO, tandaTanganAO);
+                        if (__DEV__) console.log('tandaTanganKetuaKelompok :', data.inputTandaTanganKetuaKelompok, tandaTanganKetuaKelompok);
+                        if (__DEV__) console.log('tandaTanganKetuaSubKelompok :', data.inputTandaTanganKetuaSubKelompok, tandaTanganKetuaSubKelompok);
+
+                        const getProdukPembiayaan = () => {
+                            if (__DEV__) console.log('getProdukPembiayaan loaded');
+                            return new Promise((resolve, reject) => {
+                                if (data.inputPembiayaanDiajukan !== null && typeof data.inputPembiayaanDiajukan !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValuePembiayaanDiajukan(data.inputPembiayaanDiajukan);
+                                        AsyncStorage.getItem('Product').then((response) => {
+                                            if (response !== null) {
+                                                const responseJSON = JSON.parse(response);
+                                                if (responseJSON.length > 0 ?? false) {
+                                                    let value = data.inputPembiayaanDiajukan;
+                                                    setSelectedPembiayaanDiajukan(responseJSON.filter(data => data.id === value)[0] || null);
+                                                }
+                                            }
+                                        });
+                                        return resolve('next');
+                                    }, 1200);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        Promise.all([getProdukPembiayaan()]).then((response) => {
+                            if (data.inputTempatTinggalNasabah !== null && typeof data.inputTempatTinggalNasabah !== 'undefined') setValueTempatTinggalNasabah(data.inputTempatTinggalNasabah);
+                            if (data.inputPerubahanStatusPernikahan !== null && typeof data.inputPerubahanStatusPernikahan !== 'undefined') setValuePerubahanStatusPernikahan(data.inputPerubahanStatusPernikahan);
+                            if (data.inputPerubahanStatusPernikahanKeterangan !== null && typeof data.inputPerubahanStatusPernikahanKeterangan !== 'undefined') setValuePerubahanStatusPernikahanKeterangan(data.inputPerubahanStatusPernikahanKeterangan);
+                            if (data.inputPerubahanStatusTanggungan !== null && typeof data.inputPerubahanStatusTanggungan !== 'undefined') setValuePerubahanStatusTanggungan(data.inputPerubahanStatusTanggungan);
+                            if (data.inputPerubahanStatusTanggunganKeterangan !== null && typeof data.inputPerubahanStatusTanggunganKeterangan !== 'undefined') setValuePerubahanStatusTanggunganKeterangan(data.inputPerubahanStatusTanggunganKeterangan);
+                            if (data.inputKehadiranPKM !== null && typeof data.inputKehadiranPKM !== 'undefined') setValueKehadiranPKM(data.inputKehadiranPKM);
+                            if (data.inputPembayaran !== null && typeof data.inputPembayaran !== 'undefined') setValuePembayaran(data.inputPembayaran);
+                            if (data.inputPerubahanUsaha !== null && typeof data.inputPerubahanUsaha !== 'undefined') setValuePerubahanUsaha(data.inputPerubahanUsaha);
+                            if (data.inputPerubahanUsahaKeterangan !== null && typeof data.inputPerubahanUsahaKeterangan !== 'undefined') setValuePerubahanUsahaKeterangan(data.inputPerubahanUsahaKeterangan);
+                            if (data.inputAddress !== null && typeof data.inputAddress !== 'undefined') setValueAddress(data.inputAddress);
+                            if (data.inputNamaTandaTanganAO !== null && typeof data.inputNamaTandaTanganAO !== 'undefined') setValueNamaTandaTanganAO(data.inputNamaTandaTanganAO);
+                            if (data.inputNamaTandaTanganKetuaKelompok !== null && typeof data.inputNamaTandaTanganKetuaKelompok !== 'undefined') setValueNamaTandaTanganKetuaKelompok(data.inputNamaTandaTanganKetuaKelompok);
+                            if (data.inputNamaTandaTanganKetuaSubKelompok !== null && typeof data.inputNamaTandaTanganKetuaSubKelompok !== 'undefined') setValueNamaTandaTanganKetuaSubKelompok(data.inputNamaTandaTanganKetuaSubKelompok);
+
+                            if (data.inputTandaTanganAO !== null && typeof data.inputTandaTanganAO !== 'undefined') setValueTandaTanganAO(tandaTanganAO);
+                            if (data.inputTandaTanganKetuaKelompok !== null && typeof data.inputTandaTanganKetuaKelompok !== 'undefined') setValueTandaTanganKetuaKelompok(tandaTanganKetuaKelompok);
+                            if (data.inputTandaTanganKetuaSubKelompok !== null && typeof data.inputTandaTanganKetuaSubKelompok !== 'undefined') setValueTandaTanganKetuaSubKelompok(tandaTanganKetuaSubKelompok);
+                        });
+
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_Prospek_Lama_PP error:', error.message);
+                })
+            }
+        )
     }
 
     const fetchDetail = () => {
@@ -158,6 +236,11 @@ const InisiasiFormProspekLama = ({ route }) => {
 
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
+        if (__DEV__) console.log('doSubmitDraft selectedPembiayaanDiajukan:', selectedPembiayaanDiajukan);
+
+        AsyncStorage.setItem(key_tandaTanganKetuaSubKelompok, valueTandaTanganKetuaSubKelompok);
+        AsyncStorage.setItem(key_tandaTanganKetuaKelompok, valueTandaTanganKetuaKelompok);
+        AsyncStorage.setItem(key_tandaTanganAO, valueTandaTanganAO);
 
         const find = 'SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = "'+ clientId +'"';
         db.transaction(
@@ -167,13 +250,14 @@ const InisiasiFormProspekLama = ({ route }) => {
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
                     const inputPembiayaanTahap = `${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`;
-                    const inputJangkaWaktuPembiayaanDiajukan = `${selectedPembiayaanDiajukan?.paymentTerm ?? '-'}`;
+                    const inputJangkaWaktuPembiayaanDiajukan = `${selectedPembiayaanDiajukan?.paymentTerm ?? '0'}`;
+                    let maxPlafond = selectedPembiayaanDiajukan?.maxPlafond ?? 0;
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_Prospek_Lama_PP (clientId, clientName, identityNumber, groupId, subGroup, groupName, loanSeries) values ("' + dataDetail?.clientId + '","' + dataDetail?.clientName + '","' + dataDetail?.identityNumber + '","' + dataDetail?.groupId + '","' + dataDetail?.subGroup + '","' + dataDetail?.groupName + '","' + dataDetail?.loanSeries + '")';
+                        query = 'INSERT INTO Table_Prospek_Lama_PP (clientId, clientName, identityNumber, groupId, subGroup, groupName, loanSeries, inputPembiayaanTahap, inputPembiayaanDiajukan, inputJangkaWaktuPembiayaanDiajukan, inputTempatTinggalNasabah, inputPerubahanStatusPernikahan, inputPerubahanStatusPernikahanKeterangan, inputPerubahanStatusTanggungan, inputPerubahanStatusTanggunganKeterangan, inputKehadiranPKM, inputPembayaran, inputPerubahanUsaha, inputPerubahanUsahaKeterangan, inputAddress, inputDate, inputNamaTandaTanganAO, inputTandaTanganAO, inputNamaTandaTanganKetuaKelompok, inputTandaTanganKetuaKelompok, inputNamaTandaTanganKetuaSubKelompok, inputTandaTanganKetuaSubKelompok) values ("' + dataDetail?.ClientID + '","' + dataDetail?.ClientName + '","' + dataDetail?.IdentityNumber + '","' + dataDetail?.GroupID + '","' + dataDetail?.SubGroup + '","' + dataDetail?.GroupName + '","' + dataDetail?.LoanSeries + '","' + inputPembiayaanTahap + '","' + maxPlafond + '","' + inputJangkaWaktuPembiayaanDiajukan + '","' + valueTempatTinggalNasabah + '","' + valuePerubahanStatusPernikahan + '","' + valuePerubahanStatusPernikahanKeterangan + '","' + valuePerubahanStatusTanggungan + '","' + valuePerubahanStatusTanggunganKeterangan + '","' + valueKehadiranPKM + '","' + valuePembayaran + '","' + valuePerubahanUsaha + '","' + valuePerubahanUsahaKeterangan + '","' + valueAddress + '","' + moment().format('YYYY-MM-DD') + '","' + valueNamaTandaTanganAO + '","' + key_tandaTanganAO + '","' + valueNamaTandaTanganKetuaKelompok + '","' + key_tandaTanganKetuaKelompok + '","' + valueNamaTandaTanganKetuaSubKelompok + '","' + key_tandaTanganKetuaSubKelompok + '")';
                     } else {
-                        query = 'UPDATE Table_Prospek_Lama_PP SET clientName = "' + dataDetail?.clientName + '", identityNumber = "' + dataDetail?.identityNumber + '", groupId = "' + dataDetail?.groupId + '", subGroup = "' + dataDetail?.subGroup + '", groupName = "' + dataDetail?.groupName + '", loanSeries = "' + dataDetail?.loanSeries + '" WHERE clientId = "' + dataDetail?.clientId + '"';
+                        query = 'UPDATE Table_Prospek_Lama_PP SET clientName = "' + dataDetail?.ClientName + '", identityNumber = "' + dataDetail?.IdentityNumber + '", groupId = "' + dataDetail?.GroupID + '", subGroup = "' + dataDetail?.SubGroup + '", groupName = "' + dataDetail?.GroupName + '", loanSeries = "' + dataDetail?.LoanSeries + '", inputPembiayaanTahap = "' + inputPembiayaanTahap + '", inputPembiayaanDiajukan = "' + valuePembiayaanDiajukan + '", inputJangkaWaktuPembiayaanDiajukan = "' + inputJangkaWaktuPembiayaanDiajukan + '", inputTempatTinggalNasabah = "' + valueTempatTinggalNasabah + '", inputPerubahanStatusPernikahan = "' + valuePerubahanStatusPernikahan + '", inputPerubahanStatusPernikahanKeterangan = "' + valuePerubahanStatusPernikahanKeterangan + '", inputPerubahanStatusTanggungan = "' + valuePerubahanStatusTanggungan + '", inputPerubahanStatusTanggunganKeterangan = "' + valuePerubahanStatusTanggunganKeterangan + '", inputKehadiranPKM = "' + valueKehadiranPKM + '", inputPembayaran = "' + valuePembayaran + '", inputPerubahanUsaha = "' + valuePerubahanUsaha + '", inputPerubahanUsahaKeterangan = "' + valuePerubahanUsahaKeterangan + '", inputAddress = "' + valueAddress + '", inputDate = "' + moment().format('YYYY-MM-DD') + '", inputNamaTandaTanganAO = "' + valueNamaTandaTanganAO + '", inputTandaTanganAO = "' + key_tandaTanganAO + '", inputNamaTandaTanganKetuaKelompok = "' + valueNamaTandaTanganKetuaKelompok + '", inputTandaTanganKetuaKelompok = "' + key_tandaTanganKetuaKelompok + '", inputNamaTandaTanganKetuaSubKelompok = "' + valueNamaTandaTanganKetuaSubKelompok + '", inputTandaTanganKetuaSubKelompok = "' + key_tandaTanganKetuaSubKelompok + '" WHERE clientId = "' + dataDetail?.ClientID + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -209,41 +293,71 @@ const InisiasiFormProspekLama = ({ route }) => {
         );
     })
 
+    const init = () => {
+        if (__DEV__) console.log('doSubmit loaded');
+        const find = 'SELECT * FROM Sosialisasi_Database WHERE clientId = "'+ clientId +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    if (dataLengthFind > 0) {
+                        Alert.alert('Info', 'Nasabah ini sudah dimasukan ke UK');
+                        navigation.goBack();
+                        return;
+                    } 
+
+                    fetchDetail();
+                    getProspekLama();
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                    Alert.alert('Error', JSON.stringify(error));
+                    navigation.goBack();
+                    return;
+                })
+            }
+        );
+    }
+
     const doSubmit = async () => {
         if (__DEV__) console.log('doSubmit loaded');
+        if (__DEV__) console.log('doSubmit dataDetail:', dataDetail);
 
-        // await doSubmitDraft('submit');
+        if (!valueTandaTanganAO || typeof valueTandaTanganAO === 'undefined' || valueTandaTanganAO === '' || valueTandaTanganAO === 'null') return alert('Tanda Tangan AO (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganAO || typeof valueNamaTandaTanganAO === 'undefined' || valueNamaTandaTanganAO === '' || valueNamaTandaTanganAO === 'null') return alert('Nama Tanda Tangan AO (*) tidak boleh kosong');
+        if (!valueTandaTanganKetuaKelompok || typeof valueTandaTanganKetuaKelompok === 'undefined' || valueTandaTanganKetuaKelompok === '' || valueTandaTanganKetuaKelompok === 'null') return alert('Tanda Tangan Kelompok (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganKetuaKelompok || typeof valueNamaTandaTanganKetuaKelompok === 'undefined' || valueNamaTandaTanganKetuaKelompok === '' || valueNamaTandaTanganKetuaKelompok === 'null') return alert('Nama Tanda Tangan Kelompok (*) tidak boleh kosong');
+        if (!valueTandaTanganKetuaSubKelompok || typeof valueTandaTanganKetuaSubKelompok === 'undefined' || valueTandaTanganKetuaSubKelompok === '' || valueTandaTanganKetuaSubKelompok === 'null') return alert('Tanda Tangan Sub Kelompok (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganKetuaSubKelompok || typeof valueNamaTandaTanganKetuaSubKelompok === 'undefined' || valueNamaTandaTanganKetuaSubKelompok === '' || valueNamaTandaTanganKetuaSubKelompok === 'null') return alert('Nama Tanda Tangan Sub Kelompok (*) tidak boleh kosong');
 
-        const body = {
-            clientId: dataDetail?.clientId,
-            clientName: dataDetail?.clientName,
-            identityNumber: dataDetail?.identityNumber,
-            groupId: dataDetail?.groupId,
-            subGroup: dataDetail?.subGroup,
-            groupName: dataDetail?.groupName,
-            loanSeries: dataDetail?.groupName,
-            inputPembiayaanTahap: `${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`,
-            inputJangkaWaktuPembiayaanDiajukan: `${selectedPembiayaanDiajukan?.paymentTerm ?? '-'}`,
-            inputTempatTinggalNasabah: valueTempatTinggalNasabah,
-            inputPerubahanStatusPernikahan: valuePerubahanStatusPernikahan,
-            inputPerubahanStatusPernikahanKeterangan: valuePerubahanStatusPernikahanKeterangan,
-            inputPerubahanStatusTanggungan: valuePerubahanStatusTanggungan,
-            inputPerubahanStatusTanggunganKeterangan: valuePerubahanStatusTanggunganKeterangan,
-            inputKehadiranPKM: valueKehadiranPKM,
-            inputPembayaran: valuePembayaran,
-            inputPerubahanUsaha: valuePerubahanUsaha,
-            inputPerubahanUsahaKeterangan: valuePerubahanUsahaKeterangan,
-            inputAddress: valueAddress,
-            inputDate: moment().format('YYYY-MM-DD'),
-            inputNamaTandaTanganAO: valueNamaTandaTanganAO,
-            inputTandaTanganAO: valueTandaTanganAO,
-            inputNamaTandaTanganKetuaKelompok: valueNamaTandaTanganKetuaKelompok,
-            inputTandaTanganKetuaKelompok: valueTandaTanganKetuaKelompok,
-            inputNamaTandaTanganKetuaSubKelompok: valueNamaTandaTanganKetuaSubKelompok,
-            inputTandaTanganKetuaSubKelompok: valueTandaTanganKetuaSubKelompok
-        };
+        await doSubmitDraft('submit');
 
-        if (__DEV__) console.log('doSubmit body:', body);
+        let uniqueNumber = (new Date().getTime()).toString(36);
+        let groupId = dataDetail?.GroupID ?? '';
+        let groupName = dataDetail?.GroupName ?? '';
+        let subGroup = dataDetail?.SubGroup ?? '';
+
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama uniqueNumber:', uniqueNumber);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupId:', groupId);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupName:', groupName);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama subGroup:', subGroup);
+
+        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "", "' + moment().format('YYYY-MM-DD') + '", "' + valueAddress + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '")';
+
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama query:', query);
+        db.transaction(
+            tx => {
+                tx.executeSql(query)
+            }, function(error) {
+                if (__DEV__) console.log('insert into sosialisasi_database transaction error: ', error);
+                Alert.alert('Error', JSON.stringify(error));
+            }, function() {
+                Alert.alert('Berhasil', 'Data berhasil masuk UK');
+                navigation.goBack();
+                return;
+            }
+        )
     }
 
     const renderHeader = () => (
@@ -496,7 +610,7 @@ const InisiasiFormProspekLama = ({ route }) => {
                 placeholder='Jakarta'
                 style={[styles.F1, styles.MR16, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}
             />
-            <Text>, 14 Juni 2021</Text>
+            <Text>, {moment().format('LL')}</Text>
         </View>
     )
 
@@ -626,7 +740,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={styles.buttonContainer}>
             <View style={styles.F1} />
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
                     <Text style={{ color: 'white' }}>Save Draft</Text>

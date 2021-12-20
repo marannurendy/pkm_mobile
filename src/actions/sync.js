@@ -169,7 +169,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         resolve('BERHASIL');
                     }
                 );
-                return;
+                return resolve('BERHASIL');
             } else {
                 // truncat(reject, 'GROUP');
                 resolve('BERHASIL');
@@ -453,7 +453,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 var queryUKSektorEkonomi = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, nomor_Identitas, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKPendapatanNasabah = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, nomor_Identitas, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKPermohonanPembiayaan = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, nomor_Identitas, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok, id_prospek, idSosialisasiDatabase) values ';
-                var queryPPKelompok = 'INSERT INTO Table_PP_ListNasabah ( kelompok_Id, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status ) values ';
+                var queryPPKelompok = 'INSERT INTO Table_PP_ListNasabah ( kelompok_Id, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, Nama_TTD_AO ) values ';
                 
                 for (let i = 0; i < uk_client_data.length; i++) {
                     let uniqueNumber = (new Date().getTime()).toString(36);
@@ -931,9 +931,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             + uk_client_data[i].Angsuran_Perminggu
                             + "', '"
                             + 0
+                            + "', '"
+                            + uk_client_data[i].Nama_TTD_AO
                             + "')";
                     } else {
                         queryPPKelompok = queryPPKelompok + "('"
+                            + ""
+                            + "','"
                             + ""
                             + "','"
                             + ""

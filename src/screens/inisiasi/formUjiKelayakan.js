@@ -81,7 +81,7 @@ const FormUjiKelayakan = ({route}) => {
 
         setSubmitted(true);
 
-        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id WHERE a.idSosialisasiDatabase = "' + id + '"';
+        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id WHERE a.idSosialisasiDatabase = "' + id + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
@@ -229,9 +229,14 @@ const FormUjiKelayakan = ({route}) => {
                             "Nama_TTD_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
                             "Nama_TTD_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok,
                             "Nama_TTD_Nasabah": data.nama_tanda_Tangan_Nasabah,
-                            "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin
+                            "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin,
+                            "Kelompok_ID": data.kelompokID,
+                            "Nama_Kelompok": data.namaKelompok,
+                            "Sub_Kelompok": data.subKelompok,
+                            "ClientID": data.clientId
                         }
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
+
                         
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
@@ -274,6 +279,73 @@ const FormUjiKelayakan = ({route}) => {
                                                     setSubmitted(false);
                                                 },function() {
                                                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                                                    
+                                                    if (data.clientId === null || data.clientId === 'null') {}
+                                                    else {
+                                                        const findProspekLamaPP = 'SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = "'+ data.clientId +'"';
+                                                        db.transaction(
+                                                            tx => {
+                                                                tx.executeSql(findProspekLamaPP, [], async (txFind, resultsFind) => {
+                                                                    let dataLengthFind = resultsFind.rows.length
+                                                                    if (__DEV__) console.log(`${findProspekLamaPP}`, resultsFind.rows);
+
+                                                                    if (dataLengthFind > 0) {
+                                                                        const row = resultsFind.rows.item(0);
+                                                                        if (__DEV__) console.log(`${findProspekLamaPP}`, row);
+
+                                                                        const tandaTanganAO = await AsyncStorage.getItem(row.inputTandaTanganAO);
+                                                                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaKelompok);
+                                                                        const tandaTanganKetuaSubKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaSubKelompok);
+
+                                                                        const bodyProspekLama = [
+                                                                            {
+                                                                                "ID_Kelompok": row.groupId,
+                                                                                "ID_Prospek": responseJSON.data[0].ID_Prospek,
+                                                                                "Is_Perkawinan_Berubah": row.inputPerubahanStatusPernikahan,
+                                                                                "Is_Tanggungan_Berubah": row.inputPerubahanStatusTanggungan,
+                                                                                "Is_Usaha_Berubah": row.inputPerubahanUsaha,
+                                                                                "Jml_Kehadiran_PKM": row.inputKehadiranPKM,
+                                                                                "Jml_Pembayaran": row.inputPembayaran,
+                                                                                "Keterangan_Tanggungan": row.inputPerubahanStatusTanggunganKeterangan,
+                                                                                "Keterangan_Usaha": row.inputPerubahanUsahaKeterangan,
+                                                                                "Lokasi_Persetujuan": row.inputAddress,
+                                                                                "No_Identitas": row.identityNumber,
+                                                                                "Plafon_Diajukan": row.inputPembiayaanDiajukan,
+                                                                                "Status_Tempat_Tinggal": row.inputTempatTinggalNasabah,
+                                                                                "TTD_AO": tandaTanganAO.split(',')[1] || 'null',
+                                                                                "TTD_KK": tandaTanganKetuaKelompok.split(',')[1] || 'null',
+                                                                                "TTD_KSK": tandaTanganKetuaSubKelompok.split(',')[1] || 'null',
+                                                                                "Tahap_Pembiayaan": row.inputPembiayaanTahap,
+                                                                                "Tanggal_Persetujuan": row.inputDate,
+                                                                                "Tenor": row.inputJangkaWaktuPembiayaanDiajukan
+                                                                            }
+                                                                        ];
+                                                                        if (__DEV__) console.log('doSubmit bodyProspekLama:', bodyProspekLama);
+                                                                
+                                                                        try {
+                                                                            fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
+                                                                                method: 'POST',
+                                                                                headers: {
+                                                                                    Accept: 'application/json',
+                                                                                    'Content-Type': 'application/json'
+                                                                                },
+                                                                                body: JSON.stringify(bodyProspekLama)
+                                                                            })
+                                                                            .then((response) => response.json())
+                                                                            .then((responseJson) => {
+                                                                                if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama success:', responseJson);
+                                                                            })
+                                                                        } catch(error) {
+                                                                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama error:', error);
+                                                                        }
+                                                                    } 
+                                                                }, function(error) {
+                                                                    if (__DEV__) console.log(`${findProspekLamaPP}`, error.message);
+                                                                })
+                                                            }
+                                                        );
+                                                    }
+                                                    
                                                     if (__DEV__) {
                                                         db.transaction(
                                                             tx => {
@@ -286,6 +358,7 @@ const FormUjiKelayakan = ({route}) => {
                                                         );
                                                     }
 
+                                                    /* ============ START DELETE DATA FROM LOCAL STORAGE ============ */
                                                     const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id = '" + id + "'";
                                                     const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
@@ -293,6 +366,7 @@ const FormUjiKelayakan = ({route}) => {
                                                     const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteProspekLamaPP = "DELETE FROM Table_Prospek_Lama_PP WHERE clientId = '" + data.clientId + "'";
                                                     db.transaction(
                                                         tx => {
                                                             tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
@@ -356,6 +430,16 @@ const FormUjiKelayakan = ({route}) => {
                                                             if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
                                                         }, function() {}
                                                     );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteProspekLamaPP, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteProspekLamaPP} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteProspekLamaPP} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    /* ============ FINISH DELETE DATA FROM LOCAL STORAGE ============ */
                                                     
                                                     /* ============ START REMOVE STORAGE ============ */
                                                     AsyncStorage.removeItem(data.foto_ktp_penjamin);
@@ -363,7 +447,6 @@ const FormUjiKelayakan = ({route}) => {
                                                     AsyncStorage.removeItem(data.foto_kk);
                                                     AsyncStorage.removeItem(data.foto_Surat_Keterangan_Domisili);
                                                     AsyncStorage.removeItem(data.foto_Kartu_Identitas);
-
                                                     AsyncStorage.removeItem(data.tanda_Tangan_AOSAO);
                                                     AsyncStorage.removeItem(data.tanda_Tangan_Nasabah);
                                                     AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);

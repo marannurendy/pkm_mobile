@@ -7,12 +7,13 @@ import { ApiSyncPostInisiasi } from '../../../../dataconfig/apisync/apisync';
 import { showMessage } from 'react-native-flash-message';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
+import db from '../../../database/Database'
 
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 16;
 
 const InisiasiFormPPForm = ({ route }) => {
-    const { groupName, Nama_Nasabah, Nasabah_Id, branchid, jangka_waktu, jasa, jumlah_pembiayaan, kelompok, Angsuran_per_minggu } = route.params;
+    const { groupName, Nama_Nasabah, Nasabah_Id, branchid, jangka_waktu, jasa, jumlah_pembiayaan, kelompok, Angsuran_per_minggu, Nama_TTD_AO } = route.params;
     const navigation = useNavigation();
     const [date, setDate] = useState(new Date());
     const [valueTandaTanganKetuaAO, setValueTandaTanganKetuaAO] = useState(null);
@@ -102,7 +103,7 @@ const InisiasiFormPPForm = ({ route }) => {
                         source={{ uri: valueTandaTanganKetuaAO }}
                     />
                 )}
-                <Text style={[styles.MH16, styles.MV16, { color: 'black' }]}>({aoname})</Text>
+                <Text style={[styles.MH16, styles.MV16, { color: 'black' }]}>({Nama_TTD_AO})</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKetuaAO', onSelectSign: onSelectSign })} />
             </View>
             <Text style={[styles.note, styles.MB8, { marginLeft: 0, color: 'red' }]}>*isi tanda tangan dengan benar</Text>
@@ -120,7 +121,7 @@ const InisiasiFormPPForm = ({ route }) => {
                         source={{ uri: valueTandaTanganKCSAO }}
                     />
                 )}
-                <Text style={[styles.MH16, styles.MV16, { color: 'black' }]}>({Nama_Nasabah})</Text>
+                <Text style={[styles.MH16, styles.MV16, { color: 'black' }]}>({aoname})</Text>
                 <Button title={"Buat TTD"} onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganKCSAO', onSelectSign: onSelectSign })} />
             </View>
             <Text style={[styles.note, styles.MB8, { marginLeft: 0, color: 'red' }]}>*isi tanda tangan dengan benar</Text>
@@ -142,8 +143,8 @@ const InisiasiFormPPForm = ({ route }) => {
     )
 
     const submitHandler = () => {
-        if(valueTandaTanganKetuaAO === null || valueTandaTanganKetuaAO === undefined || valueTandaTanganKetuaAO === "null" || valueTandaTanganKetuaAO === "undefined") flashNotification("Caution!", "Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
-        if(valueTandaTanganKCSAO === null || valueTandaTanganKCSAO === undefined || valueTandaTanganKCSAO === "null" || valueTandaTanganKCSAO === "undefined") flashNotification("Caution!", "Kepala Cabang / Senior Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
+        if(valueTandaTanganKetuaAO === null || valueTandaTanganKetuaAO === undefined || valueTandaTanganKetuaAO === "null" || valueTandaTanganKetuaAO === "undefined") return flashNotification("Caution!", "Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
+        if(valueTandaTanganKCSAO === null || valueTandaTanganKCSAO === undefined || valueTandaTanganKCSAO === "null" || valueTandaTanganKCSAO === "undefined") return flashNotification("Caution!", "Kepala Cabang / Senior Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
 
         setLoading(true)
 

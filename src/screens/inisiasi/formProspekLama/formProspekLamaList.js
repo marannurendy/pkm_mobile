@@ -45,7 +45,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         let search = undefined;
         if (keyword !== '') search = keyword;
 
-        const route = `${ApiSyncInisiasi}GetListClientBRNET/90091/undefined/${search}/1/500`;
+        const route = `${ApiSyncInisiasi}GetListClientBRNET/90091/undefined/${search}/1/100`;
         if (__DEV__) console.log('fetchData route:', route);
 
         setFetching(true);
@@ -106,7 +106,9 @@ const InisiasiFormProspekLamaList = ({ route }) => {
                     }
                     onChangeText={(text) => setKeyword(text)}
                     value={keyword}
-                    returnKeyType="done"
+                    returnKeyType="search"
+                    autoFocus={true}
+                    clearButtonMode="while-editing"
                     onSubmitEditing={() => fetchData(keyword)}
                 />
             </View>
@@ -138,11 +140,6 @@ const InisiasiFormProspekLamaList = ({ route }) => {
             {renderSearch()}
             <ScrollView>
                 {renderList()}
-                {data.length > 500 && (
-                    <View style={[styles.P8]}>
-                        <Text style={{ fontSize: 10, color: colors.MERAH }}>* Jika nasabah tidak ada di list (silahkan cari berdasarkan nama) daftar list di batas per 500 data.</Text>
-                    </View>
-                )}
             </ScrollView>
         </View>
     )

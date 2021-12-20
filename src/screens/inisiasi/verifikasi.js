@@ -302,7 +302,6 @@ const Verifikasi = ({ route }) => {
                 <SafeAreaView style={{flex: 1}}>
                     {data.length === 0 ? (
                         <View style={{ padding: 16 }}>
-                            {/* <ActivityIndicator size="large" color="#00ff00" /> */}
                             <Text>Data kosong</Text>
                         </View>
                     ) : (
