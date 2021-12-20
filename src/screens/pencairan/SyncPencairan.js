@@ -37,48 +37,14 @@ const SyncPencairan = () => {
 
         getUserData();
         getSyncDataPencairan();
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
     }, []);
 
     const getSyncDataPencairan = () => {
         if (__DEV__) console.log('getKelompokPencairan loaded');
         if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
 
-        let query = 'SELECT ID_Prospek as Nama_Kelompok, count(ID_Prospek) as JumlahNasabah FROM Table_Pencairan_Post Group By Nama_Kelompok';
+        let query = 'SELECT count(B.Nama_Kelompok) as JumlahNasabah, B.Nama_Kelompok as Nama_Kelompok, B.Kelompok_ID as Kelompok_ID '+
+                    'FROM Table_Pencairan_Post A LEFT JOIN Table_Pencairan_Nasabah B on A.ID_Prospek = B.ID_Prospek Group By B.Nama_Kelompok';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -87,7 +53,7 @@ const SyncPencairan = () => {
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'JumlahNasabah': data.JumlahNasabah});
+                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'JumlahNasabah': data.JumlahNasabah, 'Kelompok_ID':data.Kelompok_ID});
                     }
                     setData(ah);
                     console.log(ah)
@@ -96,11 +62,13 @@ const SyncPencairan = () => {
         )
     }
 
-    const doSubmit = () => {
+    const doSubmit = (Kelompok_ID) => {
         if (__DEV__) console.log('post pencairan loaded');
         if (__DEV__) console.log('post pencairan keyword:', keyword);
 
-        let query = 'SELECT * FROM Table_Pencairan_Post';
+        let query = 'SELECT A.* FROM Table_Pencairan_Post A '+
+                    'LEFT JOIN Table_Pencairan_Nasabah B on A.ID_Prospek = B.ID_Prospek '+
+                    'where B.Kelompok_ID = "'+ Kelompok_ID +'"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -113,7 +81,7 @@ const SyncPencairan = () => {
                             "FP4": "",
                             "Foto_Kegiatan": null,
                             "Foto_Pencairan": data.Foto_Pencairan,
-                            "ID_Prospek": null,
+                            "ID_Prospek": data.ID_Prospek,
                             "Is_Batal": null,
                             "Is_Dicairkan": data.Is_Dicairkan,
                             "Is_Ludin": null,
@@ -142,12 +110,12 @@ const SyncPencairan = () => {
                     })
                     .then((response) => response.json())
                     .then((responseJSON) => {
-                        if (__DEV__) console.error('$post /post_inisiasi/post_pencairan response', responseJSON);
                         if (responseJSON.code === 200) {
                             ToastAndroid.show("Sync Data berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
 
                             const queryDeleteSosialisasiDatabase = "DELETE FROM Table_Pencairan_Post";
+                            
                             db.transaction(
                                 tx => {
                                     tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
@@ -157,7 +125,19 @@ const SyncPencairan = () => {
                                     if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
                                 }, function() {}
                             );
-                            navigation.goBack();
+                            for(let a = 0; a < ah.length; a++){
+                                const queryDeletePencairanNasabah = 'DELETE FROM Table_Pencairan_Nasabah where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql(queryDeletePencairanNasabah, [], (tx, results) => {
+                                            if (__DEV__) console.log(`${queryDeletePencairanNasabah} RESPONSE:`, results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log(`${queryDeletePencairanNasabah} ERROR:`, error);
+                                    }, function() {}
+                                );
+                            }
+                            navigation.navigate('Pencairan')
                             return true;
                         }
                     })
@@ -175,7 +155,7 @@ const SyncPencairan = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => doSubmit()}
+            onPress={() => doSubmit(data.Kelompok_ID)}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} JumlahNasabah={data.JumlahNasabah} />

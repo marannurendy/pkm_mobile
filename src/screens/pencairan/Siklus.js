@@ -54,11 +54,11 @@ const Siklus = ({route}) => {
     }
 
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
-        if (__DEV__) console.log('ACTIONS POST DATA PENCAIRAN INSERT LOCAL');
+        if (__DEV__) console.log('ACTIONS POST DATA PENCAIRAN INSERT LOCAL', dataNasabah.ID_Prospek);
         let query = 'INSERT INTO Table_Pencairan_Post (FP4, Foto_Pencairan, Is_Dicairkan, Jml_RealCair, Jml_UP, TTD_KC, TTD_KK, TTD_KSK, TTD_Nasabah, TTD_Nasabah_2, ID_Prospek) ' +
                     'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
                     '"' + TotalPencairan + '","' + JumlahUP + '","' + postPencairan.TTD_KC + '", "' + postPencairan.TTD_KK + '", "' + postPencairan.TTD_KSK + '", "' + postPencairan.TTD_Nasabah + '",'+ 
-                    '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.ClientID + '")';
+                    '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.ID_Prospek + '")';
         db.transaction(
             tx => {
                 tx.executeSql(query);
@@ -87,7 +87,7 @@ const Siklus = ({route}) => {
     
     // Simpan Handler
     const submitHandler = () => {
-        navigation.navigate("FlowPencairan", {Nama_Kelompok:dataNasabah.Nama_Kelompok, Open:1})
+        navigation.navigate("FlowPencairan", {kelompok_Id:route.params.data.kelompok_Id, Open:1})
     }
 
     return(

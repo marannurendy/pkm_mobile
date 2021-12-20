@@ -45,7 +45,7 @@ const ListPencairan = ({route}) => {
         if (__DEV__) console.log('getPencairanDatabase loaded');
         if (__DEV__) console.log('getPencairanDatabase keyword:', keyword);
         console.log(route.params.data)
-        let query = 'SELECT * FROM Table_Pencairan_Nasabah where Kelompok_ID = "'+ Kelompok +'"';
+        let query = 'SELECT * FROM Table_Pencairan_Nasabah where Kelompok_ID = "'+ route.params.data +'"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -76,6 +76,7 @@ const ListPencairan = ({route}) => {
                             'ClientID': data.ClientID,
                             'Nama_Prospek': data.Nama_Prospek,
                             'Nama_Tipe_Pencairan':data.Nama_Tipe_Pencairan,
+                            'ID_Prospek':data.ID_Prospek,
                         });
                     }
                     setData(ah)

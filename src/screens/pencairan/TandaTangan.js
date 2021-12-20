@@ -27,6 +27,7 @@ const TandaTanganPencairan = ({route}) => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [dataIDProspek, setDataIDProspek] = useState([]);
     let [idNasabah, setidNasabah] = useState();
     let [dataNasabah, setDataNasabah] = useState(route.params.data);
     const [keyword, setKeyword] = useState('');
@@ -54,57 +55,69 @@ const TandaTanganPencairan = ({route}) => {
 
     const getListNasabah = () => {
         if (__DEV__) console.log('getListNasabah loaded');
-        if (__DEV__) console.log('getListNasabah keyword:', keyword);
+        if (__DEV__) console.log('getListNasabah keyword');
 
         let query = 'SELECT * FROM Table_Pencairan_Nasabah WHERE Kelompok_ID = "'+ dataNasabah +'"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getListNasabah results:', results.rows);
+                    if (__DEV__) console.log('getListNasabah results:', results.rows.length);
                     let dataLength = results.rows.length
-                    if(dataLength > 0){
-                        for(let a = 0; a < dataLength; a++) {
-                            let data = results.rows.item(a);
-                            console.log("AAAA",data)
-                            let querye = 'SELECT * FROM Table_Pencairan_POST ';
-                            db.transaction(
-                                tx => {
-                                    tx.executeSql(querye, [], (tx, results) => {
-                                        if (__DEV__) console.log('getListNasabah results:', results.rows);
-                                        let dataLength = results.rows.length
-                                        console.log("BBBB "+dataLength)
-                                        var ah = []
-                                        for(let a = 0; a < dataLength; a++) {
-                                            let data = results.rows.item(a);
-                                            ah.push({'Nama_Prospek' : data.Nama_Prospek, 'ID_Prospek': data.ID_Prospek});
-                                        }
-                                        setData(ah);
-                                        console.log(ah)
-                                    })
-                                }
-                            )
-                        }
+                    var ah = []
+                    for(let a = 0; a < dataLength; a++) {
+                        let data = results.rows.item(a);
+                        ah.push({'ID_Prospek' : data.ID_Prospek});
+                        console.log(data)
                     }
+                    getListNasabahLocal(ah);
                 })
             }
         )
     }
 
-    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
-        if (__DEV__) console.log('ACTIONS UPDATE DATA PENCAIRAN LOCAL');
-        try{
-            for(let a = 0; a < data.length; a++) {
-                let query = 'UPDATE Table_Pencairan_Post SET LRP_TTD_AO = "' + signatureKetuaKel + '", LRP_TTD_Nasabah = "' + signatureNasabah + '" WHERE ID_Prospek = "' + data[a].ClientID + '"';
-    
+    const getListNasabahLocal = (ah) => {
+        if (__DEV__) console.log('getListNasabah loaded');
+        if (__DEV__) console.log('getListNasabah keyword');
+        var bah = []
+        if(ah.length > 0){
+            for(let i = 0; i < ah.length; i++){
+                console.log(ah[i].ID_Prospek)
+                let query = 'SELECT * FROM Table_Pencairan_Post ';
                 db.transaction(
                     tx => {
-                        tx.executeSql(query)
-                    }, function(error) {
-                        alert(error)
+                        tx.executeSql(query, [], (tx, results) => {
+                            if (__DEV__) console.log('getListNasabah results:', results.rows.length);
+                            let dataLength = results.rows.length
+                            for(let a = 0; a < dataLength; a++) {
+                                let data = results.rows.item(a);
+                                console.log(data.ID_Prospek)
+                                bah.push({'ID_Prospek' : data.ID_Prospek});
+                            }
+                        })
                     }
                 )
             }
-            navigation.navigate("FlowPencairan", {Nama_Kelompok:dataNasabah.Nama_Kelompok, Open:2})
+        }
+        setDataIDProspek(bah)
+    }
+
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
+        if (__DEV__) console.log('ACTIONS UPDATE DATA PENCAIRAN LOCAL');
+        try{
+            if(dataIDProspek.length > 0){
+                for(let a = 0; a < dataIDProspek.length; a++) {
+                    let query = 'UPDATE Table_Pencairan_Post SET LRP_TTD_AO = "' + signatureKetuaKel + '", LRP_TTD_Nasabah = "' + signatureNasabah + '" WHERE ID_Prospek = "' + dataIDProspek[a].ClientID + '"';
+        
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query)
+                        }, function(error) {
+                            alert(error)
+                        }
+                    )
+                }
+                navigation.navigate("FlowPencairan", {kelompok_Id:dataNasabah, Open:2})
+            }
         }
         catch(error){
             alert(error)
