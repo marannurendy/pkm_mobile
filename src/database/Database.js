@@ -337,6 +337,15 @@ db.transaction(tx => {
     )
 
     tx.executeSql(
+        `create table if not exists Table_UK_DisipinNasabah(
+            nama_lengkap varchar,
+            kehadiran_pkm varchar,
+            angsuran_pada_saat_pkm varchar,
+            idSosialisasiDatabase varchar
+        );`
+    )
+
+    tx.executeSql(
         `create table if not exists Table_PP_Kelompok(
             kelompok_Id varchar,
             kelompok varchar,
@@ -516,6 +525,7 @@ db.transaction(tx => {
     // tx.executeSql('DROP TABLE IF EXISTS Table_UK_SektorEkonomi')
     // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PendapatanNasabah')
     // tx.executeSql('DROP TABLE IF EXISTS Table_UK_PermohonanPembiayaan')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_DisipinNasabah')
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_Kelompok')
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_SubKelompok')
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_ListNasabah')
