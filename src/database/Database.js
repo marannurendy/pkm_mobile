@@ -382,7 +382,8 @@ db.transaction(tx => {
             jangka_waktu varchar,
             jasa varchar,
             Angsuran_per_minggu varchar,
-            status varchar
+            status varchar,
+            Nama_TTD_AO varchar
         )`
     )
 
@@ -409,6 +410,7 @@ db.transaction(tx => {
             groupName varchar,
             loanSeries varchar,
             inputPembiayaanTahap varchar,
+            inputPembiayaanDiajukan varchar,
             inputJangkaWaktuPembiayaanDiajukan varchar,
             inputTempatTinggalNasabah varchar,
             inputPerubahanStatusPernikahan varchar,
@@ -483,6 +485,7 @@ db.transaction(tx => {
             TTD_Nasabah_2 varchar
         );`
     )
+    
     // tx.executeSql('DROP TABLE IF EXISTS ListGroup')
     // tx.executeSql('DROP TABLE IF EXISTS GroupList')
     // tx.executeSql('DROP TABLE IF EXISTS UpAccountList')
