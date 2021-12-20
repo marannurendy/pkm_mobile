@@ -16,7 +16,7 @@ const images = {
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const ProdukPembiayaan = ({ route }) => {
-    const { groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
@@ -59,7 +59,7 @@ const ProdukPembiayaan = ({ route }) => {
     }
 
     const getUKProdukPembiayaan = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '` + namaNasabah + `';`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
@@ -340,7 +340,7 @@ const ProdukPembiayaan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueNoRekening:', valueNoRekening);
         if (__DEV__) console.log('doSubmitDraft valuePemilikRekening:', valuePemilikRekening);
 
-        const find = 'SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -349,9 +349,9 @@ const ProdukPembiayaan = ({ route }) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening) values ("' + namaNasabah + '","' + valueJenisPembiayaan + '","' + valueNamaProduk + '","' + valueProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + valueKategoriTujuanPembiayaan + '","' + valueTujuanPembiayaan + '","' + valueTypePencairan + '","' + valueFrekuensiPembayaran + '","' + valueRekeningBank + '","' + valueNamaBank + '","' + valueNoRekening + '","' + valuePemilikRekening + '")';
+                        query = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, idSosialisasiDatabase) values ("' + namaNasabah + '","' + valueJenisPembiayaan + '","' + valueNamaProduk + '","' + valueProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + valueKategoriTujuanPembiayaan + '","' + valueTujuanPembiayaan + '","' + valueTypePencairan + '","' + valueFrekuensiPembayaran + '","' + valueRekeningBank + '","' + valueNamaBank + '","' + valueNoRekening + '","' + valuePemilikRekening + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_ProdukPembiayaan SET jenis_Pembiayaan = "' + valueJenisPembiayaan + '", nama_Produk = "' + valueNamaProduk + '", produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pinjaman = "' + valueJumlahPinjaman + '", term_Pembiayaan = "' + valueTermPembiayaan + '", kategori_Tujuan_Pembiayaan = "' + valueKategoriTujuanPembiayaan + '", tujuan_Pembiayaan = "' + valueTujuanPembiayaan + '", type_Pencairan = "' + valueTypePencairan + '", frekuensi_Pembayaran = "' + valueFrekuensiPembayaran + '", status_Rekening_Bank = "' + valueRekeningBank + '", nama_Bank = "' + valueNamaBank + '", no_Rekening = "' + valueNoRekening + '", pemilik_Rekening = "' + valuePemilikRekening + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_ProdukPembiayaan SET jenis_Pembiayaan = "' + valueJenisPembiayaan + '", nama_Produk = "' + valueNamaProduk + '", produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pinjaman = "' + valueJumlahPinjaman + '", term_Pembiayaan = "' + valueTermPembiayaan + '", kategori_Tujuan_Pembiayaan = "' + valueKategoriTujuanPembiayaan + '", tujuan_Pembiayaan = "' + valueTujuanPembiayaan + '", type_Pencairan = "' + valueTypePencairan + '", frekuensi_Pembayaran = "' + valueFrekuensiPembayaran + '", status_Rekening_Bank = "' + valueRekeningBank + '", nama_Bank = "' + valueNamaBank + '", no_Rekening = "' + valueNoRekening + '", pemilik_Rekening = "' + valuePemilikRekening + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -396,7 +396,7 @@ const ProdukPembiayaan = ({ route }) => {
 
         await doSubmitDraft('submit');
 
-        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -410,7 +410,7 @@ const ProdukPembiayaan = ({ route }) => {
                     }
 
                     if (screenState === 1) {
-                        let query = 'UPDATE Table_UK_Master SET status = "2" WHERE namaNasabah = "' + namaNasabah + '"';
+                        let query = 'UPDATE Table_UK_Master SET status = "2" WHERE idSosialisasiDatabase = "' + id + '"';
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
                         db.transaction(

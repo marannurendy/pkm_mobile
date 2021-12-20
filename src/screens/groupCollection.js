@@ -132,7 +132,7 @@ const GroupCollection = ({route}) => {
         const statusTotalTitipan = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.titipan) , 0 )
         const statusTotalTarikan = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.tarikan) , 0 )
 
-        console.log(DataMemberList)
+        console.log(statusTotal)
 
         if(DataGroupInfo.Status === '3') {
             setButtonSubmit(true)

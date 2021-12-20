@@ -14,7 +14,7 @@ const images = {
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKSektorEkonomi = ({ route }) => {
-    const { groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueSektorEkonomi, setValueSektorEkonomi] = useState(null);
@@ -36,7 +36,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
     }
 
     const getUKSektorEkonomi = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_SektorEkonomi WHERE nama_lengkap = '` + namaNasabah + `';`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], (tx, results) => {
@@ -81,7 +81,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueSubSektorEkonomi:', valueSubSektorEkonomi);
         if (__DEV__) console.log('doSubmitDraft valueJenisUsaha:', valueJenisUsaha);
 
-        const find = 'SELECT * FROM Table_UK_SektorEkonomi WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -90,9 +90,9 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha) values ("' + namaNasabah + '","' + valueSektorEkonomi + '","' + valueSubSektorEkonomi + '","' + valueJenisUsaha + '")';
+                        query = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha, idSosialisasiDatabase) values ("' + namaNasabah + '","' + valueSektorEkonomi + '","' + valueSubSektorEkonomi + '","' + valueJenisUsaha + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_SektorEkonomi SET sektor_Ekonomi = "' + valueSektorEkonomi + '", sub_Sektor_Ekonomi = "' + valueSubSektorEkonomi + '", jenis_Usaha = "' + valueJenisUsaha + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_SektorEkonomi SET sektor_Ekonomi = "' + valueSektorEkonomi + '", sub_Sektor_Ekonomi = "' + valueSubSektorEkonomi + '", jenis_Usaha = "' + valueJenisUsaha + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -141,7 +141,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
 
         await doSubmitDraft('submit');
 
-        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -155,7 +155,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                     }
                     
                     if (screenState === 3) {
-                        let query = 'UPDATE Table_UK_Master SET status = "4" WHERE namaNasabah = "' + namaNasabah + '"';
+                        let query = 'UPDATE Table_UK_Master SET status = "4" WHERE idSosialisasiDatabase = "' + id + '"';
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
                         db.transaction(
@@ -223,6 +223,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                     <Text style={[styles.headerText, { fontSize: 20 }]}>{groupName}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{namaNasabah}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{currentDate}</Text>
+                    {/* <Text style={[styles.headerText, { fontSize: 15 }]}>{id}</Text> */}
                 </ImageBackground>
             </View>
         </>

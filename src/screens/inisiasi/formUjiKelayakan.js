@@ -8,9 +8,10 @@ import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { Button } from 'react-native-elements'
 import db from '../../database/Database';
 import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync'
+import { fetchWithTimeout } from '../../utils/Functions'
 
 const FormUjiKelayakan = ({route}) => {
-    const { groupName, namaNasabah, nomorHandphone } = route.params;
+    const { id, groupName, namaNasabah, nomorHandphone } = route.params;
     const dimension = Dimensions.get('screen');
     const navigation = useNavigation();
 
@@ -53,7 +54,7 @@ const FormUjiKelayakan = ({route}) => {
     }
 
     const getUKMaster = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_Master WHERE namaNasabah = '` + namaNasabah + `';`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], (tx, results) => {
@@ -80,7 +81,7 @@ const FormUjiKelayakan = ({route}) => {
 
         setSubmitted(true);
 
-        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.nama_lengkap = b.nama_lengkap LEFT JOIN Table_UK_KondisiRumah c ON a.nama_lengkap = c.nama_lengkap LEFT JOIN Table_UK_SektorEkonomi d ON a.nama_lengkap = d.nama_lengkap LEFT JOIN Table_UK_PendapatanNasabah e ON a.nama_lengkap = e.nama_lengkap LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.nama_lengkap = f.nama_lengkap WHERE a.nama_lengkap = "' + namaNasabah + '"';
+        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id WHERE a.idSosialisasiDatabase = "' + id + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
@@ -101,6 +102,10 @@ const FormUjiKelayakan = ({route}) => {
                         const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
                         const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
                         const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
+                        const setUKtimeOut = await AsyncStorage.getItem("SetUKtimeOut");
+                        
+                        let timeOut = 360000;
+                        if (setUKtimeOut) timeOut = parseInt(JSON.parse(setUKtimeOut));
 
                         let namaBank = data.nama_Bank;
                         let noRekening = data.no_Rekening;
@@ -126,8 +131,9 @@ const FormUjiKelayakan = ({route}) => {
 
                         let idProspek = "";
                         if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
-
+                        
                         const body = {
+                            "Sumber": data.sumberId,
                             "Alamat": data.alamat_Identitas,
                             "AlamatDomisili": data.alamat_Domisili,
                             "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
@@ -137,7 +143,7 @@ const FormUjiKelayakan = ({route}) => {
                             "CreatedNIP": nip,
                             "Dinding": data.dinding,
                             "FotoKK": fotoKartuKeluarga.split(',')[1],
-                            "FotoKTPPenjamin": fotoDataPenjamin.split(',')[1],
+                            "FotoKTPPenjamin": fotoDataPenjamin === null || fotoDataPenjamin === 'null' ? '' : fotoDataPenjamin.split(',')[1],
                             "FotoKTPSuami": fotoDataSuami === null || fotoDataSuami === 'null' ? '' : fotoDataSuami.split(',')[1],
                             "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
                             "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
@@ -226,22 +232,23 @@ const FormUjiKelayakan = ({route}) => {
                             "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin
                         }
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
-
-                        fetch(ApiSyncPostInisiasi + 'post_prospek_uk', {
-                            method: 'POST',
-                            headers: {
-                                Accept:
-                                    'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                            body: JSON.stringify(body)
-                        })
-                        .then((response) => response.json())
-                        .then((responseJSON) => {
-                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response', responseJSON);
+                        
+                        try {
+                            const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
+                                timeout: timeOut, // 6 menit
+                                method: 'POST',
+                                headers: {
+                                    Accept:
+                                        'application/json',
+                                        'Content-Type': 'application/json'
+                                    },
+                                body: JSON.stringify(body)
+                            });
+                            const responseJSON = await response.json();
+                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
 
                             if (responseJSON.responseCode === 200) {
-                                const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+                                const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
                                 db.transaction(
                                     tx => {
                                         tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -255,7 +262,7 @@ const FormUjiKelayakan = ({route}) => {
                                                 return;
                                             }
 
-                                            query = 'UPDATE Table_UK_Master SET status = "7" WHERE namaNasabah = "' + namaNasabah + '"';
+                                            query = 'UPDATE Table_UK_Master SET status = "7" WHERE idSosialisasiDatabase = "' + id + '"';
 
                                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
@@ -279,13 +286,13 @@ const FormUjiKelayakan = ({route}) => {
                                                         );
                                                     }
 
-                                                    const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE namaCalonNasabah = '" + namaNasabah + "'";
-                                                    const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE nama_lengkap = '" + namaNasabah + "'";
-                                                    const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '" + namaNasabah + "'";
-                                                    const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE nama_lengkap = '" + namaNasabah + "'";
-                                                    const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE nama_lengkap = '" + namaNasabah + "'";
-                                                    const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '" + namaNasabah + "'";
-                                                    const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = '" + namaNasabah + "'";
+                                                    const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id = '" + id + "'";
+                                                    const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
                                                     db.transaction(
                                                         tx => {
                                                             tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
@@ -376,21 +383,25 @@ const FormUjiKelayakan = ({route}) => {
                                         })
                                     }
                                 );
-
                                 return true;
                             }
 
                             Alert.alert('Error', responseJSON.responseDescription);
                             setSubmitted(false);
-                        })
-                        .catch((error) => {
-                            console.error('$post /post_inisiasi/post_prospek_uk response', error);
-                            ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
+
+                        } catch (error) {
+                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
+                            if (error.name === 'AbortError') {
+                                Alert.alert('Error', 'Request timeout');
+                            } else {
+                                Alert.alert('Error', error.message || 'Something went wrong');
+                            }
+
                             setSubmitted(false);
-                        });
+                        }
                     }
                 }, function(error) {
-                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error 3:', error.message);
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
                     ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
                     setSubmitted(false);
                 })
@@ -420,6 +431,7 @@ const FormUjiKelayakan = ({route}) => {
                     <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Form Uji Kelayakan</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 20, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{groupName}</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{namaNasabah}</Text>
+                    {/* <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{id}</Text> */}
                 </ImageBackground>
             </View>
 
@@ -428,7 +440,7 @@ const FormUjiKelayakan = ({route}) => {
 
                 <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'address-card'} size={25} color={'#FFF'} />
                         </View>
@@ -445,7 +457,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 0 ? navigation.navigate('ProdukPembiayaan', {groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 0 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 0 ? navigation.navigate('ProdukPembiayaan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 0 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'product-hunt'} size={25} color={'#FFF'} />
                         </View>
@@ -462,7 +474,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'home'} size={25} color={'#FFF'} />
                         </View>
@@ -479,7 +491,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 2 ? navigation.navigate('InisiasiFormUKSektorEkonomi', {groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 2 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 2 ? navigation.navigate('InisiasiFormUKSektorEkonomi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 2 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'sellsy'} size={25} color={'#FFF'} />
                         </View>
@@ -496,7 +508,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 3 ? navigation.navigate('InisiasiFormUKTingkatPendapatan', {groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 3 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 3 ? navigation.navigate('InisiasiFormUKTingkatPendapatan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 3 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'chart-area'} size={25} color={'#FFF'} />
                         </View>
@@ -513,7 +525,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {groupName: groupName, namaNasabah: namaNasabah, screenState: screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState: screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'signature'} size={25} color={'#FFF'} />
                         </View>

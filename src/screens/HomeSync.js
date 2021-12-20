@@ -141,6 +141,16 @@ export default function FrontHomeSync(props) {
         getSyncData(params).then((responseJson) => {
             if (__DEV__) console.log('doSubmit getSyncData response:', responseJson);
 
+            if (responseJson === 'SYNC FAILED TIMEOUT') {
+                setSubmitted(false);
+                Alert.alert(
+                    "Error",
+                    "Sync timeout"
+                );
+                return;
+            }
+
+            setSubmitted(false);
             Alert.alert(
                 "Sukses",
                 "Sync berhasil dilakukan, Anda akan memasuki menu utama",
@@ -153,7 +163,6 @@ export default function FrontHomeSync(props) {
                 { cancelable: false }
             )
             props.onSuccess()
-            setSubmitted(false);
         }).catch((error) => {
             if (__DEV__) console.log('doSubmit getSyncData error:', error);
             ToastAndroid.show(JSON.stringify(error), ToastAndroid.SHORT);
@@ -439,7 +448,7 @@ export default function FrontHomeSync(props) {
         >
             {renderProspek()}
             {renderButton()}
-            <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text>
+            {/* <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text> */}
         </View>
     )
 

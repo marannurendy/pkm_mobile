@@ -23,7 +23,7 @@ const dataPilihan = [
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKKondisiRumah = ({ route }) => {
-    const { groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [openLuasBangunan, setOpenLuasBangunan] = useState(false);
@@ -58,7 +58,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     }
 
     const getUKKondisiRumah = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_KondisiRumah WHERE nama_lengkap = '` + namaNasabah + `';`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], (tx, results) => {
@@ -111,7 +111,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueAksesAirBersih:', valueAksesAirBersih);
         if (__DEV__) console.log('doSubmitDraft valueKamarMandi:', valueKamarMandi);
 
-        const find = 'SELECT * FROM Table_UK_KondisiRumah WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -120,9 +120,9 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi) values ("' + namaNasabah + '","' + valueLuasBangunan + '","' + valueKondisiBangunan + '","' + valueJenisAtap + '","' + valueDinding + '","' + valueLantai + '","' + valueAksesAirBersih + '","' + valueKamarMandi + '")';
+                        query = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, idSosialisasiDatabase) values ("' + namaNasabah + '","' + valueLuasBangunan + '","' + valueKondisiBangunan + '","' + valueJenisAtap + '","' + valueDinding + '","' + valueLantai + '","' + valueAksesAirBersih + '","' + valueKamarMandi + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_KondisiRumah SET luas_Bangunan = "' + valueLuasBangunan + '", kondisi_Bangunan = "' + valueKondisiBangunan + '", jenis_Atap = "' + valueJenisAtap + '", dinding = "' + valueDinding + '", lantai = "' + valueLantai + '", sanitasi_Akses_AirBersih = "' + valueAksesAirBersih + '", sanitasi_KamarMandi = "' + valueKamarMandi + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_KondisiRumah SET luas_Bangunan = "' + valueLuasBangunan + '", kondisi_Bangunan = "' + valueKondisiBangunan + '", jenis_Atap = "' + valueJenisAtap + '", dinding = "' + valueDinding + '", lantai = "' + valueLantai + '", sanitasi_Akses_AirBersih = "' + valueAksesAirBersih + '", sanitasi_KamarMandi = "' + valueKamarMandi + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -173,7 +173,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
         await doSubmitDraft('submit');
 
-        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -187,7 +187,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     }
 
                     if (screenState === 2) {
-                        let query = 'UPDATE Table_UK_Master SET status = "3" WHERE namaNasabah = "' + namaNasabah + '"';
+                        let query = 'UPDATE Table_UK_Master SET status = "3" WHERE idSosialisasiDatabase = "' + id + '"';
                         if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
                         db.transaction(
@@ -243,6 +243,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     <Text style={[styles.headerText, { fontSize: 20 }]}>{groupName}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{namaNasabah}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{currentDate}</Text>
+                    {/* <Text style={[styles.headerText, { fontSize: 15 }]}>{id}</Text> */}
                 </ImageBackground>
             </View>
         </>

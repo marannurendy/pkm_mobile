@@ -142,6 +142,7 @@ db.transaction(tx => {
 
     tx.executeSql(
         `create table if not exists Sosialisasi_Database(
+            id varchar,
             tanggalInput varchar, 
             sumberId varchar, 
             namaCalonNasabah varchar, 
@@ -152,7 +153,8 @@ db.transaction(tx => {
             type varchar,
             verifikasiTanggal varchar,
             verifikasiStatus varchar,
-            verifikasiReason varchar);`
+            verifikasiReason varchar,
+            id_prospek varchar);`
     )
 
     tx.executeSql(
@@ -173,7 +175,9 @@ db.transaction(tx => {
     tx.executeSql(
         `create table if not exists Table_UK_Master(
             namaNasabah varchar,
-            status varchar
+            status varchar,
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         );`
     )
     
@@ -223,7 +227,8 @@ db.transaction(tx => {
             id_prospek varchar,
             is_pernyataan_dibaca varchar,
             lokasi_sosialisasi varchar,
-            is_alamat_domisili_sesuai_ktp varchar
+            is_alamat_domisili_sesuai_ktp varchar,
+            idSosialisasiDatabase varchar
         );`
     )
 
@@ -244,7 +249,8 @@ db.transaction(tx => {
             nama_Bank varchar,
             no_Rekening varchar,
             pemilik_Rekening varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         );`
     )
 
@@ -259,7 +265,8 @@ db.transaction(tx => {
             lantai varchar,
             sanitasi_Akses_AirBersih varchar,
             sanitasi_KamarMandi varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         );`
     )
 
@@ -270,7 +277,8 @@ db.transaction(tx => {
             sektor_Ekonomi varchar,
             sub_Sektor_Ekonomi varchar,
             jenis_Usaha varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         );`
     )
 
@@ -297,7 +305,8 @@ db.transaction(tx => {
             pendapatanSuami_jumlah_Hari_Usaha_Perbulan varchar,
             pendapatanSuami_pendapatan_Bersih_Perbulan varchar,
             pendapatanSuami_pendapatan_Bersih_Perminggu varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         )`
     )
 
@@ -318,7 +327,8 @@ db.transaction(tx => {
             nama_tanda_Tangan_SuamiPenjamin varchar,
             nama_tanda_Tangan_Ketua_SubKelompok varchar,
             nama_tanda_Tangan_Ketua_Kelompok varchar,
-            id_prospek varchar
+            id_prospek varchar,
+            idSosialisasiDatabase varchar
         )`
     )
 
@@ -386,8 +396,43 @@ db.transaction(tx => {
             Nama_Kelompok varchar,
             Jumlah_Kelompok varchar,
             syncby varchar
-        )`
+        );`
     )
+
+    tx.executeSql(
+        `create table if not exists Table_Prospek_Lama_PP(
+            clientId varchar,
+            clientName varchar,
+            identityNumber varchar,
+            groupId varchar,
+            subGroup varchar,
+            groupName varchar,
+            loanSeries varchar,
+            inputPembiayaanTahap varchar,
+            inputJangkaWaktuPembiayaanDiajukan varchar,
+            inputTempatTinggalNasabah varchar,
+            inputPerubahanStatusPernikahan varchar,
+            inputPerubahanStatusPernikahanKeterangan varchar,
+            inputPerubahanStatusTanggungan varchar,
+            inputPerubahanStatusTanggunganKeterangan varchar,
+            inputKehadiranPKM varchar,
+            inputPembayaran varchar,
+            inputPerubahanUsaha varchar,
+            inputPerubahanUsahaKeterangan varchar,
+            inputAddress varchar,
+            inputDate varchar,
+            inputNamaTandaTanganAO varchar,
+            inputTandaTanganAO varchar,
+            inputNamaTandaTanganKetuaKelompok varchar,
+            inputTandaTanganKetuaKelompok varchar,
+            inputNamaTandaTanganKetuaSubKelompok varchar,
+            inputTandaTanganKetuaSubKelompok varchar
+        );`
+    )
+
+    /**
+     * Pencairan by MBG
+     */
 
     tx.executeSql(
         `create table if not exists Table_Pencairan_Nasabah(
@@ -412,7 +457,7 @@ db.transaction(tx => {
             Term_Pembiayaan varchar,
             ClientID varchar,
             syncby varchar
-        )`
+        );`
     )
 
     tx.executeSql(
@@ -436,9 +481,8 @@ db.transaction(tx => {
             TTD_KSK varchar,
             TTD_Nasabah varchar,
             TTD_Nasabah_2 varchar
-        )`
+        );`
     )
-
     // tx.executeSql('DROP TABLE IF EXISTS ListGroup')
     // tx.executeSql('DROP TABLE IF EXISTS GroupList')
     // tx.executeSql('DROP TABLE IF EXISTS UpAccountList')
@@ -466,6 +510,7 @@ db.transaction(tx => {
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_Kelompok')
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_SubKelompok')
     // tx.executeSql('DROP TABLE IF EXISTS Table_PP_ListNasabah')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_Prospek_Lama_PP')
 
 },function(error) {
             console.log('Transaction ERROR: ' + error.message);
