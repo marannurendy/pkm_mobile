@@ -117,7 +117,8 @@ const styles = StyleSheet.create({
         borderRadius: 4
     },
     spaceGray: {
-        borderWidth: 3,
+        borderStyle: 'dotted',
+        borderWidth: 1,
         borderColor: 'gray'
     },
     modalContainer: {
@@ -148,6 +149,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        opacity: 0.5,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     F1: {
         flex: 1
     },
@@ -159,6 +171,9 @@ const styles = StyleSheet.create({
     },
     P8: {
         padding: 8
+    },
+    P12: {
+        padding: 12
     },
     P16: {
         padding: 16

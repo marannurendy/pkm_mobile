@@ -95,6 +95,8 @@ const Sosialisasi = () => {
     }
 
     const submitHandler = () => {
+        let uniqueNumber = (new Date().getTime()).toString(36);
+
         if(tanggalInput === null || tanggalInput === undefined) {
             flashNotification("Alert", "Silahkan pilih tanggal input", "#ff6347", "#fff")
         }else if(sumberDana === null || sumberDana === undefined) {
@@ -118,6 +120,7 @@ const Sosialisasi = () => {
                             db.transaction(
                                 tx => {
                                     tx.executeSql(`INSERT INTO Sosialisasi_Database (
+                                        id,
                                         tanggalInput, 
                                         sumberId, 
                                         namaCalonNasabah, 
@@ -127,6 +130,7 @@ const Sosialisasi = () => {
                                         lokasiSosialisasi,
                                         type
                                     ) values (
+                                        '` + uniqueNumber + `',
                                         '` + tanggalInput + `',
                                         '` + sumberDana + `',
                                         '` + namaNasabah + `',

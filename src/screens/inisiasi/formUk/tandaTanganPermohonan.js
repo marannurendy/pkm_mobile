@@ -21,7 +21,7 @@ const withTextInput = dimension.width - (20 * 4) + 8;
 var uniqueNumber = (new Date().getTime()).toString(36);
 
 const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
-    const { groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueProdukPembiayaan, setValueProdukPembiayaan] = useState('');
@@ -69,7 +69,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     }
 
     const getUKPermohonanPembiayaan = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = '` + namaNasabah + `';`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
@@ -118,7 +118,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     }
 
     const getUKProdukPembiayaan = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '` + namaNasabah + `';`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
@@ -161,7 +161,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     }
 
     const getUKDataDiri = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE nama_lengkap = '` + namaNasabah + `';`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
@@ -205,7 +205,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, valueTandaTanganKetuaSubKemlompok);
         AsyncStorage.setItem(key_tandaTanganKetuaKelompok, valueTandaTanganKetuaKelompok);
 
-        const find = 'SELECT * FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -214,9 +214,9 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok) values ("' + namaNasabah + '","' + valueProdukPembiayaan + '","' + valueJumlahPembiayaanYangDiajukan + '","' + valueJangkaWaktu + '","' + valueFrekuensiPembiayaan + '","' + key_tandaTanganAOSAO + '","' + key_tandaTanganNasabah + '","' + key_tandaTanganSuamiPenjamin + '","' + key_tandaTanganKetuaSubKemlompok + '","' + key_tandaTanganKetuaKelompok + '","' + valueNamaTandaTanganNasabah + '","' + valueNamaTandaTanganSuamiPenjamin + '","' + valueNamaTandaTanganKetuaSubKelompok + '","' + valueNamaTandaTanganKetuaKelompok + '")';
+                        query = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok, idSosialisasiDatabase) values ("' + namaNasabah + '","' + valueProdukPembiayaan + '","' + valueJumlahPembiayaanYangDiajukan + '","' + valueJangkaWaktu + '","' + valueFrekuensiPembiayaan + '","' + key_tandaTanganAOSAO + '","' + key_tandaTanganNasabah + '","' + key_tandaTanganSuamiPenjamin + '","' + key_tandaTanganKetuaSubKemlompok + '","' + key_tandaTanganKetuaKelompok + '","' + valueNamaTandaTanganNasabah + '","' + valueNamaTandaTanganSuamiPenjamin + '","' + valueNamaTandaTanganKetuaSubKelompok + '","' + valueNamaTandaTanganKetuaKelompok + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_PermohonanPembiayaan SET produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pembiayaan_Diajukan = "' + valueJumlahPembiayaanYangDiajukan + '", jangka_Waktu = "' + valueJangkaWaktu + '", frekuensi_Pembiayaan = "' + valueFrekuensiPembiayaan + '", tanda_Tangan_AOSAO = "' + key_tandaTanganAOSAO + '", tanda_Tangan_Nasabah = "' + key_tandaTanganNasabah + '", tanda_Tangan_SuamiPenjamin = "' + key_tandaTanganSuamiPenjamin + '", tanda_Tangan_Ketua_SubKelompok = "' + key_tandaTanganKetuaSubKemlompok + '", tanda_Tangan_Ketua_Kelompok = "' + key_tandaTanganKetuaKelompok + '", nama_tanda_Tangan_Nasabah = "' + valueNamaTandaTanganNasabah + '", nama_tanda_Tangan_SuamiPenjamin = "' + valueNamaTandaTanganSuamiPenjamin + '", nama_tanda_Tangan_Ketua_SubKelompok = "' + valueNamaTandaTanganKetuaSubKelompok + '", nama_tanda_Tangan_Ketua_Kelompok = "' + valueNamaTandaTanganKetuaKelompok + '" WHERE nama_lengkap = "' + namaNasabah + '"';
+                        query = 'UPDATE Table_UK_PermohonanPembiayaan SET produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pembiayaan_Diajukan = "' + valueJumlahPembiayaanYangDiajukan + '", jangka_Waktu = "' + valueJangkaWaktu + '", frekuensi_Pembiayaan = "' + valueFrekuensiPembiayaan + '", tanda_Tangan_AOSAO = "' + key_tandaTanganAOSAO + '", tanda_Tangan_Nasabah = "' + key_tandaTanganNasabah + '", tanda_Tangan_SuamiPenjamin = "' + key_tandaTanganSuamiPenjamin + '", tanda_Tangan_Ketua_SubKelompok = "' + key_tandaTanganKetuaSubKemlompok + '", tanda_Tangan_Ketua_Kelompok = "' + key_tandaTanganKetuaKelompok + '", nama_tanda_Tangan_Nasabah = "' + valueNamaTandaTanganNasabah + '", nama_tanda_Tangan_SuamiPenjamin = "' + valueNamaTandaTanganSuamiPenjamin + '", nama_tanda_Tangan_Ketua_SubKelompok = "' + valueNamaTandaTanganKetuaSubKelompok + '", nama_tanda_Tangan_Ketua_Kelompok = "' + valueNamaTandaTanganKetuaKelompok + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -272,7 +272,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
 
         await doSubmitDraft('submit');
 
-        const find = 'SELECT * FROM Table_UK_Master WHERE namaNasabah = "'+ namaNasabah +'"';
+        const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
@@ -286,7 +286,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     }
 
                     if (screenState === 5) {
-                        let query = 'UPDATE Table_UK_Master SET status = "6" WHERE namaNasabah = "' + namaNasabah + '"';
+                        let query = 'UPDATE Table_UK_Master SET status = "6" WHERE idSosialisasiDatabase = "' + id + '"';
                         if (__DEV__) console.log('doSubmitSave db.transaction insert/update query:', query);
 
                         db.transaction(
@@ -363,6 +363,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     <Text style={[styles.headerText, { fontSize: 20 }]}>{groupName}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{namaNasabah}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{currentDate}</Text>
+                    {/* <Text style={[styles.headerText, { fontSize: 15 }]}>{id}</Text> */}
                 </ImageBackground>
             </View>
         </>
