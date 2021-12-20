@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, ToastAndroid, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -34,6 +34,9 @@ const Perjanjian = ({route}) => {
     const [signatureNasabah, setSignatureNasabah] = useState();
     moment.locale('id');
     var hariIni = moment(new Date()).format('DD-MM-YYYY')
+    var uniqueNumber = (new Date().getTime()).toString(36);
+    const [key_tandaTanganNasabah, setKey_tandaTanganNasabah] = useState(`formUK_tandaTanganNasabah_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
+    const [key_tandaTanganSAOKC, setKey_tandaTanganSAOKC] = useState(`formUK_tandaTanganSAOKC_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
 
     useEffect(() => {
         const getUserData = () => {
@@ -49,45 +52,14 @@ const Perjanjian = ({route}) => {
         }
         getJenisPembiayaan();
         getUserData();
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
     }, []);
 
     const submitHandler = () => {
-        navigation.navigate("FinalPencairan", {data: dataNasabah, postPencairan: postPencairan})
+        if(signatureAO == null || signatureNasabah == null){
+            ToastAndroid.show("Silahkan Isi Tanda Tangan dan Foto", ToastAndroid.SHORT);
+        }else{
+            navigation.navigate("FinalPencairan", {data: dataNasabah, postPencairan: postPencairan})
+        }
     }
 
     const getJenisPembiayaan = async () => {
@@ -106,7 +78,8 @@ const Perjanjian = ({route}) => {
         const handleOK = (signature) => {
             setSignatureAO(signature)
             setModalVisibleAO(!modalVisibleAO);
-            setPostPencairan({...postPencairan, "TTD_KC":signature.split(',')[1]})
+            setPostPencairan({...postPencairan, "TTD_KC":key_tandaTanganNasabah})
+            AsyncStorage.setItem(key_tandaTanganNasabah, signature.split(',')[1])
         }
 
         const handleEmpty = () => {
@@ -150,7 +123,8 @@ const Perjanjian = ({route}) => {
         const handleOK = (signature) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
-            setPostPencairan({...postPencairan, "TTD_Nasabah":signature.split(',')[1]})
+            setPostPencairan({...postPencairan, "TTD_Nasabah":key_tandaTanganSAOKC})
+            AsyncStorage.setItem(key_tandaTanganSAOKC, signature.split(',')[1])
         }
 
         const handleEmpty = () => {

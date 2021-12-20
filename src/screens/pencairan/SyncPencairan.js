@@ -17,7 +17,7 @@ const SyncPencairan = () => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
-    let [menuShow, setMenuShow] = useState(0);
+    let [isLoaded, setLoaded] = useState(false)
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
     const [keyword, setKeyword] = useState('');
@@ -65,13 +65,13 @@ const SyncPencairan = () => {
     const doSubmit = (Kelompok_ID) => {
         if (__DEV__) console.log('post pencairan loaded');
         if (__DEV__) console.log('post pencairan keyword:', keyword);
-
+        setLoaded(true)
         let query = 'SELECT A.* FROM Table_Pencairan_Post A '+
                     'LEFT JOIN Table_Pencairan_Nasabah B on A.ID_Prospek = B.ID_Prospek '+
                     'where B.Kelompok_ID = "'+ Kelompok_ID +'"';
         db.transaction(
             tx => {
-                tx.executeSql(query, [], (tx, results) => {
+                tx.executeSql(query, [], async (tx, results) => {
                     if (__DEV__) console.log('post pencairan results:', results.rows);
                     let dataLength = results.rows.length
                     var ah = []
@@ -80,7 +80,7 @@ const SyncPencairan = () => {
                         ah.push({
                             "FP4": "",
                             "Foto_Kegiatan": null,
-                            "Foto_Pencairan": data.Foto_Pencairan,
+                            "Foto_Pencairan": await AsyncStorage.getItem(data.Foto_Pencairan),
                             "ID_Prospek": data.ID_Prospek,
                             "Is_Batal": null,
                             "Is_Dicairkan": data.Is_Dicairkan,
@@ -90,13 +90,13 @@ const SyncPencairan = () => {
                             "Jml_RealCair": data.Jml_RealCair,
                             "Jml_Sisa_UP": null,
                             "Jml_UP": data.Jml_UP,
-                            "LRP_TTD_AO": data.LRP_TTD_AO,
-                            "LRP_TTD_Nasabah": data.LRP_TTD_Nasabah,
-                            "TTD_KC": data.TTD_KC,
-                            "TTD_KK": data.TTD_KK,
-                            "TTD_KSK": data.TTD_KSK,
-                            "TTD_Nasabah": data.TTD_Nasabah,
-                            "TTD_Nasabah_2": data.TTD_Nasabah_2
+                            "LRP_TTD_AO": await AsyncStorage.getItem(data.LRP_TTD_AO),
+                            "LRP_TTD_Nasabah": await AsyncStorage.getItem(data.LRP_TTD_Nasabah),
+                            "TTD_KC": await AsyncStorage.getItem(data.TTD_KC),
+                            "TTD_KK": await AsyncStorage.getItem(data.TTD_KK),
+                            "TTD_KSK": await AsyncStorage.getItem(data.TTD_KSK),
+                            "TTD_Nasabah": await AsyncStorage.getItem(data.TTD_Nasabah),
+                            "TTD_Nasabah_2": await AsyncStorage.getItem(data.TTD_Nasabah_2)
                         });
                     }
                     fetch(ApiSyncPostInisiasi + 'post_pencairan', {
@@ -138,6 +138,7 @@ const SyncPencairan = () => {
                                 );
                             }
                             navigation.navigate('Pencairan')
+                            setLoaded(false)
                             return true;
                         }
                     })
@@ -237,6 +238,14 @@ const SyncPencairan = () => {
                 </View>
 
                 <SafeAreaView style={{flex: 1}}>
+                    {isLoaded === true ? 
+                    (
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                            <View style={{padding: 10, borderRadius: 15, backgroundColor: '#FFF'}}>
+                                <Text style={{fontWeight: 'bold', color: '#545851'}}>Mohon Tunggu...</Text>
+                            </View>
+                        </View>
+                    ) : (
                     <View style={{ justifyContent:  'space-between'}}>
                         <FlatList
                             // contentContainerStyle={styles.listStyle}
@@ -252,7 +261,9 @@ const SyncPencairan = () => {
                             //ListEmptyComponent={_listEmptyComponent}
                         /> 
                     </View>
+                    )}
                 </SafeAreaView>
+
             </View>
         </View>
     )
