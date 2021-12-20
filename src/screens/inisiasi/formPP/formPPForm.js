@@ -143,8 +143,8 @@ const InisiasiFormPPForm = ({ route }) => {
     )
 
     const submitHandler = () => {
-        if(valueTandaTanganKetuaAO === null || valueTandaTanganKetuaAO === undefined || valueTandaTanganKetuaAO === "null" || valueTandaTanganKetuaAO === "undefined") flashNotification("Caution!", "Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
-        if(valueTandaTanganKCSAO === null || valueTandaTanganKCSAO === undefined || valueTandaTanganKCSAO === "null" || valueTandaTanganKCSAO === "undefined") flashNotification("Caution!", "Kepala Cabang / Senior Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
+        if(valueTandaTanganKetuaAO === null || valueTandaTanganKetuaAO === undefined || valueTandaTanganKetuaAO === "null" || valueTandaTanganKetuaAO === "undefined") return flashNotification("Caution!", "Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
+        if(valueTandaTanganKCSAO === null || valueTandaTanganKCSAO === undefined || valueTandaTanganKCSAO === "null" || valueTandaTanganKCSAO === "undefined") return flashNotification("Caution!", "Kepala Cabang / Senior Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
 
         setLoading(true)
 
