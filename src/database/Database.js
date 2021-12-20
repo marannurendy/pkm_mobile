@@ -154,7 +154,11 @@ db.transaction(tx => {
             verifikasiTanggal varchar,
             verifikasiStatus varchar,
             verifikasiReason varchar,
-            id_prospek varchar);`
+            id_prospek varchar,
+            clientId varchar,
+            kelompokID varchar,
+            namaKelompok varchar,
+            subKelompok varchar);`
     )
 
     tx.executeSql(

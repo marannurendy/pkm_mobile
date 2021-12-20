@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView, Image, Button } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView, Image, Button, ToastAndroid, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
@@ -11,6 +10,8 @@ import { Picker } from '@react-native-picker/picker';
 import { ApiSyncInisiasi } from '../../../../dataconfig/index';
 import moment from 'moment';
 import 'moment/locale/id';
+import { fetchWithTimeout } from '../../../utils/Functions';
+import { ApiSyncPostInisiasi } from '../../../../dataconfig/apisync/apisync';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -116,6 +117,20 @@ const InisiasiFormProspekLama = ({ route }) => {
                         }
 
                         Promise.all([getProdukPembiayaan()]).then((response) => {
+                            if (data.inputTempatTinggalNasabah !== null && typeof data.inputTempatTinggalNasabah !== 'undefined') setValueTempatTinggalNasabah(data.inputTempatTinggalNasabah);
+                            if (data.inputPerubahanStatusPernikahan !== null && typeof data.inputPerubahanStatusPernikahan !== 'undefined') setValuePerubahanStatusPernikahan(data.inputPerubahanStatusPernikahan);
+                            if (data.inputPerubahanStatusPernikahanKeterangan !== null && typeof data.inputPerubahanStatusPernikahanKeterangan !== 'undefined') setValuePerubahanStatusPernikahanKeterangan(data.inputPerubahanStatusPernikahanKeterangan);
+                            if (data.inputPerubahanStatusTanggungan !== null && typeof data.inputPerubahanStatusTanggungan !== 'undefined') setValuePerubahanStatusTanggungan(data.inputPerubahanStatusTanggungan);
+                            if (data.inputPerubahanStatusTanggunganKeterangan !== null && typeof data.inputPerubahanStatusTanggunganKeterangan !== 'undefined') setValuePerubahanStatusTanggunganKeterangan(data.inputPerubahanStatusTanggunganKeterangan);
+                            if (data.inputKehadiranPKM !== null && typeof data.inputKehadiranPKM !== 'undefined') setValueKehadiranPKM(data.inputKehadiranPKM);
+                            if (data.inputPembayaran !== null && typeof data.inputPembayaran !== 'undefined') setValuePembayaran(data.inputPembayaran);
+                            if (data.inputPerubahanUsaha !== null && typeof data.inputPerubahanUsaha !== 'undefined') setValuePerubahanUsaha(data.inputPerubahanUsaha);
+                            if (data.inputPerubahanUsahaKeterangan !== null && typeof data.inputPerubahanUsahaKeterangan !== 'undefined') setValuePerubahanUsahaKeterangan(data.inputPerubahanUsahaKeterangan);
+                            if (data.inputAddress !== null && typeof data.inputAddress !== 'undefined') setValueAddress(data.inputAddress);
+                            if (data.inputNamaTandaTanganAO !== null && typeof data.inputNamaTandaTanganAO !== 'undefined') setValueNamaTandaTanganAO(data.inputNamaTandaTanganAO);
+                            if (data.inputNamaTandaTanganKetuaKelompok !== null && typeof data.inputNamaTandaTanganKetuaKelompok !== 'undefined') setValueNamaTandaTanganKetuaKelompok(data.inputNamaTandaTanganKetuaKelompok);
+                            if (data.inputNamaTandaTanganKetuaSubKelompok !== null && typeof data.inputNamaTandaTanganKetuaSubKelompok !== 'undefined') setValueNamaTandaTanganKetuaSubKelompok(data.inputNamaTandaTanganKetuaSubKelompok);
+
                             if (data.inputTandaTanganAO !== null && typeof data.inputTandaTanganAO !== 'undefined') setValueTandaTanganAO(tandaTanganAO);
                             if (data.inputTandaTanganKetuaKelompok !== null && typeof data.inputTandaTanganKetuaKelompok !== 'undefined') setValueTandaTanganKetuaKelompok(tandaTanganKetuaKelompok);
                             if (data.inputTandaTanganKetuaSubKelompok !== null && typeof data.inputTandaTanganKetuaSubKelompok !== 'undefined') setValueTandaTanganKetuaSubKelompok(tandaTanganKetuaSubKelompok);
@@ -277,41 +292,57 @@ const InisiasiFormProspekLama = ({ route }) => {
         );
     })
 
+    const checkDuplicate = () => {
+        const find = 'SELECT * FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = "'+ id +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+                    
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                    return resolve(true);
+                })
+            }
+        );
+    }
+
     const doSubmit = async () => {
         if (__DEV__) console.log('doSubmit loaded');
         if (__DEV__) console.log('doSubmit dataDetail:', dataDetail);
 
+        if (!valueTandaTanganAO || typeof valueTandaTanganAO === 'undefined' || valueTandaTanganAO === '' || valueTandaTanganAO === 'null') return alert('Tanda Tangan AO (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganAO || typeof valueNamaTandaTanganAO === 'undefined' || valueNamaTandaTanganAO === '' || valueNamaTandaTanganAO === 'null') return alert('Nama Tanda Tangan AO (*) tidak boleh kosong');
+        if (!valueTandaTanganKetuaKelompok || typeof valueTandaTanganKetuaKelompok === 'undefined' || valueTandaTanganKetuaKelompok === '' || valueTandaTanganKetuaKelompok === 'null') return alert('Tanda Tangan Kelompok (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganKetuaKelompok || typeof valueNamaTandaTanganKetuaKelompok === 'undefined' || valueNamaTandaTanganKetuaKelompok === '' || valueNamaTandaTanganKetuaKelompok === 'null') return alert('Nama Tanda Tangan Kelompok (*) tidak boleh kosong');
+        if (!valueTandaTanganKetuaSubKelompok || typeof valueTandaTanganKetuaSubKelompok === 'undefined' || valueTandaTanganKetuaSubKelompok === '' || valueTandaTanganKetuaSubKelompok === 'null') return alert('Tanda Tangan Sub Kelompok (*) tidak boleh kosong');
+        if (!valueNamaTandaTanganKetuaSubKelompok || typeof valueNamaTandaTanganKetuaSubKelompok === 'undefined' || valueNamaTandaTanganKetuaSubKelompok === '' || valueNamaTandaTanganKetuaSubKelompok === 'null') return alert('Nama Tanda Tangan Sub Kelompok (*) tidak boleh kosong');
+
         await doSubmitDraft('submit');
 
-        // const body = {
-        //     clientId: dataDetail?.ClientID ?? '',
-        //     clientName: dataDetail?.ClientName ?? '',
-        //     identityNumber: dataDetail?.IdentityNumber ?? '',
-        //     groupId: dataDetail?.GroupID ?? '',
-        //     subGroup: dataDetail?.SubGroup ?? '',
-        //     groupName: dataDetail?.GroupName ?? '',
-        //     loanSeries: dataDetail?.LoanSeries ?? '',
-        //     inputPembiayaanTahap: `${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`,
-        //     inputJangkaWaktuPembiayaanDiajukan: `${selectedPembiayaanDiajukan?.paymentTerm ?? '-'}`,
-        //     inputTempatTinggalNasabah: valueTempatTinggalNasabah,
-        //     inputPerubahanStatusPernikahan: valuePerubahanStatusPernikahan,
-        //     inputPerubahanStatusPernikahanKeterangan: valuePerubahanStatusPernikahanKeterangan,
-        //     inputPerubahanStatusTanggungan: valuePerubahanStatusTanggungan,
-        //     inputPerubahanStatusTanggunganKeterangan: valuePerubahanStatusTanggunganKeterangan,
-        //     inputKehadiranPKM: valueKehadiranPKM,
-        //     inputPembayaran: valuePembayaran,
-        //     inputPerubahanUsaha: valuePerubahanUsaha,
-        //     inputPerubahanUsahaKeterangan: valuePerubahanUsahaKeterangan,
-        //     inputAddress: valueAddress,
-        //     inputDate: moment().format('YYYY-MM-DD'),
-        //     inputNamaTandaTanganAO: valueNamaTandaTanganAO,
-        //     inputTandaTanganAO: valueTandaTanganAO,
-        //     inputNamaTandaTanganKetuaKelompok: valueNamaTandaTanganKetuaKelompok,
-        //     inputTandaTanganKetuaKelompok: valueTandaTanganKetuaKelompok,
-        //     inputNamaTandaTanganKetuaSubKelompok: valueNamaTandaTanganKetuaSubKelompok,
-        //     inputTandaTanganKetuaSubKelompok: valueTandaTanganKetuaSubKelompok
-        // };
-        // if (__DEV__) console.log('doSubmit body:', body);
+        let uniqueNumber = (new Date().getTime()).toString(36);
+        let groupId = dataDetail?.GroupID ?? '';
+        let groupName = dataDetail?.GroupName ?? '';
+        let subGroup = dataDetail?.SubGroup ?? '';
+
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama uniqueNumber:', uniqueNumber);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupId:', groupId);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupName:', groupName);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama subGroup:', subGroup);
+
+        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "", "' + moment().format('YYYY-MM-DD') + '", "' + valueAddress + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '")';
+
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama query:', query);
+        db.transaction(
+            tx => {
+                tx.executeSql(query)
+            }, function(error) {
+                if (__DEV__) console.log('insert into sosialisasi_database transaction error: ', error);
+            }, function() {
+                Alert.alert('Berhasil', 'Data berhasil masuk UK');
+            }
+        )
     }
 
     const renderHeader = () => (
@@ -694,7 +725,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={styles.buttonContainer}>
             <View style={styles.F1} />
             <TouchableOpacity
-                onPress={() => null}
+                onPress={() => doSubmitDraft()}
             >
                 <View style={styles.button}>
                     <Text style={{ color: 'white' }}>Save Draft</Text>
