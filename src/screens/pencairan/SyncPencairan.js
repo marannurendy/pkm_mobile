@@ -111,7 +111,7 @@ const SyncPencairan = () => {
                         let data = results.rows.item(a);
                         ah.push({
                             "FP4": "",
-                            "Foto_Kegiatan": data.Foto_Pencairan,
+                            "Foto_Kegiatan": null,
                             "Foto_Pencairan": data.Foto_Pencairan,
                             "ID_Prospek": null,
                             "Is_Batal": null,
@@ -122,8 +122,8 @@ const SyncPencairan = () => {
                             "Jml_RealCair": data.Jml_RealCair,
                             "Jml_Sisa_UP": null,
                             "Jml_UP": data.Jml_UP,
-                            "LRP_TTD_AO": data.TTD_KC,
-                            "LRP_TTD_Nasabah": data.TTD_Nasabah,
+                            "LRP_TTD_AO": data.LRP_TTD_AO,
+                            "LRP_TTD_Nasabah": data.LRP_TTD_Nasabah,
                             "TTD_KC": data.TTD_KC,
                             "TTD_KK": data.TTD_KK,
                             "TTD_KSK": data.TTD_KSK,

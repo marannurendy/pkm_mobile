@@ -52,13 +52,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
     });
 
     const insertKelompokPencairan = (responseJson) => new Promise((resolve, reject) => {
-        if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT');
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT', responseJson.data);
         const groupPencairan = responseJson.data?.pencairan || [];
         const ListPencairan = responseJson.data?.pencairan_nasabah || [];
 
         try {
             if(groupPencairan.length  > 0 && ListPencairan.length > 0) {
-                let filterTemp = ListPencairan.filter(s => s.Nama_Kelompok.includes("Kelompok wanti"));
+                
                 let query = 'INSERT INTO Table_Pencairan (kelompok_Id, Nama_Kelompok, Jumlah_Kelompok, syncby) values ';
                 let querylistPencairan = 'INSERT INTO Table_Pencairan_Nasabah (' +
                     'Alamat_Domisili,' +
@@ -79,7 +79,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     'TTD_KSK, ' +
                     'TTD_Nasabah, ' +
                     'TTD_Nasabah_2, ' +
-                    'Term_Pembiayaan, ClientID, syncby) values ';
+                    'Term_Pembiayaan, ClientID, Nama_Tipe_Pencairan, ID_Prospek, syncby) values ';
 
                 for (let i = 0; i < groupPencairan.length; i++) {
                     query = query + "('"
@@ -95,57 +95,61 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     if (i != groupPencairan.length - 1) query = query + ",";
                 }
 
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < ListPencairan.length ; i++) {
                     querylistPencairan = querylistPencairan + "('"
-                    + filterTemp[i].Alamat_Domisili
+                    + ListPencairan[i].Alamat_Domisili
                     + "','"
-                    + filterTemp[i].Angsuran_Per_Minggu
+                    + ListPencairan[i].Angsuran_Per_Minggu
                     + "','"
-                    + filterTemp[i].Foto_Pencairan
+                    + ListPencairan[i].Foto_Pencairan
                     + "','"
-                    + filterTemp[i].Jasa
+                    + ListPencairan[i].Jasa
                     + "','"
-                    + filterTemp[i].Jenis_Pembiayaan
+                    + ListPencairan[i].Jenis_Pembiayaan
                     + "','"
-                    + filterTemp[i].Jumlah_Pinjaman
+                    + ListPencairan[i].Jumlah_Pinjaman
                     + "','"
-                    + filterTemp[i].Kelompok_ID
+                    + ListPencairan[i].Kelompok_ID
                     + "','"
-                    + filterTemp[i].LRP_TTD_AO
+                    + ListPencairan[i].LRP_TTD_AO
                     + "','"
-                    + filterTemp[i].LRP_TTD_Nasabah
+                    + ListPencairan[i].LRP_TTD_Nasabah
                     + "','"
-                    + filterTemp[i].Nama_Kelompok
+                    + ListPencairan[i].Nama_Kelompok
                     + "','"
-                    + filterTemp[i].Nama_Penjamin
+                    + ListPencairan[i].Nama_Penjamin
                     + "','"
-                    + filterTemp[i].Nama_Prospek
+                    + ListPencairan[i].Nama_Prospek
                     + "','"
-                    + filterTemp[i].Nomor_Identitas
+                    + ListPencairan[i].Nomor_Identitas
                     + "','"
-                    + filterTemp[i].TTD_KC
+                    + ListPencairan[i].TTD_KC
                     + "','"
-                    + filterTemp[i].TTD_KK
+                    + ListPencairan[i].TTD_KK
                     + "','"
-                    + filterTemp[i].TTD_KSK
+                    + ListPencairan[i].TTD_KSK
                     + "','"
-                    + filterTemp[i].TTD_Nasabah
+                    + ListPencairan[i].TTD_Nasabah
                     + "','"
-                    + filterTemp[i].TTD_Nasabah_2
+                    + ListPencairan[i].TTD_Nasabah_2
                     + "','"
-                    + filterTemp[i].Term_Pembiayaan
+                    + ListPencairan[i].Term_Pembiayaan
                     + "','"
-                    + filterTemp[i].ClientID
+                    + ListPencairan[i].ClientID
+                    + "','"
+                    + ListPencairan[i].Nama_Tipe_Pencairan
+                    + "','"
+                    + ListPencairan[i].ID_Prospek
                     + "','"
                     + params.username
                     + "')";
 
-                    if (i != 10 - 1) querylistPencairan = querylistPencairan + ",";
+                    if (i != ListPencairan.length - 1) querylistPencairan = querylistPencairan + ",";
                 }
 
                 query = query + ";";
                 querylistPencairan = querylistPencairan + ";";
-                if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT QUERY:', query);
+                if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT QUERY:', querylistPencairan);
     
                 db.transaction(
                     tx => { tx.executeSql(query); }, function(error) {
@@ -1190,6 +1194,11 @@ export const getSyncData = (params) => new Promise((resolve) => {
         await insertListPAR(jsongetPAR);
         if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
 
+        const PencairanData = await fetch(getDataPencairan);
+        const jsonPencairanData = await PencairanData.json(PencairanData);
+        await insertKelompokPencairan(jsonPencairanData);
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN DONE');
+
         if (![2].includes(params.prospekFilter)) {
             const body = JSON.stringify({
                 "CreatedBy": "",
@@ -1241,9 +1250,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const jsonMasterData = await MasterData.json(MasterData);
         // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
 
-        const PencairanData = await fetch(getDataPencairan);
-        const jsonPencairanData = await PencairanData.json(PencairanData);
-        await insertKelompokPencairan(jsonPencairanData);
         // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonPencairanData);
 
         // let dataLogin = [{

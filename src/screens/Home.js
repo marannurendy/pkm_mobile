@@ -789,33 +789,59 @@ export default function FrontHome() {
                 <View style={{flex: 1, marginTop: scale(10), borderTopLeftRadius: scale(20), borderTopRightRadius: scale(20), marginHorizontal: scale(5), backgroundColor: '#fff'}}>
                 {/* <View style={{flex: 1, marginTop: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 10}}> */}
                     
-                    <View style={{marginHorizontal: scale(20), marginTop: scale(20), flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <View style={{marginHorizontal: scale(20), marginBottom: 20, marginTop: scale(20), flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
 
                         {/* <Shadow></Shadow> */}
 
-                        <TouchableOpacity disabled={isKc} style={{borderWidth: 2, height: window.height/3, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff'}} onPress={() => pkmHandler()}>
+                        <TouchableOpacity disabled={isKc} style={{height: window.height/3, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff', shadowColor: '#000',
+                                shadowOffset: {
+                                width: 0,
+                                height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+                                elevation: 10}} onPress={() => pkmHandler()}>
                             <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                                <Text style={{fontSize: scale(30), fontWeight: 'bold'}}>
-                                    PKM
-                                </Text>
+                                <ImageBackground resizeMode="contain"
+                                    source={require("../images/PKM-2.png")}
+                                    style={styles.background}
+                                />
                             </View>
                         </TouchableOpacity>
 
                         <View style={{height: window.height/3, width: window.width/2.5, flexDirection: 'column', justifyContent: 'space-between'}}>
 
-                            <TouchableOpacity disabled={isKc} onPress={() => navigation.navigate('IndividualCollection', {cabangid: cabangid, uname: username})} style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff'}}>
+                            <TouchableOpacity disabled={isKc} onPress={() => navigation.navigate('IndividualCollection', {cabangid: cabangid, uname: username})} style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                width: 0,
+                                height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+                                elevation: 10}}>
                                 <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                                        PENAGIHAN
-                                    </Text>
+                                    <ImageBackground resizeMode="contain"
+                                        source={require("../images/penagihan-2.png")}
+                                        style={styles.background}
+                                    />
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity disabled={isKc} style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff'}}>
+                            <TouchableOpacity disabled={isKc} style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: isKc === true ? '#E6E6E6' : '#fff',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                width: 0,
+                                height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+                                elevation: 10}}>
                                 <View style={{alignItems: 'center', justifyContent: 'center', padding: 5, flex: 1}}>
-                                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                                        {`PELUNASAN\nDINI`}
-                                    </Text>
+                                    <ImageBackground resizeMode="contain"
+                                        source={require("../images/ludin.png")}
+                                        style={styles.background}
+                                    />
                                 </View>
                             </TouchableOpacity>
 
@@ -826,30 +852,57 @@ export default function FrontHome() {
                     <View style={{marginHorizontal: 20, marginBottom: 20, flex: 1, justifyContent: 'space-between'}}>
 
                         <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity onPress={() => navigation.navigate('Inisiasi')} style={{borderWidth: 2, height: window.width/3, flex: 1, borderRadius: 20, backgroundColor: '#fff'}}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Inisiasi')} style={{height: window.width/3, flex: 1, borderRadius: 20, backgroundColor: '#fff',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                width: 0,
+                                height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+                                elevation: 10}}>
                                 <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>
-                                        INISIASI
-                                    </Text>
+                                    <ImageBackground resizeMode="contain"
+                                        source={require("../images/Inisiasi-2.png")}
+                                        style={styles.background}
+                                    />
                                 </View>
                             </TouchableOpacity>
                         </View>
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                            <TouchableOpacity onPress={() => navigation.navigate('Pencairan')} style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
+                            <TouchableOpacity onPress={() => navigation.navigate('Pencairan')} style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                width: 0,
+                                height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+                                elevation: 10}}>
                                 <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                                        PENCAIRAN
-                                    </Text>
+                                    <ImageBackground resizeMode="contain"
+                                        source={require("../images/pencairan-2.png")}
+                                        style={styles.background}
+                                    />
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={{borderWidth: 2, height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff'}}>
-                                <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
-                                    <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                                        UMi Corner
-                                    </Text>
+                            <TouchableOpacity style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff', padding:10,
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                width: 0,
+                                height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 3.84,
+                                elevation: 10}}>
+                                <View style={{alignItems: 'center', justifyContent: 'space-between', flex: 1}}>
+                                    <ImageBackground resizeMode="contain"
+                                        source={require("../images/SenyuM-2.png")}
+                                        style={styles.backgroundUmi}
+                                    />
                                 </View>
                             </TouchableOpacity>
 
@@ -1000,5 +1053,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.58,
         shadowRadius: 16.00,
         elevation: 24,
+    },
+    background: {
+        width: "100%",
+        height: "100%",
+    },
+    backgroundUmi: {
+        width: "100%",
+        height: "100%",
     },
 })

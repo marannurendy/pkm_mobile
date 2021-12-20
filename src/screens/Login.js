@@ -154,7 +154,7 @@ export default function Login() {
 
       return (
         <ImageBackground
-          source={require("../images/backtest4.png")}
+          source={require("../images/LoginUtama.png")}
           style={styles.background}
         >
           <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent={true} />

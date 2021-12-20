@@ -440,6 +440,7 @@ db.transaction(tx => {
             Angsuran_Per_Minggu varchar,
             Foto_Pencairan varchar,
             Jasa varchar,
+            ID_Prospek varchar,
             Jenis_Pembiayaan varchar,
             Jumlah_Pinjaman varchar,
             Kelompok_ID varchar,
@@ -456,6 +457,7 @@ db.transaction(tx => {
             TTD_Nasabah_2 varchar,
             Term_Pembiayaan varchar,
             ClientID varchar,
+            Nama_Tipe_Pencairan varchar,
             syncby varchar
         );`
     )
@@ -483,6 +485,7 @@ db.transaction(tx => {
             TTD_Nasabah_2 varchar
         );`
     )
+
     // tx.executeSql('DROP TABLE IF EXISTS ListGroup')
     // tx.executeSql('DROP TABLE IF EXISTS GroupList')
     // tx.executeSql('DROP TABLE IF EXISTS UpAccountList')

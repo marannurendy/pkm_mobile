@@ -15,7 +15,7 @@ import db from '../../database/Database'
 
 const window = Dimensions.get('window');
 
-const TandaTanganPencairan = () => {
+const TandaTanganPencairan = ({route}) => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
@@ -27,7 +27,8 @@ const TandaTanganPencairan = () => {
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
-    let [dataNasabah, setDataNasabah] = useState();
+    let [idNasabah, setidNasabah] = useState();
+    let [dataNasabah, setDataNasabah] = useState(route.params.data);
     const [keyword, setKeyword] = useState('');
     const [modalVisibleKetuaKel, setModalVisibleKetuaKel] = useState(false);
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
@@ -48,69 +49,67 @@ const TandaTanganPencairan = () => {
         }
 
         getUserData();
-        getSosialisasiDatabase();
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
+        getListNasabah();
     }, []);
 
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
+    const getListNasabah = () => {
+        if (__DEV__) console.log('getListNasabah loaded');
+        if (__DEV__) console.log('getListNasabah keyword:', keyword);
 
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
+        let query = 'SELECT * FROM Table_Pencairan_Nasabah WHERE Kelompok_ID = "'+ dataNasabah +'"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
+                    if (__DEV__) console.log('getListNasabah results:', results.rows);
                     let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
+                    if(dataLength > 0){
+                        for(let a = 0; a < dataLength; a++) {
+                            let data = results.rows.item(a);
+                            console.log("AAAA",data)
+                            let querye = 'SELECT * FROM Table_Pencairan_POST ';
+                            db.transaction(
+                                tx => {
+                                    tx.executeSql(querye, [], (tx, results) => {
+                                        if (__DEV__) console.log('getListNasabah results:', results.rows);
+                                        let dataLength = results.rows.length
+                                        console.log("BBBB "+dataLength)
+                                        var ah = []
+                                        for(let a = 0; a < dataLength; a++) {
+                                            let data = results.rows.item(a);
+                                            ah.push({'Nama_Prospek' : data.Nama_Prospek, 'ID_Prospek': data.ID_Prospek});
+                                        }
+                                        setData(ah);
+                                        console.log(ah)
+                                    })
+                                }
+                            )
+                        }
                     }
-                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
                 })
             }
         )
     }
+
+    const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
+        if (__DEV__) console.log('ACTIONS UPDATE DATA PENCAIRAN LOCAL');
+        try{
+            for(let a = 0; a < data.length; a++) {
+                let query = 'UPDATE Table_Pencairan_Post SET LRP_TTD_AO = "' + signatureKetuaKel + '", LRP_TTD_Nasabah = "' + signatureNasabah + '" WHERE ID_Prospek = "' + data[a].ClientID + '"';
     
-    // Simpan Handler
-    const submitHandler = () => {
-        navigation.navigate("AkadMurabahah", {data: dataNasabah})
-    }
+                db.transaction(
+                    tx => {
+                        tx.executeSql(query)
+                    }, function(error) {
+                        alert(error)
+                    }
+                )
+            }
+            navigation.navigate("FlowPencairan", {Nama_Kelompok:dataNasabah.Nama_Kelompok, Open:2})
+        }
+        catch(error){
+            alert(error)
+        }
+    });
 
     function ModalSignKetuaKel(text, onOK){
 
@@ -287,7 +286,7 @@ const TandaTanganPencairan = () => {
                             <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                                 <Button
                                     title="SIMPAN"
-                                    onPress={() => submitHandler()}
+                                    onPress={() => doSubmitDraft()}
                                     buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                                     titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                                 />

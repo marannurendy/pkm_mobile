@@ -20,6 +20,7 @@ const ListPencairan = ({route}) => {
     let [aoName, setAoName] = useState();
     let [menuShow, setMenuShow] = useState(0);
     let [menuToggle, setMenuToggle] = useState(false);
+    let [Kelompok, setKelompok] = useState(route.params.data);
     let [data, setData] = useState();
     const [keyword, setKeyword] = useState('');
 
@@ -38,53 +39,19 @@ const ListPencairan = ({route}) => {
 
         getUserData();
         getPencairanDatabase();
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
     }, []);
 
     const getPencairanDatabase = () => {
         if (__DEV__) console.log('getPencairanDatabase loaded');
         if (__DEV__) console.log('getPencairanDatabase keyword:', keyword);
-        
-        let query = 'SELECT * FROM Table_Pencairan_Nasabah';
+        console.log(route.params.data)
+        let query = 'SELECT * FROM Table_Pencairan_Nasabah where Kelompok_ID = "'+ Kelompok +'"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
                     if (__DEV__) console.log('getPencairanDatabase results:', results.rows);
                     let dataLength = results.rows.length
+                    console.log(dataLength)
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
@@ -108,9 +75,11 @@ const ListPencairan = ({route}) => {
                             'LRP_TTD_AO': data.LRP_TTD_AO,
                             'ClientID': data.ClientID,
                             'Nama_Prospek': data.Nama_Prospek,
+                            'Nama_Tipe_Pencairan':data.Nama_Tipe_Pencairan,
                         });
                     }
                     setData(ah)
+                    console.log(ah)
                 })
             }
         )

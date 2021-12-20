@@ -42,41 +42,6 @@ const Siklus = ({route}) => {
 
         getUserData();
         getJenisPembiayaan();
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
     }, []);
 
     const getJenisPembiayaan = async () => {
@@ -93,7 +58,7 @@ const Siklus = ({route}) => {
         let query = 'INSERT INTO Table_Pencairan_Post (FP4, Foto_Pencairan, Is_Dicairkan, Jml_RealCair, Jml_UP, TTD_KC, TTD_KK, TTD_KSK, TTD_Nasabah, TTD_Nasabah_2, ID_Prospek) ' +
                     'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
                     '"' + TotalPencairan + '","' + JumlahUP + '","' + postPencairan.TTD_KC + '", "' + postPencairan.TTD_KK + '", "' + postPencairan.TTD_KSK + '", "' + postPencairan.TTD_Nasabah + '",'+ 
-                    '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.Nama_Kelompok + '")';
+                    '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.ClientID + '")';
         db.transaction(
             tx => {
                 tx.executeSql(query);
@@ -122,7 +87,7 @@ const Siklus = ({route}) => {
     
     // Simpan Handler
     const submitHandler = () => {
-        navigation.navigate("FlowPencairan", {Nama_Kelompok:dataNasabah.Nama_Kelompok})
+        navigation.navigate("FlowPencairan", {Nama_Kelompok:dataNasabah.Nama_Kelompok, Open:1})
     }
 
     return(
@@ -187,6 +152,14 @@ const Siklus = ({route}) => {
                                 editable={false} selectTextOnFocus={false}
                                 value={JumlahUP}
                                 style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold', borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                returnKeyType="done"
+                            />
+
+                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Transfer Fund</Text>
+                            <TextInput 
+                                editable={false} selectTextOnFocus={false}
+                                value={dataNasabah.Nama_Tipe_Pencairan}
+                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold',  borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 returnKeyType="done"
                             />
 

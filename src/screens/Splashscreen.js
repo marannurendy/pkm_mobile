@@ -363,7 +363,7 @@ export default function SplashScreen() {
         <View>
             <StatusBar barStyle = "dark-content" hidden = {false} backgroundColor = "transparent" translucent={true} />
             <ImageBackground
-                source={require("../images/Splash.png")}
+                source={require("../images/SplashScreen.png")}
                 style={styles.background}
             />
         </View>

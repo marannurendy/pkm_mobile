@@ -74,10 +74,11 @@ const KelPencairan = () => {
                 tx.executeSql(query, [], (tx, results) => {
                     if (__DEV__) console.log('getKelompokPencairan results:', results.rows);
                     let dataLength = results.rows.length
+                    console.log(dataLength)
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
                         let data = results.rows.item(a);
-                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'Jumlah_Kelompok': data.Jumlah_Kelompok});
+                        ah.push({'Nama_Kelompok' : data.Nama_Kelompok, 'Jumlah_Kelompok': data.Jumlah_Kelompok, 'kelompok_Id': data.kelompok_Id});
                     }
                     setData(ah);
                 })
@@ -94,7 +95,7 @@ const KelPencairan = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('FlowPencairan', {Nama_Kelompok:data.Nama_Kelompok})}
+            onPress={() => navigation.navigate('FlowPencairan', {kelompok_Id:data.kelompok_Id, Open:0})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} Jumlah_Kelompok={data.Jumlah_Kelompok} />

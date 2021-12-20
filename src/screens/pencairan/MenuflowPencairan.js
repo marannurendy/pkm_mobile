@@ -16,7 +16,9 @@ const MenuflowPencairan = ({route}) => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState("");
     let [aoName, setAoName] = useState();
-    let [data, setData] = useState(route.params.Nama_Kelompok);
+    let [data, setData] = useState(route.params.kelompok_Id);
+    let [Open, setOpen] = useState(route.params.Open);
+    console.log(route.params.kelompok_Id, route.params.Open)
     useEffect(() => {
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
@@ -31,32 +33,6 @@ const MenuflowPencairan = ({route}) => {
         }
 
         getUserData();
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
     }, []);
 
     return(
@@ -87,34 +63,64 @@ const MenuflowPencairan = ({route}) => {
             </View>
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <ScrollView>
+                    
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', height: 75, marginBottom:10}}>
                         <Text style={{fontSize: 30, fontWeight: 'bold', margin: 10}}>Pencairan</Text>
                         <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", height: 50, borderRadius: 10, width: dimension.width/3, marginTop:10}}>
                             <Text style={{flex: 1, textAlign: 'center', margin: 5, borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>Kembali</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{data: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                            <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
-                            <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
-                        </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                            <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
-                            <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
-                        </TouchableOpacity>
+                    <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
+                        {Open == 0 ? (
+                            <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{data: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                                <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
+                                <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
+                            </TouchableOpacity>
+                        ):(
+                            <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20, opacity:"50%"}}>
+                                <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
+                                <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
+                            </TouchableOpacity>
+                        )}
+                        
+                        {Open == 0 ? (
+                            <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan',{data: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                                <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
+                                <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
+                            </TouchableOpacity>
+                        ):(
+                            <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20, opacity:"50%"}}>
+                                <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
+                                <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Preview', {idProspek : "90091228"})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                            <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
-                            <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
-                        </TouchableOpacity>
+                        {Open == 2 ? (
+                            <TouchableOpacity onPress={() => navigation.navigate('Preview', {idProspek : data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                                <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
+                                <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
+                            </TouchableOpacity>
+                        ):(
+                            <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20, opacity:"50%"}}>
+                                <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
+                                <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
+                            </TouchableOpacity>
+                        )}
 
-                        <TouchableOpacity onPress={() => navigation.navigate('SyncPencairan',{Nama_Kelompok: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                            <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
-                            <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
-                        </TouchableOpacity>
+                        {Open == 3 ? (
+                            <TouchableOpacity onPress={() => navigation.navigate('SyncPencairan',{Nama_Kelompok: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                                <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
+                                <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
+                            </TouchableOpacity>
+                        ):(
+                            <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20, opacity:"50%"}}>
+                                <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
+                                <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                     {uname.includes("SY") ? 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
