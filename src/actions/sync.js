@@ -156,7 +156,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         try {
             if(responseJson !== null) {
-                var query = 'INSERT INTO AccountList (OurBranchID, GroupName, GroupID, MeetingDay, ClientID, ClientName, AccountID, ProductID, InstallmentAmount, rill, ke, VolSavingsBal, StatusPAR, syncby) values ';
+                var query = 'INSERT INTO AccountList (OurBranchID, GroupName, GroupID, MeetingDay, ClientID, ClientName, AccountID, ProductID, InstallmentAmount, rill, ke, VolSavingsBal, StatusPAR, totalSetor, syncby) values ';
                 for (let i = 0; i < responseJson.length; i++) {
                     query = query + "('"
                     + responseJson[i].OurBranchID
@@ -184,6 +184,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + responseJson[i].VolSavingsBal
                     + "','"
                     + responseJson[i].StatusPAR
+                    + "','"
+                    + responseJson[i].InstallmentAmount
                     + "','"
                     + params.username
                     + "')";

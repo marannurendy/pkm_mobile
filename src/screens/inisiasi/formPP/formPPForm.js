@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, Dimensions, Image, ScrollView, StyleSheet, Button } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, Dimensions, Image, ScrollView, StyleSheet, Button, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ApiSyncPostInisiasi } from '../../../../dataconfig/apisync/apisync';
+import { showMessage } from 'react-native-flash-message';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 
@@ -20,6 +22,8 @@ const InisiasiFormPPForm = ({ route }) => {
     let [namaCabang, setNamacabang] = useState()
     let [username, setUsername] = useState()
     let [aoname, setAoname] = useState()
+
+    let [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', async () => {
@@ -42,6 +46,18 @@ const InisiasiFormPPForm = ({ route }) => {
         if (key === 'tandaTanganKetuaAO') return setValueTandaTanganKetuaAO(data);
         if (key === 'tandaTanganKCSAO') return setValueTandaTanganKCSAO(data);
     };
+
+    const flashNotification = (title, message, backgroundColor, color) => {
+        showMessage({
+            message: title,
+            description: message,
+            type: "info",
+            duration: 3500,
+            statusBarHeight: 20,
+            backgroundColor: backgroundColor,
+            color: color
+        });
+      }
 
     const renderFormJumlahPembiayaanYangDisetujui = () => (
         <View style={[styles.FDRow, styles.MT8]}>
@@ -125,13 +141,69 @@ const InisiasiFormPPForm = ({ route }) => {
         </View>
     )
 
+    const submitHandler = () => {
+        if(valueTandaTanganKetuaAO === null || valueTandaTanganKetuaAO === undefined || valueTandaTanganKetuaAO === "null" || valueTandaTanganKetuaAO === "undefined") flashNotification("Caution!", "Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
+        if(valueTandaTanganKCSAO === null || valueTandaTanganKCSAO === undefined || valueTandaTanganKCSAO === "null" || valueTandaTanganKCSAO === "undefined") flashNotification("Caution!", "Kepala Cabang / Senior Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
+
+        setLoading(true)
+
+        let ttd_ao = valueTandaTanganKetuaAO.split("data:image/png;base64,")
+        let ttd_kc = valueTandaTanganKCSAO.split("data:image/png;base64,")
+        let dataSend = {ID_Prospek: Nasabah_Id, Keterangan_Pembelian: "", TTD_AO: ttd_ao[1], TTD_KC: ttd_kc[1], TTD_KK: "", TTD_KSK: ""}
+
+        try{
+            fetch(ApiSyncPostInisiasi + "persetujuan_pembiayaan", {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                                'Content-Type': 'application/json'
+                        },
+                    body: JSON.stringify(dataSend)
+                })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log("second")
+
+                console.log(responseJson)
+                if(responseJson.code === 200) {
+                    setLoading(false)
+                    flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                    var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 2, AbsPP = '0' WHERE Nasabah_Id = '` + Nasabah_Id + `'`
+
+                    db.transaction(
+                        tx => {
+                            // tx.executeSql("DELETE FROM Table_PP_ListNasabah WHERE Nasabah_Id = '" + data.Nasabah_Id + "'")
+                            // tx.executeSql("DELETE FROM Table_PP_Kelompok WHERE kelompok = '" + kelompok + "'")
+                            tx.executeSql(queryUpdate)
+                        },function(error) {
+                            console.log('Transaction ERROR: ' + error.message);
+                          }, function() {
+                            console.log('Delete Table OK');
+                      }
+                    )
+
+                }else{
+                    setLoading(false)
+                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
+                }
+            }).catch((error) => {
+                setLoading(false)
+                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
+            })
+        }catch(error){
+            console.log("disini")
+            setLoading(false)
+            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+        }
+    }
+
     const renderButton = () => (
         <View style={styles.P16}>
             <TouchableOpacity
-                onPress={() => navigation.goBack()}
+                onPress={() => submitHandler()}
             >
                 <View style={styles.buttonSubmitContainer}>
-                    <Text style={styles.buttonSubmitText}>SIMPAN</Text>
+                    <Text style={styles.buttonSubmitText}>SUBMIT</Text>
                 </View>
             </TouchableOpacity>
         </View>
@@ -156,6 +228,12 @@ const InisiasiFormPPForm = ({ route }) => {
                 </TouchableOpacity>
                 <Text style={{ color: colors.PUTIH }}>{groupName} {`>`} {Nama_Nasabah}</Text>
             </View>
+
+            {loading &&
+                <View style={styles.loading}>
+                    <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+            }
         </ImageBackground>
     )
 
@@ -177,7 +255,18 @@ const stylesheet = StyleSheet.create({
     boxTTD: {
         borderRadius: 6,
         borderWidth: 1
-    }
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        opacity: 0.5,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 });
 
 export default InisiasiFormPPForm;
