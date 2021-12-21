@@ -347,6 +347,8 @@ db.transaction(tx => {
             lokasi_Pertemuan varchar,
             branchid varchar,
             input_Date varchar,
+            isSisipan varchar,
+            isTahapLanjut varchar,
             status varchar
         );`
     )
@@ -387,6 +389,8 @@ db.transaction(tx => {
             jasa varchar,
             Angsuran_per_minggu varchar,
             status varchar,
+            isSisipan varchar,
+            isTahapLanjut varchar,
             Nama_TTD_AO varchar
         )`
     )
@@ -522,7 +526,7 @@ db.transaction(tx => {
     // tx.executeSql('DROP TABLE IF EXISTS Table_Prospek_Lama_PP')
     // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Post')
     // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Nasabah')
-    // // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Post')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Post')
 
 },function(error) {
             console.log('Transaction ERROR: ' + error.message);

@@ -14,43 +14,6 @@ const InisiasiFormPPKelompokDetail = ({ route }) => {
     const { groupName } = route.params;
     const navigation = useNavigation();
     const [date, setDate] = useState(new Date());
-    // const [data, setData] = useState([
-    //     {
-    //         id: 1,
-    //         name: 'Vina Rosmawaty',
-    //         subGroup: 'KELINCI 1',
-    //         isKK: true,
-    //         isSK: false
-    //     },
-    //     {
-    //         id: 2,
-    //         name: 'Vivie Anggraeni',
-    //         subGroup: 'KELINCI 1',
-    //         isKK: false,
-    //         isSK: true
-    //     },
-    //     {
-    //         id: 3,
-    //         name: 'Lusianawati',
-    //         subGroup: 'KELINCI 2',
-    //         isKK: false,
-    //         isSK: false
-    //     },
-    //     {
-    //         id: 4,
-    //         name: 'Monalisa',
-    //         subGroup: 'KELINCI 2',
-    //         isKK: false,
-    //         isSK: false
-    //     },
-    //     {
-    //         id: 5,
-    //         name: 'Miranti Ekadini',
-    //         subGroup: 'KELINCI 2',
-    //         isKK: false,
-    //         isSK: true
-    //     }
-    // ]);
     const [data, setData] = useState([]);
     const [dataGroup, setDataGroup] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
@@ -94,7 +57,7 @@ const InisiasiFormPPKelompokDetail = ({ route }) => {
 
         const dataGet = await getData(queryGetGroup)
 
-        // console.log(dataGet)
+        console.log(dataGet)
         setData(dataGet)
         generateGroup(dataGet)
 
@@ -124,6 +87,8 @@ const InisiasiFormPPKelompokDetail = ({ route }) => {
     };
 
     const onConfirmKKKS = (nama, id, index) => {
+        // let a = data.find(x => x.Nama_Nasabah === nama)
+        // console.log(a)
         Alert.alert(
             "Konfirmasi",
             `Jadikan ${nama} sebagai ?`,
@@ -134,32 +99,59 @@ const InisiasiFormPPKelompokDetail = ({ route }) => {
                 },
                 {
                     text: "Ketua Sub",
-                    onPress: () => subKelompokHandler(id, index),
+                    onPress: () => subKelompokHandler(id, index, nama),
                     style: "cancel"
                 },
                 { 
                     text: "Ketua Kelompok", 
-                    onPress: () => ketuaKelompokHandler(id, index)
+                    onPress: () => ketuaKelompokHandler(id, index, nama)
                 }
             ]
         );
     }
 
-    const ketuaKelompokHandler = (id, index) => {
+    const ketuaKelompokHandler = (id, index, nama) => {
+
+        let a = data.findIndex(x => x.Nama_Nasabah === nama)
+        let b = data.length
+
+        let arr = [...data]
+
+        for(let i = 0; i < b; i++) {
+            arr[i].isKK = false
+        }
+        setData(arr)
+
         let newArr = [...data]
-        let newVal = !data[index].isKK
-        newArr[index].isKK = newVal
+        let newVal = !data[a].isKK
+        let newVal2 = !newVal
+        newArr[a].isKK = newVal
+        newArr[a].isSK = newVal2
 
         setData(newArr)
         generateGroup(newArr)
 
-        let queryIsKK = "UPDATE Table_PP_ListNasabah SET is_Ketua_Kelompok = " + newVal + " WHERE Nasabah_Id = '" + id + "'"
+        // let queryIsKK = "UPDATE Table_PP_ListNasabah SET is_KetuaSubKelompok = " + false
+        let query = "UPDATE Table_PP_ListNasabah SET is_Ketua_Kelompok = " + false + " WHERE kelompok = '" + groupName + "'"
+        let queryIsKK = "UPDATE Table_PP_ListNasabah SET is_Ketua_Kelompok = " + newVal + ", is_KetuaSubKelompok = " + newVal2 + " WHERE Nasabah_Id = '" + id + "'"
         try{
             db.transaction(
                 tx => {
-                    tx.executeSql(queryIsKK)
-                }, function(error){
+                    tx.executeSql(query)
+                }, function(error) {
                     alert(error)
+                }, function() {
+                    try{
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(queryIsKK)
+                            }, function(error) {
+                                alert(error)
+                            }
+                        )
+                    }catch(error){
+                        alert(error)
+                    }
                 }
             )
         }catch(error){
@@ -168,10 +160,26 @@ const InisiasiFormPPKelompokDetail = ({ route }) => {
 
     }
 
-    const subKelompokHandler = (id, index) => {
+    const subKelompokHandler = (id, index, nama) => {
+
+        let a = data.findIndex(x => x.Nama_Nasabah === nama)
+        let b = data.length
+
+        // let arr = [...data]
+        // console.log(arr)
+
+        // for(let i = 0; i < b; i++) {
+        //     arr[i].isSK = false
+        // }
+        // setData(arr)
+
         let newArr = [...data]
-        let newVal = !data[index].isSK
-        newArr[index].isSK = newVal
+        let newVal = !data[a].isSK
+        // let newVal2 = !newVal
+        newArr[a].isSK = newVal
+        // newArr[a].isKK = newVal2
+
+        console.log(newArr)
 
         setData(newArr)
         generateGroup(newArr)
@@ -202,14 +210,11 @@ const InisiasiFormPPKelompokDetail = ({ route }) => {
                     key={indexGroup}
                     style={[styles.textInputContainer, { width: withTextInput, marginBottom: indexGroup === dataGroup[keyGroup].length - 1 ? 0 : 8, borderColor: 'gray' }]}
                 >
-                    <TouchableOpacity 
-                        key={indexGroup}
-                        onPress={() => selectItems(group.Nasabah_Id)}
-                    >
+                    <View>
                         <View style={styles.checkbox}>
-                            {getSelected(group.id) ? <FontAwesome5 name="check" size={16} color={colors.DEFAULT} /> : <Text>{`     `}</Text>}
+                            <Text style={{fontWeight: 'bold', fontSize: 18, marginHorizontal: 5}} >{group.Nama_Nasabah.charAt(0)}</Text>
                         </View>
-                    </TouchableOpacity>
+                    </View>
                     <Text style={styles.F1} onPress={() => onConfirmKKKS(group.Nama_Nasabah, group.Nasabah_Id, indexGroup)}>{group.Nama_Nasabah}</Text>
                     {group.isKK && !group.isSK && (
                         <>

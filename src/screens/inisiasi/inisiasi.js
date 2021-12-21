@@ -23,6 +23,11 @@ const Inisasi = () => {
     let [data, setData] = useState([]);
     let [dataVerifikasi, setDataVerifikasi] = useState([]);
 
+    let [totSos, setTotSos] = useState()
+    let [totUk, setTotUk] = useState()
+    let [totVerif, setTotVerif] = useState()
+    let [totPp, setTotPp] = useState()
+
     let [roleCheck, setRoleCheck] = useState(0)
     const [keyword, setKeyword] = useState('');
 
@@ -31,6 +36,7 @@ const Inisasi = () => {
             getUserData();
             getSosialisasiDatabase();
             getUKDataDiriVerifikasi();
+            getInfoHeader()
         });
 
         const getUserData = () => {
@@ -61,6 +67,77 @@ const Inisasi = () => {
 
         return unsubscribe;
     }, [navigation]);
+
+    const getInfoHeader = async () => {
+        let queryDetailSosUk = "SELECT COUNT(namaCalonNasabah) as totalSos FROM Sosialisasi_Database"
+        let queryDetailVerif = "SELECT COUNT(nama_lengkap) as totalVerif FROM Table_UK_DataDiri WHERE status_Verif = '1' AND status_UK_Pass = '1' AND status_Verifikasi_Pass = '0'"
+        let queryDetailPp = "SELECT COUNT(Nama_Nasabah) as totalPp FROM Table_PP_ListNasabah"
+
+        const totDetailSosUk = (queryDetailSosUk) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryDetailSosUk, [], (tx, results) => {
+                            let data = results.rows.item(0)
+
+                            resolve(data)
+                        })
+                    }
+                )
+            }catch(error){
+                alert(error)
+                reject(error)
+            }
+        }))
+
+        const totDetailSosVerif = (queryDetailVerif) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryDetailVerif, [], (tx, results) => {
+                            let data = results.rows.item(0)
+
+                            resolve(data)
+                        })
+                    }
+                )
+            }catch(error){
+                alert(error)
+                reject(error)
+            }
+        }))
+
+        const totDetailSosPp = (queryDetailPp) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryDetailPp, [], (tx, results) => {
+                            let data = results.rows.item(0)
+
+                            resolve(data)
+                        })
+                    }
+                )
+            }catch(error){
+                alert(error)
+                reject(error)
+            }
+        }))
+
+        const getTotSosUk = await totDetailSosUk(queryDetailSosUk)
+        const getTotSosVerif = await totDetailSosVerif(queryDetailVerif)
+        const getTotSosPp = await totDetailSosPp(queryDetailPp)
+
+
+        // console.log(getTotSosUk)
+        // console.log(getTotSosVerif)
+        // console.log(getTotSosPp)
+
+        setTotSos(getTotSosUk.totalSos)
+        setTotUk(getTotSosUk.totalSos)
+        setTotVerif(getTotSosVerif.totalVerif)
+        setTotPp(getTotSosPp.totalPp)
+    }
 
     const hasLocationPermission = async () => {
         try {
@@ -267,22 +344,22 @@ const Inisasi = () => {
 
                                 <View style={{flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 5, paddingVertical: 10, flex: 1}}>
                                     <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#003049', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>0</Text>
+                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>{totSos}</Text>
                                         <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>Sosialisasi</Text>
                                     </View>
 
                                     <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#D62828', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>0</Text>
+                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>{totUk}</Text>
                                         <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>UK</Text>
                                     </View>
 
                                     <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#F77F00', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>0</Text>
+                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>{totVerif}</Text>
                                         <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>Verifikasi</Text>
                                     </View>
 
                                     <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#17BEBB', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>0</Text>
+                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>{totPp}</Text>
                                         <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>PP</Text>
                                     </View>
                                 </View>

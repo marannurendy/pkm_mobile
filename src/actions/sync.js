@@ -35,6 +35,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 tx.executeSql("DELETE FROM DetailUP");
                 tx.executeSql("DELETE FROM DetailPAR");
                 tx.executeSql("DELETE FROM Detailpkm");
+                tx.executeSql("DELETE FROM Table_Pencairan");
+                tx.executeSql("DELETE FROM Table_Pencairan_Nasabah");
+                tx.executeSql("DELETE FROM Table_Pencairan_Post");
             }, function(error) {
                 ToastAndroid.show("SOMETHING WENT WRONG: " + JSON.stringify(error), ToastAndroid.SHORT);
                 reject('GAGAL MEMPROSES DATA ' + source);
@@ -417,7 +420,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
     });
 
     const insertGetSosialisasiMobile = (responseJson) => new Promise((resolve, reject) => {
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT');
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT');
         // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT', responseJson);
 
         const sosialisai = responseJson.data?.sosialisai || [];
@@ -430,15 +433,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const persetujuan_pembiayaan_kelompok = responseJson.data?.persetujuan_pembiayaan_kelompok || [];
         const persetujuan_pembiayaan_client_kelompok = responseJson.data?.persetujuan_pembiayaan_client_kelompok || [];
 
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT sosialisai:', sosialisai.length);
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk:', uk.length);
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk_detail:', uk_detail.length);
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk_client_data:', uk_client_data.length);
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_kelompok:', pp_kelompok.length);
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_2_kelompok:', pp_2_kelompok.length);
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_3_kelompok:', pp_3_kelompok.length);
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_kelompok:', persetujuan_pembiayaan_kelompok.length);
-        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT sosialisai:', sosialisai.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk:', uk.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk_detail:', uk_detail.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk_client_data:', uk_client_data.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_kelompok:', pp_kelompok.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_2_kelompok:', pp_2_kelompok.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_3_kelompok:', pp_3_kelompok.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_kelompok:', persetujuan_pembiayaan_kelompok.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
+        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
 
         if (uk_client_data.length > 0) {
             try {
@@ -450,7 +454,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 var queryUKSektorEkonomi = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, nomor_Identitas, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKPendapatanNasabah = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, nomor_Identitas, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKPermohonanPembiayaan = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, nomor_Identitas, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok, id_prospek, idSosialisasiDatabase) values ';
-                var queryPPKelompok = 'INSERT INTO Table_PP_ListNasabah ( kelompok_Id, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, Nama_TTD_AO ) values ';
+                var queryPPKelompok = 'INSERT INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isSisipan, Nama_TTD_AO ) values ';
+                var queryPPSisipan = 'INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, status ) values ';
                 
                 for (let i = 0; i < uk_client_data.length; i++) {
                     let uniqueNumber = (new Date().getTime()).toString(36);
@@ -487,17 +492,17 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KSK);
                     AsyncStorage.setItem(key_tandaTanganKetuaKelompok, 'data:image/jpeg;base64,' + uk_client_data[i].TTD_KK);
 
-                    if (__DEV__) console.log('fotoDataPenjamin :', key_dataPenjamin, uk_client_data[i].Foto_KTP_Penjamin);
-                    if (__DEV__) console.log('fotoDataSuami :', key_dataSuami, uk_client_data[i].Foto_KTP_Suami);
-                    if (__DEV__) console.log('fotoKartuKeluarga :', key_kartuKeluarga, uk_client_data[i].Foto_KK);
-                    if (__DEV__) console.log('fotoKeteranganDomisili :', key_keteranganDomisili, uk_client_data[i].Foto_Suket_Domisili);
-                    if (__DEV__) console.log('fotoKartuIdentitas :', key_kartuIdentitas, uk_client_data[i].Foto_Kartu_Identitas);
+                    // if (__DEV__) console.log('fotoDataPenjamin :', key_dataPenjamin, uk_client_data[i].Foto_KTP_Penjamin);
+                    // if (__DEV__) console.log('fotoDataSuami :', key_dataSuami, uk_client_data[i].Foto_KTP_Suami);
+                    // if (__DEV__) console.log('fotoKartuKeluarga :', key_kartuKeluarga, uk_client_data[i].Foto_KK);
+                    // if (__DEV__) console.log('fotoKeteranganDomisili :', key_keteranganDomisili, uk_client_data[i].Foto_Suket_Domisili);
+                    // if (__DEV__) console.log('fotoKartuIdentitas :', key_kartuIdentitas, uk_client_data[i].Foto_Kartu_Identitas);
 
-                    if (__DEV__) console.log('tandaTanganAOSAO :', key_tandaTanganAOSAO, uk_client_data[i].TTD_AO);
-                    if (__DEV__) console.log('tandaTanganNasabah :', key_tandaTanganNasabah, uk_client_data[i].TTD_Nasabah);
-                    if (__DEV__) console.log('tandaTanganSuamiPenjamin :', key_tandaTanganSuamiPenjamin, uk_client_data[i].TTD_Penjamin);
-                    if (__DEV__) console.log('tandaTanganKetuaSubKemlompok :', key_tandaTanganKetuaSubKemlompok, uk_client_data[i].TTD_KSK);
-                    if (__DEV__) console.log('tandaTanganKetuaKelompok :', key_tandaTanganKetuaKelompok, uk_client_data[i].TTD_KK);
+                    // if (__DEV__) console.log('tandaTanganAOSAO :', key_tandaTanganAOSAO, uk_client_data[i].TTD_AO);
+                    // if (__DEV__) console.log('tandaTanganNasabah :', key_tandaTanganNasabah, uk_client_data[i].TTD_Nasabah);
+                    // if (__DEV__) console.log('tandaTanganSuamiPenjamin :', key_tandaTanganSuamiPenjamin, uk_client_data[i].TTD_Penjamin);
+                    // if (__DEV__) console.log('tandaTanganKetuaSubKemlompok :', key_tandaTanganKetuaSubKemlompok, uk_client_data[i].TTD_KSK);
+                    // if (__DEV__) console.log('tandaTanganKetuaKelompok :', key_tandaTanganKetuaKelompok, uk_client_data[i].TTD_KK);
 
                     /* ============== START HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
                     const queryDelete = "DELETE FROM Sosialisasi_Database WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
@@ -899,9 +904,19 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + uniqueNumber
                     + "')";
 
+                    
+
                     if(uk_client_data[i].Is_UKPass === '1' && uk_client_data[i].Is_VerifPass === '1' ) {
+                        let statusKelompok = 0
+
+                        if(uk_client_data[i].Is_Sisipan === 1 || uk_client_data[i].Is_Sisipan === '1') {
+                            statusKelompok = 1
+                        }
+
                         queryPPKelompok = queryPPKelompok + "('"
                             + uk_client_data[i].Kelompok_ID
+                            + "','"
+                            + uk_client_data[i].Nama_Kelompok
                             + "','"
                             + uk_client_data[i].Sub_Kelompok
                             + "','"
@@ -927,7 +942,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             + "', '"
                             + uk_client_data[i].Angsuran_Perminggu
                             + "', '"
-                            + 0
+                            + statusKelompok
+                            + "', '"
+                            + uk_client_data[i].Is_Sisipan
                             + "', '"
                             + uk_client_data[i].Nama_TTD_AO
                             + "')";
@@ -962,7 +979,23 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             + ""
                             + "','"
                             + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
                             + "')";
+                    }
+
+                    if(uk_client_data[i].Is_Sisipan === 1 || uk_client_data[i].Is_Sisipan === '1') {
+                        queryPPSisipan = queryPPSisipan + "('"
+                        + uk_client_data[i].Kelompok_ID
+                        + "','"
+                        + uk_client_data[i].Nama_Kelompok
+                        + "','"
+                        + uk_client_data[i].OurBranchID
+                        + "','"
+                        + 1
+                        + "')";
                     }
 
                     if (i != uk_client_data.length - 1) {
@@ -975,6 +1008,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         queryUKPendapatanNasabah = queryUKPendapatanNasabah + ",";
                         queryUKPermohonanPembiayaan = queryUKPermohonanPembiayaan + ",";
                         queryPPKelompok = queryPPKelompok + ","
+                        queryPPSisipan = queryPPSisipan + ","
                     }
                 }
 
@@ -987,6 +1021,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 queryUKPendapatanNasabah = queryUKPendapatanNasabah + ";";
                 queryUKPermohonanPembiayaan = queryUKPermohonanPembiayaan + ";";
                 queryPPKelompok = queryPPKelompok + ";";
+                queryPPSisipan = queryPPSisipan + ";";
 
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT UK MASTER QUERY:', queryUKMaster);
@@ -997,6 +1032,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK PENDAPATAN NASABAH INSERT QUERY:', queryUKPendapatanNasabah);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK PERMOHONAN PEMBIAYAAN INSERT QUERY:', queryUKPermohonanPembiayaan);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP KELOMPOK INSERT QUERY:', queryPPKelompok);
+                if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP KELOMPOK INSERT QUERY:', queryPPSisipan);
 
                 db.transaction(
                     tx => { tx.executeSql(query); }, function(error) {
@@ -1059,6 +1095,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP KELOMPOK INSERT TRANSACTION ERROR:', error);
                     }, function() {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP KELOMPOK INSERT TRANSACTION DONE');
+                    }
+                );
+
+                db.transaction(
+                    tx => { tx.executeSql(queryPPSisipan); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP SISIPAN KELOMPOK INSERT TRANSACTION ERROR:', error);
+                    }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP SISIPAN KELOMPOK INSERT TRANSACTION DONE');
                     }
                 );
 
@@ -1237,26 +1281,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
             } catch (error) {
                 if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
                 if (error.name === 'AbortError') {
-                    db.transaction(
-                        tx => {
-                            tx.executeSql("DELETE FROM ListGroup");
-                            tx.executeSql("DELETE FROM GroupList");
-                            tx.executeSql("DELETE FROM UpAccountList");
-                            tx.executeSql("DELETE FROM PAR_AccountList");
-                            tx.executeSql("DELETE FROM AccountList");
-                            tx.executeSql("DELETE FROM Totalpkm");
-                            tx.executeSql("DELETE FROM pkmTransaction");
-                            tx.executeSql("DELETE FROM parTransaction");
-                            tx.executeSql("DELETE FROM DetailKehadiran");
-                            tx.executeSql("DELETE FROM DetailUP");
-                            tx.executeSql("DELETE FROM DetailPAR");
-                            tx.executeSql("DELETE FROM Detailpkm");
-                        }, function(error) {
-                            if (__DEV__) console.log('DELETE FROM * ERROR:', error);
-                        }, function() {
-                            if (__DEV__) console.log('DELETE FROM * NULL');
-                        }
-                    )
                     Alert.alert('Error', 'Request timeout');
                     return 'SYNC FAILED TIMEOUT';
                 }

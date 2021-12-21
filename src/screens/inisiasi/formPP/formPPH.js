@@ -67,7 +67,12 @@ const InisiasiFormPPH = ({ route }) => {
     }, []);
 
     const getData = async (val) => {
+        console.log("ini")
         let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + val + " GROUP BY a.kelompok "
+        // let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok GROUP BY a.kelompok "
+        // let queryGetGroup = "SELECT * FROM Table_PP_Kelompok"
+        // let queryGetGroup = "SELECT * FROM Table_PP_ListNasabah"
+        
 
         const listData = (queryGetGroup) => (new Promise ((resolve,reject) => {
             try{
@@ -204,21 +209,22 @@ const InisiasiFormPPH = ({ route }) => {
                                                 },function(error) {
                                                     console.log('Transaction ERROR: ' + error.message);
                                                   }, function() {
+                                                    getData(val)
                                                     console.log('Delete Table OK');
                                               }
                                             )
 
                                         }else{
-                                            setLoading(false)
+                                            // setLoading(false)
                                             flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
                                         }
                                     }).catch((error) => {
-                                        setLoading(false)
+                                        // setLoading(false)
                                         flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
                                     })
                                 }catch(error){
                                     console.log("disini")
-                                    setLoading(false)
+                                    // setLoading(false)
                                     flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
                                 }
 
@@ -316,17 +322,18 @@ const InisiasiFormPPH = ({ route }) => {
                                 console.log(responseJson)
                                 if(responseJson.code === 200) {
                                     flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                                    getData(val)
                                 }else{
-                                    setLoading(false)
+                                    // setLoading(false)
                                     flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
                                 }
                             }).catch((error) => {
-                                setLoading(false)
+                                // setLoading(false)
                                 flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
                             })
                         }catch(error){
                             console.log("disini")
-                            setLoading(false)
+                            // setLoading(false)
                             flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
                         }
                     }
@@ -334,6 +341,7 @@ const InisiasiFormPPH = ({ route }) => {
                     alert(error)
                 }
             }
+
     }
 
     const renderHeader = () => (

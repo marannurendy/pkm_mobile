@@ -41,7 +41,7 @@ const InisiasiFormPPKelompokList = ({ route }) => {
     }
 
     const SetData = async () => {
-        let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok GROUP BY a.kelompok"
+        let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status = '0' GROUP BY a.kelompok"
 
         const getDataGroup = (queryGetGroup) => (new Promise((resolve, reject) => {
             try{

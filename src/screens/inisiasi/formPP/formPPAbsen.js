@@ -124,37 +124,42 @@ const InisiasiFormPPAbsen = ({ route }) => {
             style={[styles.MB16]}
         >
             <View style={[styles.P16, { borderWidth: 1, borderRadius: 8}]}>
-                    <Text style={styles.F1}>{x.Nama_Nasabah}</Text>
-
-                    <View style={{borderBottomWidth: 1, marginVertical: 10}} />
-
-                    <Text style={styles.F1}>Form Kehadiran</Text>
-                    <View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton 
-                                value= "1"
-                                status={ data[i].AbsPP === '1' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('1', i)} 
-                            />
-                            <Text>1. Hadir</Text>
-                        </View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton 
-                                value= "2"
-                                status={ data[i].AbsPP === '2' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('2', i)} 
-                            />
-                            <Text>2. Tidak Hadir</Text>
-                        </View>
-                        <View style={styles.RadioStyle}>
-                            <RadioButton 
-                                value= "3"
-                                status={ data[i].AbsPP === '3' ? 'checked' : 'unchecked'}
-                                onPress={() => attendanceHandler('3', i)} 
-                            />
-                            <Text>3. Sakit</Text>
-                        </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={[styles.checkbox, {backgroundColor: "#0D67B2", borderColor: '#FFF'}]}>
+                        <Text style={{fontWeight: 'bold', fontSize: 20, marginHorizontal: 5, color: "#FFF"}} >{x.Nama_Nasabah.charAt(0)}</Text>
                     </View>
+                    <Text style={[styles.F1, {fontSize: 16}]}>{x.Nama_Nasabah}</Text>
+                </View>
+
+                <View style={{borderBottomWidth: 1, marginVertical: 10}} />
+
+                <Text style={styles.F1}>Form Kehadiran</Text>
+                <View>
+                    <View style={styles.RadioStyle}>
+                        <RadioButton 
+                            value= "1"
+                            status={ data[i].AbsPP === '1' ? 'checked' : 'unchecked'}
+                            onPress={() => attendanceHandler('1', i)} 
+                        />
+                        <Text>1. Hadir</Text>
+                    </View>
+                    <View style={styles.RadioStyle}>
+                        <RadioButton 
+                            value= "2"
+                            status={ data[i].AbsPP === '2' ? 'checked' : 'unchecked'}
+                            onPress={() => attendanceHandler('2', i)} 
+                        />
+                        <Text>2. Tidak Hadir</Text>
+                    </View>
+                    <View style={styles.RadioStyle}>
+                        <RadioButton 
+                            value= "3"
+                            status={ data[i].AbsPP === '3' ? 'checked' : 'unchecked'}
+                            onPress={() => attendanceHandler('3', i)} 
+                        />
+                        <Text>3. Mengundurkan Diri</Text>
+                    </View>
+                </View>
             </View>
         </TouchableOpacity>
     ))
@@ -185,12 +190,18 @@ const InisiasiFormPPAbsen = ({ route }) => {
         // if(length < 7) return flashNotification("Caution!", "Jumlah nasabah tidak memenuhi kriteria pembentukan kelompok", "#FF7900", "#fff")
 
         let dataHadir = []
+        let numKetKelompok = []
         for(let a = 0; a < length; a++) {
             let b = data[a].AbsPP
+            let c = data[a].is_Ketua_Kelompok
             if(b === null || b === undefined || b === "null" || b === "undefined") flashNotification("Caution!", "Absen belum lengkap", "#FF7900", "#fff")
             if(b === 1 || b === "1") dataHadir.push(b)
+            if(c === "1" || c === 1) numKetKelompok.push(data[a])
         }
+
         let q = dataHadir.length
+
+        // if(numKetKelompok.length < 1) flashNotification("Caution!", "Ketua kelompok belum di tentukan", "#FF7900", "#fff")
         // if(q < 7) flashNotification("Caution!", "Jumlah nasabah yang menghadiri pertemuan kelompok tidak cukup", "#FF7900", "#fff")
 
         try{
