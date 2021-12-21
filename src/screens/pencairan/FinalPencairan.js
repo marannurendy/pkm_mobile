@@ -412,7 +412,6 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Ketua Sub Kelompok(*)</Text>
@@ -425,7 +424,6 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureSubKel}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Ketua Kelompok(*)</Text>
@@ -438,7 +436,6 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureKetuaKel}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
                                 </View>
                             </Card>
                         </View>
