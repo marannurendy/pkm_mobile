@@ -122,13 +122,9 @@ const FormUjiKelayakan = ({route}) => {
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
 
                         if (statusSosialisasi === '3') {
-                            if (!data.kehadiran_pkm || typeof data.kehadiran_pkm === 'undefined' || data.kehadiran_pkm === '' || data.kehadiran_pkm === 'null') {
+                            if (!data.kehadiran_pkm || typeof data.kehadiran_pkm === 'undefined' || data.kehadiran_pkm === '' || data.kehadiran_pkm === 'null' || !data.angsuran_pada_saat_pkm || typeof data.angsuran_pada_saat_pkm === 'undefined' || data.angsuran_pada_saat_pkm === '' || data.angsuran_pada_saat_pkm === 'null') {
                                 setSubmitted(false);
-                                return alert('Disiplin Nasabah - Kehadiran PKM (*) tidak boleh kosong');
-                            }
-                            if (!data.angsuran_pada_saat_pkm || typeof data.angsuran_pada_saat_pkm === 'undefined' || data.angsuran_pada_saat_pkm === '' || data.angsuran_pada_saat_pkm === 'null') {
-                                setSubmitted(false);
-                                return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
+                                return alert('Disiplin Nasabah (*) tidak boleh kosong');
                             }
                         }
 
@@ -173,9 +169,11 @@ const FormUjiKelayakan = ({route}) => {
                         let idProspek = "";
                         if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
 
+                        let isSisipan = "";
                         let kelompokID = data.kelompokID;
                         let namaKelompok = data.namaKelompok;
                         if (statusSosialisasi === '1') {
+                            isSisipan = "1";
                             kelompokID = selectedPilihKelompok.value;
                             namaKelompok = selectedPilihKelompok.label;
                         }
@@ -283,7 +281,8 @@ const FormUjiKelayakan = ({route}) => {
                             "Sub_Kelompok": data.subKelompok,
                             "ClientID": data.clientId,
                             "Kehadiran_PKM": data.kehadiran_pkm,
-                            "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm
+                            "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm,
+                            "IsSisipan": isSisipan
                         }
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
 
@@ -571,11 +570,17 @@ const FormUjiKelayakan = ({route}) => {
                 alignItems: "center",
                 paddingHorizontal: 20,
             }}>
-                <TouchableOpacity onPress={() => navigation.replace('UjiKelayakan', {groupName: groupName})} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
                     <View>
                         <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     </View>
-                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>UJI KELAYAKAN</Text>
+                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.replace('Inisiasi')}>
+                    <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
+                        <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
+                        <Text>INISIASI</Text>
+                    </View>
                 </TouchableOpacity>
             </View>
 
@@ -589,13 +594,13 @@ const FormUjiKelayakan = ({route}) => {
             </View>
 
             <View style={{flex: 1, marginHorizontal: 20, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFF'}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan {statusSosialisasi}</Text>
+                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan</Text>
 
                 <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
                     {statusSosialisasi === '1' && (
                         <View style={[{padding: 16, borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginBottom: 16}]}>
                             <View style={{ marginBottom: 16 }}>
-                                <Text>Pilih Kelompok</Text>
+                                <Text>Pilih Kelompok (*)</Text>
                                 <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8 }]}>
                                     <Picker
                                         selectedValue={valuePilihKelompok}
@@ -613,16 +618,14 @@ const FormUjiKelayakan = ({route}) => {
                     )}
 
                     {statusSosialisasi === '3' && (
-                        <View style={[{padding: 16, borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginBottom: 16}]}>
-                            <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKDisiplinNasabah', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, backgroundColor: '#0c5da0'}}>
-                                <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
-                                    <FontAwesome5 name={'sign-in-alt'} size={25} color={'#FFF'} />
-                                </View>
-                                <View style={{flex: 1}}>
-                                    <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Disiplin Nasabah</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKDisiplinNasabah', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                            <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                <FontAwesome5 name={'sign-in-alt'} size={25} color={'#FFF'} />
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Disiplin Nasabah</Text>
+                            </View>
+                        </TouchableOpacity>
                     )}
 
                     <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>

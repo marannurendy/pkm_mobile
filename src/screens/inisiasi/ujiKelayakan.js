@@ -62,7 +62,7 @@ const UjiKelayakan = ({route}) => {
             onPress={() => navigation.navigate('FormUjiKelayakan', {id: data.id, groupName: data.groupName, namaNasabah: data.namaNasabah, nomorHandphone: data.nomorHandphone, statusSosialisasi: data.statusSosialisasi})}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <Text>{JSON.stringify(data)}</Text>
+                {/* <Text>{JSON.stringify(data)}</Text> */}
                 <ListMessage namaNasabah={data.namaNasabah} status={data.status} />
             </View>
         </TouchableOpacity>
@@ -108,11 +108,17 @@ const UjiKelayakan = ({route}) => {
                 alignItems: "center",
                 paddingHorizontal: 20,
             }}>
-                <TouchableOpacity onPress={() => navigation.replace('Inisiasi')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
                     <View>
                         <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     </View>
-                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>INISIASI</Text>
+                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.replace('Inisiasi')}>
+                    <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
+                        <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
+                        <Text>INISIASI</Text>
+                    </View>
                 </TouchableOpacity>
             </View>
 

@@ -264,11 +264,17 @@ const Verifikasi = ({ route }) => {
     return (
         <View style={styles.container}>
             <View style={styles.containerInisiasi}>
-                <TouchableOpacity onPress={() => navigation.replace('Inisiasi')} style={styles.buttonInisiasi}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonInisiasi}>
                     <View>
                         <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     </View>
-                    <Text style={styles.titleInisiasi}>INISIASI</Text>
+                    <Text style={styles.titleInisiasi}>BACK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.replace('Inisiasi')}>
+                    <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
+                        <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
+                        <Text>INISIASI</Text>
+                    </View>
                 </TouchableOpacity>
             </View>
             <View style={styles.containerHeader}>

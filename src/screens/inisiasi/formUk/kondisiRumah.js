@@ -230,11 +230,17 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         <>
             <View style={styles.headerContainer}>
                 <TouchableOpacity 
-                    onPress={() => navigation.replace('UjiKelayakan', { groupName: groupName })} 
+                    onPress={() => navigation.goBack()} 
                     style={styles.headerButton}
                 >
                     <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
-                    <Text style={styles.headerTitle}>UJI KELAYAKAN</Text>
+                    <Text style={styles.headerTitle}>BACK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.replace('Inisiasi')}>
+                    <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
+                        <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
+                        <Text>INISIASI</Text>
+                    </View>
                 </TouchableOpacity>
             </View>
             <View style={styles.headerBoxImageBackground}>
