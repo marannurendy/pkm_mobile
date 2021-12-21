@@ -56,7 +56,7 @@ const Siklus = ({route}) => {
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST DATA PENCAIRAN INSERT LOCAL', dataNasabah.ID_Prospek);
         let query = 'INSERT INTO Table_Pencairan_Post (FP4, Foto_Pencairan, Is_Dicairkan, Jml_RealCair, Jml_UP, TTD_KC, TTD_KK, TTD_KSK, TTD_Nasabah, TTD_Nasabah_2, ID_Prospek) ' +
-                    'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
+                    'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=' + dataNasabah.ID_Prospek + '","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
                     '"' + TotalPencairan + '","' + JumlahUP + '","' + postPencairan.TTD_KC + '", "' + postPencairan.TTD_KK + '", "' + postPencairan.TTD_KSK + '", "' + postPencairan.TTD_Nasabah + '",'+ 
                     '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.ID_Prospek + '")';
         db.transaction(
@@ -191,7 +191,7 @@ const Siklus = ({route}) => {
                 <View style={styles.bodyContainer}>
                     <View style={styles.F1}>
                         <WebView
-                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=4` }}
+                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=${dataNasabah.ID_Prospek}` }}
                             startInLoadingState={true}
                             style={styles.F1}
                         />
