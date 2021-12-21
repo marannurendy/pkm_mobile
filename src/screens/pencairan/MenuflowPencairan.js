@@ -42,7 +42,7 @@ const MenuflowPencairan = ({route}) => {
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getLocalPencairan results');
+                    if (__DEV__) console.log('getLocalPencairan results', results.rows.length);
                     let dataLength = results.rows.length
                     var ah = []
                     for(let a = 0; a < dataLength; a++) {
@@ -108,18 +108,8 @@ const MenuflowPencairan = ({route}) => {
                             <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
                         </TouchableOpacity>
-                    
-                        <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20, opacity:"50%"}}>
-                            <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
-                            <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
-                        </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => navigation.navigate('SyncPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
-                            <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
-                            <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
-                        </TouchableOpacity>
-                    
-                        <TouchableOpacity style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20, opacity:"50%"}}>
                             <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
                         </TouchableOpacity>

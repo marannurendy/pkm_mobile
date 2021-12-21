@@ -111,7 +111,7 @@ const FormUjiKelayakan = ({route}) => {
 
         setSubmitted(true);
 
-        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id WHERE a.idSosialisasiDatabase = "' + id + '"';
+        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok, h.kehadiran_pkm, h.angsuran_pada_saat_pkm FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id LEFT JOIN Table_UK_DisipinNasabah h ON a.idSosialisasiDatabase = h.idSosialisasiDatabase WHERE a.idSosialisasiDatabase = "' + id + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
@@ -120,6 +120,17 @@ const FormUjiKelayakan = ({route}) => {
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
+
+                        if (statusSosialisasi === '1') {
+                            if (!data.kehadiran_pkm || typeof data.kehadiran_pkm === 'undefined' || data.kehadiran_pkm === '' || data.kehadiran_pkm === 'null') {
+                                setSubmitted(false);
+                                return alert('Disiplin Nasabah - Kehadiran PKM (*) tidak boleh kosong');
+                            }
+                            if (!data.angsuran_pada_saat_pkm || typeof data.angsuran_pada_saat_pkm === 'undefined' || data.angsuran_pada_saat_pkm === '' || data.angsuran_pada_saat_pkm === 'null') {
+                                setSubmitted(false);
+                                return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
+                            }
+                        }
 
                         let fotoDataPenjamin = data.foto_ktp_penjamin ? await AsyncStorage.getItem(data.foto_ktp_penjamin) : 'data:image/jpeg;base64,';
                         let fotoDataSuami = data.foto_ktp_suami ?  await AsyncStorage.getItem(data.foto_ktp_suami) : 'data:image/jpeg;base64,';
@@ -270,7 +281,9 @@ const FormUjiKelayakan = ({route}) => {
                             "Kelompok_ID": kelompokID,
                             "Nama_Kelompok": namaKelompok,
                             "Sub_Kelompok": data.subKelompok,
-                            "ClientID": data.clientId
+                            "ClientID": data.clientId,
+                            "Kehadiran_PKM": data.kehadiran_pkm,
+                            "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm
                         }
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
 
@@ -397,12 +410,14 @@ const FormUjiKelayakan = ({route}) => {
 
                                                     /* ============ START DELETE DATA FROM LOCAL STORAGE ============ */
                                                     const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id = '" + id + "'";
+                                                    const queryDeleteUKMaster = "DELETE FROM Table_UK_Master WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKDisiplinNasabah = "DELETE FROM Table_UK_DisipinNasabah WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteProspekLamaPP = "DELETE FROM Table_Prospek_Lama_PP WHERE clientId = '" + data.clientId + "'";
                                                     db.transaction(
                                                         tx => {
@@ -411,6 +426,15 @@ const FormUjiKelayakan = ({route}) => {
                                                             })
                                                         }, function(error) {
                                                             if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKMaster, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKMaster} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKMaster} ERROR:`, error);
                                                         }, function() {}
                                                     );
                                                     db.transaction(
@@ -465,6 +489,15 @@ const FormUjiKelayakan = ({route}) => {
                                                             })
                                                         }, function(error) {
                                                             if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKDisiplinNasabah, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} ERROR:`, error);
                                                         }, function() {}
                                                     );
                                                     db.transaction(
@@ -558,25 +591,35 @@ const FormUjiKelayakan = ({route}) => {
             <View style={{flex: 1, marginHorizontal: 20, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFF'}}>
                 <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan</Text>
 
-                {statusSosialisasi === '1' && (
-                    <View style={{ margin: 16 }}>
-                        <Text>Pilih Kelompok</Text>
-                        <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8 }]}>
-                            <Picker
-                                selectedValue={valuePilihKelompok}
-                                onValueChange={(itemValue, itemIndex) => { 
-                                    setSelectedPilihKelompok(itemsPilihKelompok[itemIndex - 1]);
-                                    setValuePilihKelompok(itemValue);
-                                }}
-                            >
-                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                {itemsPilihKelompok.length > 0 && itemsPilihKelompok.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                            </Picker>
-                        </View>
-                    </View>
-                )}
-
                 <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
+                    {statusSosialisasi === '1' && (
+                        <View style={[{padding: 16, borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginBottom: 16}]}>
+                            <View style={{ marginBottom: 16 }}>
+                                <Text>Pilih Kelompok</Text>
+                                <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8 }]}>
+                                    <Picker
+                                        selectedValue={valuePilihKelompok}
+                                        onValueChange={(itemValue, itemIndex) => { 
+                                            setSelectedPilihKelompok(itemsPilihKelompok[itemIndex - 1]);
+                                            setValuePilihKelompok(itemValue);
+                                        }}
+                                    >
+                                        <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                        {itemsPilihKelompok.length > 0 && itemsPilihKelompok.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                    </Picker>
+                                </View>
+                            </View>
+                            <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKDisiplinNasabah', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, backgroundColor: '#0c5da0'}}>
+                                <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                    <FontAwesome5 name={'sign-in-alt'} size={25} color={'#FFF'} />
+                                </View>
+                                <View style={{flex: 1}}>
+                                    <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Disiplin Nasabah</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+
                     <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'address-card'} size={25} color={'#FFF'} />

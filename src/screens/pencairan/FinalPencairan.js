@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, CheckBox, SafeAreaView, ActivityIndicator, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, ToastAndroid, Modal, CheckBox, SafeAreaView, ActivityIndicator, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -40,8 +40,10 @@ const FinalPencairan = ({route}) => {
     const [signatureNasabah, setSignatureNasabah] = useState();
     const [statusMelakukan, setStatusMelakukan] = useState(false)
     const [hasPermission, setHasPermission] = useState(null);
-    const [key_dataPencairan, setkey_dataPencairan] = useState(`foto_dataPencairan_${uniqueNumber}_${route.params.data.Nama_Prospek.replace(/\s+/g, '')}`);
-    //const key_dataPencairan = `foto_dataPencairan_`;
+    const [key_dataPencairan, setkey_dataPencairan] = useState(`foto_dataPencairan_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
+    const [key_tandaTanganNasabah2, setKey_tandaTanganNasabah2] = useState(`formUK_tandaTanganNasabah2_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
+    const [key_tandaTanganKetKel, setkey_tandaTanganKetKel] = useState(`formUK_tandaTanganKetKel_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
+    const [key_tandaTanganSubKel, setkey_tandaTanganSubKel] = useState(`formUK_tandaTanganSubKel_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
     moment.locale('id');
     var Tanggal = moment(new Date()).format('DD-MMM-YYYY')
     var hariIni = moment(new Date()).format('dddd')
@@ -69,43 +71,6 @@ const FinalPencairan = ({route}) => {
         }
 
         came();
-        //getSosialisasiDatabase();
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
-        
-        
     }, []);
 
     const takePicture = async (type) => {
@@ -117,7 +82,8 @@ const FinalPencairan = ({route}) => {
 
             if (type === "FotoPencairan") {
                 setFotoDataPencairan(data.uri);
-                setPostPencairan({...postPencairan, "Foto_Pencairan":data.base64})
+                setPostPencairan({...postPencairan, "Foto_Pencairan":key_dataPencairan})
+                AsyncStorage.setItem(key_dataPencairan, data.base64)
                 setLoading(false);
                 SetButtonCam(false);
             }
@@ -131,7 +97,8 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureKetuaKel(signature)
             setModalVisibleKetuaKel(!modalVisibleKetuaKel);
-            setPostPencairan({...postPencairan, "TTD_KK":signature.split(',')[1]})
+            setPostPencairan({...postPencairan, "TTD_KK":key_tandaTanganKetKel})
+            AsyncStorage.setItem(key_tandaTanganKetKel, signature.split(',')[1])
         }
 
         const handleEmpty = () => {
@@ -175,7 +142,8 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureSubKel(signature)
             setModalVisibleSubKel(!modalVisibleSubKel);
-            setPostPencairan({...postPencairan, "TTD_KSK":signature.split(',')[1]})
+            setPostPencairan({...postPencairan, "TTD_KSK":key_tandaTanganSubKel})
+            AsyncStorage.setItem(key_tandaTanganSubKel, signature.split(',')[1])
         }
 
         const handleEmpty = () => {
@@ -219,7 +187,8 @@ const FinalPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
-            setPostPencairan({...postPencairan, "TTD_Nasabah_2":signature.split(',')[1]})
+            setPostPencairan({...postPencairan, "TTD_Nasabah_2":key_tandaTanganNasabah2})
+            AsyncStorage.setItem(key_tandaTanganNasabah2, signature.split(',')[1])
         }
 
         const handleEmpty = () => {
@@ -264,7 +233,11 @@ const FinalPencairan = ({route}) => {
     }
 
     const submitHandler = () => {
-        navigation.navigate("Siklus", {data: dataNasabah, postPencairan: postPencairan})
+        if(signatureSubKel == null || signatureKetuaKel == null || signatureNasabah == null){
+            ToastAndroid.show("Silahkan Isi Tanda Tangan dan Foto", ToastAndroid.SHORT);
+        }else{
+            navigation.navigate("Siklus", {data: dataNasabah, postPencairan: postPencairan})
+        }
     }
 
     return(
@@ -439,7 +412,6 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Ketua Sub Kelompok(*)</Text>
@@ -452,7 +424,6 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureSubKel}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Ketua Kelompok(*)</Text>
@@ -465,7 +436,6 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureKetuaKel}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
                                 </View>
                             </Card>
                         </View>

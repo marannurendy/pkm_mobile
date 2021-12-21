@@ -7,9 +7,14 @@ import FlashMessage from "react-native-flash-message";
 import NetInfo, { useNetInfo } from '@react-native-community/netinfo'
 import { ApiSync, Get_notification } from './dataconfig/index'
 // import SQLite from 'react-native-sqlite-storage';
+import { useKeepAwake } from 'expo-keep-awake';
+
+// if(__DEV__) {
+//     import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
+// }
 
 export default function App() {
-  
+    useKeepAwake();
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([])
   const [modalVisible, setModalVisible] = useState(false)

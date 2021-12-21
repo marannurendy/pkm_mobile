@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, ToastAndroid, Modal, FlatList, SafeAreaView, TouchableWithoutFeedback, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -19,7 +19,7 @@ const TandaTanganPencairan = ({route}) => {
 
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
-
+    var uniqueNumber = (new Date().getTime()).toString(36);
     let [branchId, setBranchId] = useState();
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
@@ -35,6 +35,8 @@ const TandaTanganPencairan = ({route}) => {
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
     const [signatureKetuaKel, setSignatureKetuaKel] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
+    const [key_tandaTanganSAOKCLRP, setKey_tandaTanganSAOKCLRP] = useState(`formUK_tandaTanganSAOKCLRP_${uniqueNumber}_${dataNasabah}_${uniqueNumber}`);
+    const [key_tandaTanganNasabahLRP, setKey_tandaTanganNasabahLRP] = useState(`formUK_tandaTanganNasabahLRP_${uniqueNumber}_${dataNasabah}_${uniqueNumber}`);
 
     useEffect(() => {
         const getUserData = () => {
@@ -81,8 +83,7 @@ const TandaTanganPencairan = ({route}) => {
         var bah = []
         if(ah.length > 0){
             for(let i = 0; i < ah.length; i++){
-                console.log(ah[i].ID_Prospek)
-                let query = 'SELECT * FROM Table_Pencairan_Post ';
+                let query = 'SELECT * FROM Table_Pencairan_Post WHERE ID_Prospek = "'+ ah[i].ID_Prospek +'"';
                 db.transaction(
                     tx => {
                         tx.executeSql(query, [], (tx, results) => {
@@ -106,8 +107,9 @@ const TandaTanganPencairan = ({route}) => {
         try{
             if(dataIDProspek.length > 0){
                 for(let a = 0; a < dataIDProspek.length; a++) {
-                    let query = 'UPDATE Table_Pencairan_Post SET LRP_TTD_AO = "' + signatureKetuaKel + '", LRP_TTD_Nasabah = "' + signatureNasabah + '" WHERE ID_Prospek = "' + dataIDProspek[a].ClientID + '"';
-        
+                    console.log(key_tandaTanganSAOKCLRP, key_tandaTanganNasabahLRP, dataIDProspek)
+                    let query = 'UPDATE Table_Pencairan_Post SET LRP_TTD_AO = "' + key_tandaTanganSAOKCLRP + '", LRP_TTD_Nasabah = "' + key_tandaTanganNasabahLRP + '" WHERE ID_Prospek = "' + dataIDProspek[a].ID_Prospek + '"';
+                    console.log(query)
                     db.transaction(
                         tx => {
                             tx.executeSql(query)
@@ -131,6 +133,7 @@ const TandaTanganPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureKetuaKel(signature)
             setModalVisibleKetuaKel(!modalVisibleKetuaKel);
+            AsyncStorage.setItem(key_tandaTanganSAOKCLRP, signature.split(',')[1])
         }
 
         const handleEmpty = () => {
@@ -174,6 +177,7 @@ const TandaTanganPencairan = ({route}) => {
         const handleOK = (signature) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
+            AsyncStorage.setItem(key_tandaTanganNasabahLRP, signature.split(',')[1])
         }
 
         const handleEmpty = () => {
@@ -279,7 +283,6 @@ const TandaTanganPencairan = ({route}) => {
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
                                     <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
-                                    <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Tanda Tangan {"\n"}Account Officer</Text>
