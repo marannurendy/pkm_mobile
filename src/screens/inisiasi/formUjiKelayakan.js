@@ -121,7 +121,7 @@ const FormUjiKelayakan = ({route}) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
 
-                        if (statusSosialisasi === '1') {
+                        if (statusSosialisasi === '3') {
                             if (!data.kehadiran_pkm || typeof data.kehadiran_pkm === 'undefined' || data.kehadiran_pkm === '' || data.kehadiran_pkm === 'null') {
                                 setSubmitted(false);
                                 return alert('Disiplin Nasabah - Kehadiran PKM (*) tidak boleh kosong');
@@ -589,7 +589,7 @@ const FormUjiKelayakan = ({route}) => {
             </View>
 
             <View style={{flex: 1, marginHorizontal: 20, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFF'}}>
-                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan</Text>
+                <Text style={{fontSize: 30, fontWeight: 'bold', margin: 20}}>Form Uji Kelayakan {statusSosialisasi}</Text>
 
                 <ScrollView style={{flex: 1, marginTop: 10, marginHorizontal: 10}}>
                     {statusSosialisasi === '1' && (
@@ -609,6 +609,11 @@ const FormUjiKelayakan = ({route}) => {
                                     </Picker>
                                 </View>
                             </View>
+                        </View>
+                    )}
+
+                    {statusSosialisasi === '3' && (
+                        <View style={[{padding: 16, borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginBottom: 16}]}>
                             <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKDisiplinNasabah', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, backgroundColor: '#0c5da0'}}>
                                 <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                                     <FontAwesome5 name={'sign-in-alt'} size={25} color={'#FFF'} />
