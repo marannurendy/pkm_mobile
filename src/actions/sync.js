@@ -98,7 +98,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + ListPencairan[i].Angsuran_Per_Minggu
                     + "','"
-                    + ListPencairan[i].Foto_Pencairan
+                    + null
                     + "','"
                     + ListPencairan[i].Jasa
                     + "','"
@@ -108,9 +108,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + ListPencairan[i].Kelompok_ID
                     + "','"
-                    + ListPencairan[i].LRP_TTD_AO
+                    + null
                     + "','"
-                    + ListPencairan[i].LRP_TTD_Nasabah
+                    + null
                     + "','"
                     + ListPencairan[i].Nama_Kelompok
                     + "','"
@@ -120,15 +120,15 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + ListPencairan[i].Nomor_Identitas
                     + "','"
-                    + ListPencairan[i].TTD_KC
+                    + null
                     + "','"
-                    + ListPencairan[i].TTD_KK
+                    + null
                     + "','"
-                    + ListPencairan[i].TTD_KSK
+                    + null
                     + "','"
-                    + ListPencairan[i].TTD_Nasabah
+                    + null
                     + "','"
-                    + ListPencairan[i].TTD_Nasabah_2
+                    + null
                     + "','"
                     + ListPencairan[i].Term_Pembiayaan
                     + "','"
@@ -146,7 +146,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
                 query = query + ";";
                 querylistPencairan = querylistPencairan + ";";
-                if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT QUERY:', querylistPencairan);
+                //if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT QUERY:', querylistPencairan);
     
                 db.transaction(
                     tx => { tx.executeSql(query); }, function(error) {

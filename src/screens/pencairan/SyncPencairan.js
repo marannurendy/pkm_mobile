@@ -137,8 +137,8 @@ const SyncPencairan = () => {
                                     }, function() {}
                                 );
                             }
-                            navigation.navigate('Pencairan')
                             setLoaded(false)
+                            navigation.replace('FrontHome')
                             return true;
                         }
                     })
