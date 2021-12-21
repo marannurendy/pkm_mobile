@@ -342,22 +342,35 @@ const InisiasiFormProspekLama = ({ route }) => {
         let groupId = dataDetail?.GroupID ?? '';
         let groupName = dataDetail?.GroupName ?? '';
         let subGroup = dataDetail?.SubGroup ?? '';
+        let identityNumber = dataDetail?.IdentityNumber ?? '';
 
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama uniqueNumber:', uniqueNumber);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupId:', groupId);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupName:', groupName);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama subGroup:', subGroup);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama identityNumber:', identityNumber);
 
         let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "", "' + moment().format('YYYY-MM-DD') + '", "' + groupName + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '")';
-
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama query:', query);
         db.transaction(
             tx => {
                 tx.executeSql(query)
             }, function(error) {
-                if (__DEV__) console.log('insert into sosialisasi_database transaction error: ', error);
+                if (__DEV__) console.log('insert into Sosialisasi_Database transaction error: ', error);
                 Alert.alert('Error', JSON.stringify(error));
             }, function() {
+
+                let queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, idSosialisasiDatabase) values ("1","' + identityNumber + '","' + name + '", "' + uniqueNumber + '")';
+                if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama queryUKDataDiri:', queryUKDataDiri);
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryUKDataDiri)
+                    }, function(error) {
+                        if (__DEV__) console.log('insert into Table_UK_DataDiri transaction error: ', error);
+                    }, function() {
+                    }
+                )
+
                 Alert.alert('Berhasil', 'Data berhasil masuk UK');
                 navigation.goBack();
                 return;

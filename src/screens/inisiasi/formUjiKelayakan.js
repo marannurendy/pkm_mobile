@@ -132,404 +132,426 @@ const FormUjiKelayakan = ({route}) => {
                             }
                         }
 
-                        // let fotoDataPenjamin = data.foto_ktp_penjamin ? await AsyncStorage.getItem(data.foto_ktp_penjamin) : 'data:image/jpeg;base64,';
-                        // let fotoDataSuami = data.foto_ktp_suami ?  await AsyncStorage.getItem(data.foto_ktp_suami) : 'data:image/jpeg;base64,';
-                        // let fotoKartuKeluarga = data.foto_kk ? await AsyncStorage.getItem(data.foto_kk) : 'data:image/jpeg;base64,';
-                        // let fotoKeteranganDomisili = data.foto_Surat_Keterangan_Domisili ? await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili) : 'data:image/jpeg;base64,';
-                        // let fotoKartuIdentitas = data.foto_Kartu_Identitas ? await AsyncStorage.getItem(data.foto_Kartu_Identitas) : 'data:image/jpeg;base64,';
+                        let fotoDataPenjamin = data.foto_ktp_penjamin ? await AsyncStorage.getItem(data.foto_ktp_penjamin) : 'data:image/jpeg;base64,';
+                        let fotoDataSuami = data.foto_ktp_suami ?  await AsyncStorage.getItem(data.foto_ktp_suami) : 'data:image/jpeg;base64,';
+                        let fotoKartuKeluarga = data.foto_kk ? await AsyncStorage.getItem(data.foto_kk) : 'data:image/jpeg;base64,';
+                        let fotoKeteranganDomisili = data.foto_Surat_Keterangan_Domisili ? await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili) : 'data:image/jpeg;base64,';
+                        let fotoKartuIdentitas = data.foto_Kartu_Identitas ? await AsyncStorage.getItem(data.foto_Kartu_Identitas) : 'data:image/jpeg;base64,';
 
-                        // const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
-                        // const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
-                        // const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
-                        // const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
-                        // const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
-                        // const setUKtimeOut = await AsyncStorage.getItem("SetUKtimeOut");
+                        const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
+                        const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
+                        const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
+                        const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
+                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
+                        const setUKtimeOut = await AsyncStorage.getItem("SetUKtimeOut");
                         
-                        // let timeOut = 360000;
-                        // if (setUKtimeOut) timeOut = parseInt(JSON.parse(setUKtimeOut));
+                        let timeOut = 360000;
+                        if (setUKtimeOut) timeOut = parseInt(JSON.parse(setUKtimeOut));
 
-                        // let namaBank = data.nama_Bank;
-                        // let noRekening = data.no_Rekening;
-                        // let pemilikRekening = data.pemilik_Rekening;
-                        // if (data.status_Rekening_Bank === 'false') {
-                        //     namaBank = "null";
-                        //     noRekening = "null";
-                        //     pemilikRekening = "null";
-                        // }
+                        let namaBank = data.nama_Bank;
+                        let noRekening = data.no_Rekening;
+                        let pemilikRekening = data.pemilik_Rekening;
+                        if (data.status_Rekening_Bank === 'false') {
+                            namaBank = "null";
+                            noRekening = "null";
+                            pemilikRekening = "null";
+                        }
 
-                        // let pembiayaan_Dari_Lembaga = '0';
-                        // let Pembiayaan_Dari_LembagaLain = 'null';
-                        // if (["2", "3"].includes(data.pembiayaan_Dari_Lembaga) && ["3"].includes(data.Pembiayaan_Dari_LembagaLain)) {
-                        //     pembiayaan_Dari_Lembaga = '1';
-                        //     Pembiayaan_Dari_LembagaLain = data.Pembiayaan_Dari_LembagaLainFreetext;
-                        // }
-                        // if (["2", "3"].includes(data.pembiayaan_Dari_Lembaga) && !["3"].includes(data.Pembiayaan_Dari_LembagaLain)) {
-                        //     pembiayaan_Dari_Lembaga = '1';
-                        //     Pembiayaan_Dari_LembagaLain = data.Pembiayaan_Dari_LembagaLain;
-                        // }
+                        let pembiayaan_Dari_Lembaga = '0';
+                        let Pembiayaan_Dari_LembagaLain = 'null';
+                        if (["2", "3"].includes(data.pembiayaan_Dari_Lembaga) && ["3"].includes(data.Pembiayaan_Dari_LembagaLain)) {
+                            pembiayaan_Dari_Lembaga = '1';
+                            Pembiayaan_Dari_LembagaLain = data.Pembiayaan_Dari_LembagaLainFreetext;
+                        }
+                        if (["2", "3"].includes(data.pembiayaan_Dari_Lembaga) && !["3"].includes(data.Pembiayaan_Dari_LembagaLain)) {
+                            pembiayaan_Dari_Lembaga = '1';
+                            Pembiayaan_Dari_LembagaLain = data.Pembiayaan_Dari_LembagaLain;
+                        }
                         
-                        // let namaProduk = data.produk_Pembiayaan;
+                        let namaProduk = data.produk_Pembiayaan;
 
-                        // let idProspek = "";
-                        // if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
+                        let idProspek = "";
+                        if ((data.id_prospek !== null && data.id_prospek !== "" && typeof data.id_prospek !== 'undefined')) idProspek = data.id_prospek;
 
-                        // let kelompokID = data.kelompokID;
-                        // let namaKelompok = data.namaKelompok;
-                        // if (statusSosialisasi === '1') {
-                        //     kelompokID = selectedPilihKelompok.value;
-                        //     namaKelompok = selectedPilihKelompok.label;
-                        // }
+                        let kelompokID = data.kelompokID;
+                        let namaKelompok = data.namaKelompok;
+                        if (statusSosialisasi === '1') {
+                            kelompokID = selectedPilihKelompok.value;
+                            namaKelompok = selectedPilihKelompok.label;
+                        }
                         
-                        // const body = {
-                        //     "Sumber": data.sumberId,
-                        //     "Alamat": data.alamat_Identitas,
-                        //     "AlamatDomisili": data.alamat_Domisili,
-                        //     "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
-                        //     "Berdasarkan_Lembaga_Lain": pembiayaan_Dari_Lembaga, // masih ragu
-                        //     "Berdasarkan_Tingkat_Pendapatan": "1",
-                        //     "CreatedBy": uname,
-                        //     "CreatedNIP": nip,
-                        //     "Dinding": data.dinding,
-                        //     "FotoKK": fotoKartuKeluarga.split(',')[1],
-                        //     "FotoKTPPenjamin": fotoDataPenjamin === null || fotoDataPenjamin === 'null' ? '' : fotoDataPenjamin.split(',')[1],
-                        //     "FotoKTPSuami": fotoDataSuami === null || fotoDataSuami === 'null' ? '' : fotoDataSuami.split(',')[1],
-                        //     "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
-                        //     "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
-                        //     "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
-                        //     "ID_SektorEkonomi": data.sektor_Ekonomi,
-                        //     "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi,
-                        //     "IsAdaRekening": data.status_Rekening_Bank === 'true' ? '1' : '0',
-                        //     "IsSuamiDitempat": data.suami_diluar_kota === 'true' ? '1' : '0',
-                        //     "Is_AdaAdaToiletPribadi": data.sanitasi_KamarMandi === 'true' ? '1' : '0',
-                        //     "Is_AdaAksesAirBersih": data.sanitasi_Akses_AirBersih === 'true' ? '1' : '0',
-                        //     "Is_AdaPembiayaanLain": pembiayaan_Dari_Lembaga,
-                        //     "JenisAtap": data.jenis_Atap,
-                        //     "JenisIdentitas": data.jenis_Kartu_Identitas,
-                        //     "JenisPembiayaan": data.jenis_Pembiayaan,
-                        //     "Jenis_Usaha": data.jenis_Usaha,
-                        //     "JmlHariUsaha_perBulan": data.jumlah_Hari_Usaha_Perbulan,
-                        //     "JmlHariUsaha_perBulan_Suami": data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan,
-                        //     "JmlhAnak": data.jumlah_anak,
-                        //     "JmlhTanggungan": data.jumlah_tanggungan,
-                        //     "JumlahPinjaman": data.jumlah_Pinjaman,
-                        //     "Kabupaten": data.kabupaten,
-                        //     "KategoriTujuanPembiayaan": data.kategori_Tujuan_Pembiayaan,
-                        //     "Kecamatan": data.kecamatan,
-                        //     "Kelurahan": data.kelurahan,
-                        //     "Latitude": data.latitude,
-                        //     "Longitude": data.longitude,
-                        //     "Kemampuan_Angsuran": data.frekuensi_Pembayaran,
-                        //     "KondisiBangunan": data.kondisi_Bangunan,
-                        //     "LamaTinggal": data.lama_tinggal,
-                        //     "Lantai": data.lantai,
-                        //     "LokasiSos": groupName,
-                        //     "LokasiUK": groupName,
-                        //     "LuasBangunan": data.luas_Bangunan,
-                        //     "NamaAyah": data.nama_ayah,
-                        //     "NamaGadisIBU": data.nama_gadis_ibu,
-                        //     "NamaBank": namaBank,
-                        //     "NamaLengkap": data.nama_lengkap, // double
-                        //     "NamaPemilikRekening": pemilikRekening, // double
-                        //     "NamaPenjamin": data.nama_penjamin,
-                        //     "NamaProduk": namaProduk,
-                        //     "NamaSuami": data.nama_suami,
-                        //     "PekerjaanSuami": data.usaha_pekerjaan_suami,
-                        //     "JmlTenagaKerja": data.jumlah_tenaga_kerja_suami,
-                        //     "Nama_Pembiayaan_Lembaga_Lain": Pembiayaan_Dari_LembagaLain,
-                        //     "NoHP": data.no_tlp_nasabah,
-                        //     "IDAgama": data.agama,
-                        //     "NoKK": data.no_kk,
-                        //     "NoRekening": noRekening, // double
-                        //     "NomorIdentitas": data.nomor_Identitas,
-                        //     "NomorRekening": noRekening, // double
-                        //     "OurBranchID": branchId,
-                        //     "PemilikRekening": pemilikRekening, // double
-                        //     "PendapatanBersih_perBulan": data.pendapatan_Bersih_Perbulan,
-                        //     "PendapatanBersih_perBulan_Suami": data.pendapatanSuami_pendapatan_Bersih_Perbulan,
-                        //     "PendapatanBersih_perHari": data.pendapatan_Bersih_Perhari,
-                        //     "PendapatanBersih_perHari_Suami": data.pendapatanSuami_Pendapatan_Bersih_Perhari,
-                        //     "PendapatanBersih_perMinggu": data.pendapatan_Bersih_Perminggu,
-                        //     "PendapatanBersih_perMinggu_Suami": data.pendapatanSuami_pendapatan_Bersih_Perminggu,
-                        //     "PendapatanKotor_perHari": data.pendapatan_Kotor_perhari,
-                        //     "PendapatanKotor_perHari_Suami": data.pendapatanSuami_Kotor_Perhari,
-                        //     "PengeluaranKel_perHari": data.pengeluaran_Keluarga_Perhari,
-                        //     "PengeluaranKel_perHari_Suami": data.pendapatanSuami_Pengeluaran_Keluarga_Perhari,
-                        //     "ProdukPembiayaan": data.produk_Pembiayaan,
-                        //     "Provinsi": data.provinsi,
-                        //     "StatusPenjamin": data.status_hubungan_keluarga,
-                        //     "StatusRumah": data.status_rumah_tinggal,
-                        //     "Status_Perkawinan": data.status_Perkawinan,
-                        //     "TTD_AO": tandaTanganAOSAO.split(',')[1] || 'null',
-                        //     "TTD_KK": tandaTanganKetuaKelompok.split(',')[1] || 'null',
-                        //     "TTD_KSK": tandaTanganKetuaSubKemlompok.split(',')[1] || 'null',
-                        //     "TTD_Nasabah": tandaTanganNasabah.split(',')[1] || 'null',
-                        //     "TTD_Penjamin": tandaTanganSuamiPenjamin.split(',')[1] || 'null',
-                        //     "TanggalLahir": data.tanggal_Lahir,
-                        //     "TempatLahir": data.tempat_lahir,
-                        //     "TermPembiayaan": data.term_Pembiayaan,
-                        //     "TujuanPembiayaan": data.tujuan_Pembiayaan,
-                        //     "TypePencairan": data.type_Pencairan,
-                        //     "IsPernyataanDibaca": data.is_pernyataan_dibaca,
-                        //     "ID_Prospek": idProspek,
-                        //     "IDProduk": data.nama_Produk,
-                        //     "IDProdukPembiayaan": data.value_produk_Pembiayaan,
-                        //     "Nama_TTD_AO": aoName,
-                        //     "Nama_TTD_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
-                        //     "Nama_TTD_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok,
-                        //     "Nama_TTD_Nasabah": data.nama_tanda_Tangan_Nasabah,
-                        //     "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin,
-                        //     "Kelompok_ID": kelompokID,
-                        //     "Nama_Kelompok": namaKelompok,
-                        //     "Sub_Kelompok": data.subKelompok,
-                        //     "ClientID": data.clientId
-                        // }
-                        // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
+                        const body = {
+                            "Sumber": data.sumberId,
+                            "Alamat": data.alamat_Identitas,
+                            "AlamatDomisili": data.alamat_Domisili,
+                            "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
+                            "Berdasarkan_Lembaga_Lain": pembiayaan_Dari_Lembaga, // masih ragu
+                            "Berdasarkan_Tingkat_Pendapatan": "1",
+                            "CreatedBy": uname,
+                            "CreatedNIP": nip,
+                            "Dinding": data.dinding,
+                            "FotoKK": fotoKartuKeluarga.split(',')[1],
+                            "FotoKTPPenjamin": fotoDataPenjamin === null || fotoDataPenjamin === 'null' ? '' : fotoDataPenjamin.split(',')[1],
+                            "FotoKTPSuami": fotoDataSuami === null || fotoDataSuami === 'null' ? '' : fotoDataSuami.split(',')[1],
+                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
+                            "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
+                            "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
+                            "ID_SektorEkonomi": data.sektor_Ekonomi,
+                            "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi,
+                            "IsAdaRekening": data.status_Rekening_Bank === 'true' ? '1' : '0',
+                            "IsSuamiDitempat": data.suami_diluar_kota === 'true' ? '1' : '0',
+                            "Is_AdaAdaToiletPribadi": data.sanitasi_KamarMandi === 'true' ? '1' : '0',
+                            "Is_AdaAksesAirBersih": data.sanitasi_Akses_AirBersih === 'true' ? '1' : '0',
+                            "Is_AdaPembiayaanLain": pembiayaan_Dari_Lembaga,
+                            "JenisAtap": data.jenis_Atap,
+                            "JenisIdentitas": data.jenis_Kartu_Identitas,
+                            "JenisPembiayaan": data.jenis_Pembiayaan,
+                            "Jenis_Usaha": data.jenis_Usaha,
+                            "JmlHariUsaha_perBulan": data.jumlah_Hari_Usaha_Perbulan,
+                            "JmlHariUsaha_perBulan_Suami": data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan,
+                            "JmlhAnak": data.jumlah_anak,
+                            "JmlhTanggungan": data.jumlah_tanggungan,
+                            "JumlahPinjaman": data.jumlah_Pinjaman,
+                            "Kabupaten": data.kabupaten,
+                            "KategoriTujuanPembiayaan": data.kategori_Tujuan_Pembiayaan,
+                            "Kecamatan": data.kecamatan,
+                            "Kelurahan": data.kelurahan,
+                            "Latitude": data.latitude,
+                            "Longitude": data.longitude,
+                            "Kemampuan_Angsuran": data.frekuensi_Pembayaran,
+                            "KondisiBangunan": data.kondisi_Bangunan,
+                            "LamaTinggal": data.lama_tinggal,
+                            "Lantai": data.lantai,
+                            "LokasiSos": groupName,
+                            "LokasiUK": groupName,
+                            "LuasBangunan": data.luas_Bangunan,
+                            "NamaAyah": data.nama_ayah,
+                            "NamaGadisIBU": data.nama_gadis_ibu,
+                            "NamaBank": namaBank,
+                            "NamaLengkap": data.nama_lengkap, // double
+                            "NamaPemilikRekening": pemilikRekening, // double
+                            "NamaPenjamin": data.nama_penjamin,
+                            "NamaProduk": namaProduk,
+                            "NamaSuami": data.nama_suami,
+                            "PekerjaanSuami": data.usaha_pekerjaan_suami,
+                            "JmlTenagaKerja": data.jumlah_tenaga_kerja_suami,
+                            "Nama_Pembiayaan_Lembaga_Lain": Pembiayaan_Dari_LembagaLain,
+                            "NoHP": data.no_tlp_nasabah,
+                            "IDAgama": data.agama,
+                            "NoKK": data.no_kk,
+                            "NoRekening": noRekening, // double
+                            "NomorIdentitas": data.nomor_Identitas,
+                            "NomorRekening": noRekening, // double
+                            "OurBranchID": branchId,
+                            "PemilikRekening": pemilikRekening, // double
+                            "PendapatanBersih_perBulan": data.pendapatan_Bersih_Perbulan,
+                            "PendapatanBersih_perBulan_Suami": data.pendapatanSuami_pendapatan_Bersih_Perbulan,
+                            "PendapatanBersih_perHari": data.pendapatan_Bersih_Perhari,
+                            "PendapatanBersih_perHari_Suami": data.pendapatanSuami_Pendapatan_Bersih_Perhari,
+                            "PendapatanBersih_perMinggu": data.pendapatan_Bersih_Perminggu,
+                            "PendapatanBersih_perMinggu_Suami": data.pendapatanSuami_pendapatan_Bersih_Perminggu,
+                            "PendapatanKotor_perHari": data.pendapatan_Kotor_perhari,
+                            "PendapatanKotor_perHari_Suami": data.pendapatanSuami_Kotor_Perhari,
+                            "PengeluaranKel_perHari": data.pengeluaran_Keluarga_Perhari,
+                            "PengeluaranKel_perHari_Suami": data.pendapatanSuami_Pengeluaran_Keluarga_Perhari,
+                            "ProdukPembiayaan": data.produk_Pembiayaan,
+                            "Provinsi": data.provinsi,
+                            "StatusPenjamin": data.status_hubungan_keluarga,
+                            "StatusRumah": data.status_rumah_tinggal,
+                            "Status_Perkawinan": data.status_Perkawinan,
+                            "TTD_AO": tandaTanganAOSAO.split(',')[1] || 'null',
+                            "TTD_KK": tandaTanganKetuaKelompok.split(',')[1] || 'null',
+                            "TTD_KSK": tandaTanganKetuaSubKemlompok.split(',')[1] || 'null',
+                            "TTD_Nasabah": tandaTanganNasabah.split(',')[1] || 'null',
+                            "TTD_Penjamin": tandaTanganSuamiPenjamin.split(',')[1] || 'null',
+                            "TanggalLahir": data.tanggal_Lahir,
+                            "TempatLahir": data.tempat_lahir,
+                            "TermPembiayaan": data.term_Pembiayaan,
+                            "TujuanPembiayaan": data.tujuan_Pembiayaan,
+                            "TypePencairan": data.type_Pencairan,
+                            "IsPernyataanDibaca": data.is_pernyataan_dibaca,
+                            "ID_Prospek": idProspek,
+                            "IDProduk": data.nama_Produk,
+                            "IDProdukPembiayaan": data.value_produk_Pembiayaan,
+                            "Nama_TTD_AO": aoName,
+                            "Nama_TTD_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
+                            "Nama_TTD_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok,
+                            "Nama_TTD_Nasabah": data.nama_tanda_Tangan_Nasabah,
+                            "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin,
+                            "Kelompok_ID": kelompokID,
+                            "Nama_Kelompok": namaKelompok,
+                            "Sub_Kelompok": data.subKelompok,
+                            "ClientID": data.clientId,
+                            "Kehadiran_PKM": data.kehadiran_pkm,
+                            "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm
+                        }
+                        if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
 
                         
-                        // try {
-                        //     const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
-                        //         timeout: timeOut, // 6 menit
-                        //         method: 'POST',
-                        //         headers: {
-                        //             Accept:
-                        //                 'application/json',
-                        //                 'Content-Type': 'application/json'
-                        //             },
-                        //         body: JSON.stringify(body)
-                        //     });
-                        //     const responseJSON = await response.json();
-                        //     if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
+                        try {
+                            const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
+                                timeout: timeOut, // 6 menit
+                                method: 'POST',
+                                headers: {
+                                    Accept:
+                                        'application/json',
+                                        'Content-Type': 'application/json'
+                                    },
+                                body: JSON.stringify(body)
+                            });
+                            const responseJSON = await response.json();
+                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
 
-                        //     if (responseJSON.responseCode === 200) {
-                        //         const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
-                        //         db.transaction(
-                        //             tx => {
-                        //                 tx.executeSql(find, [], (txFind, resultsFind) => {
-                        //                     let dataLengthFind = resultsFind.rows.length
-                        //                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+                            if (responseJSON.responseCode === 200) {
+                                const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql(find, [], (txFind, resultsFind) => {
+                                            let dataLengthFind = resultsFind.rows.length
+                                            if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
-                        //                     let query = '';
-                        //                     if (dataLengthFind === 0) {
-                        //                         alert('UK Master not found');
-                        //                         navigation.goBack();
-                        //                         return;
-                        //                     }
+                                            let query = '';
+                                            if (dataLengthFind === 0) {
+                                                alert('UK Master not found');
+                                                navigation.goBack();
+                                                return;
+                                            }
 
-                        //                     query = 'UPDATE Table_UK_Master SET status = "7" WHERE idSosialisasiDatabase = "' + id + '"';
+                                            query = 'UPDATE Table_UK_Master SET status = "7" WHERE idSosialisasiDatabase = "' + id + '"';
 
-                        //                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+                                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
-                        //                     db.transaction(
-                        //                         tx => {
-                        //                             tx.executeSql(query);
-                        //                         }, function(error) {
-                        //                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                        //                             setSubmitted(false);
-                        //                         },function() {
-                        //                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                                            db.transaction(
+                                                tx => {
+                                                    tx.executeSql(query);
+                                                }, function(error) {
+                                                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                                                    setSubmitted(false);
+                                                },function() {
+                                                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
                                                     
-                        //                             if (data.clientId === null || data.clientId === 'null') {}
-                        //                             else {
-                        //                                 const findProspekLamaPP = 'SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = "'+ data.clientId +'"';
-                        //                                 db.transaction(
-                        //                                     tx => {
-                        //                                         tx.executeSql(findProspekLamaPP, [], async (txFind, resultsFind) => {
-                        //                                             let dataLengthFind = resultsFind.rows.length
-                        //                                             if (__DEV__) console.log(`${findProspekLamaPP}`, resultsFind.rows);
+                                                    if (data.clientId === null || data.clientId === 'null') {}
+                                                    else {
+                                                        const findProspekLamaPP = 'SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = "'+ data.clientId +'"';
+                                                        db.transaction(
+                                                            tx => {
+                                                                tx.executeSql(findProspekLamaPP, [], async (txFind, resultsFind) => {
+                                                                    let dataLengthFind = resultsFind.rows.length
+                                                                    if (__DEV__) console.log(`${findProspekLamaPP}`, resultsFind.rows);
 
-                        //                                             if (dataLengthFind > 0) {
-                        //                                                 const row = resultsFind.rows.item(0);
-                        //                                                 if (__DEV__) console.log(`${findProspekLamaPP}`, row);
+                                                                    if (dataLengthFind > 0) {
+                                                                        const row = resultsFind.rows.item(0);
+                                                                        if (__DEV__) console.log(`${findProspekLamaPP}`, row);
 
-                        //                                                 const tandaTanganAO = await AsyncStorage.getItem(row.inputTandaTanganAO);
-                        //                                                 const tandaTanganKetuaKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaKelompok);
-                        //                                                 const tandaTanganKetuaSubKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaSubKelompok);
+                                                                        const tandaTanganAO = await AsyncStorage.getItem(row.inputTandaTanganAO);
+                                                                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaKelompok);
+                                                                        const tandaTanganKetuaSubKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaSubKelompok);
 
-                        //                                                 const bodyProspekLama = [
-                        //                                                     {
-                        //                                                         "ID_Kelompok": row.groupId,
-                        //                                                         "ID_Prospek": responseJSON.data[0].ID_Prospek,
-                        //                                                         "Is_Perkawinan_Berubah": row.inputPerubahanStatusPernikahan,
-                        //                                                         "Is_Tanggungan_Berubah": row.inputPerubahanStatusTanggungan,
-                        //                                                         "Is_Usaha_Berubah": row.inputPerubahanUsaha,
-                        //                                                         "Jml_Kehadiran_PKM": row.inputKehadiranPKM,
-                        //                                                         "Jml_Pembayaran": row.inputPembayaran,
-                        //                                                         "Keterangan_Tanggungan": row.inputPerubahanStatusTanggunganKeterangan,
-                        //                                                         "Keterangan_Usaha": row.inputPerubahanUsahaKeterangan,
-                        //                                                         "Lokasi_Persetujuan": row.inputAddress,
-                        //                                                         "No_Identitas": row.identityNumber,
-                        //                                                         "Plafon_Diajukan": row.inputPembiayaanDiajukan,
-                        //                                                         "Status_Tempat_Tinggal": row.inputTempatTinggalNasabah,
-                        //                                                         "TTD_AO": tandaTanganAO.split(',')[1] || 'null',
-                        //                                                         "TTD_KK": tandaTanganKetuaKelompok.split(',')[1] || 'null',
-                        //                                                         "TTD_KSK": tandaTanganKetuaSubKelompok.split(',')[1] || 'null',
-                        //                                                         "Tahap_Pembiayaan": row.inputPembiayaanTahap,
-                        //                                                         "Tanggal_Persetujuan": row.inputDate,
-                        //                                                         "Tenor": row.inputJangkaWaktuPembiayaanDiajukan
-                        //                                                     }
-                        //                                                 ];
-                        //                                                 if (__DEV__) console.log('doSubmit bodyProspekLama:', bodyProspekLama);
+                                                                        const bodyProspekLama = [
+                                                                            {
+                                                                                "ID_Kelompok": row.groupId,
+                                                                                "ID_Prospek": responseJSON.data[0].ID_Prospek,
+                                                                                "Is_Perkawinan_Berubah": row.inputPerubahanStatusPernikahan,
+                                                                                "Is_Tanggungan_Berubah": row.inputPerubahanStatusTanggungan,
+                                                                                "Is_Usaha_Berubah": row.inputPerubahanUsaha,
+                                                                                "Jml_Kehadiran_PKM": row.inputKehadiranPKM,
+                                                                                "Jml_Pembayaran": row.inputPembayaran,
+                                                                                "Keterangan_Tanggungan": row.inputPerubahanStatusTanggunganKeterangan,
+                                                                                "Keterangan_Usaha": row.inputPerubahanUsahaKeterangan,
+                                                                                "Lokasi_Persetujuan": row.inputAddress,
+                                                                                "No_Identitas": row.identityNumber,
+                                                                                "Plafon_Diajukan": row.inputPembiayaanDiajukan,
+                                                                                "Status_Tempat_Tinggal": row.inputTempatTinggalNasabah,
+                                                                                "TTD_AO": tandaTanganAO.split(',')[1] || 'null',
+                                                                                "TTD_KK": tandaTanganKetuaKelompok.split(',')[1] || 'null',
+                                                                                "TTD_KSK": tandaTanganKetuaSubKelompok.split(',')[1] || 'null',
+                                                                                "Tahap_Pembiayaan": row.inputPembiayaanTahap,
+                                                                                "Tanggal_Persetujuan": row.inputDate,
+                                                                                "Tenor": row.inputJangkaWaktuPembiayaanDiajukan
+                                                                            }
+                                                                        ];
+                                                                        if (__DEV__) console.log('doSubmit bodyProspekLama:', bodyProspekLama);
                                                                 
-                        //                                                 try {
-                        //                                                     fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
-                        //                                                         method: 'POST',
-                        //                                                         headers: {
-                        //                                                             Accept: 'application/json',
-                        //                                                             'Content-Type': 'application/json'
-                        //                                                         },
-                        //                                                         body: JSON.stringify(bodyProspekLama)
-                        //                                                     })
-                        //                                                     .then((response) => response.json())
-                        //                                                     .then((responseJson) => {
-                        //                                                         if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama success:', responseJson);
-                        //                                                     })
-                        //                                                 } catch(error) {
-                        //                                                     if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama error:', error);
-                        //                                                 }
-                        //                                             } 
-                        //                                         }, function(error) {
-                        //                                             if (__DEV__) console.log(`${findProspekLamaPP}`, error.message);
-                        //                                         })
-                        //                                     }
-                        //                                 );
-                        //                             }
+                                                                        try {
+                                                                            fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
+                                                                                method: 'POST',
+                                                                                headers: {
+                                                                                    Accept: 'application/json',
+                                                                                    'Content-Type': 'application/json'
+                                                                                },
+                                                                                body: JSON.stringify(bodyProspekLama)
+                                                                            })
+                                                                            .then((response) => response.json())
+                                                                            .then((responseJson) => {
+                                                                                if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama success:', responseJson);
+                                                                            })
+                                                                        } catch(error) {
+                                                                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama error:', error);
+                                                                        }
+                                                                    } 
+                                                                }, function(error) {
+                                                                    if (__DEV__) console.log(`${findProspekLamaPP}`, error.message);
+                                                                })
+                                                            }
+                                                        );
+                                                    }
                                                     
-                        //                             if (__DEV__) {
-                        //                                 db.transaction(
-                        //                                     tx => {
-                        //                                         tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
-                        //                                             if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
-                        //                                         })
-                        //                                     }, function(error) {
-                        //                                         if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
-                        //                                     }, function() {}
-                        //                                 );
-                        //                             }
+                                                    if (__DEV__) {
+                                                        db.transaction(
+                                                            tx => {
+                                                                tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                                                                    if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                                                                })
+                                                            }, function(error) {
+                                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                                                            }, function() {}
+                                                        );
+                                                    }
 
-                        //                             /* ============ START DELETE DATA FROM LOCAL STORAGE ============ */
-                        //                             const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id = '" + id + "'";
-                        //                             const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '" + id + "'";
-                        //                             const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
-                        //                             const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = '" + id + "'";
-                        //                             const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = '" + id + "'";
-                        //                             const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
-                        //                             const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
-                        //                             const queryDeleteProspekLamaPP = "DELETE FROM Table_Prospek_Lama_PP WHERE clientId = '" + data.clientId + "'";
-                        //                             db.transaction(
-                        //                                 tx => {
-                        //                                     tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
-                        //                                         if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
-                        //                                     })
-                        //                                 }, function(error) {
-                        //                                     if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
-                        //                                 }, function() {}
-                        //                             );
-                        //                             db.transaction(
-                        //                                 tx => {
-                        //                                     tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
-                        //                                         if (__DEV__) console.log(`${queryDeleteUKDataDiri} RESPONSE:`, results.rows);
-                        //                                     })
-                        //                                 }, function(error) {
-                        //                                     if (__DEV__) console.log(`${queryDeleteUKDataDiri} ERROR:`, error);
-                        //                                 }, function() {}
-                        //                             );
-                        //                             db.transaction(
-                        //                                 tx => {
-                        //                                     tx.executeSql(queryDeleteUKProdukPembiayaan, [], (tx, results) => {
-                        //                                         if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} RESPONSE:`, results.rows);
-                        //                                     })
-                        //                                 }, function(error) {
-                        //                                     if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} ERROR:`, error);
-                        //                                 }, function() {}
-                        //                             );
-                        //                             db.transaction(
-                        //                                 tx => {
-                        //                                     tx.executeSql(queryDeleteUKKondisiRumah, [], (tx, results) => {
-                        //                                         if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} RESPONSE:`, results.rows);
-                        //                                     })
-                        //                                 }, function(error) {
-                        //                                     if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} ERROR:`, error);
-                        //                                 }, function() {}
-                        //                             );
-                        //                             db.transaction(
-                        //                                 tx => {
-                        //                                     tx.executeSql(queryDeleteUKSektorEkonomi, [], (tx, results) => {
-                        //                                         if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} RESPONSE:`, results.rows);
-                        //                                     })
-                        //                                 }, function(error) {
-                        //                                     if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} ERROR:`, error);
-                        //                                 }, function() {}
-                        //                             );
-                        //                             db.transaction(
-                        //                                 tx => {
-                        //                                     tx.executeSql(queryDeleteUKPendapatanNasabah, [], (tx, results) => {
-                        //                                         if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} RESPONSE:`, results.rows);
-                        //                                     })
-                        //                                 }, function(error) {
-                        //                                     if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} ERROR:`, error);
-                        //                                 }, function() {}
-                        //                             );
-                        //                             db.transaction(
-                        //                                 tx => {
-                        //                                     tx.executeSql(queryDeleteUKPermohonanPembiayaan, [], (tx, results) => {
-                        //                                         if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} RESPONSE:`, results.rows);
-                        //                                     })
-                        //                                 }, function(error) {
-                        //                                     if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
-                        //                                 }, function() {}
-                        //                             );
-                        //                             db.transaction(
-                        //                                 tx => {
-                        //                                     tx.executeSql(queryDeleteProspekLamaPP, [], (tx, results) => {
-                        //                                         if (__DEV__) console.log(`${queryDeleteProspekLamaPP} RESPONSE:`, results.rows);
-                        //                                     })
-                        //                                 }, function(error) {
-                        //                                     if (__DEV__) console.log(`${queryDeleteProspekLamaPP} ERROR:`, error);
-                        //                                 }, function() {}
-                        //                             );
-                        //                             /* ============ FINISH DELETE DATA FROM LOCAL STORAGE ============ */
+                                                    /* ============ START DELETE DATA FROM LOCAL STORAGE ============ */
+                                                    const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id = '" + id + "'";
+                                                    const queryDeleteUKMaster = "DELETE FROM Table_UK_Master WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKDisiplinNasabah = "DELETE FROM Table_UK_DisipinNasabah WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteProspekLamaPP = "DELETE FROM Table_Prospek_Lama_PP WHERE clientId = '" + data.clientId + "'";
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKMaster, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKMaster} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKMaster} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKDataDiri} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKDataDiri} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKProdukPembiayaan, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKKondisiRumah, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKSektorEkonomi, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKPendapatanNasabah, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKPermohonanPembiayaan, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKDisiplinNasabah, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteProspekLamaPP, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteProspekLamaPP} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteProspekLamaPP} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
+                                                    /* ============ FINISH DELETE DATA FROM LOCAL STORAGE ============ */
                                                     
-                        //                             /* ============ START REMOVE STORAGE ============ */
-                        //                             AsyncStorage.removeItem(data.foto_ktp_penjamin);
-                        //                             AsyncStorage.removeItem(data.foto_ktp_suami);
-                        //                             AsyncStorage.removeItem(data.foto_kk);
-                        //                             AsyncStorage.removeItem(data.foto_Surat_Keterangan_Domisili);
-                        //                             AsyncStorage.removeItem(data.foto_Kartu_Identitas);
-                        //                             AsyncStorage.removeItem(data.tanda_Tangan_AOSAO);
-                        //                             AsyncStorage.removeItem(data.tanda_Tangan_Nasabah);
-                        //                             AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);
-                        //                             AsyncStorage.removeItem(data.tanda_Tangan_Ketua_SubKelompok);
-                        //                             AsyncStorage.removeItem(data.tanda_Tangan_Ketua_Kelompok);
-                        //                             /* ============ FINISH REMOVE STORAGE ============ */
+                                                    /* ============ START REMOVE STORAGE ============ */
+                                                    AsyncStorage.removeItem(data.foto_ktp_penjamin);
+                                                    AsyncStorage.removeItem(data.foto_ktp_suami);
+                                                    AsyncStorage.removeItem(data.foto_kk);
+                                                    AsyncStorage.removeItem(data.foto_Surat_Keterangan_Domisili);
+                                                    AsyncStorage.removeItem(data.foto_Kartu_Identitas);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_AOSAO);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Nasabah);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Ketua_SubKelompok);
+                                                    AsyncStorage.removeItem(data.tanda_Tangan_Ketua_Kelompok);
+                                                    /* ============ FINISH REMOVE STORAGE ============ */
 
-                        //                             const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
-                        //                             Alert.alert(responseJSON.responseDescription, message);
-                        //                             setSubmitted(false);
-                        //                             navigation.goBack();
-                        //                         }
-                        //                     );
-                        //                 }, function(error) {
-                        //                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
-                        //                     setSubmitted(false);
-                        //                 })
-                        //             }
-                        //         );
-                        //         return true;
-                        //     }
+                                                    const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
+                                                    Alert.alert(responseJSON.responseDescription, message);
+                                                    setSubmitted(false);
+                                                    navigation.goBack();
+                                                }
+                                            );
+                                        }, function(error) {
+                                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                                            setSubmitted(false);
+                                        })
+                                    }
+                                );
+                                return true;
+                            }
 
-                        //     Alert.alert('Error', responseJSON.responseDescription);
-                        //     setSubmitted(false);
+                            Alert.alert('Error', responseJSON.responseDescription);
+                            setSubmitted(false);
 
-                        // } catch (error) {
-                        //     if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
-                        //     if (error.name === 'AbortError') {
-                        //         Alert.alert('Error', 'Request timeout');
-                        //     } else {
-                        //         Alert.alert('Error', error.message || 'Something went wrong');
-                        //     }
+                        } catch (error) {
+                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
+                            if (error.name === 'AbortError') {
+                                Alert.alert('Error', 'Request timeout');
+                            } else {
+                                Alert.alert('Error', error.message || 'Something went wrong');
+                            }
 
-                        //     setSubmitted(false);
-                        // }
+                            setSubmitted(false);
+                        }
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
