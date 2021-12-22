@@ -83,7 +83,7 @@ const ProdukPembiayaan = ({ route }) => {
         if (__DEV__) console.log('getUKProdukPembiayaan loaded');
         if (__DEV__) console.log('getUKProdukPembiayaan id:', id);
 
-        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan;`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
