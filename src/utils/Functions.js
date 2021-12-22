@@ -17,4 +17,20 @@ const inputVal = (v, maxV, setValue) =>{
     return setValue(v);
 }
 
-export { fetchWithTimeout, inputVal }
+const capitalize = s => s && s[0].toUpperCase() + s.slice(1)
+
+const currency = (price, sign = '') => {
+    const pieces = parseFloat(price).toFixed(2).split('');
+    let ii = pieces.length - 3
+    while ((ii-=3) > 0) {
+        pieces.splice(ii, 0, ',')
+    }
+    return sign + pieces.join('')
+}
+
+export {
+    fetchWithTimeout,
+    inputVal,
+    capitalize,
+    currency
+}

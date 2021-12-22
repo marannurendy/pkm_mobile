@@ -5,6 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './styles';
 import db from '../../../database/Database';
+import { currency } from '../../../utils/Functions';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -337,15 +338,6 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         if (key === 'tandaTanganAOSAO') return setValueTandaTanganAOSAO(data);
     };
 
-    const formatter = (price, sign = 'Rp. ') => {
-        const pieces = parseFloat(price).toFixed(2).split('');
-        let ii = pieces.length - 3
-        while ((ii-=3) > 0) {
-            pieces.splice(ii, 0, ',')
-        }
-        return sign + pieces.join('')
-    }
-
     const renderHeader = () => (
         <>
             <View style={styles.headerContainer}>
@@ -399,7 +391,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
             <Text>Jumlah Pembiayaan Yang Diajukan</Text>
             <View style={[styles.textInputContainer, { width: withTextInput }]}>
                 <View style={styles.F1}>
-                    <Text style={styles.P4}>{formatter(valueJumlahPembiayaanYangDiajukan || 0)}</Text>
+                    <Text style={styles.P4}>{currency(valueJumlahPembiayaanYangDiajukan || 0, 'Rp. ')}</Text>
                 </View>
                 <View />
             </View>

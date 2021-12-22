@@ -42,6 +42,7 @@ const ProdukPembiayaan = ({ route }) => {
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [selectedProdukPembiayaan, setSelectedProdukPembiayaan] = useState(null);
     const [submmitted, setSubmmitted] = useState(false);
+    const [dataSosialisasiDatabase, setDataSosialisasiDatabase] = useState(false);
 
     useEffect(() => {
         setInfo();
@@ -50,7 +51,8 @@ const ProdukPembiayaan = ({ route }) => {
         getStorageTujuanPembiayaan();
         getStorageKategoriTujuanPembiayaan();
         getStorageFrekuensi();
-        getUKProdukPembiayaan()
+        getSosialisasiDatabase();
+        getUKProdukPembiayaan();
     }, [])
 
     const setInfo = async () => {
@@ -58,15 +60,37 @@ const ProdukPembiayaan = ({ route }) => {
         setCurrentDate(tanggal)
     }
 
+    const getSosialisasiDatabase = () => {
+        let queryUKDataDiri = `SELECT * FROM Sosialisasi_Database WHERE id = '` + id + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database length:', dataLength);
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database:', results.rows);
+                    if (dataLength > 0) {
+                        let data = results.rows.item(0);
+                        setDataSosialisasiDatabase(data);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database error:', error.message);
+                })
+            }
+        )
+    }
+
     const getUKProdukPembiayaan = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` + id + `';`
+        if (__DEV__) console.log('getUKProdukPembiayaan loaded');
+        if (__DEV__) console.log('getUKProdukPembiayaan id:', id);
+
+        let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan;`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan:', results.rows);
                     if (dataLength > 0) {
-                        
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
 
@@ -324,6 +348,19 @@ const ProdukPembiayaan = ({ route }) => {
         return datas.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />);
     }
 
+    const generateSiklusName = () => {
+        const siklus = dataSosialisasiDatabase?.siklus ?? '1';
+        if (siklus === '1') return 'Pertama';
+        if (siklus === '2') return 'Kedua';
+        if (siklus === '3') return 'Ketiga';
+        if (siklus === '4') return 'Keempat';
+        if (siklus === '5') return 'Kelima';
+        if (siklus === '6') return 'Keenam';
+        if (siklus === '7') return 'Ketujuh';
+        if (siklus === '8') return 'Kedelapan';
+        if (siklus === '9') return 'Kesembilan';
+    }
+
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
         if (__DEV__) console.log('doSubmitDraft valueJenisPembiayaan:', valueJenisPembiayaan);
@@ -480,7 +517,7 @@ const ProdukPembiayaan = ({ route }) => {
     const renderFormSiklusPembiayaan = () => (
         <View style={stylesheet.siklusContainer}>
             <Text style={styles.FS18}>SIKLUS PEMBIAYAAN</Text>
-            <Text style={styles.FWBold}>Pertama</Text>
+            <Text style={styles.FWBold}>{generateSiklusName()}</Text>
         </View>
     )
 

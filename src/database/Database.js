@@ -158,7 +158,8 @@ db.transaction(tx => {
             clientId varchar,
             kelompokID varchar,
             namaKelompok varchar,
-            subKelompok varchar);`
+            subKelompok varchar,
+            siklus varchar);`
     )
 
     tx.executeSql(

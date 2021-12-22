@@ -94,9 +94,9 @@ const VerifikasiFormReview = ({ route }) => {
                     <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     <Text style={styles.headerTitle}>BACK</Text>
                 </TouchableOpacity>
-                <View style={{ alignItems: 'flex-end' }}>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
                     <Text style={{ color: colors.PUTIH }}>{namaNasabah}</Text>
-                    <Text style={{ color: colors.PUTIH }}>{groupName} | {currentDate}</Text>
+                    <Text style={{ flex: 1, color: colors.PUTIH }}>{groupName} | {currentDate}</Text>
                 </View>
             </View>
         </ImageBackground>

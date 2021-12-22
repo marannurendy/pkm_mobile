@@ -128,7 +128,8 @@ const Sosialisasi = () => {
                                         status, 
                                         tanggalSosialisas, 
                                         lokasiSosialisasi,
-                                        type
+                                        type,
+                                        siklus
                                     ) values (
                                         '` + uniqueNumber + `',
                                         '` + tanggalInput + `',
@@ -138,6 +139,7 @@ const Sosialisasi = () => {
                                         '` + statusNasabah + `',
                                         '` + tanggalSos + `',
                                         '` + lokasiSos + `',
+                                        '1',
                                         '1'
                                     )`)
                                 },function(error) {

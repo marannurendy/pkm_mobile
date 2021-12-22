@@ -10,7 +10,7 @@ import { Picker } from '@react-native-picker/picker';
 import { ApiSyncInisiasi } from '../../../../dataconfig/index';
 import moment from 'moment';
 import 'moment/locale/id';
-import { fetchWithTimeout } from '../../../utils/Functions';
+import { capitalize, fetchWithTimeout } from '../../../utils/Functions';
 import { ApiSyncPostInisiasi } from '../../../../dataconfig/apisync/apisync';
 
 const dimension = Dimensions.get('screen');
@@ -339,18 +339,28 @@ const InisiasiFormProspekLama = ({ route }) => {
         await doSubmitDraft('submit');
 
         let uniqueNumber = (new Date().getTime()).toString(36);
+        let inputPembiayaanTahap = `${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`;
         let groupId = dataDetail?.GroupID ?? '';
         let groupName = dataDetail?.GroupName ?? '';
         let subGroup = dataDetail?.SubGroup ?? '';
         let identityNumber = dataDetail?.IdentityNumber ?? '';
+        let getNamaLengkap = name.toLowerCase().split('binti')[0] || '';
+        let getNamaOrangtua = name.toLowerCase().split('binti')[1] || '';
+        let namaLengkap = capitalize(getNamaLengkap.trim());
+        let namaOrangtua = capitalize(getNamaOrangtua.trim());
+        let inputJangkaWaktuPembiayaanDiajukan = `${selectedPembiayaanDiajukan?.paymentTerm ?? '0'}`;
+        let maxPlafond = selectedPembiayaanDiajukan?.maxPlafond ?? 0;
 
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama inputPembiayaanTahap:', inputPembiayaanTahap);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama namaLengkap:', namaLengkap);
+        if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama namaOrangtua:', namaOrangtua);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama uniqueNumber:', uniqueNumber);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupId:', groupId);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama groupName:', groupName);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama subGroup:', subGroup);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama identityNumber:', identityNumber);
 
-        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "3", "' + moment().format('YYYY-MM-DD') + '", "' + groupName + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '")';
+        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok, siklus) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "3", "' + moment().format('YYYY-MM-DD') + '", "' + groupName + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '", "' + inputPembiayaanTahap + '")';
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama query:', query);
         db.transaction(
             tx => {
@@ -360,8 +370,14 @@ const InisiasiFormProspekLama = ({ route }) => {
                 Alert.alert('Error', JSON.stringify(error));
             }, function() {
 
-                let queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, idSosialisasiDatabase) values ("1","' + identityNumber + '","' + name + '", "' + uniqueNumber + '")';
+                let queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, nama_ayah, status_rumah_tinggal, idSosialisasiDatabase) values ("1","' + identityNumber + '","' + namaLengkap + '","' + namaOrangtua + '","' + valueTempatTinggalNasabah + '", "' + uniqueNumber + '")';
+                let queryUKProdukPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, idSosialisasiDatabase) values ("' + namaLengkap + '","1","1","' + valuePembiayaanDiajukan + '","' + maxPlafond + '","' + inputJangkaWaktuPembiayaanDiajukan + '","' + uniqueNumber + '")';
+                let queryUKDisiplinNasabah = 'INSERT INTO Table_UK_DisipinNasabah (nama_lengkap, kehadiran_pkm, angsuran_pada_saat_pkm, idSosialisasiDatabase) values ("' + namaLengkap + '","' + valueKehadiranPKM + '","", "' + uniqueNumber + '")';
+
                 if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama queryUKDataDiri:', queryUKDataDiri);
+                if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama queryUKProdukPembiayaan:', queryUKProdukPembiayaan);
+                if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama queryUKDisiplinNasabah:', queryUKDisiplinNasabah);
+                
                 db.transaction(
                     tx => {
                         tx.executeSql(queryUKDataDiri)
@@ -370,6 +386,61 @@ const InisiasiFormProspekLama = ({ route }) => {
                     }, function() {
                     }
                 )
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryUKProdukPembiayaan)
+                    }, function(error) {
+                        if (__DEV__) console.log('insert into Table_UK_ProdukPembiayaan transaction error: ', error);
+                    }, function() {
+                    }
+                )
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryUKDisiplinNasabah)
+                    }, function(error) {
+                        if (__DEV__) console.log('insert into Table_UK_DisipinNasabah transaction error: ', error);
+                    }, function() {
+                    }
+                )
+
+                if (__DEV__) {
+                    db.transaction(
+                        tx => {
+                            tx.executeSql("SELECT * FROM Sosialisasi_Database", [], (tx, results) => {
+                                if (__DEV__) console.log('SOSIALISASI MOBILE RESPONSE:', results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log('SOSIALISASI MOBILE ERROR:', error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
+                                if (__DEV__) console.log('SOSIALISASI MOBILE UK DATA DIRI RESPONSE:', results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log('SOSIALISASI MOBILE UK DATA DIRI ERROR:', error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql("SELECT * FROM Table_UK_ProdukPembiayaan", [], (tx, results) => {
+                                if (__DEV__) console.log('SOSIALISASI MOBILE UK PERMOHONAN PEMBIAYAAN RESPONSE:', results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log('SOSIALISASI MOBILE UK PERMOHONAN PEMBIAYAAN ERROR:', error);
+                        }, function() {}
+                    );
+                    db.transaction(
+                        tx => {
+                            tx.executeSql("SELECT * FROM Table_UK_DisipinNasabah", [], (tx, results) => {
+                                if (__DEV__) console.log('SOSIALISASI MOBILE UK DISIPLIN NASABAH RESPONSE:', results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log('SOSIALISASI MOBILE UK DISIPLIN NASABAH ERROR:', error);
+                        }, function() {}
+                    );
+                }
 
                 Alert.alert('Berhasil', 'Data berhasil masuk UK');
                 navigation.goBack();
@@ -460,7 +531,7 @@ const InisiasiFormProspekLama = ({ route }) => {
 
     const renderFormTempatTinggalNasabah = () => (
         <View style={[styles.MV4]}>
-            <Text style={styles.MB8}>Tempat Tinggal Nasbah</Text>
+            <Text style={styles.MB8}>Tempat Tinggal Nasabah</Text>
             <View style={[styles.F1, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}>
                 <Picker
                     selectedValue={valueTempatTinggalNasabah}
