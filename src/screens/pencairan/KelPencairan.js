@@ -69,7 +69,7 @@ const KelPencairan = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => HandlerButton(data.kelompok_Id)}
+            onPress={() => HandlerButton(data.kelompok_Id, data.Nama_Kelompok)}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} Jumlah_Kelompok={data.Jumlah_Kelompok} />
@@ -100,10 +100,12 @@ const KelPencairan = () => {
         )
     }
 
-    const HandlerButton = async (kelompok_id) => {
+    const HandlerButton = async (kelompok_id, Nama_Kelompok) => {
         AsyncStorage.setItem("Kelompok_id_Pencairan", kelompok_id)
+        AsyncStorage.setItem("Nama_Kelompok", Nama_Kelompok)
         const a = await AsyncStorage.getItem("Kelompok_id_Pencairan")
-        if(a != undefined){
+        const b = await AsyncStorage.getItem("Nama_Kelompok")
+        if(a != undefined && b != undefined){
             navigation.navigate('FlowPencairan', {kelompok_Id:kelompok_id, Open:0})
         }
     }

@@ -28,6 +28,7 @@ const TandaTanganPencairan = ({route}) => {
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
     let [dataIDProspek, setDataIDProspek] = useState([]);
+    let [NamaKelompok, setNamaKelompok] = useState(route.params.dataKelompok);
     let [idNasabah, setidNasabah] = useState();
     let [dataNasabah, setDataNasabah] = useState(route.params.data);
     const [keyword, setKeyword] = useState('');
@@ -81,7 +82,8 @@ const TandaTanganPencairan = ({route}) => {
         if (__DEV__) console.log('getListNasabah loaded');
         if (__DEV__) console.log('getListNasabah keyword');
         var bah = []
-        if(ah.length > 0){
+        console.log(signatureKetuaKel)
+        if(ah.length > 0 && signatureKetuaKel != undefined && signatureNasabah != undefined){
             for(let i = 0; i < ah.length; i++){
                 let query = 'SELECT * FROM Table_Pencairan_Post WHERE ID_Prospek = "'+ ah[i].ID_Prospek +'"';
                 db.transaction(
@@ -98,32 +100,35 @@ const TandaTanganPencairan = ({route}) => {
                     }
                 )
             }
+        }else{
+            ToastAndroid.show("Silahkan Isi Tanda Tangan", ToastAndroid.SHORT);
         }
         setDataIDProspek(bah)
     }
 
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS UPDATE DATA PENCAIRAN LOCAL');
-        try{
-            if(dataIDProspek.length > 0){
-                for(let a = 0; a < dataIDProspek.length; a++) {
-                    console.log(key_tandaTanganSAOKCLRP, key_tandaTanganNasabahLRP, dataIDProspek)
-                    let query = 'UPDATE Table_Pencairan_Post SET LRP_TTD_AO = "' + key_tandaTanganSAOKCLRP + '", LRP_TTD_Nasabah = "' + key_tandaTanganNasabahLRP + '" WHERE ID_Prospek = "' + dataIDProspek[a].ID_Prospek + '"';
-                    console.log(query)
-                    db.transaction(
-                        tx => {
-                            tx.executeSql(query)
-                        }, function(error) {
-                            alert(error)
-                        }
-                    )
+            try{
+                if(dataIDProspek.length > 0){
+                    for(let a = 0; a < dataIDProspek.length; a++) {
+                        console.log(key_tandaTanganSAOKCLRP, key_tandaTanganNasabahLRP, dataIDProspek)
+                        let query = 'UPDATE Table_Pencairan_Post SET LRP_TTD_AO = "' + key_tandaTanganSAOKCLRP + '", LRP_TTD_Nasabah = "' + key_tandaTanganNasabahLRP + '" WHERE ID_Prospek = "' + dataIDProspek[a].ID_Prospek + '"';
+                        console.log(query)
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(query)
+                            }, function(error) {
+                                alert(error)
+                            }
+                        )
+                    }
+                    if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                    navigation.navigate("FlowPencairan", {kelompok_Id:dataNasabah, Open:2})
                 }
-                navigation.navigate("FlowPencairan", {kelompok_Id:dataNasabah, Open:2})
             }
-        }
-        catch(error){
-            alert(error)
-        }
+            catch(error){
+                alert(error)
+            }
     });
 
     function ModalSignKetuaKel(text, onOK){
@@ -239,29 +244,32 @@ const TandaTanganPencairan = ({route}) => {
             >
                 {ModalSignNasabah()}
             </Modal>
-            <View
-            style={{
+            <View style={{
                 flexDirection: "row",
                 justifyContent: 'space-between',
-                marginTop: 10,
+                marginTop: 40,
                 alignItems: "center",
-            }}
-            >
-                <View style={{height: dimension.height/4, marginHorizontal: 10, borderRadius: 20, marginTop: 30, flex: 1}}>
-                    <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover"}} imageStyle={{borderRadius: 20}}>
+                paddingHorizontal: 20,
+            }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                    <View>
+                        <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
+                    </View>
+                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.replace('Pencairan')}>
+                    <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
+                        <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
+                        <Text>Home</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
 
-                        <TouchableOpacity onPress={() => navigation.replace('FrontHome')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
-                            <View>
-                                <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
-                            </View>
-                            <Text style={{flex: 1, textAlign: 'center', borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
-                        </TouchableOpacity>
-
-                        <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5, marginHorizontal: 20}}>{branchName}</Text>
-                        <Text numberOfLines={2} style={{fontSize: 13, fontWeight: 'bold', color: '#FFF', marginHorizontal: 20}}>{branchId} - {branchName}</Text>
-                        <Text style={{fontSize: 15, fontWeight: 'bold', color: '#FFF', marginHorizontal: 20}}>{uname} - {aoName}</Text>
-                    </ImageBackground>
-                </View>
+            <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>
+                <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover", justifyContent: 'center'}} imageStyle={{borderRadius: 20}}>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Pencairan</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{NamaKelompok}</Text>
+                </ImageBackground>
             </View>
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
