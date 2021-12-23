@@ -84,6 +84,8 @@ const FinalPencairan = ({route}) => {
                 setFotoDataPencairan(data.uri);
                 setPostPencairan({...postPencairan, "Foto_Pencairan":key_dataPencairan})
                 AsyncStorage.setItem(key_dataPencairan, data.base64)
+                let i = statusMelakukan ? "1" : "0";
+                setPostPencairan({...postPencairan, "Is_Dicairkan":i})
                 setLoading(false);
                 SetButtonCam(false);
             }
@@ -460,15 +462,16 @@ const FinalPencairan = ({route}) => {
                             </TouchableOpacity>
                         </View>
 
-
-                        <View style={{alignItems: 'center', flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
+                        {dataNasabah.Jenis_Pembiayaan.includes('CASH') ? ("")
+                        :(<View style={{alignItems: 'center', flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
                             <Checkbox
                                 status={statusMelakukan ? 'checked' : 'unchecked'}
                                 onPress={() => submitHandlerCheckbox()}
                                 style={styles.checkbox}
                             />
                             <Text style={styles.label}>Sudah Dicairkan</Text>
-                        </View>
+                        </View>)}
+                        
 
                         <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                             <Button

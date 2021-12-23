@@ -89,7 +89,7 @@ const SyncPencairan = () => {
                             "Jml_Cair_PMU": null,
                             "Jml_RealCair": data.Jml_RealCair,
                             "Jml_Sisa_UP": null,
-                            "Jml_UP": data.Jml_UP,
+                            "Jml_UP": "0",
                             "LRP_TTD_AO": await AsyncStorage.getItem(data.LRP_TTD_AO),
                             "LRP_TTD_Nasabah": await AsyncStorage.getItem(data.LRP_TTD_Nasabah),
                             "TTD_KC": await AsyncStorage.getItem(data.TTD_KC),
@@ -113,19 +113,19 @@ const SyncPencairan = () => {
                         if (responseJSON.code === 200) {
                             ToastAndroid.show("Sync Data berhasil!", ToastAndroid.SHORT);
                             if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
-
-                            const queryDeleteSosialisasiDatabase = "DELETE FROM Table_Pencairan_Post";
-                            
-                            db.transaction(
-                                tx => {
-                                    tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
-                                        if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
-                                    })
-                                }, function(error) {
-                                    if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
-                                }, function() {}
-                            );
                             for(let a = 0; a < ah.length; a++){
+                                const queryDeleteSosialisasiDatabase = 'DELETE FROM Table_Pencairan_Post where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
+                            
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                                            if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                    }, function() {}
+                                );
+
                                 const queryDeletePencairanNasabah = 'DELETE FROM Table_Pencairan_Nasabah where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
                                 db.transaction(
                                     tx => {
@@ -137,8 +137,18 @@ const SyncPencairan = () => {
                                     }, function() {}
                                 );
                             }
-                            setLoaded(false)
-                            navigation.replace('FrontHome')
+                            const queryDeleteJumlah = 'Update Table_Pencairan set Jumlah_Kelompok = CONVERT(CAST(Jumlah_Kelompok as int) - '+ dataLength +') where kelompok_Id = "'+ Kelompok_ID +'"';
+                            db.transaction(
+                                tx => {
+                                    tx.executeSql(queryDeleteJumlah, [], (tx, results) => {
+                                        if (__DEV__) console.log(`${queryDeleteJumlah} RESPONSE:`, results.rows);
+                                        setLoaded(false)
+                                        navigation.replace('FrontHome')
+                                    })
+                                }, function(error) {
+                                    if (__DEV__) console.log(`${queryDeleteJumlah} ERROR:`, error);
+                                }, function() {}
+                            );
                             return true;
                         }
                     })
