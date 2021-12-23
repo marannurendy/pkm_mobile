@@ -17,6 +17,7 @@ const MenuflowPencairan = ({route}) => {
     let [uname, setUname] = useState("");
     let [aoName, setAoName] = useState();
     let [data, setData] = useState();
+    let [JumlahNasabah, setJumlahNasabah] = useState();
     let [dataKelompok, setdataKelompok] = useState();
 
     useEffect(() => {
@@ -36,8 +37,27 @@ const MenuflowPencairan = ({route}) => {
     }, []);
 
     const getKelompok = async () => {
-        setData(await AsyncStorage.getItem("Kelompok_id_Pencairan"))
+        const a = await AsyncStorage.getItem("Kelompok_id_Pencairan");
+        setData(a)
         setdataKelompok(await AsyncStorage.getItem("Nama_Kelompok"))
+        if (__DEV__) console.log('getKelompokPencairan loaded');
+        console.log(a)
+        let query = 'SELECT B.Kelompok_ID '+
+                    'FROM Table_Pencairan_Post A LEFT JOIN Table_Pencairan_Nasabah B on A.ID_Prospek = B.ID_Prospek ' + 
+                    'Where B.Kelompok_ID = "'+ a +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    if (__DEV__) console.log('getKelompokPencairan results:', results.rows);
+                    let dataLength = results.rows.length
+                    console.log(dataLength)
+                    setJumlahNasabah(dataLength);
+                }, function(error) {
+                    if (__DEV__) console.log(`${query} ERROR:`, error);
+                }, function() {}
+                )
+            }
+        )
     }
 
     return(
@@ -82,19 +102,19 @@ const MenuflowPencairan = ({route}) => {
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
                         </TouchableOpacity>
                         
-                        <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan',{data: data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity disabled={JumlahNasabah > 0 ? false : true} onPress={() => navigation.navigate('TandaTanganPencairan',{data: data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: JumlahNasabah > 0 ? '#D62828' : '#E6E6E6', padding: 20}}>
                             <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Preview', {idProspek : data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity disabled={JumlahNasabah == 0 ? true : false} onPress={() => navigation.navigate('Preview', {idProspek : data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  JumlahNasabah > 0 ? '#003049' : '#E6E6E6', padding: 20}}>
                             <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('SyncPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity disabled={JumlahNasabah == 0 ? true : false} onPress={() => navigation.navigate('SyncPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  JumlahNasabah > 0 ? '#17BEBB' : '#E6E6E6', padding: 20}}>
                             <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
                         </TouchableOpacity>

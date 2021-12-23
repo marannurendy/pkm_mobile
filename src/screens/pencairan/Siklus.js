@@ -84,11 +84,6 @@ const Siklus = ({route}) => {
         );
         setakadmenu(1)
     });
-    
-    // Simpan Handler
-    const submitHandler = () => {
-        navigation.navigate("FlowPencairan", {kelompok_Id:route.params.data.kelompok_Id, Open:1})
-    }
 
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
@@ -203,7 +198,7 @@ const Siklus = ({route}) => {
                 <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                     <Button
                         title="OK"
-                        onPress={() => submitHandler()}
+                        onPress={() => navigation.replace("FlowPencairan")}
                         buttonStyle={{backgroundColor: '#003049', width: dimension.width/2}}
                         titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                     />

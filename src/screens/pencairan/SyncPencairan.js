@@ -137,7 +137,7 @@ const SyncPencairan = () => {
                                     }, function() {}
                                 );
                             }
-                            const queryDeleteJumlah = 'Update Table_Pencairan set Jumlah_Kelompok = CONVERT(CAST(Jumlah_Kelompok as int) - '+ dataLength +') where kelompok_Id = "'+ Kelompok_ID +'"';
+                            const queryDeleteJumlah = 'Update Table_Pencairan set Jumlah_Kelompok = CONVERT(varchar(10), CAST(Jumlah_Kelompok as int) - '+ dataLength +') where kelompok_Id = "'+ Kelompok_ID +'"';
                             db.transaction(
                                 tx => {
                                     tx.executeSql(queryDeleteJumlah, [], (tx, results) => {
