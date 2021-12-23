@@ -28,9 +28,12 @@ const currency = (price, sign = '') => {
     return sign + pieces.join('')
 }
 
+const digits_only = string => [...string].every(c => '0123456789'.includes(c));
+
 export {
     fetchWithTimeout,
     inputVal,
     capitalize,
-    currency
+    currency,
+    digits_only
 }
