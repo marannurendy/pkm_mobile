@@ -36,32 +36,6 @@ const KelPencairan = () => {
 
         getUserData();
         getKelompokPencairan();
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
     }, []);
 
     const getKelompokPencairan = () => {
@@ -95,7 +69,7 @@ const KelPencairan = () => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
-            onPress={() => navigation.navigate('FlowPencairan', {kelompok_Id:data.kelompok_Id, Open:0})}
+            onPress={() => HandlerButton(data.kelompok_Id)}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos Nama_Kelompok={data.Nama_Kelompok} Jumlah_Kelompok={data.Jumlah_Kelompok} />
@@ -124,6 +98,14 @@ const KelPencairan = () => {
                 <Text>Data kosong</Text>
             </View>
         )
+    }
+
+    const HandlerButton = async (kelompok_id) => {
+        AsyncStorage.setItem("Kelompok_id_Pencairan", kelompok_id)
+        const a = await AsyncStorage.getItem("Kelompok_id_Pencairan")
+        if(a != undefined){
+            navigation.navigate('FlowPencairan', {kelompok_Id:kelompok_id, Open:0})
+        }
     }
 
     return(

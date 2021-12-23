@@ -32,41 +32,6 @@ const FormFP4 = () => {
         }
 
         getUserData();
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
     }, []);
 
     return(
@@ -82,7 +47,7 @@ const FormFP4 = () => {
                 <View style={{height: dimension.height/4, marginHorizontal: 10, borderRadius: 20, marginTop: 30, flex: 1}}>
                     <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover"}} imageStyle={{borderRadius: 20}}>
 
-                        <TouchableOpacity onPress={() => navigation.replace('FrontHome')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
+                        <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
                             <View>
                                 <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                             </View>

@@ -232,7 +232,7 @@ const SyncPencairan = () => {
                             onChangeText={(text) => setKeyword(text)}
                             value={keyword}
                             returnKeyType="done"
-                            onSubmitEditing={() => getSosialisasiDatabase()}
+                            onSubmitEditing={() => getSyncDataPencairan()}
                         />
                     </View>
                 </View>
@@ -258,7 +258,7 @@ const SyncPencairan = () => {
                             // onEndReached={() => handleEndReach()}
                             renderItem={renderItemSos}
                             // style={{height: '88.6%'}}
-                            //ListEmptyComponent={_listEmptyComponent}
+                            ListEmptyComponent={_listEmptyComponent}
                         /> 
                     </View>
                     )}

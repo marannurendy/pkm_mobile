@@ -15,7 +15,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
     var getPKMIndividual = ApiSync + 'GetCollectionListPKMIndividual' + '/' + params.cabangid + '/' + params.username;
     var getMasterData = ApiSyncInisiasi + 'GetMasterData/' + params.cabangid;
     var postGetSosialisasiMobile = ApiSyncInisiasi + 'GetSosialisasiMobile';
-    var getDataPencairan = ApiSyncInisiasi + 'GetPencairanMobile/'+ params.cabangid + '/undefined';
+    var getDataPencairan = ApiSyncInisiasi + 'GetPencairanMobile/'+ params.cabangid + '/' + params.username;
     if (__DEV__) console.log('ACTIONS GET SYNC DATA VARIABEL', getListGroup, getListCollection, queryUP, getPAR, getPKMIndividual, getMasterData);
 
     const truncat = (reject, source) => {
