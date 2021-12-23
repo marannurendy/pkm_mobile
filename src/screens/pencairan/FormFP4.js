@@ -36,31 +36,33 @@ const FormFP4 = () => {
 
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
-            <View
-            style={{
+            <View style={{
                 flexDirection: "row",
                 justifyContent: 'space-between',
-                marginTop: 10,
+                marginTop: 40,
                 alignItems: "center",
-            }}
-            >
-                <View style={{height: dimension.height/4, marginHorizontal: 10, borderRadius: 20, marginTop: 30, flex: 1}}>
-                    <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover"}} imageStyle={{borderRadius: 20}}>
-
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
-                            <View>
-                                <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
-                            </View>
-                            <Text style={{flex: 1, textAlign: 'center', borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
-                        </TouchableOpacity>
-
-                        <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5, marginHorizontal: 20}}>{branchName}</Text>
-                        <Text numberOfLines={2} style={{fontSize: 13, fontWeight: 'bold', color: '#FFF', marginHorizontal: 20}}>{branchId} - {branchName}</Text>
-                        <Text style={{fontSize: 15, fontWeight: 'bold', color: '#FFF', marginHorizontal: 20}}>{uname} - {aoName}</Text>
-                    </ImageBackground>
-                </View>
+                paddingHorizontal: 20,
+            }}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                    <View>
+                        <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
+                    </View>
+                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.replace('Pencairan')}>
+                    <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
+                        <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
+                        <Text>Home</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
 
+            <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>
+                <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover", justifyContent: 'center'}} imageStyle={{borderRadius: 20}}>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Pencairan</Text>
+                </ImageBackground>
+            </View>
+            
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10}}>
                     <Text style={{fontSize: 30, fontWeight: 'bold'}}>Pencairan Pembiayaan {"\n"}Form FP 4</Text>

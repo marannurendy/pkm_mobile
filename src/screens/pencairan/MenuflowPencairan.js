@@ -16,7 +16,8 @@ const MenuflowPencairan = ({route}) => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState("");
     let [aoName, setAoName] = useState();
-    let [data, setData] = useState(route.params.kelompok_Id);
+    let [data, setData] = useState();
+    let [dataKelompok, setdataKelompok] = useState();
 
     useEffect(() => {
         const getUserData = () => {
@@ -36,6 +37,7 @@ const MenuflowPencairan = ({route}) => {
 
     const getKelompok = async () => {
         setData(await AsyncStorage.getItem("Kelompok_id_Pencairan"))
+        setdataKelompok(await AsyncStorage.getItem("Nama_Kelompok"))
     }
 
     return(
@@ -75,19 +77,19 @@ const MenuflowPencairan = ({route}) => {
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{data: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{data: data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                             <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
                         </TouchableOpacity>
                         
-                        <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan',{data: data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('TandaTanganPencairan',{data: data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                             <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('Preview', {idProspek : data})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Preview', {idProspek : data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                             <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
                         </TouchableOpacity>
