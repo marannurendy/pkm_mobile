@@ -22,7 +22,7 @@ const dataPembiayaanLembagaLain = [
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKTingkatPendapatan = ({ route }) => {
-    const { id, groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState, statusSosialisasi } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valuePedapatanKotorPerhari, setValuePedapatanKotorPerhari] = useState('0');
@@ -386,7 +386,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
 
     const renderPembiayaanDariLembaga = () => (
         <View style={styles.MT8}>
-            <Text>Pembiayaan dari Lembaga</Text>
+            <Text>Pembiayaan dari Lembaga Lain</Text>
             <RadioButton.Group onValueChange={newValue => setValuePembiayaanDariLembaga(newValue)} value={valuePembiayaanDariLembaga}>
                 <View>
                     <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
@@ -544,6 +544,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Istri : {(parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 0)}</Text>
                 <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Suami : {(parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 0)}</Text>
                 <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Jumlah Tanggungan : {valueJumlahTanggungan}</Text>
+                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Kemampuan Bayar : 6.00</Text>
             </View>
         </View>
     )
@@ -561,6 +562,22 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         </View>
     )
 
+    const renderFormKemampuanBayarHasil = () => (
+        <View style={styles.MB16}>
+            <Text>Hasil</Text>
+            <View style={styles.F1}>
+                <Text style={[styles.P4, { color: 'gray' }]}>6.00</Text>
+            </View>
+        </View>
+    )
+
+    const renderFormKemampuanBayar = () => statusSosialisasi === '3' && (
+        <View style={styles.MT8}>
+            <Text style={[styles.FS18, styles.MB16]}>KEMAMPUAN BAYAR</Text>
+            {renderFormKemampuanBayarHasil()}
+        </View>
+    )
+
     const renderForm = () => (
         <View style={[styles.F1, styles.P16]}>
             {renderFormPendapatanKotorPerhari()}
@@ -575,6 +592,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
             {renderButtonSaveDraft()}
             {renderSpace()}
             {renderFormPendapatanSuami()}
+            {renderSpace()}
+            {renderFormKemampuanBayar()}
             {renderSpace()}
             {renderFormPendapatanPerkapita()}
         </View>

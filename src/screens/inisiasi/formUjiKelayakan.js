@@ -623,7 +623,7 @@ const FormUjiKelayakan = ({route}) => {
                     )}
 
                     {statusSosialisasi === '3' && (
-                        <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKDisiplinNasabah', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKDisiplinNasabah', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                             <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                                 <FontAwesome5 name={'sign-in-alt'} size={25} color={'#FFF'} />
                             </View>
@@ -641,7 +641,7 @@ const FormUjiKelayakan = ({route}) => {
                         </TouchableOpacity>
                     )}
 
-                    <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'address-card'} size={25} color={'#FFF'} />
                         </View>
@@ -658,7 +658,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 0 ? navigation.navigate('ProdukPembiayaan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 0 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 0 ? navigation.navigate('ProdukPembiayaan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 0 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'product-hunt'} size={25} color={'#FFF'} />
                         </View>
@@ -675,7 +675,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'home'} size={25} color={'#FFF'} />
                         </View>
@@ -692,7 +692,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 2 ? navigation.navigate('InisiasiFormUKSektorEkonomi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 2 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 2 ? navigation.navigate('InisiasiFormUKSektorEkonomi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 2 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'sellsy'} size={25} color={'#FFF'} />
                         </View>
@@ -709,7 +709,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 3 ? navigation.navigate('InisiasiFormUKTingkatPendapatan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 3 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 3 ? navigation.navigate('InisiasiFormUKTingkatPendapatan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 3 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'chart-area'} size={25} color={'#FFF'} />
                         </View>
@@ -726,7 +726,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState: screenState}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState: screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'signature'} size={25} color={'#FFF'} />
                         </View>

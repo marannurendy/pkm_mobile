@@ -140,6 +140,9 @@ export default({
             {search()}
             <ScrollView>
                 {renderProspekResultList()}
+                <View style={{ backgroundColor: 'orange', padding: 12, borderRadius: 8, marginBottom: 16 }}>
+                    <Text style={{ fontSize: 12, color: 'white' }}>"Jika data tidak ada silahkan cari berdasarkan nama. (List hanya menampilkan data per 100)"</Text>
+                </View>
             </ScrollView>
             <View 
                 style={
