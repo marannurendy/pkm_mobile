@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView, Image, Button, ToastAndroid, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, StyleSheet, TextInput, ScrollView, Image, Button, ToastAndroid, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,8 +10,7 @@ import { Picker } from '@react-native-picker/picker';
 import { ApiSyncInisiasi } from '../../../../dataconfig/index';
 import moment from 'moment';
 import 'moment/locale/id';
-import { capitalize, fetchWithTimeout } from '../../../utils/Functions';
-import { ApiSyncPostInisiasi } from '../../../../dataconfig/apisync/apisync';
+import { capitalize, digits_only } from '../../../utils/Functions';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -55,6 +54,7 @@ const InisiasiFormProspekLama = ({ route }) => {
     const [key_tandaTanganKetuaKelompok, setKey_tandaTanganKetuaKelompok] = useState(`formProspekLama_tandaTanganKetuaKelompok_${clientId}`);
     const [key_tandaTanganAO, setKey_tandaTanganAO] = useState(`formProspekLama_tandaTanganAO_${clientId}`);
     const [aoName, setAoName] = useState('');
+    const [fetching, setFetching] = useState(false);
 
     useEffect(() => {
         setInfo();
@@ -155,6 +155,7 @@ const InisiasiFormProspekLama = ({ route }) => {
             "ClientID": [clientId]
         };
 
+        setFetching(true);
         try {
             fetch(`${ApiSyncInisiasi}GetSiklusNasabahBrnet`, {
                 method: 'POST',
@@ -167,6 +168,7 @@ const InisiasiFormProspekLama = ({ route }) => {
             .then((response) => response.json())
             .then((responseJson) => {
                 if (__DEV__) console.log('fetchData $post /inisiasi/GetSiklusNasabahBrnet success:', responseJson);
+                setFetching(false);
                 if (responseJson.data.length > 0) {
                     setDataDetail(responseJson.data[0]);
                     getStorageProduk(responseJson.data[0]);
@@ -175,6 +177,7 @@ const InisiasiFormProspekLama = ({ route }) => {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $post /inisiasi/GetSiklusNasabahBrnet error:', error);
+            setFetching(false);
         }
     }
 
@@ -247,6 +250,9 @@ const InisiasiFormProspekLama = ({ route }) => {
         AsyncStorage.setItem(key_tandaTanganKetuaKelompok, valueTandaTanganKetuaKelompok);
         AsyncStorage.setItem(key_tandaTanganAO, valueTandaTanganAO);
 
+        let identityNumber = dataDetail?.IdentityNumber ?? '';
+        if (!digits_only(identityNumber)) identityNumber = '';
+
         const find = 'SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = "'+ clientId +'"';
         db.transaction(
             tx => {
@@ -254,15 +260,15 @@ const InisiasiFormProspekLama = ({ route }) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
-                    const inputPembiayaanTahap = `${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`;
-                    const inputJangkaWaktuPembiayaanDiajukan = `${selectedPembiayaanDiajukan?.paymentTerm ?? '0'}`;
+                    let inputPembiayaanTahap = `${parseInt(dataDetail?.LoanSeries ?? '0') + 1}`;
+                    let inputJangkaWaktuPembiayaanDiajukan = `${selectedPembiayaanDiajukan?.paymentTerm ?? '0'}`;
                     let maxPlafond = selectedPembiayaanDiajukan?.maxPlafond ?? 0;
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_Prospek_Lama_PP (clientId, clientName, identityNumber, groupId, subGroup, groupName, loanSeries, inputPembiayaanTahap, inputPembiayaanDiajukan, inputJangkaWaktuPembiayaanDiajukan, inputTempatTinggalNasabah, inputPerubahanStatusPernikahan, inputPerubahanStatusPernikahanKeterangan, inputPerubahanStatusTanggungan, inputPerubahanStatusTanggunganKeterangan, inputKehadiranPKM, inputPembayaran, inputPerubahanUsaha, inputPerubahanUsahaKeterangan, inputAddress, inputDate, inputNamaTandaTanganAO, inputTandaTanganAO, inputNamaTandaTanganKetuaKelompok, inputTandaTanganKetuaKelompok, inputNamaTandaTanganKetuaSubKelompok, inputTandaTanganKetuaSubKelompok) values ("' + dataDetail?.ClientID + '","' + dataDetail?.ClientName + '","' + dataDetail?.IdentityNumber + '","' + dataDetail?.GroupID + '","' + dataDetail?.SubGroup + '","' + dataDetail?.GroupName + '","' + dataDetail?.LoanSeries + '","' + inputPembiayaanTahap + '","' + maxPlafond + '","' + inputJangkaWaktuPembiayaanDiajukan + '","' + valueTempatTinggalNasabah + '","' + valuePerubahanStatusPernikahan + '","' + valuePerubahanStatusPernikahanKeterangan + '","' + valuePerubahanStatusTanggungan + '","' + valuePerubahanStatusTanggunganKeterangan + '","' + valueKehadiranPKM + '","' + valuePembayaran + '","' + valuePerubahanUsaha + '","' + valuePerubahanUsahaKeterangan + '","' + valueAddress + '","' + moment().format('YYYY-MM-DD') + '","' + valueNamaTandaTanganAO + '","' + key_tandaTanganAO + '","' + valueNamaTandaTanganKetuaKelompok + '","' + key_tandaTanganKetuaKelompok + '","' + valueNamaTandaTanganKetuaSubKelompok + '","' + key_tandaTanganKetuaSubKelompok + '")';
+                        query = 'INSERT INTO Table_Prospek_Lama_PP (clientId, clientName, identityNumber, groupId, subGroup, groupName, loanSeries, inputPembiayaanTahap, inputPembiayaanDiajukan, inputJangkaWaktuPembiayaanDiajukan, inputTempatTinggalNasabah, inputPerubahanStatusPernikahan, inputPerubahanStatusPernikahanKeterangan, inputPerubahanStatusTanggungan, inputPerubahanStatusTanggunganKeterangan, inputKehadiranPKM, inputPembayaran, inputPerubahanUsaha, inputPerubahanUsahaKeterangan, inputAddress, inputDate, inputNamaTandaTanganAO, inputTandaTanganAO, inputNamaTandaTanganKetuaKelompok, inputTandaTanganKetuaKelompok, inputNamaTandaTanganKetuaSubKelompok, inputTandaTanganKetuaSubKelompok) values ("' + dataDetail?.ClientID + '","' + dataDetail?.ClientName + '","' + identityNumber + '","' + dataDetail?.GroupID + '","' + dataDetail?.SubGroup + '","' + dataDetail?.GroupName + '","' + dataDetail?.LoanSeries + '","' + inputPembiayaanTahap + '","' + maxPlafond + '","' + inputJangkaWaktuPembiayaanDiajukan + '","' + valueTempatTinggalNasabah + '","' + valuePerubahanStatusPernikahan + '","' + valuePerubahanStatusPernikahanKeterangan + '","' + valuePerubahanStatusTanggungan + '","' + valuePerubahanStatusTanggunganKeterangan + '","' + valueKehadiranPKM + '","' + valuePembayaran + '","' + valuePerubahanUsaha + '","' + valuePerubahanUsahaKeterangan + '","' + valueAddress + '","' + moment().format('YYYY-MM-DD') + '","' + valueNamaTandaTanganAO + '","' + key_tandaTanganAO + '","' + valueNamaTandaTanganKetuaKelompok + '","' + key_tandaTanganKetuaKelompok + '","' + valueNamaTandaTanganKetuaSubKelompok + '","' + key_tandaTanganKetuaSubKelompok + '")';
                     } else {
-                        query = 'UPDATE Table_Prospek_Lama_PP SET clientName = "' + dataDetail?.ClientName + '", identityNumber = "' + dataDetail?.IdentityNumber + '", groupId = "' + dataDetail?.GroupID + '", subGroup = "' + dataDetail?.SubGroup + '", groupName = "' + dataDetail?.GroupName + '", loanSeries = "' + dataDetail?.LoanSeries + '", inputPembiayaanTahap = "' + inputPembiayaanTahap + '", inputPembiayaanDiajukan = "' + maxPlafond + '", inputJangkaWaktuPembiayaanDiajukan = "' + inputJangkaWaktuPembiayaanDiajukan + '", inputTempatTinggalNasabah = "' + valueTempatTinggalNasabah + '", inputPerubahanStatusPernikahan = "' + valuePerubahanStatusPernikahan + '", inputPerubahanStatusPernikahanKeterangan = "' + valuePerubahanStatusPernikahanKeterangan + '", inputPerubahanStatusTanggungan = "' + valuePerubahanStatusTanggungan + '", inputPerubahanStatusTanggunganKeterangan = "' + valuePerubahanStatusTanggunganKeterangan + '", inputKehadiranPKM = "' + valueKehadiranPKM + '", inputPembayaran = "' + valuePembayaran + '", inputPerubahanUsaha = "' + valuePerubahanUsaha + '", inputPerubahanUsahaKeterangan = "' + valuePerubahanUsahaKeterangan + '", inputAddress = "' + valueAddress + '", inputDate = "' + moment().format('YYYY-MM-DD') + '", inputNamaTandaTanganAO = "' + valueNamaTandaTanganAO + '", inputTandaTanganAO = "' + key_tandaTanganAO + '", inputNamaTandaTanganKetuaKelompok = "' + valueNamaTandaTanganKetuaKelompok + '", inputTandaTanganKetuaKelompok = "' + key_tandaTanganKetuaKelompok + '", inputNamaTandaTanganKetuaSubKelompok = "' + valueNamaTandaTanganKetuaSubKelompok + '", inputTandaTanganKetuaSubKelompok = "' + key_tandaTanganKetuaSubKelompok + '" WHERE clientId = "' + dataDetail?.ClientID + '"';
+                        query = 'UPDATE Table_Prospek_Lama_PP SET clientName = "' + dataDetail?.ClientName + '", identityNumber = "' + identityNumber + '", groupId = "' + dataDetail?.GroupID + '", subGroup = "' + dataDetail?.SubGroup + '", groupName = "' + dataDetail?.GroupName + '", loanSeries = "' + dataDetail?.LoanSeries + '", inputPembiayaanTahap = "' + inputPembiayaanTahap + '", inputPembiayaanDiajukan = "' + maxPlafond + '", inputJangkaWaktuPembiayaanDiajukan = "' + inputJangkaWaktuPembiayaanDiajukan + '", inputTempatTinggalNasabah = "' + valueTempatTinggalNasabah + '", inputPerubahanStatusPernikahan = "' + valuePerubahanStatusPernikahan + '", inputPerubahanStatusPernikahanKeterangan = "' + valuePerubahanStatusPernikahanKeterangan + '", inputPerubahanStatusTanggungan = "' + valuePerubahanStatusTanggungan + '", inputPerubahanStatusTanggunganKeterangan = "' + valuePerubahanStatusTanggunganKeterangan + '", inputKehadiranPKM = "' + valueKehadiranPKM + '", inputPembayaran = "' + valuePembayaran + '", inputPerubahanUsaha = "' + valuePerubahanUsaha + '", inputPerubahanUsahaKeterangan = "' + valuePerubahanUsahaKeterangan + '", inputAddress = "' + valueAddress + '", inputDate = "' + moment().format('YYYY-MM-DD') + '", inputNamaTandaTanganAO = "' + valueNamaTandaTanganAO + '", inputTandaTanganAO = "' + key_tandaTanganAO + '", inputNamaTandaTanganKetuaKelompok = "' + valueNamaTandaTanganKetuaKelompok + '", inputTandaTanganKetuaKelompok = "' + key_tandaTanganKetuaKelompok + '", inputNamaTandaTanganKetuaSubKelompok = "' + valueNamaTandaTanganKetuaSubKelompok + '", inputTandaTanganKetuaSubKelompok = "' + key_tandaTanganKetuaSubKelompok + '" WHERE clientId = "' + dataDetail?.ClientID + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -350,6 +356,8 @@ const InisiasiFormProspekLama = ({ route }) => {
         let namaOrangtua = capitalize(getNamaOrangtua.trim());
         let inputJangkaWaktuPembiayaanDiajukan = `${selectedPembiayaanDiajukan?.paymentTerm ?? '0'}`;
         let maxPlafond = selectedPembiayaanDiajukan?.maxPlafond ?? 0;
+
+        if (!digits_only(identityNumber)) identityNumber = '';
 
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama inputPembiayaanTahap:', inputPembiayaanTahap);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama namaLengkap:', namaLengkap);
@@ -854,6 +862,12 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={styles.spaceGray} />
     )
 
+    const renderLoading = () => fetching && (
+        <View style={styles.loading}>
+            <ActivityIndicator size="large" color={colors.DEFAULT} />
+        </View>
+    )
+
     const renderBody = () => (
         <View style={[styles.bodyContainer, styles.P16]}>
             <ScrollView>
@@ -874,6 +888,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         <View style={styles.mainContainer}>
             {renderHeader()}
             {renderBody()}
+            {renderLoading()}
         </View>
     )
 }

@@ -643,7 +643,7 @@ const FormUjiKelayakan = ({route}) => {
 
                     <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
-                            <FontAwesome5 name={'address-card'} size={25} color={'#FFF'} />
+                            <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
                         </View>
                         <View style={{flex: 1}}>
                             <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Data Diri Pribadi</Text>
@@ -763,6 +763,4 @@ const FormUjiKelayakan = ({route}) => {
 
 export default FormUjiKelayakan
 
-const styles = StyleSheet.create({
-    
-})
+const styles = StyleSheet.create({})

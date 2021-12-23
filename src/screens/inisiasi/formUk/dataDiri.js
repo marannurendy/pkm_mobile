@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet, ImageBackground, TextInput, ToastAndroid, Image, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions, ScrollView, StyleSheet, ImageBackground, TextInput, ToastAndroid, Image, ActivityIndicator, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -17,6 +17,8 @@ import Geolocation from 'react-native-geolocation-service';
 
 import db from '../../../database/Database'
 
+const MIN_TANGGAL_LAHIR = 15;
+const MAX_TANGGAL_LAHIR = 64;
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 8;
 var uniqueNumber = (new Date().getTime()).toString(36);
@@ -464,9 +466,21 @@ const DataDiri = ({route}) => {
     }
 
     const dateLahirHandler = (event, date) => {
-        let dateValue = moment(date).format('YYYY-MM-DD')
-        setShowCalendar(false)
-        setTanggalLahir(dateValue)
+        if (__DEV__) console.log('dateLahirHandler loaded');
+
+        let dateValue = moment(date).format('YYYY-MM-DD');
+        let rangeDateValue = moment().diff(moment(moment(dateValue).format("DD-MM-YYYY"), "DD-MM-YYYY"), 'years');
+        if (__DEV__) console.log('dateLahirHandler rangeDateValue:', rangeDateValue);
+        if (__DEV__) console.log('dateLahirHandler dateValue:', dateValue);
+
+        if (rangeDateValue > MIN_TANGGAL_LAHIR && rangeDateValue < MAX_TANGGAL_LAHIR) {
+            setShowCalendar(false);
+            setTanggalLahir(dateValue);
+            return;
+        }
+
+        ToastAndroid.show(`${rangeDateValue} tahun, Usia tidak valid`, ToastAndroid.SHORT);
+        setShowCalendar(false);
     }
 
     const JenisKartuIdentitas = (value) => {
@@ -1494,7 +1508,7 @@ const DataDiri = ({route}) => {
                                     <FontAwesome5 name={'id-badge'} size={18} />
                                 </View>
                             </TouchableOpacity>
-                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum 17-63 tahun.</Text>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {MIN_TANGGAL_LAHIR + 1}-{MAX_TANGGAL_LAHIR - 1} tahun</Text>
                             {showCalendar && (
                                 <DateTimePicker
                                     value={date}
