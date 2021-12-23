@@ -51,16 +51,17 @@ const TandaTanganPencairan = ({route}) => {
                 setAoName(data.AOname);
             });
         }
-
-        getUserData();
         getListNasabah();
+        getUserData();
     }, []);
 
-    const getListNasabah = () => {
+    const getListNasabah = async () => {
+        let a = await AsyncStorage.getItem("Kelompok_id_Pencairan");
         if (__DEV__) console.log('getListNasabah loaded');
         if (__DEV__) console.log('getListNasabah keyword');
 
-        let query = 'SELECT * FROM Table_Pencairan_Nasabah WHERE Kelompok_ID = "'+ dataNasabah +'"';
+        let query = 'SELECT A.*, B.* FROM Table_Pencairan_Nasabah A LEFT JOIN ' +  
+                    'Table_Pencairan_Post B on A.ID_Prospek = B.ID_Prospek WHERE Kelompok_ID = "'+ a +'"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -72,7 +73,7 @@ const TandaTanganPencairan = ({route}) => {
                         ah.push({'ID_Prospek' : data.ID_Prospek});
                         console.log(data)
                     }
-                    getListNasabahLocal(ah);
+                    setDataIDProspek(ah)
                 })
             }
         )
@@ -82,7 +83,7 @@ const TandaTanganPencairan = ({route}) => {
         if (__DEV__) console.log('getListNasabah loaded');
         if (__DEV__) console.log('getListNasabah keyword');
         var bah = []
-        console.log(signatureKetuaKel)
+        console.log(ah)
         if(ah.length > 0 && signatureKetuaKel != undefined && signatureNasabah != undefined){
             for(let i = 0; i < ah.length; i++){
                 let query = 'SELECT * FROM Table_Pencairan_Post WHERE ID_Prospek = "'+ ah[i].ID_Prospek +'"';
@@ -103,7 +104,6 @@ const TandaTanganPencairan = ({route}) => {
         }else{
             ToastAndroid.show("Silahkan Isi Tanda Tangan", ToastAndroid.SHORT);
         }
-        setDataIDProspek(bah)
     }
 
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
