@@ -1354,6 +1354,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
         AsyncStorage.setItem('Frekuensi', JSON.stringify(jsonMasterData.data.Frekuensi));
         AsyncStorage.setItem('WilayahMobile', JSON.stringify(jsonMasterData.data.WilayahMobile));
         AsyncStorage.setItem('SetUKtimeOut', JSON.stringify(jsonMasterData.data.SetUKtimeOut));
+        AsyncStorage.setItem('MasterAvailableSubGroup', JSON.stringify(jsonMasterData.data.MasterAvailableSubGroup));
 
         return 'SYNC DONE';
     }

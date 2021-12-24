@@ -31,7 +31,8 @@ export default({
     datas = [],
     selectedItems = [],
     doSearch = null,
-    doSubmit = null
+    doSubmit = null,
+    keyName = 'Nama'
 }) => {
     const [keyword, setKeyword] = useState('');
     const [selectedItemsProspek, setSelectedItemsProspek] = useState(selectedItems);
@@ -129,7 +130,7 @@ export default({
                     }>
                         {getSelectedProspek(item) ? <FontAwesomeIcon name="check" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
                     </View>
-                    <Text style={{ flex: 1 }} numberOfLines={1}>{item.Nama}</Text>
+                    <Text style={{ flex: 1 }} numberOfLines={1}>{item[keyName]}</Text>
                 </View>
             </TouchableOpacity>
         ))

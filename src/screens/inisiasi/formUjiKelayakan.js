@@ -28,6 +28,8 @@ const FormUjiKelayakan = ({route}) => {
     const [valuePilihKelompok, setValuePilihKelompok] = useState('');
     const [itemsPilihKelompok, setItemsPilihKelompok] = useState([]);
     const [selectedPilihKelompok, setSelectedPilihKelompok] = useState(null);
+    const [valuePilihSubKelompok, setValuePilihSubKelompok] = useState('');
+    const [itemsSubGroup, setItemsSubGroup] = useState([]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -98,25 +100,44 @@ const FormUjiKelayakan = ({route}) => {
         )
     }
 
-    const submitHandler = () => null
+    const getStorageSubGroup = async (rw) => {
+        if (__DEV__) console.log('getStorageSubGroup loaded');
+        if (__DEV__) console.log('getStorageSubGroup valuePilihKelompok:', rw);
+
+        try {
+            const response = await AsyncStorage.getItem('MasterAvailableSubGroup');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (__DEV__) console.log('getStorageSubGroup responseJSON.length:', responseJSON.length);
+                if (responseJSON.length > 0 ?? false) {
+                    if (__DEV__) console.log('getStorageSubGroup responseJSON:', responseJSON);
+                    var responseFiltered = responseJSON.filter(data => data.GroupID === rw).map((data, i) => {
+                        return { label: `${data.SubGroupID}  (Total: ${data.Total})`, value: data.SubGroupID };
+                    }) ?? [];
+                    if (__DEV__) console.log('getStorageSubGroup responseFiltered:', responseFiltered);
+                    setItemsSubGroup(responseFiltered);
+                    return;
+                }
+            }
+            setItemsSubGroup([]);
+        } catch (error) {
+            setItemsSubGroup([]);
+        }
+    }
 
     const doSubmit = () => {
         if (__DEV__) console.log('doSubmit loaded');
 
-        if (statusSosialisasi === '1') {
-            if (!valuePilihKelompok || typeof valuePilihKelompok === 'undefined' || valuePilihKelompok === '' || valuePilihKelompok === 'null') return alert('Pilih Kelompok (*) tidak boleh kosong');
-        }
-
         if (submitted) return true;
 
         setSubmitted(true);
-
         let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok, g.siklus, h.kehadiran_pkm, h.angsuran_pada_saat_pkm FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id LEFT JOIN Table_UK_DisipinNasabah h ON a.idSosialisasiDatabase = h.idSosialisasiDatabase WHERE a.idSosialisasiDatabase = "' + id + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
+
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
@@ -129,6 +150,17 @@ const FormUjiKelayakan = ({route}) => {
                             if (!data.angsuran_pada_saat_pkm || typeof data.angsuran_pada_saat_pkm === 'undefined' || data.angsuran_pada_saat_pkm === '' || data.angsuran_pada_saat_pkm === 'null') {
                                 setSubmitted(false);
                                 return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
+                            }
+                        }
+
+                        if (statusSosialisasi === '1') {
+                            if (!valuePilihKelompok || typeof valuePilihKelompok === 'undefined' || valuePilihKelompok === '' || valuePilihKelompok === 'null') {
+                                setSubmitted(false);
+                                return alert('Pilih Kelompok (*) tidak boleh kosong');
+                            }
+                            if (!valuePilihSubKelompok || typeof valuePilihSubKelompok === 'undefined' || valuePilihSubKelompok === '' || valuePilihSubKelompok === 'null') {
+                                setSubmitted(false);
+                                return alert('Pilih Sub Kelompok (*) tidak boleh kosong');
                             }
                         }
 
@@ -176,10 +208,12 @@ const FormUjiKelayakan = ({route}) => {
                         let isSisipan = "";
                         let kelompokID = data.kelompokID;
                         let namaKelompok = data.namaKelompok;
+                        let subKelompok = data.subKelompok
                         if (statusSosialisasi === '1') {
                             isSisipan = "1";
                             kelompokID = selectedPilihKelompok.value;
                             namaKelompok = selectedPilihKelompok.label;
+                            subKelompok = valuePilihSubKelompok;
                         }
                         
                         const body = {
@@ -606,16 +640,31 @@ const FormUjiKelayakan = ({route}) => {
                         <View style={[{padding: 16, borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginBottom: 16}]}>
                             <View style={{ marginBottom: 16 }}>
                                 <Text>Pilih Kelompok (*)</Text>
-                                <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8 }]}>
+                                <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8, padding: 16 }]}>
                                     <Picker
                                         selectedValue={valuePilihKelompok}
                                         onValueChange={(itemValue, itemIndex) => { 
                                             setSelectedPilihKelompok(itemsPilihKelompok[itemIndex - 1]);
                                             setValuePilihKelompok(itemValue);
+                                            getStorageSubGroup(itemValue);
                                         }}
                                     >
                                         <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                         {itemsPilihKelompok.length > 0 && itemsPilihKelompok.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                    </Picker>
+                                </View>
+                            </View>
+                            <View style={{ marginBottom: 16 }}>
+                                <Text>Pilih Sub Kelompok (*)</Text>
+                                <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8, padding: 16 }]}>
+                                    <Picker
+                                        selectedValue={valuePilihSubKelompok}
+                                        onValueChange={(itemValue, itemIndex) => {
+                                            setValuePilihSubKelompok(itemValue);
+                                        }}
+                                    >
+                                        <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                        {itemsSubGroup.length > 0 && itemsSubGroup.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                                     </Picker>
                                 </View>
                             </View>
@@ -747,7 +796,8 @@ const FormUjiKelayakan = ({route}) => {
                         <View style={{alignItems: 'center', marginBottom: 20}}>
                             <Button
                                 title={submitted ? 'MENGIRIM...' : "KIRIM UK"}
-                                onPress={() => screenState > 5 ? doSubmit() : null}
+                                onPress={() => doSubmit()}
+                                // onPress={() => screenState > 5 ? doSubmit() : null}
                                 buttonStyle={{backgroundColor: screenState > 5 ? '#D62828' : 'gray', width: dimension.width/2}}
                                 titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                             />

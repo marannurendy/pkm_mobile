@@ -6,7 +6,8 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
-import { ApiSyncInisiasi } from '../../../../dataconfig/index'
+import { ApiSyncInisiasi } from '../../../../dataconfig/index';
+import db from '../../../database/Database'
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -19,12 +20,14 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     const [currentDate, setCurrentDate] = useState();
     const [keyword, setKeyword] = useState('');
     const [data, setData] = useState([]);
+    const [dataSQLite, setDataSQLite] = useState([]);
     const [fetching, setFetching] = useState(false);
 
     useEffect(() => {
         getUserData();
         setInfo();
-        fetchData('');
+        // fetchData('');
+        fetchSQLite();
     }, []);
 
     const getUserData = () => {
@@ -37,6 +40,25 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate');
         setCurrentDate(tanggal);
+    }
+
+    const fetchSQLite = () => {
+        if (__DEV__) console.log('fetchSQLite loaded');
+
+        let query = 'SELECT * FROM Table_Prospek_Lama_PP_Nasabah';
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    var ah = [];
+                    for(let a = 0; a < dataLength; a++) {
+                        let data = results.rows.item(a);
+                        ah.push({ "clientId": data.clientId, "name": data.name });
+                    }
+                    setDataSQLite(ah)
+                })
+            }
+        );
     }
 
     const fetchData = (keyword = '') => {
@@ -115,6 +137,22 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         </View>
     )
 
+    const renderSQLiteList = () => dataSQLite.map((x, i) => (
+        <View key={i} style={{ backgroundColor: 'whitesmoke' }}>
+            <TouchableOpacity
+                onPress={() => navigation.navigate('InisiasiFormProspekLama', { name: getName(x.name), clientId: x.clientId })}
+            >
+                <View
+                    style={[styles.FDRow, styles.P8]}
+                >
+                    <Text style={[styles.F1, styles.MR16]}>{getName(x.name)}</Text>
+                    <Text style={{ textAlign:'right', color: 'gray' }}>{x.clientId}</Text>
+                </View>
+            </TouchableOpacity>
+            {renderSpace()}
+        </View>
+    ))
+    
     const renderList = () => data.map((x, i) => (
         <View key={i}>
             <TouchableOpacity
@@ -139,6 +177,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         <View style={[styles.bodyContainer, styles.P16]}>
             {renderSearch()}
             <ScrollView>
+                {renderSQLiteList()}
                 {renderList()}
             </ScrollView>
         </View>

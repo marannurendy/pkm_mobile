@@ -11,6 +11,7 @@ import 'moment/locale/id';
 import SearchListView from '../components/SearchListView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, Colors } from 'react-native-paper';
+import db from '../database/Database'
 
 const colors = {
     HITAM: '#000',
@@ -39,9 +40,13 @@ export default function FrontHomeSync(props) {
     const [selectedIndexFilterProspek, setSelectedIndexFilterProspek] = useState(1);
     const [selectedItemsProspek, setSelectedItemsProspek] = useState([]);
     const [dataProspekResponse, setDataProspekResponse] = useState([]);
+    const [dataProspekLamaResponse, setDataProspekLamaResponse] = useState([]);
     const [fetching, setFetching] = useState(false);
     const [submitted, setSubmitted] = useState(false);
     const [isVisibleModalSearchListView, setIsVisibleModalSearchListView] = useState(false);
+    const [selectedItemsProspekLama, setSelectedItemsProspekLama] = useState([]);
+    const [fetchingProspekLama, setFetchingProspekLama] = useState(false);
+    const [isVisibleModalProspekLamaSearchListView, setIsVisibleModalProspekLamaSearchListView] = useState(false);
 
     useEffect(() => {
         syncData();
@@ -62,22 +67,10 @@ export default function FrontHomeSync(props) {
 
         AsyncStorage.getItem('SyncDate', (error, syncDate) => {
             if (syncDate !== now || lengthData === 0) {
-
             } else {
                 props.onSuccess()
             }
-
-            // console.log("keluar")
-
-            // setIsRkh(true);
         });
-
-        // AsyncStorage.getItem('SyncDate', (error, syncDate) => {
-        //     if(){
-                
-        //     }
-        //     if (syncDate === now) props.onSuccess();
-        // });
     }
 
     const fetchData = (keyword = '') => {
@@ -112,6 +105,91 @@ export default function FrontHomeSync(props) {
             if (__DEV__) console.log('fetchData $get /inisiasi/GetListClient error:', error);
             setFetching(false);
         }
+    }
+
+    const fetchProspekLamaData = (keyword = '') => {
+        if (__DEV__) console.log('fetchProspekLamaData loaded');
+
+        let search = undefined;
+        if (keyword !== '') search = keyword;
+
+        let createdBy = undefined;
+        if (selectedIndexFilterProspek === 0) createdBy = props.username;
+
+        const route = `${ApiSyncInisiasi}GetListClientBRNET/${props.cabangid}/${createdBy}/${search}/1/100`;
+        if (__DEV__) console.log('fetchProspekLamaData route:', route);
+
+        setFetchingProspekLama(true);
+        try {
+            fetch(route, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClient success:', responseJson);
+                setDataProspekLamaResponse(responseJson);
+                setFetchingProspekLama(false);
+                if (!isVisibleModalProspekLamaSearchListView) setIsVisibleModalProspekLamaSearchListView(true);
+            })
+        } catch(error) {
+            if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClient error:', error);
+            setFetchingProspekLama(false);
+        }
+    }
+
+    const doProspekLamaSubmit = () => {
+        if (__DEV__) console.log('doProspekLamaSubmit loaded');
+
+        if (selectedItemsProspekLama.length > 0) {
+            if (__DEV__) console.log('doProspekLamaSubmit length', selectedItemsProspekLama.length);
+            if (__DEV__) console.log('doProspekLamaSubmit selectedItemsProspekLama', selectedItemsProspekLama);
+
+            var query = 'INSERT INTO Table_Prospek_Lama_PP_Nasabah (id, clientId, name) values ';
+            for (var i = 0; i < selectedItemsProspekLama.length; i++) {
+                let uniqueNumber = (new Date().getTime()).toString(36);
+                const data = JSON.parse(selectedItemsProspekLama[i]);
+
+                const queryDelete = "DELETE FROM Table_Prospek_Lama_PP_Nasabah WHERE clientId = '" + data.ClientID + "'";
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryDelete, [], (tx, results) => {
+                            if (__DEV__) console.log(`${queryDelete} RESPONSE:`, results.rows);
+                        })
+                    }, function(error) {
+                        if (__DEV__) console.log(`${queryDelete} ERROR:`, error);
+                    }, function() {}
+                );
+
+                query = query + "('"
+                + uniqueNumber
+                + "','"
+                + data.ClientID
+                + "','"
+                + data.Name
+                + "')";
+
+                if (i != selectedItemsProspekLama.length - 1) {
+                    query = query + ",";
+                }
+            }
+
+            query = query + ";";
+
+            if (__DEV__) console.log('ACTIONS INSERT QUERY:', query);
+
+            db.transaction(
+                tx => { tx.executeSql(query); }, function(error) {
+                    if (__DEV__) console.log('ACTIONS INSERT TRANSACTION ERROR:', error);
+                }, function() {
+                    if (__DEV__) console.log('ACTIONS INSERT TRANSACTION DONE');
+                }
+            );
+        }
+        return;
     }
 
     const doSubmit = () => {
@@ -162,7 +240,8 @@ export default function FrontHomeSync(props) {
                 ],
                 { cancelable: false }
             )
-            props.onSuccess()
+            doProspekLamaSubmit();
+            props.onSuccess();
         }).catch((error) => {
             if (__DEV__) console.log('doSubmit getSyncData error:', error);
             ToastAndroid.show(JSON.stringify(error), ToastAndroid.SHORT);
@@ -331,6 +410,42 @@ export default function FrontHomeSync(props) {
         
     )
 
+    const renderProspekLamaResultSearch = () => (
+        <TouchableOpacity
+            onPress={() => {
+                fetchProspekLamaData();
+            }}
+        >
+            <View
+                style={
+                    {
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        borderWidth: 1, 
+                        borderColor: colors.HITAM,
+                        borderRadius: 8,
+                        paddingHorizontal: 8,
+                        marginHorizontal: 12,
+                        marginVertical: 8
+                    }
+                }
+            >
+                <FontAwesomeIcon name="search" size={18} color={colors.HITAM} />
+                <Text
+                    style={
+                        {
+                            paddingHorizontal: 8,
+                            paddingVertical: 8
+                        }
+                    }
+                >
+                    Cari nama prospek lama
+                </Text>
+            </View>
+        </TouchableOpacity>
+        
+    )
+
     const renderProspekResultList = () => selectedItemsProspek.map((item, index) => (
         <View
             key={index}
@@ -342,6 +457,20 @@ export default function FrontHomeSync(props) {
             }
         >
             <Text>{index + 1}. {JSON.parse(item).Nama}</Text>
+        </View>
+    ))
+
+    const renderProspekLamaResultList = () => selectedItemsProspekLama.map((item, index) => (
+        <View
+            key={index}
+            style={
+                {
+                    marginBottom: 8,
+                    marginHorizontal: 12
+                }
+            }
+        >
+            <Text>{index + 1}. {JSON.parse(item).Name}</Text>
         </View>
     ))
 
@@ -369,6 +498,30 @@ export default function FrontHomeSync(props) {
         </View>
     )
 
+    const renderProspekLamaResultEmpty = () => (
+        <View
+            style={
+                {
+                    flex: 1,
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                    marginTop: 24
+                }
+            }
+        >
+            <Text
+                style={
+                    {
+                        marginVertical: 8,
+                        textAlign: 'center'
+                    }
+                }
+            >
+                {fetchingProspekLama && 'Mohon tunggu...'}
+            </Text>
+        </View>
+    )
+
     const renderProspekResult = () => (
         <>
             <View
@@ -390,11 +543,38 @@ export default function FrontHomeSync(props) {
         </>
     )
 
+    const renderProspekLamaResult = () => (
+        <>
+            <View
+                style={
+                    {
+                        borderWidth: 1,
+                        borderColor: colors.HITAM,
+                        borderRadius: 4,
+                        marginTop: 8,
+                        height: 260
+                    }
+                }
+            >
+                {renderProspekLamaResultSearch()}
+                <ScrollView>
+                    {selectedItemsProspekLama.length > 0 ? renderProspekLamaResultList() : renderProspekLamaResultEmpty()}
+                </ScrollView>
+            </View>
+        </>
+    )
+
     const renderProspek = () => (
         <>
             {renderProspekFilter()}
             {renderProspekButton()}
             {renderProspekResult()}
+        </>
+    )
+
+    const renderProspekLama = () => (
+        <>
+            {renderProspekLamaResult()}
         </>
     )
 
@@ -446,9 +626,12 @@ export default function FrontHomeSync(props) {
                 }
             }
         >
-            {renderProspek()}
-            {renderButton()}
-            <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text>
+            <ScrollView>
+                {renderProspek()}
+                {renderProspekLama()}
+                {renderButton()}
+                <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text>
+            </ScrollView>
         </View>
     )
 
@@ -467,6 +650,23 @@ export default function FrontHomeSync(props) {
         />
     )
 
+    const renderModalProspekLamaSearchListView = () => (
+        <SearchListView 
+            visible={isVisibleModalProspekLamaSearchListView}
+            onDismiss={() => setIsVisibleModalProspekLamaSearchListView(!isVisibleModalProspekLamaSearchListView)}
+            datas={dataProspekLamaResponse}
+            selectedItems={selectedItemsProspekLama}
+            doSearch={(keyword) => fetchProspekLamaData(keyword)}
+            doSubmit={(data) => {
+                if (__DEV__) console.log('renderModalProspekLamaSearchListView data:', data);
+                setIsVisibleModalProspekLamaSearchListView(false);
+                setSelectedItemsProspekLama(data);
+            }}
+            keyName="Name"
+            placeholderTitle='Cari nama prospek lama'
+        />
+    )
+
     const renderSpace = () => (
         <View style={styles.greySpace} />
     )
@@ -477,6 +677,7 @@ export default function FrontHomeSync(props) {
             {renderHeader()}
             {renderBody()}
             {renderModalSearchListView()}
+            {renderModalProspekLamaSearchListView()}
         </SafeAreaView>
     )
 }
