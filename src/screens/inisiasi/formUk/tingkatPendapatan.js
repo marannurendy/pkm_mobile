@@ -544,7 +544,6 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Istri : {(parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 0)}</Text>
                 <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Pendapatan Bersih Perbulan Suami : {(parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 0)}</Text>
                 <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Jumlah Tanggungan : {valueJumlahTanggungan}</Text>
-                <Text style={{ color: 'black', fontSize: 11, color: 'gray' }}>Kemampuan Bayar : 6.00</Text>
             </View>
         </View>
     )
@@ -566,7 +565,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         <View style={styles.MB16}>
             <Text>Hasil</Text>
             <View style={styles.F1}>
-                <Text style={[styles.P4, { color: 'gray' }]}>6.00</Text>
+                <Text style={[styles.P4, { color: 'gray' }]}>{((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1)) / 4) + (((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0) / ((dataProdukPembiayaan.jumlahPinjaman / dataProdukPembiayaan.termPembiayaan) + ((dataProdukPembiayaan.jumlahPinjaman * dataProdukPembiayaan.termPembiayaan) / 100 / dataProdukPembiayaan.termPembiayaan)) < 2 ? 'Tidak Layak' : 'Layak'}</Text>
             </View>
         </View>
     )
