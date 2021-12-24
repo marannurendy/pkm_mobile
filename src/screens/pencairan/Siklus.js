@@ -145,26 +145,10 @@ const Siklus = ({route}) => {
                                 returnKeyType="done"
                             />
 
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Jumlah UP</Text>
-                            <TextInput 
-                                editable={false} selectTextOnFocus={false}
-                                value={JumlahUP}
-                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold', borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                returnKeyType="done"
-                            />
-
                             <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Transfer Fund</Text>
                             <TextInput 
                                 editable={false} selectTextOnFocus={false}
                                 value={dataNasabah.Nama_Tipe_Pencairan}
-                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold',  borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
-                                returnKeyType="done"
-                            />
-
-                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Total Pencairan</Text>
-                            <TextInput 
-                                editable={false} selectTextOnFocus={false}
-                                value={TotalPencairan}
                                 style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold',  borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 returnKeyType="done"
                             />
