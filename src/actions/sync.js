@@ -105,7 +105,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + ListPencairan[i].Jasa
                     + "','"
-                    + ListPencairan[i].Jenis_Pembiayaan
+                    + ListPencairan[i].Nama_Produk
                     + "','"
                     + ListPencairan[i].Jumlah_Pinjaman
                     + "','"

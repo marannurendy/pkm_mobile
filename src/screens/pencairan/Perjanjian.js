@@ -50,7 +50,6 @@ const Perjanjian = ({route}) => {
                 setAoName(data.AOname);
             });
         }
-        getJenisPembiayaan();
         getUserData();
     }, []);
 
@@ -59,15 +58,6 @@ const Perjanjian = ({route}) => {
             ToastAndroid.show("Silahkan Isi Tanda Tangan dan Foto", ToastAndroid.SHORT);
         }else{
             navigation.navigate("FinalPencairan", {data: dataNasabah, postPencairan: postPencairan})
-        }
-    }
-
-    const getJenisPembiayaan = async () => {
-        const response = await AsyncStorage.getItem('JenisPembiayaan');
-        if (response !== null) {
-            const responseJSON = JSON.parse(response);
-            let getJP = responseJSON.filter(s => s.id == route.params.data.Jenis_Pembiayaan)
-            setJenPem(getJP[0].namajenispembiayaan)
         }
     }
 
@@ -233,11 +223,11 @@ const Perjanjian = ({route}) => {
                             sebagaimana dalam permohonan pembiayaan, telah 
                             menerima fasilitas pembiayaan dari PNM 
                             dengan ketentuan sebagai berikut:{"\n"}
-                            a. Jumlah Pembiayaan            :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jumlah_Pinjaman}</Text> {"\n"}
-                            b. Jenis Pembiayaan                 :  <Text style={{fontSize: 14, color:"#0645AD"}}>{jenpem}</Text> {"\n"}
-                            c. Jasa                                             :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jasa}</Text> {"\n"}
-                            d. Jangka Waktu                         :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Term_Pembiayaan} Minggu</Text> {"\n"}
-                            e. Angsuran per Minggu          :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Angsuran_Per_Minggu}</Text> {"\n"}{"\n"}
+                            a. Jumlah Pembiayaan    :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jumlah_Pinjaman}</Text> {"\n"}
+                            b. Jenis Pembiayaan     :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jenis_Pembiayaan}</Text> {"\n"}
+                            c. Jasa                 :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jasa.split('.')[0]}</Text> {"\n"}
+                            d. Jangka Waktu         :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Term_Pembiayaan} Minggu</Text> {"\n"}
+                            e. Angsuran per Minggu  :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Angsuran_Per_Minggu.split('.')[0]}</Text> {"\n"}{"\n"}
 
                             Kewajiban Nasabah{"\n"}
                             a. Hadir tepat waktu dalam pertemuan Kelompok{"\n"}
