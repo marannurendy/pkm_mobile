@@ -316,7 +316,7 @@ const FormUjiKelayakan = ({route}) => {
                             "Nama_TTD_Penjamin": data.nama_tanda_Tangan_SuamiPenjamin,
                             "Kelompok_ID": kelompokID,
                             "Nama_Kelompok": namaKelompok,
-                            "Sub_Kelompok": data.subKelompok,
+                            "Sub_Kelompok": subKelompok,
                             "ClientID": data.clientId,
                             "Kehadiran_PKM": data.kehadiran_pkm,
                             "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm,
