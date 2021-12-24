@@ -125,7 +125,7 @@ const Siklus = ({route}) => {
                             <TextInput 
                                 style={{flex: 1, padding: 5,  color:'#333',fontWeight: 'bold',  borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 editable={false} selectTextOnFocus={false}
-                                value={jenpem}
+                                value={dataNasabah.Jenis_Pembiayaan}
                                 returnKeyType="done"
                             />
 

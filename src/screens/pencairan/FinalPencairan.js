@@ -238,7 +238,7 @@ const FinalPencairan = ({route}) => {
         if(signatureSubKel == null || signatureKetuaKel == null || signatureNasabah == null){
             ToastAndroid.show("Silahkan Isi Tanda Tangan dan Foto", ToastAndroid.SHORT);
         }else{
-            navigation.navigate("Siklus", {data: dataNasabah, postPencairan: postPencairan})
+            navigation.replace("Siklus", {data: dataNasabah, postPencairan: postPencairan})
         }
     }
 

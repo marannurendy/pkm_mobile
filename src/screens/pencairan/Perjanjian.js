@@ -57,7 +57,7 @@ const Perjanjian = ({route}) => {
         if(signatureAO == null || signatureNasabah == null){
             ToastAndroid.show("Silahkan Isi Tanda Tangan dan Foto", ToastAndroid.SHORT);
         }else{
-            navigation.navigate("FinalPencairan", {data: dataNasabah, postPencairan: postPencairan})
+            navigation.replace("FinalPencairan", {data: dataNasabah, postPencairan: postPencairan})
         }
     }
 
