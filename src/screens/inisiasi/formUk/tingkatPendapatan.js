@@ -46,12 +46,17 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const [submmitted, setSubmmitted] = useState(false);
     const [valueJumlahTanggungan, setValueJumlahTanggungan] = useState(0);
     const [dataPembiayaanLain, setDataPembiayaanLain] = useState([]);
+    const [dataProdukPembiayaan, setDataProdukPembiayaan] = useState({
+        jumlahPinjaman: 0,
+        termPembiayaan: 0
+    });
 
     useEffect(() => {
         setInfo();
         getStoragePembiayaanLain();
         getUKPendapatanNasabah();
         getUKDataDiri();
+        getUKProdukPembiayaan();
     }, [])
 
     const setInfo = async () => {
@@ -59,6 +64,31 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         setCurrentDate(tanggal);
     }
 
+    const getUKProdukPembiayaan = () => {
+        let query = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` + id + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan:', results.rows);
+
+                    if (dataLength > 0) {   
+                        let data = results.rows.item(0);
+                        const newData = {
+                            jumlahPinjaman: parseInt(data.jumlah_Pinjaman),
+                            termPembiayaan: parseInt(data.term_Pembiayaan)
+                        }
+                        setDataProdukPembiayaan(newData);
+                        return;
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan error:', error.message);
+                })
+            }
+        )
+    }
+    
     const getUKDataDiri = () => {
         let query = `SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
@@ -355,8 +385,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <View style={styles.F1}>
                     <TextInput 
                         value={valueJumlahHariUsahPerbulan} 
-                        onChangeText={(text) => inputVal(text, 31, setValueJumlahHariUsahPerbulan)}
-                        placeholder='31'
+                        onChangeText={(text) => inputVal(text, 30, setValueJumlahHariUsahPerbulan)}
+                        placeholder='30'
                         style={styles.F1}
                         keyboardType="number-pad"
                     />
@@ -415,7 +445,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => setValuePembiayaanLembagaLain(itemValue)}
                 >
-                    {dataPembiayaanLain.map((x, i) => <Picker.Item label={x.jenisPembiayaanDetail} value={x.id} />)}
+                    {dataPembiayaanLain.map((x, i) => <Picker.Item key={i} label={x.jenisPembiayaanDetail} value={x.id} />)}
                     <Picker.Item label={'Lainnya'} value={'3'} />
                     <Picker.Item label={'-- Pilih --'} value={null} />
                 </Picker>
@@ -495,7 +525,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         <View style={styles.MT8}>
             <Text>Pendapatan Bersih Per Hari</Text>
             <View style={styles.F1}>
-                <Text style={[styles.P4, { color: 'gray' }]}>{(currency(parseInt(valuePedapatanKotorPerhariSuami || 0) - parseInt(valuePengeluaranKeluargaPerhariSuami || 0)) || 0, 'Rp. ')}</Text>
+                <Text style={[styles.P4, { color: 'gray' }]}>{currency((parseInt(valuePedapatanKotorPerhariSuami || 0) - parseInt(valuePengeluaranKeluargaPerhariSuami || 0)) || 0, 'Rp. ')}</Text>
             </View>
         </View>
     )
@@ -507,8 +537,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <View style={styles.F1}>
                     <TextInput 
                         value={valueJumlahHariUsahPerbulanSuami} 
-                        onChangeText={(text) => inputVal(text, 31, setValueJumlahHariUsahPerbulanSuami)}
-                        placeholder='31'
+                        onChangeText={(text) => inputVal(text, 30, setValueJumlahHariUsahPerbulanSuami)}
+                        placeholder='30'
                         style={styles.F1}
                         keyboardType="number-pad"
                     />

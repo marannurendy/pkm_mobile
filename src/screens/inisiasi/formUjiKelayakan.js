@@ -640,7 +640,7 @@ const FormUjiKelayakan = ({route}) => {
                         <View style={[{padding: 16, borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginBottom: 16}]}>
                             <View style={{ marginBottom: 16 }}>
                                 <Text>Pilih Kelompok (*)</Text>
-                                <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8, padding: 16 }]}>
+                                <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8}]}>
                                     <Picker
                                         selectedValue={valuePilihKelompok}
                                         onValueChange={(itemValue, itemIndex) => { 
@@ -656,7 +656,7 @@ const FormUjiKelayakan = ({route}) => {
                             </View>
                             <View style={{ marginBottom: 16 }}>
                                 <Text>Pilih Sub Kelompok (*)</Text>
-                                <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8, padding: 16 }]}>
+                                <View style={[styles.F1, { borderWidth: 1, borderRadius: 16, borderColor: 'gray', marginTop: 8}]}>
                                     <Picker
                                         selectedValue={valuePilihSubKelompok}
                                         onValueChange={(itemValue, itemIndex) => {
@@ -796,8 +796,7 @@ const FormUjiKelayakan = ({route}) => {
                         <View style={{alignItems: 'center', marginBottom: 20}}>
                             <Button
                                 title={submitted ? 'MENGIRIM...' : "KIRIM UK"}
-                                onPress={() => doSubmit()}
-                                // onPress={() => screenState > 5 ? doSubmit() : null}
+                                onPress={() => screenState > 5 ? doSubmit() : null}
                                 buttonStyle={{backgroundColor: screenState > 5 ? '#D62828' : 'gray', width: dimension.width/2}}
                                 titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                             />
