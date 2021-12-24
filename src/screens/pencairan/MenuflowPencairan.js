@@ -97,24 +97,24 @@ const MenuflowPencairan = ({route}) => {
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around',}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('ListPencairan',{data: data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity onPress={() => navigation.replace('ListPencairan',{data: data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                             <FontAwesome5 name="credit-card" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Pencairan</Text>
                         </TouchableOpacity>
                         
-                        <TouchableOpacity disabled={JumlahNasabah > 0 ? false : true} onPress={() => navigation.navigate('TandaTanganPencairan',{data: data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: JumlahNasabah > 0 ? '#D62828' : '#E6E6E6', padding: 20}}>
+                        <TouchableOpacity disabled={JumlahNasabah > 0 ? false : true} onPress={() => navigation.replace('TandaTanganPencairan',{data: data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: JumlahNasabah > 0 ? '#D62828' : '#E6E6E6', padding: 20}}>
                             <FontAwesome5 name="signature" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Tanda Tangan</Text>
                         </TouchableOpacity>
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                        <TouchableOpacity disabled={JumlahNasabah == 0 ? true : false} onPress={() => navigation.navigate('Preview', {idProspek : data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  JumlahNasabah > 0 ? '#003049' : '#E6E6E6', padding: 20}}>
+                        <TouchableOpacity disabled={JumlahNasabah == 0 ? true : false} onPress={() => navigation.replace('Preview', {idProspek : data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  JumlahNasabah > 0 ? '#003049' : '#E6E6E6', padding: 20}}>
                             <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity disabled={JumlahNasabah == 0 ? true : false} onPress={() => navigation.navigate('SyncPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  JumlahNasabah > 0 ? '#17BEBB' : '#E6E6E6', padding: 20}}>
+                        <TouchableOpacity disabled={JumlahNasabah == 0 ? true : false} onPress={() => navigation.replace('SyncPencairan')} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  JumlahNasabah > 0 ? '#17BEBB' : '#E6E6E6', padding: 20}}>
                             <FontAwesome5 name="sync" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Sync Data</Text>
                         </TouchableOpacity>
@@ -122,7 +122,7 @@ const MenuflowPencairan = ({route}) => {
                     </View>
                     {uname.includes("SY") ? 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('UploadBuktiPem')} style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
+                        <TouchableOpacity onPress={() => navigation.replace('UploadBuktiPem')} style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                             <FontAwesome5 name="upload" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Upload Nota Pembelian</Text>
                         </TouchableOpacity>

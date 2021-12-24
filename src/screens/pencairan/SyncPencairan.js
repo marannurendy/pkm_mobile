@@ -68,7 +68,7 @@ const SyncPencairan = () => {
         setLoaded(true)
         let query = 'SELECT A.* FROM Table_Pencairan_Post A '+
                     'LEFT JOIN Table_Pencairan_Nasabah B on A.ID_Prospek = B.ID_Prospek '+
-                    'where B.Kelompok_ID = "'+ Kelompok_ID +'"';
+                    'where B.Kelompok_ID = "'+ Kelompok_ID +'" and A.LRP_TTD_AO is not null and A.LRP_TTD_Nasabah is not null';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
@@ -136,25 +136,29 @@ const SyncPencairan = () => {
                                         if (__DEV__) console.log(`${queryDeletePencairanNasabah} ERROR:`, error);
                                     }, function() {}
                                 );
+                                const queryDeleteJumlah = 'Update Table_Pencairan set Jumlah_Kelompok = CAST((CAST(Jumlah_Kelompok as int) - '+ dataLength +') as varchar) where kelompok_Id = "'+ Kelompok_ID +'"';
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql(queryDeleteJumlah, [], (tx, results) => {
+                                            if (__DEV__) console.log(`${queryDeleteJumlah} RESPONSE:`, results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log(`${queryDeleteJumlah} ERROR:`, error);
+                                    }, function() {}
+                                );
                             }
-                            const queryDeleteJumlah = 'Update Table_Pencairan set Jumlah_Kelompok = CONVERT(varchar(10), CAST(Jumlah_Kelompok as int) - '+ dataLength +') where kelompok_Id = "'+ Kelompok_ID +'"';
-                            db.transaction(
-                                tx => {
-                                    tx.executeSql(queryDeleteJumlah, [], (tx, results) => {
-                                        if (__DEV__) console.log(`${queryDeleteJumlah} RESPONSE:`, results.rows);
-                                        setLoaded(false)
-                                        navigation.replace('FrontHome')
-                                    })
-                                }, function(error) {
-                                    if (__DEV__) console.log(`${queryDeleteJumlah} ERROR:`, error);
-                                }, function() {}
-                            );
                             return true;
                         }
                     })
                 })
             }
         )
+        buttonFinish();
+    }
+
+    const buttonFinish = async () => {
+        setLoaded(false)
+        navigation.replace('FrontHome')
     }
 
     // LIST VIEW PENCAIRAN
@@ -212,7 +216,7 @@ const SyncPencairan = () => {
                     </View>
                     <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.replace('Pencairan')}>
+                <TouchableOpacity onPress={() => navigation.replace('FrontHome')}>
                     <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
                         <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
                         <Text>Home</Text>
