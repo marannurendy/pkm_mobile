@@ -370,7 +370,7 @@ const InisiasiFormPPH = ({ route }) => {
         if(source === '1') {
             return (
                 <View style={stylesheet.containerList}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1, flexDirection: 'row' }}>
                         <FontAwesome5 name="users" size={32} color="#2e2e2e" />
                         <View style={styles.ML16}>
                             <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
