@@ -226,10 +226,10 @@ const FormUjiKelayakan = ({route}) => {
                             "CreatedBy": uname,
                             "CreatedNIP": nip,
                             "Dinding": data.dinding,
-                            "FotoKK": fotoKartuKeluarga.split(',')[1],
+                            "FotoKK": fotoKartuKeluarga === null || fotoKartuKeluarga === 'null' ? '' : fotoKartuKeluarga.split(',')[1],
                             "FotoKTPPenjamin": fotoDataPenjamin === null || fotoDataPenjamin === 'null' ? '' : fotoDataPenjamin.split(',')[1],
                             "FotoKTPSuami": fotoDataSuami === null || fotoDataSuami === 'null' ? '' : fotoDataSuami.split(',')[1],
-                            "FotoKartuIdentitas": fotoKartuIdentitas.split(',')[1],
+                            "FotoKartuIdentitas": fotoKartuIdentitas === null || fotoKartuIdentitas === 'null' ? '' : fotoKartuIdentitas.split(',')[1],
                             "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
                             "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
                             "ID_SektorEkonomi": data.sektor_Ekonomi,
@@ -325,7 +325,6 @@ const FormUjiKelayakan = ({route}) => {
                         }
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
 
-                        
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
                                 timeout: timeOut, // 6 menit

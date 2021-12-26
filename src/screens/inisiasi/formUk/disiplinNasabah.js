@@ -20,7 +20,7 @@ const InisiasiFormUKDisiplinNasabah = ({ route }) => {
     const [valueKehadiranPKM, setValueKehadiranPKM] = useState(null);
     const [itemsKehadiranPKM, setItemsKehadiranPKM] = useState([{ label: '100% H', value: '1' },{ label: '1-5x TH', value: '2' }, { label: '6-10x TH', value: '3' }, { label: '11-15x TH', value: '4' }, { label: '>16x TH', value: '5' }]);
     const [valueAngsuranPadaSaatPKM, setValueAngsuranPadaSaatPKM] = useState(null);
-    const [itemsAngsuranPadaSaatPKM, setItemsAngsuranPadaSaatPKM] = useState([{ label: '100% Bayar', value: '1' },{ label: '1x Tanggung Renten', value: '2' }, { label: '2x Tanggung Renteng', value: '3' }, { label: '3x Tanggung Renteng', value: '4' }, { label: 'Tanggung Renteng >= 4', value: '5' }]);
+    const [itemsAngsuranPadaSaatPKM, setItemsAngsuranPadaSaatPKM] = useState([{ label: '100% Bayar', value: '1' },{ label: '1x Tanggung Renteng', value: '2' }, { label: '2x Tanggung Renteng', value: '3' }, { label: '3x Tanggung Renteng', value: '4' }, { label: 'Tanggung Renteng >= 4', value: '5' }]);
     const [submmitted, setSubmmitted] = useState(false);
     
     useEffect(() => {
