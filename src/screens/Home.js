@@ -901,7 +901,7 @@ export default function FrontHome() {
                                 </View>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff', padding:10,
+                            <TouchableOpacity onPress={() => navigation.navigate('UmiCornerLanding')} style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff', padding:10,
                                 shadowColor: '#000',
                                 shadowOffset: {
                                 width: 0,

@@ -373,9 +373,9 @@ const InisiasiFormPPH = ({ route }) => {
                     <View style={{ flexDirection: 'row' }}>
                         <FontAwesome5 name="users" size={32} color="#2e2e2e" />
                         <View style={styles.ML16}>
-                            <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
+                            <Text numberOfLines={1} style={[stylesheet.textList, {marginRight: 100}]}>{groupName}</Text>
                             <Text>{jumlahNasabah} Orang</Text>
-                            {isSisipan === '1' ? (<Text style={{borderWidth: 1, marginTop: 10, textAlign: 'center', borderRadius: 5, paddingHorizontal: 10}}>Sisipan</Text>) : (<View></View>)}
+                            {isSisipan === '1' ? (<Text style={{borderWidth: 1, marginTop: 10, textAlign: 'center', borderRadius: 5, paddingHorizontal: 10, marginRight: 100}}>Sisipan</Text>) : (<View></View>)}
                         </View>
                     </View>
                     {status === "0" ? (<View></View>) : (<FontAwesome5 name="check" size={20} color="#17BEBB" />)}
@@ -387,9 +387,9 @@ const InisiasiFormPPH = ({ route }) => {
                     <View style={{ flexDirection: 'row' }}>
                         <FontAwesome5 name="users" size={32} color="#2e2e2e" />
                         <View style={styles.ML16}>
-                            <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
+                            <Text numberOfLines={1} style={[stylesheet.textList, {marginRight: 100}]}>{groupName}</Text>
                             <Text>{jumlahNasabah} Orang</Text>
-                            {isSisipan === '1' ? (<Text style={{borderWidth: 1, marginTop: 10, textAlign: 'center', borderRadius: 5, paddingHorizontal: 10}}>Sisipan</Text>) : (<View></View>)}
+                            {isSisipan === '1' ? (<Text style={{borderWidth: 1, marginTop: 10, textAlign: 'center', borderRadius: 5, paddingHorizontal: 10, marginRight: 100}}>Sisipan</Text>) : (<View></View>)}
                         </View>
                     </View>
                     {status === "2" ? (<FontAwesome5 name="check" size={20} color="#17BEBB" />) : (<View></View>)}
@@ -401,7 +401,7 @@ const InisiasiFormPPH = ({ route }) => {
                     <View style={{ flexDirection: 'row' }}>
                         <FontAwesome5 name="users" size={32} color="#2e2e2e" />
                         <View style={styles.ML16}>
-                            <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
+                            <Text numberOfLines={1} style={[stylesheet.textList, {marginRight: 100}]}>{groupName}</Text>
                             <Text>{jumlahNasabah} Orang</Text>
                         </View>
                     </View>
