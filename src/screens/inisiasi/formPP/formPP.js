@@ -30,7 +30,9 @@ const InisiasiFormPP = ({ route }) => {
     }
 
     const getData = async () => {
-        let queryGetdataGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + 4 + " GROUP BY a.kelompok "
+        let queryGetdataGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status, a.isSisipan, a.isTahapLanjut FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + 4 + " GROUP BY a.kelompok "
+
+        // let queryGetdataGroup = "SELECT * FROM Table_PP_ListNasabah WHERE status <> 'null'"
 
         const getDataPembiayaan = (queryGetdataGroup) => (new Promise((resolve, reject) => {
             try{
@@ -56,7 +58,7 @@ const InisiasiFormPP = ({ route }) => {
         }))
 
         const data = await getDataPembiayaan(queryGetdataGroup)
-
+        console.log(data)
         setData(data)
     }
 
@@ -84,18 +86,20 @@ const InisiasiFormPP = ({ route }) => {
             onPress={() => navigation.navigate('InisiasiFormPPList', { ...data })}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} />
+                <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} isSisipan={data.isSisipan} isTahapLanjut={data.isTahapLanjut} />
             </View>
         </TouchableOpacity>
     )
 
-    const ListMessage = ({ groupName, jumlahNasabah }) => {
+    const ListMessage = ({ groupName, jumlahNasabah, isSisipan, isTahapLanjut }) => {
         return (
             <View style={stylesheet.containerList}>
                 <FontAwesome5 name="users" size={32} color="#2e2e2e" />
                 <View style={styles.ML16}>
-                    <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
+                    <Text numberOfLines={1} style={[stylesheet.textList, {marginRight: 20}]}>{groupName}</Text>
                     <Text>{jumlahNasabah} Orang</Text>
+                    {isSisipan === '1' ? (<Text style={{marginTop: 10, textAlign: 'center', borderRadius: 5, paddingHorizontal: 10, marginRight: 50, fontWeight: 'bold', paddingVertical: 5, backgroundColor: '#D07A04', color: '#FFF'}}>Sisipan</Text>) : (<View></View>)}
+                    {isTahapLanjut === '1' ? (<Text style={{marginTop: 10, textAlign: 'center', borderRadius: 5, paddingHorizontal: 10, marginRight: 50, fontWeight: 'bold', paddingVertical: 5, backgroundColor: '#1AA36D', color: '#FFF'}}>Tahap Lanjut</Text>) : (<View></View>)}
                 </View>
             </View>
         )

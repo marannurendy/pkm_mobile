@@ -123,7 +123,12 @@ const InisiasiFormPPKelompokSubMemberVerifikasi = ({ route }) => {
         for(let a = 0; a < dataLength; a++) {
             let b = selectedItems[a]
 
-            let queryUpdate = "UPDATE Table_PP_ListNasabah SET kelompok = '" + subKelompok + "', subKelompok = '" + namaSub + "', status = 1 WHERE Nasabah_Id = '" + b + "'"
+            let subId = num
+            if(num < 10){
+                subId = "0" + num
+            }
+
+            let queryUpdate = "UPDATE Table_PP_ListNasabah SET kelompok = '" + subKelompok + "', subKelompok = '" + subId + "', status = 1 WHERE Nasabah_Id = '" + b + "'"
             try{
                 db.transaction(
                     tx => {

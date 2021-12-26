@@ -718,7 +718,19 @@ export default function FrontHome() {
                 // cabangid={90091} /* DATA DUMMY */
                 aoname={aoname}
                 namacabang={namacabang}
-                onSuccess={() => setIsRkh(true)}
+                onSuccess={async () => {
+                    setIsRkh(true)
+                    const syncStatus = await AsyncStorage.getItem('userData')
+            
+                    let DetailData = JSON.parse(syncStatus)
+
+                    setCabangid(DetailData.kodeCabang)
+                    setNamacabang(DetailData.namaCabang)
+                    setUsername(DetailData.userName)
+                    setAoname(DetailData.AOname)
+
+                    itemReadyHandler(DetailData.kodeCabang, DetailData.userName)
+                }}
             />
         )
     }
@@ -763,8 +775,8 @@ export default function FrontHome() {
                     <Text style={{color: '#fff'}}>{namacabang}</Text>
                 </View>
 
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{marginTop: scale(15), marginLeft: scale(15), flex: 4, borderRadius: scale(10), padding: scale(5), backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', marginHorizontal: scale(15)}}>
+                    <View style={{marginTop: scale(15), flex: 4, borderRadius: scale(10), padding: scale(5), backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center'}}>
                         <Text style={{fontSize: scale(13), marginLeft: scale(10), fontWeight: 'bold', color: '#545851'}}>
                             STATUS
                         </Text>
@@ -776,14 +788,14 @@ export default function FrontHome() {
                         </View>
                     </View>
 
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                         style={isSync === true ? {marginTop: scale(15), marginRight: scale(15), flex: 2, marginLeft: scale(10),borderRadius: scale(10), padding: scale(10), backgroundColor: '#CCCCC4', alignItems: 'center'} : {marginTop: scale(15), marginRight: scale(15), flex: 2, marginLeft: scale(10),borderRadius: scale(10), padding: scale(10), backgroundColor: '#0CB35D', alignItems: 'center'}}
                         // style={{marginTop: 30, marginRight: 20, flex: 2, marginLeft: 10,borderRadius: 10, padding: 10, backgroundColor: '#0CB35D', alignItems: 'center'}}
                         disabled={isSync}
                         onPress={() => syncData()}
                     >
                         <MaterialCommunityIcons name="sync" color={'#FFF'} size={30} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
                 <View style={{flex: 1, marginTop: scale(10), borderTopLeftRadius: scale(20), borderTopRightRadius: scale(20), marginHorizontal: scale(5), backgroundColor: '#fff'}}>

@@ -36,20 +36,6 @@ const InisiasiFormPPH = ({ route }) => {
     const { source } = route.params;
     const navigation = useNavigation();
     const [date, setDate] = useState('');
-    // const [data, setData] = useState([
-    //     {
-    //         groupName: 'Bogor',
-    //         jumlahNasabah: '10'
-    //     },
-    //     {
-    //         groupName: 'Depok',
-    //         jumlahNasabah: '1'
-    //     },
-    //     {
-    //         groupName: 'Jakarta',
-    //         jumlahNasabah: '4'
-    //     }
-    // ]);
     const [data, setData] = useState([])
     const [keyword, setKeyword] = useState('');
     const [fetching, setFetching] = useState(false);
@@ -68,10 +54,10 @@ const InisiasiFormPPH = ({ route }) => {
 
     const getData = async (val) => {
         console.log("ini")
-        let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + val + " GROUP BY a.kelompok "
+        let queryGetGroup = "SELECT DISTINCT a.kelompok as groupName, COUNT(b.Nasabah_Id) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + val + " GROUP BY a.kelompok, a.kelompok_Id, b.Nasabah_Id "
         // let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok GROUP BY a.kelompok "
-        // let queryGetGroup = "SELECT * FROM Table_PP_Kelompok"
-        // let queryGetGroup = "SELECT * FROM Table_PP_ListNasabah"
+        let queryGetGroup2 = "SELECT * FROM Table_PP_Kelompok"
+        let queryGetGroup3 = "SELECT * FROM Table_PP_ListNasabah"
         
 
         const listData = (queryGetGroup) => (new Promise ((resolve,reject) => {
@@ -133,8 +119,9 @@ const InisiasiFormPPH = ({ route }) => {
 
     const syncHandler = async (val) => {
             let queryGetDataPP = "SELECT * FROM Table_PP_ListNasabah WHERE isPP = '" + val + "'"
-            let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah WHERE isPP = '" + val + "'"
-            console.log(queryGetDataPP)
+            // let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah WHERE isPP = '" + val + "'"
+            let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah"
+            // console.log(queryGetDataPP)
             var listKelompok = []
 
             const getDataKelompok = (queryGetGroupPP) => (new Promise ((resolve, reject) => {
@@ -175,7 +162,7 @@ const InisiasiFormPPH = ({ route }) => {
 
                                 listKelompok.push(data.groupName)
 
-                                // console.log(dataSend)
+                                console.log(dataSend)
 
                                 try{
                                     fetch(ApiSyncPostInisiasi + "post_pp", {
@@ -196,7 +183,11 @@ const InisiasiFormPPH = ({ route }) => {
                                             if(val === '1' || val === 1) {
                                                 var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 2, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
                                             }else if(val === '2' || val === 2) {
-                                                var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 3, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                                if(data.isSisipan === '1' || data.isSisipan === 1){
+                                                    var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                                }else{
+                                                    var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 3, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                                }
                                             }else if(val === '3' || val === 3) {
                                                 var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
                                             }
@@ -240,12 +231,14 @@ const InisiasiFormPPH = ({ route }) => {
 
             if(val === 1 || val === '1') {
                 const dataGroup = await getDataKelompok(queryGetGroupPP)
-
                 let dataLength = dataGroup.length
+                // console.log(dataGroup)
+                // console.log(dataLength)
 
                 // console.log(dataLength)
                 // let queryGetGroupDetail = "SELECT * FROM Table_PP_Kelompok WHERE kelompok = '" + dataGroup[0].groupName + "'"
                 // console.log(queryGetGroupDetail)
+
                 const getDataKelompokPP = (query) => (new Promise((resolve, reject) => {
                     try{
                         db.transaction(
@@ -299,10 +292,10 @@ const InisiasiFormPPH = ({ route }) => {
                         const dataGroupCollect = await getDataKelompokPP(queryGetGroupDetail)
                         const dataGroupTotal = await getDataJumlahPP(queryGetGroup)
 
-                        console.log(dataGroupCollect)
-                        console.log(dataGroupTotal)
+                        // console.log(dataGroupCollect)
+                        // console.log(dataGroupTotal)
 
-                        let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah, GroupProduct: dataGroupCollect.group_Product, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
+                        let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
 
                         console.log(dataSend)
 
@@ -368,12 +361,12 @@ const InisiasiFormPPH = ({ route }) => {
             onPress={() => actionItemhandler(data)}
         >
             <View style={{alignItems: 'flex-start'}}>
-                <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} status={data.status} />
+                <ListMessage groupName={data.groupName} jumlahNasabah={data.jumlahNasabah} status={data.status} isSisipan={data.isSisipan} />
             </View>
         </TouchableOpacity>
     )
 
-    const ListMessage = ({ groupName, jumlahNasabah, status }) => {
+    const ListMessage = ({ groupName, jumlahNasabah, status, isSisipan }) => {
         if(source === '1') {
             return (
                 <View style={stylesheet.containerList}>
@@ -382,6 +375,7 @@ const InisiasiFormPPH = ({ route }) => {
                         <View style={styles.ML16}>
                             <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
                             <Text>{jumlahNasabah} Orang</Text>
+                            {isSisipan === '1' ? (<Text style={{borderWidth: 1, marginTop: 10, textAlign: 'center', borderRadius: 5, paddingHorizontal: 10}}>Sisipan</Text>) : (<View></View>)}
                         </View>
                     </View>
                     {status === "0" ? (<View></View>) : (<FontAwesome5 name="check" size={20} color="#17BEBB" />)}
@@ -395,6 +389,7 @@ const InisiasiFormPPH = ({ route }) => {
                         <View style={styles.ML16}>
                             <Text numberOfLines={1} style={stylesheet.textList}>{groupName}</Text>
                             <Text>{jumlahNasabah} Orang</Text>
+                            {isSisipan === '1' ? (<Text style={{borderWidth: 1, marginTop: 10, textAlign: 'center', borderRadius: 5, paddingHorizontal: 10}}>Sisipan</Text>) : (<View></View>)}
                         </View>
                     </View>
                     {status === "2" ? (<FontAwesome5 name="check" size={20} color="#17BEBB" />) : (<View></View>)}

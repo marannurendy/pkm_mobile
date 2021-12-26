@@ -33,23 +33,23 @@ const InisiasiFormPPKelompok = ({ route }) => {
     const [itemsHariPertemuan, setItemsHariPertemuan] = useState([
         {
             label: 'Senin',
-            value: '1'
-        },
-        {
-            label: 'Selasa',
             value: '2'
         },
         {
-            label: 'Rabu',
+            label: 'Selasa',
             value: '3'
         },
         {
-            label: 'Kamis',
+            label: 'Rabu',
             value: '4'
         },
         {
+            label: 'Kamis',
+            value: '5'
+        },
+        {
             label: "Jum'at",
-            value: '3'
+            value: '6'
         }
     ]);
     const [valueWaktuPertemuan, setValueWaktuPertemuan] = useState(null);
@@ -155,6 +155,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
                     is24Hour={true}
                     display="default"
                     onChange={tanggalPKMPertamaDatePickerHandler}
+                    minimumDate={date}
                     // minimumDate={new Date()}
                 />
             )}

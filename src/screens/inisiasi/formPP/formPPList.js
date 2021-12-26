@@ -33,7 +33,7 @@ const InisiasiFormPPList = ({ route }) => {
 
     const getData = async () => {
         console.log(groupName)
-        let queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "'"
+        let queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status <> 'null'"
 
         const ListData = (queryList) => (new Promise((resolve, reject) => {
             try{
@@ -73,7 +73,7 @@ const InisiasiFormPPList = ({ route }) => {
                     <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     <Text style={styles.headerTitle}>BACK</Text>
                 </TouchableOpacity>
-                <Text style={{ color: colors.PUTIH }}>{groupName}</Text>
+                <Text numberOfLines={1} style={{ color: colors.PUTIH, marginHorizontal: 100 }}>{groupName}</Text>
             </View>
         </ImageBackground>
     )
@@ -96,6 +96,9 @@ const InisiasiFormPPList = ({ route }) => {
     const ListMessage = ({ name }) => {
         return (
             <View style={stylesheet.containerList}>
+                <View style={[styles.checkbox, {backgroundColor: "#0D67B2", borderColor: '#FFF'}]}>
+                    <Text style={{fontWeight: 'bold', fontSize: 20, marginHorizontal: 5, color: "#FFF"}} >{name.charAt(0)}</Text>
+                </View>
                 <Text numberOfLines={1} style={stylesheet.textList}>{name}</Text>
             </View>
         )

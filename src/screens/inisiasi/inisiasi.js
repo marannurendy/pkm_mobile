@@ -71,7 +71,7 @@ const Inisasi = () => {
     const getInfoHeader = async () => {
         let queryDetailSosUk = "SELECT COUNT(namaCalonNasabah) as totalSos FROM Sosialisasi_Database"
         let queryDetailVerif = "SELECT COUNT(nama_lengkap) as totalVerif FROM Table_UK_DataDiri WHERE status_Verif = '1' AND status_UK_Pass = '1' AND status_Verifikasi_Pass = '0'"
-        let queryDetailPp = "SELECT COUNT(Nama_Nasabah) as totalPp FROM Table_PP_ListNasabah"
+        let queryDetailPp = "SELECT COUNT(Nama_Nasabah) as totalPp FROM Table_PP_ListNasabah WHERE status <> 'null' AND status IS NOT NULL"
 
         const totDetailSosUk = (queryDetailSosUk) => (new Promise((resolve, reject) => {
             try{

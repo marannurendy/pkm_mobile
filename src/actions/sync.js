@@ -455,8 +455,11 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 var queryUKPendapatanNasabah = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, nomor_Identitas, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKPermohonanPembiayaan = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, nomor_Identitas, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok, id_prospek, idSosialisasiDatabase) values ';
                 var queryPPKelompok = 'INSERT INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isSisipan, Nama_TTD_AO ) values ';
-                var queryPPSisipan = 'INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, status ) values ';
+                var queryPPSisipan = 'INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isSisipan, status ) values ';
                 
+                var queryPPKelompokTahapLanjut = 'INSERT INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isTahapLanjut, Nama_TTD_AO ) values ';
+                var queryPPSisipanTahapLanjut = 'INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isTahapLanjut, status ) values ';
+
                 for (let i = 0; i < uk_client_data.length; i++) {
                     let uniqueNumber = (new Date().getTime()).toString(36);
                     let namaNasabah = uk_client_data[i].Nama_Lengkap || '';
@@ -906,7 +909,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
                     
 
-                    if(uk_client_data[i].Is_UKPass === '1' && uk_client_data[i].Is_VerifPass === '1' ) {
+                    if(uk_client_data[i].Is_UKPass === '1' && uk_client_data[i].Is_VerifPass === '1' && uk_client_data[i].Siklus_Pembiayaan !== 'Tahap Lanjut' ) {
                         let statusKelompok = 0
 
                         if(uk_client_data[i].Is_Sisipan === 1 || uk_client_data[i].Is_Sisipan === '1') {
@@ -948,7 +951,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             + "', '"
                             + uk_client_data[i].Nama_TTD_AO
                             + "')";
-                    } else {
+                    }else{
                         queryPPKelompok = queryPPKelompok + "('"
                             + ""
                             + "','"
@@ -967,21 +970,21 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             + ""
                             + "','"
                             + ""
-                            + "','"
+                            + "', '"
                             + ""
-                            + "','"
+                            + "', '"
                             + ""
-                            + "','"
+                            + "', '"
                             + ""
-                            + "','"
+                            + "', '"
                             + ""
-                            + "','"
+                            + "', '"
                             + ""
-                            + "','"
+                            + "', '"
+                            + null
+                            + "', '"
                             + ""
-                            + "','"
-                            + ""
-                            + "','"
+                            + "', '"
                             + ""
                             + "')";
                     }
@@ -995,7 +998,119 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         + uk_client_data[i].OurBranchID
                         + "','"
                         + 1
+                        + "','"
+                        + 1
                         + "')";
+                    }else{
+                        queryPPSisipan = queryPPSisipan + "('"
+                        + ""
+                        + "','"
+                        + ""
+                        + "','"
+                        + ""
+                        + "','"
+                        + ""
+                        + "','"
+                        + null
+                        + "')";
+                    }
+
+                    if(uk_client_data[i].Siklus_Pembiayaan === 'Tahap Lanjut') {
+                        queryPPKelompokTahapLanjut = queryPPKelompokTahapLanjut + "('"
+                            + uk_client_data[i].Kelompok_ID
+                            + "','"
+                            + uk_client_data[i].Nama_Kelompok
+                            + "','"
+                            + uk_client_data[i].Sub_Kelompok
+                            + "','"
+                            + uk_client_data[i].ID_Prospek
+                            + "','"
+                            + uk_client_data[i].Nama_Lengkap
+                            + "','"
+                            + uk_client_data[i].Is_Ketua_Kelompok
+                            + "','"
+                            + uk_client_data[i].Is_Ketua_Sub_Kelompok
+                            + "','"
+                            + uk_client_data[i].Lokasi_Sos
+                            + "','"
+                            + uk_client_data[i].OurBranchID
+                            + "', '"
+                            + params.username
+                            + "', '"
+                            + uk_client_data[i].Jumlah_Pinjaman
+                            + "', '"
+                            + uk_client_data[i].Term_Pembiayaan
+                            + "', '"
+                            + uk_client_data[i].Jasa
+                            + "', '"
+                            + uk_client_data[i].Angsuran_Perminggu
+                            + "', '"
+                            + 4
+                            + "', '"
+                            + 1
+                            + "', '"
+                            + uk_client_data[i].Nama_TTD_AO
+                            + "')";
+
+                        queryPPSisipanTahapLanjut = queryPPSisipanTahapLanjut + "('"
+                            + uk_client_data[i].Kelompok_ID
+                            + "','"
+                            + uk_client_data[i].Nama_Kelompok
+                            + "','"
+                            + uk_client_data[i].OurBranchID
+                            + "','"
+                            + 1
+                            + "','"
+                            + 1
+                            + "')";
+                    }else{
+                        queryPPKelompokTahapLanjut = queryPPKelompokTahapLanjut + "('"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "', '"
+                            + ""
+                            + "', '"
+                            + ""
+                            + "', '"
+                            + ""
+                            + "', '"
+                            + ""
+                            + "', '"
+                            + ""
+                            + "', '"
+                            + null
+                            + "', '"
+                            + ""
+                            + "', '"
+                            + ""
+                            + "')";
+
+                        queryPPSisipanTahapLanjut = queryPPSisipanTahapLanjut + "('"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + ""
+                            + "','"
+                            + null
+                            + "')";
                     }
 
                     if (i != uk_client_data.length - 1) {
@@ -1007,8 +1122,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         queryUKSektorEkonomi = queryUKSektorEkonomi + ",";
                         queryUKPendapatanNasabah = queryUKPendapatanNasabah + ",";
                         queryUKPermohonanPembiayaan = queryUKPermohonanPembiayaan + ",";
-                        queryPPKelompok = queryPPKelompok + ","
-                        queryPPSisipan = queryPPSisipan + ","
+
+                            queryPPKelompok = queryPPKelompok + ","
+                            queryPPSisipan = queryPPSisipan + ","
+
+                            queryPPKelompokTahapLanjut = queryPPKelompokTahapLanjut + ","
+                            queryPPSisipanTahapLanjut = queryPPSisipanTahapLanjut + ","
+
                     }
                 }
 
@@ -1022,6 +1142,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 queryUKPermohonanPembiayaan = queryUKPermohonanPembiayaan + ";";
                 queryPPKelompok = queryPPKelompok + ";";
                 queryPPSisipan = queryPPSisipan + ";";
+
+                queryPPKelompokTahapLanjut = queryPPKelompokTahapLanjut + ";";
+                queryPPSisipanTahapLanjut = queryPPSisipanTahapLanjut + ";";
 
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT QUERY:', query);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT UK MASTER QUERY:', queryUKMaster);
@@ -1103,6 +1226,22 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP SISIPAN KELOMPOK INSERT TRANSACTION ERROR:', error);
                     }, function() {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP SISIPAN KELOMPOK INSERT TRANSACTION DONE');
+                    }
+                );
+
+                db.transaction(
+                    tx => { tx.executeSql(queryPPKelompokTahapLanjut); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP KELOMPOK TAHAP LANJUT INSERT TRANSACTION ERROR:', error);
+                    }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP KELOMPOK TAHAP LANJUT INSERT TRANSACTION DONE');
+                    }
+                );
+
+                db.transaction(
+                    tx => { tx.executeSql(queryPPSisipanTahapLanjut); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP SISIPAN TAHAP LANJUT KELOMPOK INSERT TRANSACTION ERROR:', error);
+                    }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP SISIPAN TAHAP LANJUT KELOMPOK INSERT TRANSACTION DONE');
                     }
                 );
 

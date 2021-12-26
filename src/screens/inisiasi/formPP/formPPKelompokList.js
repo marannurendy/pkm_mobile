@@ -33,7 +33,7 @@ const InisiasiFormPPKelompokList = ({ route }) => {
 
         const detailBranch = await AsyncStorage.getItem('userData')
         let branchid = JSON.parse(detailBranch).kodeCabang
-        
+    
         setBranchid(branchid)
         setCurrentDate(tanggal)
 
