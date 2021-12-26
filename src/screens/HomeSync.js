@@ -130,13 +130,13 @@ export default function FrontHomeSync(props) {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClient success:', responseJson);
+                if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClientBRNET success:', responseJson);
                 setDataProspekLamaResponse(responseJson);
                 setFetchingProspekLama(false);
                 if (!isVisibleModalProspekLamaSearchListView) setIsVisibleModalProspekLamaSearchListView(true);
             })
         } catch(error) {
-            if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClient error:', error);
+            if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClientBRNET error:', error);
             setFetchingProspekLama(false);
         }
     }
