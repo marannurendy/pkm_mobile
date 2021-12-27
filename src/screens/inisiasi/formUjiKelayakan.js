@@ -669,7 +669,7 @@ const FormUjiKelayakan = ({route}) => {
                                             if (data) {
                                                 const total = parseInt(data.Total) || 15;
                                                 if (total >= 15) {
-                                                    Alert.alert('Error', `Pilih Sub Kelompok (*) - Sub Kelompok ${data.SubGroupID} sudah penuh (Max 15)`);
+                                                    Alert.alert('Error', `Sub kelompok br.net penuh (Max 15)`);
                                                     setValuePilihSubKelompok('');
                                                     return;
                                                 }

@@ -68,13 +68,76 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                         
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
-                        if (data.luas_Bangunan !== null && typeof data.luas_Bangunan !== 'undefined') setValueLuasBangunan(data.luas_Bangunan);
-                        if (data.kondisi_Bangunan !== null && typeof data.kondisi_Bangunan !== 'undefined') setValueKondisiBangunan(data.kondisi_Bangunan);
-                        if (data.jenis_Atap !== null && typeof data.jenis_Atap !== 'undefined') setValueJenisAtap(data.jenis_Atap);
-                        if (data.dinding !== null && typeof data.dinding !== 'undefined') setValueDinding(data.dinding);
-                        if (data.lantai !== null && typeof data.lantai !== 'undefined') setValueLantai(data.lantai);
-                        if (data.sanitasi_Akses_AirBersih !== null && typeof data.sanitasi_Akses_AirBersih !== 'undefined') setValueAksesAirBersih(data.sanitasi_Akses_AirBersih === 'true' ? true : false);
-                        if (data.sanitasi_KamarMandi !== null && typeof data.sanitasi_KamarMandi !== 'undefined') setValueKamarMandi(data.sanitasi_KamarMandi === 'true' ? true : false);
+
+                        const setLuasBangunan = () => {
+                            if (__DEV__) console.log('setLuasBangunan loaded');
+                            return new Promise((resolve, reject) => {
+                                if (data.luas_Bangunan !== null && typeof data.luas_Bangunan !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueLuasBangunan(data.luas_Bangunan);
+                                        return resolve('next');
+                                    }, 1000);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        const setKondisiBangunan = () => {
+                            if (__DEV__) console.log('setKondisiBangunan loaded');
+                            return new Promise((resolve, reject) => {
+                                if (data.kondisi_Bangunan !== null && typeof data.kondisi_Bangunan !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueKondisiBangunan(data.kondisi_Bangunan);
+                                        return resolve('next');
+                                    }, 1500);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        const setJenisAtap = () => {
+                            if (__DEV__) console.log('setJenisAtap loaded');
+                            return new Promise((resolve, reject) => {
+                                if (data.jenis_Atap !== null && typeof data.jenis_Atap !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueJenisAtap(data.jenis_Atap);
+                                        return resolve('next');
+                                    }, 2000);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        const setDinding = () => {
+                            if (__DEV__) console.log('setDinding loaded');
+                            return new Promise((resolve, reject) => {
+                                if (data.dinding !== null && typeof data.dinding !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueDinding(data.dinding);
+                                        return resolve('next');
+                                    }, 2500);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        const setLantai = () => {
+                            if (__DEV__) console.log('setDinding loaded');
+                            return new Promise((resolve, reject) => {
+                                if (data.lantai !== null && typeof data.lantai !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueLantai(data.lantai);
+                                        return resolve('next');
+                                    }, 3000);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        Promise.all([setLuasBangunan(), setKondisiBangunan(), setJenisAtap(), setDinding(), setLantai()]).then((response) => {
+                            if (data.sanitasi_Akses_AirBersih !== null && typeof data.sanitasi_Akses_AirBersih !== 'undefined') setValueAksesAirBersih(data.sanitasi_Akses_AirBersih === 'true' ? true : false);
+                            if (data.sanitasi_KamarMandi !== null && typeof data.sanitasi_KamarMandi !== 'undefined') setValueKamarMandi(data.sanitasi_KamarMandi === 'true' ? true : false);
+                        });
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_KondisiRumah error:', error.message);

@@ -16,6 +16,7 @@ import { Picker } from '@react-native-picker/picker';
 import Geolocation from 'react-native-geolocation-service';
 
 import db from '../../../database/Database'
+import { replaceSpecialChar } from '../../../utils/Functions'
 
 const MIN_TANGGAL_LAHIR = 15;
 const MAX_TANGGAL_LAHIR = 64;
@@ -226,7 +227,10 @@ const DataDiri = ({route}) => {
                                 if (data.foto_Kartu_Identitas !== null && typeof data.foto_Kartu_Identitas !== 'undefined') setFotoKartuIdentitas(fotoKartuIdentitas);
                                 if (data.jenis_Kartu_Identitas !== null && typeof data.jenis_Kartu_Identitas !== 'undefined') setValueJenisKartuIdentitas(data.jenis_Kartu_Identitas);
                                 if (data.nomor_Identitas !== null && typeof data.nomor_Identitas !== 'undefined') setNomorIdentitas(data.nomor_Identitas);
-                                if (data.nama_lengkap !== null && typeof data.nama_lengkap !== 'undefined') setNamaCalonNasabah(data.nama_lengkap);
+                                if (data.nama_lengkap !== null && typeof data.nama_lengkap !== 'undefined') {
+                                    setNamaCalonNasabah(data.nama_lengkap);
+                                    setFullName(data.nama_lengkap);
+                                }
                                 if (data.tempat_lahir !== null && typeof data.tempat_lahir !== 'undefined') setTempatLahir(data.tempat_lahir);
                                 if (data.tanggal_Lahir !== null && typeof data.tanggal_Lahir !== 'undefined') setTanggalLahir(data.tanggal_Lahir);
                                 if (data.status_Perkawinan !== null && typeof data.status_Perkawinan !== 'undefined') setValueStatusPerkawinan(data.status_Perkawinan);
@@ -1472,8 +1476,8 @@ const DataDiri = ({route}) => {
                                     <TextInput 
                                         value={namaCalonNasabah} 
                                         onChangeText={(text) => {
-                                            setFullName(text);
-                                            setNamaCalonNasabah(text);
+                                            setFullName(replaceSpecialChar(text));
+                                            setNamaCalonNasabah(replaceSpecialChar(text));
                                         }}
                                         placeholder="Masukkan Nama Lengkap" 
                                         style={{ fontSize: 15, color: "#545454", height: 38 }} 
@@ -1721,8 +1725,8 @@ const DataDiri = ({route}) => {
                                     <TextInput
                                         value={fullName}
                                         onChangeText={(text) => {
-                                            setFullName(text);
-                                            setNamaCalonNasabah(text);
+                                            setFullName(replaceSpecialChar(text));
+                                            setNamaCalonNasabah(replaceSpecialChar(text));
                                         }}
                                         placeholder="Masukkan Nama Lengkap" 
                                         style={{ fontSize: 15, color: "#545454", height: 38 }} 
@@ -1738,7 +1742,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Ayah (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(text)} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(replaceSpecialChar(text))} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1750,7 +1754,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Gadis Ibu Kandung (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(text)} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(replaceSpecialChar(text))} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1851,8 +1855,8 @@ const DataDiri = ({route}) => {
                                         <TextInput 
                                             value={namaSuami} 
                                             onChangeText={(text) => {
-                                                if (!statusSuami) setNamaPenjamin(text);
-                                                setNamaSuami(text);
+                                                if (!statusSuami) setNamaPenjamin(replaceSpecialChar(text));
+                                                setNamaSuami(replaceSpecialChar(text));
                                             }} 
                                             placeholder="Masukkan Nama Suami" 
                                             style={{ fontSize: 15, color: "#545454", height: 38 }}
@@ -1908,16 +1912,6 @@ const DataDiri = ({route}) => {
                                 <Checkbox
                                     status={statusSuami ? 'checked' : 'unchecked'}
                                     onPress={() => {
-                                        // if (statusSuami) {
-                                        //     setNamaPenjamin(namaSuami);
-                                        //     setFotoDataPenjamin(fotoKartuIdentitasSuami);
-                                        //     setValueStatusHubunganKeluarga('1');
-                                        // } else {
-                                        //     setNamaPenjamin('');
-                                        //     setFotoDataPenjamin();
-                                        //     setValueStatusHubunganKeluarga('')
-                                        // }
-
                                         setStatusSuami(!statusSuami);
                                     }}
                                 />
@@ -1962,7 +1956,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Penjamin (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(text)} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(replaceSpecialChar(text))} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />

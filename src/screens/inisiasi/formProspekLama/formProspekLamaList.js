@@ -97,7 +97,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     }
 
     const getName = (Name) => {
-        return Name.split('-')[1];
+        return Name.split('-')[1] || '';
     }
 
     const renderHeader = () => (
