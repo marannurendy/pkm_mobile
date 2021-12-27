@@ -663,16 +663,18 @@ const FormUjiKelayakan = ({route}) => {
                                     <Picker
                                         selectedValue={valuePilihSubKelompok}
                                         onValueChange={(itemValue, itemIndex) => {
-                                            if (__DEV__) console.log('Pilih Sub Kelompok:', tempItemsSubGroup[itemIndex - 1]);
-
-                                            const data = tempItemsSubGroup[itemIndex - 1];
-                                            if (data) {
-                                                const total = parseInt(data.Total) || 15;
-                                                if (total >= 15) {
-                                                    Alert.alert('Error', `Sub kelompok br.net penuh (Max 15)`);
-                                                    setValuePilihSubKelompok('');
-                                                    return;
+                                            if (itemIndex > 0) {
+                                                const data = itemsSubGroup[itemIndex - 1];
+                                                if (data) {
+                                                    const label = data.label.slice(12, -1).trim();
+                                                    const total = parseInt(label) || 0;
+                                                    if (total >= 15) {
+                                                        Alert.alert('Error', `Sub kelompok br.net penuh (Max 15)`);
+                                                        setValuePilihSubKelompok('');
+                                                        return;
+                                                    }
                                                 }
+                                                if (__DEV__) console.log('Pilih Sub Kelompok:', itemIndex, data.label.slice(12, -1));
                                             }
 
                                             setValuePilihSubKelompok(itemValue);
