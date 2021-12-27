@@ -676,7 +676,6 @@ const FormUjiKelayakan = ({route}) => {
                                                 }
                                                 if (__DEV__) console.log('Pilih Sub Kelompok:', itemIndex, data.label.slice(12, -1));
                                             }
-
                                             setValuePilihSubKelompok(itemValue);
                                         }}
                                     >
