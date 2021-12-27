@@ -183,13 +183,13 @@ const Perjanjian = ({route}) => {
                 alignItems: "center",
                 paddingHorizontal: 20,
             }}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                <TouchableOpacity onPress={() => navigation.replace("FlowPencairan")} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
                     <View>
                         <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     </View>
                     <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.replace('Pencairan')}>
+                <TouchableOpacity onPress={() => navigation.replace('FrontHome')}>
                     <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
                         <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
                         <Text>Home</Text>

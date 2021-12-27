@@ -79,16 +79,12 @@ const FinalPencairan = ({route}) => {
             SetButtonCam(true)
             const options = { quality: 0.5, base64: true };
             const data = await camera.current.takePictureAsync(options)
-
-            if (type === "FotoPencairan") {
-                setFotoDataPencairan(data.uri);
-                setPostPencairan({...postPencairan, "Foto_Pencairan":key_dataPencairan})
-                AsyncStorage.setItem(key_dataPencairan, data.base64)
-                let i = statusMelakukan ? "1" : "0";
-                setPostPencairan({...postPencairan, "Is_Dicairkan":i})
-                setLoading(false);
-                SetButtonCam(false);
-            }
+            setFotoDataPencairan(data.uri);
+            AsyncStorage.setItem(data.uri, data.base64)
+            let i = statusMelakukan ? "1" : "0";
+            setPostPencairan({...postPencairan, "Is_Dicairkan":i, "Foto_Pencairan":data.uri})
+            setLoading(false);
+            SetButtonCam(false);
         } catch (error) {}
     };
 
@@ -285,13 +281,13 @@ const FinalPencairan = ({route}) => {
                 alignItems: "center",
                 paddingHorizontal: 20,
             }}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                <TouchableOpacity onPress={() => navigation.replace('FlowPencairan')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
                     <View>
                         <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     </View>
                     <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.replace('Pencairan')}>
+                <TouchableOpacity onPress={() => navigation.replace('FrontHome')}>
                     <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
                         <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
                         <Text>Home</Text>
@@ -301,7 +297,7 @@ const FinalPencairan = ({route}) => {
 
             <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>
                 <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover", justifyContent: 'center'}} imageStyle={{borderRadius: 20}}>
-                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Perjanjian</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Pencairan</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{dataNasabah.Nama_Prospek}</Text>
                 </ImageBackground>
             </View>

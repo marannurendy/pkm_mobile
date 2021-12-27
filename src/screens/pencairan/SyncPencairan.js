@@ -44,7 +44,7 @@ const SyncPencairan = () => {
         if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
 
         let query = 'SELECT count(B.Nama_Kelompok) as JumlahNasabah, B.Nama_Kelompok as Nama_Kelompok, B.Kelompok_ID as Kelompok_ID '+
-                    'FROM Table_Pencairan_Post A LEFT JOIN Table_Pencairan_Nasabah B on A.ID_Prospek = B.ID_Prospek Group By B.Nama_Kelompok';
+                    'FROM Table_Pencairan_Post A LEFT JOIN Table_Pencairan B on A.kelompok_ID = B.kelompok_Id Group By B.Nama_Kelompok';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -67,8 +67,8 @@ const SyncPencairan = () => {
         if (__DEV__) console.log('post pencairan keyword:', keyword);
         setLoaded(true)
         let query = 'SELECT A.* FROM Table_Pencairan_Post A '+
-                    'LEFT JOIN Table_Pencairan_Nasabah B on A.ID_Prospek = B.ID_Prospek '+
-                    'where B.Kelompok_ID = "'+ Kelompok_ID +'" and A.LRP_TTD_AO is not null and A.LRP_TTD_Nasabah is not null';
+                    'LEFT JOIN Table_Pencairan B on A.Kelompok_ID = B.kelompok_Id '+
+                    'where B.kelompok_Id = "'+ Kelompok_ID +'" and A.LRP_TTD_AO is not null and A.LRP_TTD_Nasabah is not null';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
@@ -169,7 +169,7 @@ const SyncPencairan = () => {
 
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
-            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#FFF', borderColor: '#0D67B2', borderWidth:1}} 
             onPress={() => doSubmit(data.Kelompok_ID)}
         >
             <View style={{alignItems: 'flex-start'}}>
@@ -179,9 +179,12 @@ const SyncPencairan = () => {
     )
     const ListMessageSos = ({ Nama_Kelompok, JumlahNasabah }) => {
         return(
-            <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama_Kelompok}</Text>
-                <Text>Total Prospek : {JumlahNasabah}</Text>
+            <View style={styles.containerList}>
+                <FontAwesome5 name="users" size={32} color="#2e2e2e" />
+                <View style={{marginLeft: 16}}>
+                    <Text numberOfLines={1} style={{marginRight: 20}}>{Nama_Kelompok}</Text>
+                    <Text>{JumlahNasabah} Orang</Text>
+                </View>
             </View>
         )
     }
@@ -210,7 +213,7 @@ const SyncPencairan = () => {
                 alignItems: "center",
                 paddingHorizontal: 20,
             }}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                <TouchableOpacity onPress={() => navigation.replace("FlowPencairan")} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
                     <View>
                         <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     </View>
@@ -226,13 +229,13 @@ const SyncPencairan = () => {
 
             <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>
                 <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover", justifyContent: 'center'}} imageStyle={{borderRadius: 20}}>
-                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Pencairan</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Sync Data Pencairan</Text>
                 </ImageBackground>
             </View>
 
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
                 <View style={{flexDirection: 'row', marginHorizontal: 20, marginTop: 10}}>
-                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Sync Data</Text>
+                    <Text style={{fontSize: 30, fontWeight: 'bold'}}>Search</Text>
                     <View style={{borderWidth: 1, marginLeft: 20, flex: 1, marginTop: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF', borderBottomLeftRadius: 20, borderBottomRightRadius: 20}}>
                         <FontAwesome5 name="search" size={15} color="#2e2e2e" style={{marginHorizontal: 10}} />
                         <TextInput 
@@ -306,5 +309,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         height: 22,
         color: 'white',
+    },
+    containerList: {
+        flexDirection: 'row',
+        margin:16,
+        width: "85%",
+        alignContent: 'center',
+        alignItems: 'center'
     },
 })

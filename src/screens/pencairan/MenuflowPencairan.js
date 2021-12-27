@@ -43,7 +43,7 @@ const MenuflowPencairan = ({route}) => {
         if (__DEV__) console.log('getKelompokPencairan loaded');
         console.log(a)
         let query = 'SELECT B.Kelompok_ID '+
-                    'FROM Table_Pencairan_Post A LEFT JOIN Table_Pencairan_Nasabah B on A.ID_Prospek = B.ID_Prospek ' + 
+                    'FROM Table_Pencairan_Post A LEFT JOIN Table_Pencairan B on A.Kelompok_ID = B.Kelompok_ID ' + 
                     'Where B.Kelompok_ID = "'+ a +'"';
         db.transaction(
             tx => {
@@ -77,7 +77,7 @@ const MenuflowPencairan = ({route}) => {
                             <View>
                                 <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                             </View>
-                            <Text style={{flex: 1, textAlign: 'center', borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
+                            <Text style={{flex: 1, textAlign: 'center', borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>Home</Text>
                         </TouchableOpacity>
 
                         <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5, marginHorizontal: 20}}>{branchName}</Text>
@@ -109,7 +109,7 @@ const MenuflowPencairan = ({route}) => {
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
-                        <TouchableOpacity disabled={JumlahNasabah == 0 ? true : false} onPress={() => navigation.replace('Preview', {idProspek : data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  JumlahNasabah > 0 ? '#003049' : '#E6E6E6', padding: 20}}>
+                        <TouchableOpacity disabled={true} onPress={() => navigation.replace('Preview', {idProspek : data, dataKelompok:dataKelompok})} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor:  JumlahNasabah > 0 ? '#003049' : '#E6E6E6', padding: 20}}>
                             <FontAwesome5 name="user-check" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Preview</Text>
                         </TouchableOpacity>
@@ -120,14 +120,14 @@ const MenuflowPencairan = ({route}) => {
                         </TouchableOpacity>
                         
                     </View>
-                    {uname.includes("SY") ? 
+                    {/* {uname.includes("SY") ? 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 20}}>
                         <TouchableOpacity onPress={() => navigation.replace('UploadBuktiPem')} style={{width: dimension.width/1.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#F77F00', padding: 20}}>
                             <FontAwesome5 name="upload" size={50} color="#FFFCFA" />
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Upload Nota Pembelian</Text>
                         </TouchableOpacity>
                     </View>
-                    :null}
+                    :null} */}
                 </ScrollView>
             </View>
         </View>

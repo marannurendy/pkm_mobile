@@ -510,7 +510,8 @@ db.transaction(tx => {
             TTD_KK varchar,
             TTD_KSK varchar,
             TTD_Nasabah varchar,
-            TTD_Nasabah_2 varchar
+            TTD_Nasabah_2 varchar,
+            Kelompok_ID varchar
         );`
     )
     
