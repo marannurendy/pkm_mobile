@@ -30,10 +30,15 @@ const currency = (price, sign = '') => {
 
 const digits_only = string => [...string].every(c => '0123456789'.includes(c));
 
+const replaceSpecialChar = (keyword) => (
+    keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '')
+);
+
 export {
     fetchWithTimeout,
     inputVal,
     capitalize,
     currency,
-    digits_only
+    digits_only,
+    replaceSpecialChar
 }

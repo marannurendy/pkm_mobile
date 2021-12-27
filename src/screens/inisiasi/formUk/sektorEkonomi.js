@@ -46,9 +46,36 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
                         
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
-                        if (data.sektor_Ekonomi !== null && typeof data.sektor_Ekonomi !== 'undefined') setValueSektorEkonomi(data.sektor_Ekonomi);
-                        if (data.sub_Sektor_Ekonomi !== null && typeof data.sub_Sektor_Ekonomi !== 'undefined') setValueSubSektorEkonomi(data.sub_Sektor_Ekonomi);
-                        if (data.jenis_Usaha !== null && typeof data.jenis_Usaha !== 'undefined') setValueJenisUsaha(data.jenis_Usaha);
+                        
+                        const setSektorEkonomi = () => {
+                            if (__DEV__) console.log('setSektorEkonomi loaded');
+                            return new Promise((resolve, reject) => {
+                                if (data.sektor_Ekonomi !== null && typeof data.sektor_Ekonomi !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueSektorEkonomi(data.sektor_Ekonomi);
+                                        return resolve('next');
+                                    }, 1000);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        const setSubSektorEkonomi = () => {
+                            if (__DEV__) console.log('setSubSektorEkonomi loaded');
+                            return new Promise((resolve, reject) => {
+                                if (data.sub_Sektor_Ekonomi !== null && typeof data.sub_Sektor_Ekonomi !== 'undefined') {
+                                    setTimeout(() => {
+                                        setValueSubSektorEkonomi(data.sub_Sektor_Ekonomi);
+                                        return resolve('next');
+                                    }, 1500);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        Promise.all([setSektorEkonomi(), setSubSektorEkonomi()]).then((response) => {
+                            if (data.jenis_Usaha !== null && typeof data.jenis_Usaha !== 'undefined') setValueJenisUsaha(data.jenis_Usaha);
+                        });
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_SektorEkonomi error:', error.message);

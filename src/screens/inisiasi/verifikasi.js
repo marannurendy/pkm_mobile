@@ -165,22 +165,6 @@ const Verifikasi = ({ route }) => {
                                                         if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
                                                     }, function() {}
                                                 );
-                                                
-                                                /* START UPDATE STATUS VERIFIKASI PASS */
-                                                // let query = 'UPDATE Table_UK_DataDiri SET status_Verifikasi_Pass = "1" WHERE id_prospek = "' + item.idProspek + '"';
-                                                // if (__DEV__) console.log('doSave db.transaction update query:', query);
-                                                // db.transaction(
-                                                //     tx => {
-                                                //         tx.executeSql(query);
-                                                //     }, function(error) {
-                                                //         if (__DEV__) console.log('doSave db.transaction insert/update error:', error.message);
-                                                //     },function() {
-                                                //         if (__DEV__) console.log('doSave db.transaction update success');
-                                                //         AsyncStorage.removeItem(`formVerifikasi_body_${item.idProspek}`);
-                                                //     }
-                                                // );
-                                                /* FINISH UPDATE STATUS VERIFIKASI PASS */
-
                                             })
                                             .catch((error) => {
                                                 if (__DEV__) console.log('$post /post_inisiasi/post_verif_status response', error);
