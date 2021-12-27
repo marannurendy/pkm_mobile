@@ -6,8 +6,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
-import DropDownPicker from 'react-native-dropdown-picker'
-import PhoneInput from 'react-native-phone-input'
 import { Camera } from 'expo-camera'
 import { Button } from 'react-native-elements'
 import { showMessage } from "react-native-flash-message"
@@ -22,10 +20,9 @@ const MIN_TANGGAL_LAHIR = 15;
 const MAX_TANGGAL_LAHIR = 64;
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 8;
-var uniqueNumber = (new Date().getTime()).toString(36);
 
 const DataDiri = ({route}) => {
-
+    const uniqueNumber = (new Date().getTime()).toString(36);
     const { id, groupName, namaNasabah, nomorHandphone, screenState } = route.params
 
     const navigation = useNavigation()
@@ -98,32 +95,6 @@ const DataDiri = ({route}) => {
 
     const [items, setItems] = useState([])
     const [itemsMarrige, setItemsMarriege] = useState([])
-
-    const [itemJumlahAnak, setItemJumlahAnak] = useState([
-        {label: '1', value: '1'},
-        {label: '2', value: '2'},
-        {label: '3', value: '3'},
-        {label: '4', value: '4'},
-        {label: '5', value: '5'},
-        {label: '6', value: '6'},
-        {label: '7', value: '7'},
-        {label: '8', value: '8'},
-        {label: '9', value: '9'},
-        {label: '10', value: '10'},
-    ])
-    const [itemJumlahTanggungan, setItemJumlahTanggungan] = useState([
-        {label: '1', value: '1'},
-        {label: '2', value: '2'},
-        {label: '3', value: '3'},
-        {label: '4', value: '4'},
-        {label: '5', value: '5'},
-        {label: '6', value: '6'},
-        {label: '7', value: '7'},
-        {label: '8', value: '8'},
-        {label: '9', value: '9'},
-        {label: '10', value: '10'},
-    ])
-
     
     /* START DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
     const dataPilihanAnak = [
