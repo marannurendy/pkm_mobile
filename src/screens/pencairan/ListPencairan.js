@@ -95,7 +95,8 @@ const ListPencairan = ({route}) => {
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#FFF', borderColor: '#0D67B2', borderWidth:1}} 
-            onPress={() => navigation.replace('Perjanjian', {data: data})}
+            onPress={() => data.Jenis_Pembiayaan.includes('S') == true || data.Jenis_Pembiayaan.includes('Y') == true ? 
+                           navigation.replace('AkadWakalah', {data: data}) : navigation.replace('Perjanjian', {data: data})}
         >
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessageSos Nama_Prospek={data.Nama_Prospek} Nomor_Identitas={data.Nomor_Identitas} />

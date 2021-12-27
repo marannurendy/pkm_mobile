@@ -25,9 +25,14 @@ const Siklus = ({route}) => {
     const [keyword, setKeyword] = useState('');
     let [postPencairan, setPostPencairan] = useState(route.params.postPencairan);
     let [jenpem, setJenPem]= useState();
+    let [Chari, setChari]= useState();
     let [JumlahUP, setJumlahUP] = useState((parseInt(dataNasabah.Jumlah_Pinjaman) - ((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100)).toString());
     let [TotalPencairan, setTotalPencairan] =useState((parseInt(dataNasabah.Jumlah_Pinjaman) - ((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100)).toString());
     useEffect(() => {
+        setChari('KONVE')
+        if (dataNasabah.Jenis_Pembiayaan.includes('S') || dataNasabah.Jenis_Pembiayaan.includes('Y')){
+            setChari('SYARIAH')
+        }
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -56,7 +61,7 @@ const Siklus = ({route}) => {
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST DATA PENCAIRAN INSERT LOCAL', dataNasabah.ID_Prospek);
         let query = 'INSERT INTO Table_Pencairan_Post (FP4, Foto_Pencairan, Is_Dicairkan, Jml_RealCair, Jml_UP, TTD_KC, TTD_KK, TTD_KSK, TTD_Nasabah, TTD_Nasabah_2, ID_Prospek, Kelompok_ID) ' +
-                    'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=' + dataNasabah.ID_Prospek + '","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
+                    'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_'+Chari+'_T1.html?ID_Prospek=' + dataNasabah.ID_Prospek + '","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
                     '"' + TotalPencairan + '","0","' + postPencairan.TTD_KC + '", "' + postPencairan.TTD_KK + '", "' + postPencairan.TTD_KSK + '", "' + postPencairan.TTD_Nasabah + '",'+ 
                     '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.ID_Prospek + '", "' + dataNasabah.Kelompok_ID + '")';
         db.transaction(
@@ -193,7 +198,7 @@ const Siklus = ({route}) => {
                 <View style={styles.bodyContainer}>
                     <View style={styles.F1}>
                         <WebView
-                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=${dataNasabah.ID_Prospek}` }}
+                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_${Chari}_T1.html?ID_Prospek=${dataNasabah.ID_Prospek}` }}
                             startInLoadingState={true}
                             style={styles.F1}
                         />
