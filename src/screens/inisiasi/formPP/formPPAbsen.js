@@ -185,6 +185,9 @@ const InisiasiFormPPAbsen = ({ route }) => {
       }
 
     const tambahHandler = () => {
+
+        // console.log("this => " + data)
+
         // console.log(data)
         let length = data.length
         // if(length < 7) return flashNotification("Caution!", "Jumlah nasabah tidak memenuhi kriteria pembentukan kelompok", "#FF7900", "#fff")
@@ -215,6 +218,18 @@ const InisiasiFormPPAbsen = ({ route }) => {
                         alert(error)
                     }
                 )
+
+                if(param.val === '3' || param.val === 3) {
+                    var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data[a].Nasabah_Id + `'`
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryUpdate)
+                        }, function(error) {
+                            alert(error)
+                        }
+                    )
+                }
             }
             let queryUpdateKelompok = "UPDATE Table_PP_Kelompok SET status = '" + param.val + "' WHERE kelompok = '" + param.groupName + "'"
 
@@ -231,32 +246,11 @@ const InisiasiFormPPAbsen = ({ route }) => {
             }
             
             alert("Persiapan Pembiayaan 1 berhasil dilakukan")
+
             navigation.goBack()
         }catch(error){
             alert(error)
         }
-
-        // }))
-        // if(dataLength < 7) return flashNotification("Caution!", "Jumlah nasabah tidak memenuhi kriteria pembentukan kelompok", "#FF7900", "#fff")
-
-        // cekAbsen()
-
-        // for(let a = 0; a < dataLength; a++) {
-        //     let b = selectedItems[a]
-
-        //     // let queryUpdate = "UPDATE Table_PP_ListNasabah SET kelompok = '" + subKelompok + "', subKelompok = '" + namaSub + "', status = 1 WHERE Nasabah_Id = '" + b + "'"
-        //     try{
-        //         db.transaction(
-        //             tx => {
-        //                 tx.executeSql(queryUpdate)
-        //             }, function(error){
-        //                 alert(error)
-        //             }
-        //         )
-        //     }catch(error){
-        //         alert(error)
-        //     }
-        // }
     }
 
     const renderButton = () => (
