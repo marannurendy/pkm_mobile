@@ -68,7 +68,7 @@ const KelPencairan = () => {
 
     const ItemSos = ({ data }) => (
         <TouchableOpacity 
-            style={{margin: 5, borderRadius: 20, backgroundColor: '#CADADA'}} 
+            style={{margin: 5, borderRadius: 20, backgroundColor: '#FFF', borderColor: '#0D67B2', borderWidth:1}} 
             onPress={() => HandlerButton(data.kelompok_Id, data.Nama_Kelompok)}
         >
             <View style={{alignItems: 'flex-start'}}>
@@ -78,9 +78,12 @@ const KelPencairan = () => {
     )
     const ListMessageSos = ({ Nama_Kelompok, Jumlah_Kelompok }) => {
         return(
-            <View style={{ flex: 1, margin: 20}}>
-                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 20, marginBottom: 5, color: '#545851'}} >{Nama_Kelompok}</Text>
-                <Text>Total Prospek : {Jumlah_Kelompok}</Text>
+            <View style={styles.containerList}>
+                <FontAwesome5 name="users" size={32} color="#2e2e2e" />
+                <View style={{marginLeft: 16}}>
+                    <Text numberOfLines={1} style={{marginRight: 20}}>{Nama_Kelompok}</Text>
+                    <Text>{Jumlah_Kelompok} Orang</Text>
+                </View>
             </View>
         )
     }
@@ -127,7 +130,7 @@ const KelPencairan = () => {
                             <View>
                                 <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                             </View>
-                            <Text style={{flex: 1, textAlign: 'center', borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
+                            <Text style={{flex: 1, textAlign: 'center', borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>Home</Text>
                         </TouchableOpacity>
 
                         <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5, marginHorizontal: 20}}>{branchName}</Text>
@@ -203,5 +206,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         height: 22,
         color: 'white',
+    },
+    containerList: {
+        flexDirection: 'row',
+        margin:16,
+        width: "85%",
+        alignContent: 'center',
+        alignItems: 'center'
     },
 })

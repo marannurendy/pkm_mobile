@@ -60,8 +60,8 @@ const TandaTanganPencairan = ({route}) => {
         if (__DEV__) console.log('getListNasabah loaded');
         if (__DEV__) console.log('getListNasabah keyword');
 
-        let query = 'SELECT A.*, B.* FROM Table_Pencairan_Nasabah A LEFT JOIN ' +  
-                    'Table_Pencairan_Post B on A.ID_Prospek = B.ID_Prospek WHERE Kelompok_ID = "'+ a +'"';
+        let query = 'SELECT A.*, B.* FROM Table_Pencairan A LEFT JOIN ' +  
+                    'Table_Pencairan_Post B on A.Kelompok_ID = B.kelompok_Id WHERE A.Kelompok_ID = "'+ a +'"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -251,13 +251,13 @@ const TandaTanganPencairan = ({route}) => {
                 alignItems: "center",
                 paddingHorizontal: 20,
             }}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                <TouchableOpacity onPress={() => navigation.replace('FlowPencairan')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
                     <View>
                         <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     </View>
                     <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.replace('Pencairan')}>
+                <TouchableOpacity onPress={() => navigation.replace('FrontHome')}>
                     <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
                         <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
                         <Text>Home</Text>

@@ -39,7 +39,7 @@ const Siklus = ({route}) => {
                 setAoName(data.AOname);
             });
         }
-
+        console.log(route.params.postPencairan)
         getUserData();
         getJenisPembiayaan();
     }, []);
@@ -55,10 +55,10 @@ const Siklus = ({route}) => {
 
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST DATA PENCAIRAN INSERT LOCAL', dataNasabah.ID_Prospek);
-        let query = 'INSERT INTO Table_Pencairan_Post (FP4, Foto_Pencairan, Is_Dicairkan, Jml_RealCair, Jml_UP, TTD_KC, TTD_KK, TTD_KSK, TTD_Nasabah, TTD_Nasabah_2, ID_Prospek) ' +
+        let query = 'INSERT INTO Table_Pencairan_Post (FP4, Foto_Pencairan, Is_Dicairkan, Jml_RealCair, Jml_UP, TTD_KC, TTD_KK, TTD_KSK, TTD_Nasabah, TTD_Nasabah_2, ID_Prospek, Kelompok_ID) ' +
                     'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=' + dataNasabah.ID_Prospek + '","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
                     '"' + TotalPencairan + '","0","' + postPencairan.TTD_KC + '", "' + postPencairan.TTD_KK + '", "' + postPencairan.TTD_KSK + '", "' + postPencairan.TTD_Nasabah + '",'+ 
-                    '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.ID_Prospek + '")';
+                    '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.ID_Prospek + '", "' + dataNasabah.Kelompok_ID + '")';
         db.transaction(
             tx => {
                 tx.executeSql(query);
@@ -82,6 +82,26 @@ const Siklus = ({route}) => {
                 return resolve(true);
             }
         );
+        let queryDeletePencairanNasabah = 'DELETE FROM Table_Pencairan_Nasabah where ID_Prospek = "'+ dataNasabah.ID_Prospek +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(queryDeletePencairanNasabah, [], (tx, results) => {
+                    if (__DEV__) console.log('Delete User FROM Table_Pencairan_Nasabah RESPONSE:', results.rows.length);
+                })
+            }, function(error) {
+                if (__DEV__) console.log('Delete User FROM Table_Pencairan_Nasabah ERROR:', error);
+            }, function() {}
+        );
+        let queryDeleteJumlah = 'Update Table_Pencairan set Jumlah_Kelompok = CAST((CAST(Jumlah_Kelompok as int) - 1) as varchar) where kelompok_Id = "'+ dataNasabah.Kelompok_ID +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(queryDeleteJumlah, [], (tx, results) => {
+                    if (__DEV__) console.log(`${queryDeleteJumlah} RESPONSE:`, results.rows);
+                })
+            }, function(error) {
+                if (__DEV__) console.log(`${queryDeleteJumlah} ERROR:`, error);
+            }, function() {}
+        );
         setakadmenu(1)
     });
 
@@ -94,13 +114,13 @@ const Siklus = ({route}) => {
                 alignItems: "center",
                 paddingHorizontal: 20,
             }}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                <TouchableOpacity onPress={() => navigation.replace("FlowPencairan")} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
                     <View>
                         <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                     </View>
                     <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.replace('Pencairan')}>
+                <TouchableOpacity onPress={() => navigation.replace('FrontHome')}>
                     <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
                         <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
                         <Text>Home</Text>

@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from './styles';
 import db from '../../../database/Database';
-import { currency } from '../../../utils/Functions';
+import { currency, replaceSpecialChar } from '../../../utils/Functions';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -460,7 +460,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     <View style={styles.F1}>
                         <TextInput 
                             value={valueNamaTandaTanganNasabah} 
-                            onChangeText={(text) => setValueNamaTandaTanganNasabah(text)}
+                            onChangeText={(text) => setValueNamaTandaTanganNasabah(replaceSpecialChar(text))}
                             placeholder='Nama Lengkap (*)'
                             style={styles.F1}
                         />
@@ -488,7 +488,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     <View style={styles.F1}>
                         <TextInput 
                             value={valueNamaTandaTanganSuamiPenjamin} 
-                            onChangeText={(text) => setValueNamaTandaTanganSuamiPenjamin(text)}
+                            onChangeText={(text) => setValueNamaTandaTanganSuamiPenjamin(replaceSpecialChar(text))}
                             placeholder='Nama Lengkap (*)'
                             style={styles.F1}
                         />
@@ -516,7 +516,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     <View style={styles.F1}>
                         <TextInput 
                             value={valueNamaTandaTanganKetuaSubKelompok} 
-                            onChangeText={(text) => setValueNamaTandaTanganKetuaSubKelompok(text)}
+                            onChangeText={(text) => setValueNamaTandaTanganKetuaSubKelompok(replaceSpecialChar(text))}
                             placeholder='Nama Lengkap (*)'
                             style={styles.F1}
                         />
@@ -544,7 +544,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     <View style={styles.F1}>
                         <TextInput 
                             value={valueNamaTandaTanganKetuaKelompok} 
-                            onChangeText={(text) => setValueNamaTandaTanganKetuaKelompok(text)}
+                            onChangeText={(text) => setValueNamaTandaTanganKetuaKelompok(replaceSpecialChar(text))}
                             placeholder='Nama Lengkap (*)'
                             style={styles.F1}
                         />

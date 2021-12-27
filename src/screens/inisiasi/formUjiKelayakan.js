@@ -30,6 +30,7 @@ const FormUjiKelayakan = ({route}) => {
     const [selectedPilihKelompok, setSelectedPilihKelompok] = useState(null);
     const [valuePilihSubKelompok, setValuePilihSubKelompok] = useState('');
     const [itemsSubGroup, setItemsSubGroup] = useState([]);
+    const [tempItemsSubGroup, setTempItemsSubGroup] = useState([]);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -116,12 +117,15 @@ const FormUjiKelayakan = ({route}) => {
                     }) ?? [];
                     if (__DEV__) console.log('getStorageSubGroup responseFiltered:', responseFiltered);
                     setItemsSubGroup(responseFiltered);
+                    setTempItemsSubGroup(responseJSON);
                     return;
                 }
             }
             setItemsSubGroup([]);
+            setTempItemsSubGroup([]);
         } catch (error) {
             setItemsSubGroup([]);
+            setTempItemsSubGroup([]);
         }
     }
 
@@ -659,6 +663,18 @@ const FormUjiKelayakan = ({route}) => {
                                     <Picker
                                         selectedValue={valuePilihSubKelompok}
                                         onValueChange={(itemValue, itemIndex) => {
+                                            if (__DEV__) console.log('Pilih Sub Kelompok:', tempItemsSubGroup[itemIndex - 1]);
+
+                                            const data = tempItemsSubGroup[itemIndex - 1];
+                                            if (data) {
+                                                const total = parseInt(data.Total) || 15;
+                                                if (total >= 15) {
+                                                    Alert.alert('Error', `Sub kelompok br.net penuh (Max 15)`);
+                                                    setValuePilihSubKelompok('');
+                                                    return;
+                                                }
+                                            }
+
                                             setValuePilihSubKelompok(itemValue);
                                         }}
                                     >

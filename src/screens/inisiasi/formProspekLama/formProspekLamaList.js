@@ -22,6 +22,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     const [data, setData] = useState([]);
     const [dataSQLite, setDataSQLite] = useState([]);
     const [fetching, setFetching] = useState(false);
+    const [branchId, setBranchId] = useState();
 
     useEffect(() => {
         getUserData();
@@ -34,6 +35,9 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         AsyncStorage.getItem('userData', (error, result) => {
             if (error) __DEV__ && console.log('userData error:', error);
             if (__DEV__) console.log('userData response:', result);
+
+            let data = JSON.parse(result);
+            setBranchId(data.kodeCabang);
         });
     }
 
@@ -63,11 +67,12 @@ const InisiasiFormProspekLamaList = ({ route }) => {
 
     const fetchData = (keyword = '') => {
         if (__DEV__) console.log('fetchData loaded');
+        if (__DEV__) console.log('fetchData branchId:', branchId);
 
         let search = undefined;
         if (keyword !== '') search = keyword;
 
-        const route = `${ApiSyncInisiasi}GetListClientBRNET/90091/undefined/${search}/1/100`;
+        const route = `${ApiSyncInisiasi}GetListClientBRNET/${branchId}/undefined/${search}/1/100`;
         if (__DEV__) console.log('fetchData route:', route);
 
         setFetching(true);
@@ -92,7 +97,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
     }
 
     const getName = (Name) => {
-        return Name.split('-')[1];
+        return Name.split('-')[1] || '';
     }
 
     const renderHeader = () => (

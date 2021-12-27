@@ -102,7 +102,7 @@ const ProdukPembiayaan = ({ route }) => {
                                         setValueJenisPembiayaan(data.jenis_Pembiayaan);
                                         getStorageNamaProduk(data.jenis_Pembiayaan);
                                         return resolve('next');
-                                    }, 600);
+                                    }, 1000);
                                 }
                                 return resolve('next');
                             });
@@ -116,7 +116,7 @@ const ProdukPembiayaan = ({ route }) => {
                                         setValueNamaProduk(data.nama_Produk);
                                         getStorageProduk(data.nama_Produk);
                                         return resolve('next');
-                                    }, 900);
+                                    }, 1500);
                                 }
                                 return resolve('next');
                             });
@@ -138,7 +138,7 @@ const ProdukPembiayaan = ({ route }) => {
                                             }
                                         });
                                         return resolve('next');
-                                    }, 1200);
+                                    }, 2000);
                                 }
                                 return resolve('next');
                             });

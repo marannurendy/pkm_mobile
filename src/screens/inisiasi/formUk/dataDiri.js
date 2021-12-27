@@ -6,8 +6,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
-import DropDownPicker from 'react-native-dropdown-picker'
-import PhoneInput from 'react-native-phone-input'
 import { Camera } from 'expo-camera'
 import { Button } from 'react-native-elements'
 import { showMessage } from "react-native-flash-message"
@@ -16,15 +14,15 @@ import { Picker } from '@react-native-picker/picker';
 import Geolocation from 'react-native-geolocation-service';
 
 import db from '../../../database/Database'
+import { replaceSpecialChar } from '../../../utils/Functions'
 
 const MIN_TANGGAL_LAHIR = 15;
 const MAX_TANGGAL_LAHIR = 64;
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 8;
-var uniqueNumber = (new Date().getTime()).toString(36);
 
 const DataDiri = ({route}) => {
-
+    const uniqueNumber = (new Date().getTime()).toString(36);
     const { id, groupName, namaNasabah, nomorHandphone, screenState } = route.params
 
     const navigation = useNavigation()
@@ -97,32 +95,6 @@ const DataDiri = ({route}) => {
 
     const [items, setItems] = useState([])
     const [itemsMarrige, setItemsMarriege] = useState([])
-
-    const [itemJumlahAnak, setItemJumlahAnak] = useState([
-        {label: '1', value: '1'},
-        {label: '2', value: '2'},
-        {label: '3', value: '3'},
-        {label: '4', value: '4'},
-        {label: '5', value: '5'},
-        {label: '6', value: '6'},
-        {label: '7', value: '7'},
-        {label: '8', value: '8'},
-        {label: '9', value: '9'},
-        {label: '10', value: '10'},
-    ])
-    const [itemJumlahTanggungan, setItemJumlahTanggungan] = useState([
-        {label: '1', value: '1'},
-        {label: '2', value: '2'},
-        {label: '3', value: '3'},
-        {label: '4', value: '4'},
-        {label: '5', value: '5'},
-        {label: '6', value: '6'},
-        {label: '7', value: '7'},
-        {label: '8', value: '8'},
-        {label: '9', value: '9'},
-        {label: '10', value: '10'},
-    ])
-
     
     /* START DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
     const dataPilihanAnak = [
@@ -226,7 +198,10 @@ const DataDiri = ({route}) => {
                                 if (data.foto_Kartu_Identitas !== null && typeof data.foto_Kartu_Identitas !== 'undefined') setFotoKartuIdentitas(fotoKartuIdentitas);
                                 if (data.jenis_Kartu_Identitas !== null && typeof data.jenis_Kartu_Identitas !== 'undefined') setValueJenisKartuIdentitas(data.jenis_Kartu_Identitas);
                                 if (data.nomor_Identitas !== null && typeof data.nomor_Identitas !== 'undefined') setNomorIdentitas(data.nomor_Identitas);
-                                if (data.nama_lengkap !== null && typeof data.nama_lengkap !== 'undefined') setNamaCalonNasabah(data.nama_lengkap);
+                                if (data.nama_lengkap !== null && typeof data.nama_lengkap !== 'undefined') {
+                                    setNamaCalonNasabah(data.nama_lengkap);
+                                    setFullName(data.nama_lengkap);
+                                }
                                 if (data.tempat_lahir !== null && typeof data.tempat_lahir !== 'undefined') setTempatLahir(data.tempat_lahir);
                                 if (data.tanggal_Lahir !== null && typeof data.tanggal_Lahir !== 'undefined') setTanggalLahir(data.tanggal_Lahir);
                                 if (data.status_Perkawinan !== null && typeof data.status_Perkawinan !== 'undefined') setValueStatusPerkawinan(data.status_Perkawinan);
@@ -716,82 +691,80 @@ const DataDiri = ({route}) => {
     });
 
     const doSubmitDataIdentitasDiri = (source = 'draft') => new Promise((resolve) => {
-        {
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri loaded');
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri namaNasabah:', namaNasabah);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri fotokartuIdentitas:', fotokartuIdentitas);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri valueJenisKartuIdentitas:', valueJenisKartuIdentitas);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri nomorIdentitas:', nomorIdentitas);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri namaCalonNasabah:', namaCalonNasabah);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri tempatLahir:', tempatLahir);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri tanggalLahir:', tanggalLahir);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri valueStatusPerkawinan:', valueStatusPerkawinan);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatIdentitas:', alamatIdentitas);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatDomisili:', alamatDomisili);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri fotoSuratKeteranganDomisili:', fotoSuratKeteranganDomisili);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri dataProvinsi:', dataProvinsi);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKabupaten:', dataKabupaten);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri longitude:', location?.coords?.longitude ?? '0');
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri latitude:', location?.coords?.latitude ?? '0');
-            if (__DEV__) console.log('doSubmitDataIdentitasDiri statusAgreement:', statusAgreement);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri loaded');
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri namaNasabah:', namaNasabah);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri fotokartuIdentitas:', fotokartuIdentitas);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri valueJenisKartuIdentitas:', valueJenisKartuIdentitas);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri nomorIdentitas:', nomorIdentitas);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri namaCalonNasabah:', namaCalonNasabah);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri tempatLahir:', tempatLahir);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri tanggalLahir:', tanggalLahir);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri valueStatusPerkawinan:', valueStatusPerkawinan);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatIdentitas:', alamatIdentitas);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri alamatDomisili:', alamatDomisili);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri fotoSuratKeteranganDomisili:', fotoSuratKeteranganDomisili);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataProvinsi:', dataProvinsi);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKabupaten:', dataKabupaten);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri longitude:', location?.coords?.longitude ?? '0');
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri latitude:', location?.coords?.latitude ?? '0');
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri statusAgreement:', statusAgreement);
 
-            if (addressDomisiliLikeIdentitas) {
-                alamatDomisili = alamatIdentitas;
-                fotoSuratKeteranganDomisili = 'data:image/jpeg;base64,';
-            }
-
-            const longitude = location?.coords?.longitude ?? '0';
-            const latitude = location?.coords?.latitude ?? '0';
-            const status_agreement = statusAgreement ? '1' : '0';
-
-            const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
-            db.transaction(
-                tx => {
-                    tx.executeSql(find, [], (txFind, resultsFind) => {
-                        let dataLengthFind = resultsFind.rows.length
-                        if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
-    
-                        let query = '';
-                        if (dataLengthFind === 0) {
-                            query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca, is_alamat_domisili_sesuai_ktp, idSosialisasiDatabase) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + longitude + '","' + latitude + '","' + status_agreement + '","' + addressDomisiliLikeIdentitas + '","' + id + '")';
-                        } else {
-                            query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + longitude + '", latitude = "' + latitude + '", is_pernyataan_dibaca = "' + status_agreement + '", is_alamat_domisili_sesuai_ktp = "' + addressDomisiliLikeIdentitas + '" WHERE idSosialisasiDatabase = "' + id + '"';
-                        }
-    
-                        if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
-    
-                        db.transaction(
-                            tx => {
-                                tx.executeSql(query);
-                            }, function(error) {
-                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                                return resolve(true);
-                            },function() {
-                                if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
-                                if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
-                                if (__DEV__) {
-                                    db.transaction(
-                                        tx => {
-                                            tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
-                                                if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
-                                            })
-                                        }, function(error) {
-                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 2:', error);
-                                        }, function() {}
-                                    );
-                                }
-                                return resolve(true);
-                            }
-                        );
-                    }, function(error) {
-                        if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
-                        return resolve(true);
-                    })
-                }
-            );
+        if (addressDomisiliLikeIdentitas) {
+            alamatDomisili = alamatIdentitas;
+            fotoSuratKeteranganDomisili = 'data:image/jpeg;base64,';
         }
+
+        const longitude = location?.coords?.longitude ?? '0';
+        const latitude = location?.coords?.latitude ?? '0';
+        const status_agreement = statusAgreement ? '1' : '0';
+
+        const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                    let query = '';
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca, is_alamat_domisili_sesuai_ktp, idSosialisasiDatabase) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + longitude + '","' + latitude + '","' + status_agreement + '","' + addressDomisiliLikeIdentitas + '","' + id + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + longitude + '", latitude = "' + latitude + '", is_pernyataan_dibaca = "' + status_agreement + '", is_alamat_domisili_sesuai_ktp = "' + addressDomisiliLikeIdentitas + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                            return resolve(true);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_DataDiri", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri ERROR 2:', error);
+                                    }, function() {}
+                                );
+                            }
+                            return resolve(true);
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                    return resolve(true);
+                })
+            }
+        );
     })
 
     const doSubmitSave = async () => {
@@ -1472,8 +1445,8 @@ const DataDiri = ({route}) => {
                                     <TextInput 
                                         value={namaCalonNasabah} 
                                         onChangeText={(text) => {
-                                            setFullName(text);
-                                            setNamaCalonNasabah(text);
+                                            setFullName(replaceSpecialChar(text));
+                                            setNamaCalonNasabah(replaceSpecialChar(text));
                                         }}
                                         placeholder="Masukkan Nama Lengkap" 
                                         style={{ fontSize: 15, color: "#545454", height: 38 }} 
@@ -1721,8 +1694,8 @@ const DataDiri = ({route}) => {
                                     <TextInput
                                         value={fullName}
                                         onChangeText={(text) => {
-                                            setFullName(text);
-                                            setNamaCalonNasabah(text);
+                                            setFullName(replaceSpecialChar(text));
+                                            setNamaCalonNasabah(replaceSpecialChar(text));
                                         }}
                                         placeholder="Masukkan Nama Lengkap" 
                                         style={{ fontSize: 15, color: "#545454", height: 38 }} 
@@ -1738,7 +1711,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Ayah (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(text)} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(replaceSpecialChar(text))} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1750,7 +1723,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Gadis Ibu Kandung (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(text)} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(replaceSpecialChar(text))} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />
@@ -1851,8 +1824,8 @@ const DataDiri = ({route}) => {
                                         <TextInput 
                                             value={namaSuami} 
                                             onChangeText={(text) => {
-                                                if (!statusSuami) setNamaPenjamin(text);
-                                                setNamaSuami(text);
+                                                if (!statusSuami) setNamaPenjamin(replaceSpecialChar(text));
+                                                setNamaSuami(replaceSpecialChar(text));
                                             }} 
                                             placeholder="Masukkan Nama Suami" 
                                             style={{ fontSize: 15, color: "#545454", height: 38 }}
@@ -1908,16 +1881,6 @@ const DataDiri = ({route}) => {
                                 <Checkbox
                                     status={statusSuami ? 'checked' : 'unchecked'}
                                     onPress={() => {
-                                        // if (statusSuami) {
-                                        //     setNamaPenjamin(namaSuami);
-                                        //     setFotoDataPenjamin(fotoKartuIdentitasSuami);
-                                        //     setValueStatusHubunganKeluarga('1');
-                                        // } else {
-                                        //     setNamaPenjamin('');
-                                        //     setFotoDataPenjamin();
-                                        //     setValueStatusHubunganKeluarga('')
-                                        // }
-
                                         setStatusSuami(!statusSuami);
                                     }}
                                 />
@@ -1947,6 +1910,20 @@ const DataDiri = ({route}) => {
                                         selectedValue={valueStatusHubunganKeluarga}
                                         style={{ height: 50, width: withTextInput }}
                                         onValueChange={(itemValue, itemIndex) => {
+                                            if (__DEV__) console.log('Status Hubungan Keluarga:', itemValue);
+
+                                            if (itemValue === '2') {
+                                                setNamaPenjamin(namaAyah);
+                                                setValueStatusHubunganKeluarga(itemValue);
+                                                return;
+                                            }
+                                            if (itemValue === '3') {
+                                                setNamaPenjamin(namaGadisIbu);
+                                                setValueStatusHubunganKeluarga(itemValue);
+                                                return;
+                                            }
+                                            
+                                            setNamaPenjamin('');
                                             setValueStatusHubunganKeluarga(itemValue);
                                         }}
                                     >
@@ -1962,7 +1939,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Penjamin (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(text)} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(replaceSpecialChar(text))} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'address-card'} size={18} />

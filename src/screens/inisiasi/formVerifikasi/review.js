@@ -23,11 +23,45 @@ const VerifikasiFormReview = ({ route }) => {
     const [reason, setReason] = useState('');
     const [statusMounting, setStatusMounting] = useState(false);
     const [uname, setUname] = useState('');
+    const [selectedProdukPembiayaan, setSelectedProdukPembiayaan] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         getUserData();
+        getUKProdukPembiayaan();
         setInfo();
     }, []);
+
+    const getUKProdukPembiayaan = () => {
+        if (__DEV__) console.log('getUKProdukPembiayaan loaded');
+
+        let query = 'SELECT * FROM Table_UK_ProdukPembiayaan WHERE id_prospek = "'+ idProspek +'"';
+
+        setLoading(true);
+        db.transaction(
+            tx => {
+                tx.executeSql(query, [], (tx, results) => {
+                    if (__DEV__) console.log('getUKProdukPembiayaan results:', results.rows);
+                    let dataLength = results.rows.length;
+                    if (dataLength > 0) {
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+
+                        AsyncStorage.getItem('Product').then((response) => {
+                            if (response !== null) {
+                                const responseJSON = JSON.parse(response);
+                                if (responseJSON.length > 0 ?? false) {
+                                    let value = data.produk_Pembiayaan;
+                                    setSelectedProdukPembiayaan(responseJSON.filter(data => data.id === value)[0] || null);
+                                }
+                            }
+                        });
+                    }
+                    setLoading(false);
+                })
+            }
+        );
+    }
 
     const getUserData = () => {
         AsyncStorage.getItem('userData', (error, result) => {
@@ -226,18 +260,18 @@ const VerifikasiFormReview = ({ route }) => {
         );
     }
 
-    const renderBody = () => (
+    const renderBody = () => selectedProdukPembiayaan && (
         <View style={styles.bodyContainer}>
             <View style={styles.F1}>
                 <WebView
                     renderLoading={renderLoadingView}
                     onLoad={() => setStatusMounting(true)}
-                    source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=${idProspek}` }}
+                    source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : 'FP4_KONVE'}_T1.html?ID_Prospek=${idProspek}` }}
                     startInLoadingState={true}
                     style={styles.F1}
                 />
             </View>
-            <Text style={[styles.MH16, styles.MT16, { fontSize: 11 }]}>{`http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_KONVE_T1.html?ID_Prospek=${idProspek}`}</Text>
+            <Text style={[styles.MH16, styles.MT16, { fontSize: 11 }]}>{`http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : 'FP4_KONVE'}_T1.html?ID_Prospek=${idProspek}`}</Text>
             {renderButton()}
         </View>
     )
