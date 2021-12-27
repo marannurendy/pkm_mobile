@@ -53,10 +53,10 @@ const InisiasiFormPPH = ({ route }) => {
     }, []);
 
     const getData = async (val) => {
-        // console.log("ini")
+        console.log(val)
         // let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + val + " GROUP BY a.kelompok, b.Nasabah_Id "
         // let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok GROUP BY a.kelompok "
-        // let queryGetGroup2 = "SELECT * FROM Table_PP_Kelompok WHERE status <> 'null'"
+        // let queryGetGroup2 = "SELECT * FROM Table_PP_ListNasabah WHERE status <> 'null' AND status = " + 4
         let queryGetGroup3 = "SELECT DISTINCT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status <> 'null' AND b.status = " + val + " GROUP BY a.kelompok"
         
 
@@ -423,9 +423,11 @@ const InisiasiFormPPH = ({ route }) => {
             <View style={stylesheet.containerProspek}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20}}>
                     <Text style={stylesheet.textProspek}>Persiapan Pembiayaan {source}</Text>
-                    <TouchableOpacity onPress={() => syncHandler(source)} style={{ alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, justifyContent: 'center' }}>
-                        <Text style={{ textAlign: 'center', borderRadius: 20, fontSize: 16, fontWeight: 'bold', marginHorizontal: 20}}>SYNC</Text>
-                    </TouchableOpacity>
+                    {source === '3' ? (<View></View>) : (
+                        <TouchableOpacity onPress={() => syncHandler(source)} style={{ alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, justifyContent: 'center' }}>
+                            <Text style={{ textAlign: 'center', borderRadius: 20, fontSize: 16, fontWeight: 'bold', marginHorizontal: 20}}>SYNC</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
                 <View style={stylesheet.containerSearch}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={styles.MH8} />
