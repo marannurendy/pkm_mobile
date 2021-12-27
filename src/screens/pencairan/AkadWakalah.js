@@ -277,7 +277,7 @@ const AkadWakalah = ({route}) => {
                             <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Akad Murabahah </Text>
                             <Image style={{width: '100%', height: 75, resizeMode : 'contain', marginBottom: 10 }} 
                             source={bismillah}/>
-                            <Text style={{fontSize: 14}}>Akad Murabahah ini dibuat dan ditandatangani di {<Text style={{fontSize: 14, color:"#0645AD"}}>Jakarta </Text>} 
+                            <Text style={{fontSize: 14}}>Akad Murabahah ini dibuat dan ditandatangani di {<Text style={{fontSize: 14, color:"#0645AD"}}>{branchName} </Text>} 
                             pada tanggal {<Text style={{fontSize: 14, color:"#0645AD"}}>{Tanggal}</Text>} oleh dan antara:{"\n"}{"\n"}
                             1. PT. Permodalan Nasional Madani, berkedudukan 
                             dan berkantor pusat di Jakarta, dalam hal ini diwakili oleh 

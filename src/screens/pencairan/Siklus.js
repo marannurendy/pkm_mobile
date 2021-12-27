@@ -144,7 +144,7 @@ const Siklus = ({route}) => {
                 <SafeAreaView style={{flex: 1}}>
                     <ScrollView>
                         <View style={{flexDirection: 'column', marginHorizontal: 20, marginTop: 10, justifyContent: 'space-around'}}>
-                            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Form Siklus Pertama</Text>
+                            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Form Siklus</Text>
 
                             <Text style={{fontSize: 14, fontWeight: 'bold'}}>Produk Pembiayaan</Text>
                             <TextInput 
