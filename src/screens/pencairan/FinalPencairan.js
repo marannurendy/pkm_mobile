@@ -45,7 +45,7 @@ const FinalPencairan = ({route}) => {
     const [key_tandaTanganKetKel, setkey_tandaTanganKetKel] = useState(`formUK_tandaTanganKetKel_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
     const [key_tandaTanganSubKel, setkey_tandaTanganSubKel] = useState(`formUK_tandaTanganSubKel_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
     moment.locale('id');
-    var Tanggal = moment(new Date()).format('DD-MMM-YYYY')
+    var Tanggal = moment(new Date()).format('LL')
     var hariIni = moment(new Date()).format('dddd')
     var Jam = moment(new Date()).format('HH:mm')
 
@@ -400,7 +400,7 @@ const FinalPencairan = ({route}) => {
                             Hari                    :  {hariIni} {"\n"}
                             Tanggal             :  {Tanggal} {"\n"}
                             Jam                     :  {Jam} {"\n"}
-                            Kelompok          :  Gang Kelinci {"\n"}</Text>
+                            Kelompok          :  {dataNasabah.Nama_Kelompok} {"\n"}</Text>
                             <Card>
                                 <Card.Divider />
                                 <View style={{marginBottom: 10}}>

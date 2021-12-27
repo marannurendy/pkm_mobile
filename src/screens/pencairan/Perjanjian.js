@@ -33,7 +33,7 @@ const Perjanjian = ({route}) => {
     const [signatureAO, setSignatureAO] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
     moment.locale('id');
-    var hariIni = moment(new Date()).format('DD-MM-YYYY')
+    var hariIni = moment(new Date()).format('LL')
     var uniqueNumber = (new Date().getTime()).toString(36);
     const [key_tandaTanganNasabah, setKey_tandaTanganNasabah] = useState(`formUK_tandaTanganNasabah_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
     const [key_tandaTanganSAOKC, setKey_tandaTanganSAOKC] = useState(`formUK_tandaTanganSAOKC_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
