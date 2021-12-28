@@ -355,7 +355,7 @@ const FormUjiKelayakan = ({route}) => {
                                 body: JSON.stringify(body)
                             });
                             const responseJSON = await response.json();
-                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
+                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
 
                             if (responseJSON.responseCode === 200) {
                                 const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
@@ -426,7 +426,6 @@ const FormUjiKelayakan = ({route}) => {
                                                                             }
                                                                         ];
                                                                         if (__DEV__) console.log('doSubmit bodyProspekLama:', bodyProspekLama);
-                                                                
                                                                         try {
                                                                             fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
                                                                                 method: 'POST',
@@ -450,7 +449,30 @@ const FormUjiKelayakan = ({route}) => {
                                                             }
                                                         );
                                                     }
-                                                    
+
+                                                    const bodyKetuaSubketua = {
+                                                        "ID_Prospek": responseJSON.data[0].ID_Prospek,
+                                                        "Nama_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
+                                                        "Nama_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok
+                                                    };
+                                                    if (__DEV__) console.log('doSubmit bodyKetuaSubketua:', bodyKetuaSubketua);
+                                                    try {
+                                                        fetch(`${ApiSyncPostInisiasi}post_ketua_subketua`, {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                Accept: 'application/json',
+                                                                'Content-Type': 'application/json'
+                                                            },
+                                                            body: JSON.stringify(bodyKetuaSubketua)
+                                                        })
+                                                        .then((response) => response.json())
+                                                        .then((responseJson) => {
+                                                            if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua success:', responseJson);
+                                                        })
+                                                    } catch(error) {
+                                                        if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua error:', error);
+                                                    }
+
                                                     if (__DEV__) {
                                                         db.transaction(
                                                             tx => {
