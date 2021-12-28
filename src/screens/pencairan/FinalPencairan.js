@@ -10,7 +10,7 @@ import { Checkbox } from 'react-native-paper';
 import { Button } from 'react-native-elements';
 import { Camera } from 'expo-camera'
 import moment from 'moment'
-
+import { currency, inputVal } from '../../utils/Functions';
 import db from '../../database/Database'
 
 const window = Dimensions.get('window');
@@ -392,7 +392,7 @@ const FinalPencairan = ({route}) => {
                             <Text style={{fontSize: 14}}>Saya yang bertanda Tangan dibawah ini:{"\n"}{"\n"}
                             Nama            :  {dataNasabah.Nama_Prospek}{"\n"}
                             Dengan ini menyatakan telah menerima pembiayaan
-                            sebesar: {dataNasabah.Jumlah_Pinjaman} rupiah, dan bersedia untuk
+                            sebesar: <Text style={{fontSize: 14, color:"#0645AD"}}>{currency(parseInt(dataNasabah.Jumlah_Pinjaman))}</Text> rupiah, dan bersedia untuk
                             bertanggung jawab sampai pelunasan pembiayaan,
                             serta mematuhi dan menerima semua keputusan / peraturan
                             yang berlaku di PT. Permodalan Nasional Madani.{"\n"}{"\n"}

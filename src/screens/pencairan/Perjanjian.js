@@ -8,6 +8,7 @@ import moment from 'moment'
 import { Card, Divider } from 'react-native-elements';
 import SignatureScreen from "react-native-signature-canvas";
 import { Button } from 'react-native-elements';
+import { currency, inputVal } from '../../utils/Functions';
 
 import db from '../../database/Database'
 
@@ -223,11 +224,11 @@ const Perjanjian = ({route}) => {
                             sebagaimana dalam permohonan pembiayaan, telah 
                             menerima fasilitas pembiayaan dari PNM 
                             dengan ketentuan sebagai berikut:{"\n"}
-                            a. Jumlah Pembiayaan    :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jumlah_Pinjaman}</Text> {"\n"}
+                            a. Jumlah Pembiayaan    :  <Text style={{fontSize: 14, color:"#0645AD"}}>Rp. {currency(parseInt(dataNasabah.Jumlah_Pinjaman || 0))}</Text> {"\n"}
                             b. Jenis Pembiayaan     :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jenis_Pembiayaan}</Text> {"\n"}
-                            c. Jasa                 :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Jasa.split('.')[0]}</Text> {"\n"}
+                            c. Jasa                 :  <Text style={{fontSize: 14, color:"#0645AD"}}>Rp. {currency(parseInt(dataNasabah.Jasa.split('.')[0]))}</Text> {"\n"}
                             d. Jangka Waktu         :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Term_Pembiayaan} Minggu</Text> {"\n"}
-                            e. Angsuran per Minggu  :  <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Angsuran_Per_Minggu.split('.')[0]}</Text> {"\n"}{"\n"}
+                            e. Angsuran per Minggu  :  <Text style={{fontSize: 14, color:"#0645AD"}}>Rp. {currency(parseInt(dataNasabah.Angsuran_Per_Minggu.split('.')[0]))}</Text> {"\n"}{"\n"}
 
                             Kewajiban Nasabah{"\n"}
                             a. Hadir tepat waktu dalam pertemuan Kelompok{"\n"}
