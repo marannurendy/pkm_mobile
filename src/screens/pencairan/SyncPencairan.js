@@ -44,7 +44,7 @@ const SyncPencairan = () => {
         if (__DEV__) console.log('getKelompokPencairan keyword:', keyword);
 
         let query = 'SELECT count(B.Nama_Kelompok) as JumlahNasabah, B.Nama_Kelompok as Nama_Kelompok, B.Kelompok_ID as Kelompok_ID '+
-                    'FROM Table_Pencairan_Post A LEFT JOIN Table_Pencairan B on A.kelompok_ID = B.kelompok_Id Group By B.Nama_Kelompok';
+                    'FROM Table_Pencairan_Post A LEFT JOIN Table_Pencairan B on A.Kelompok_ID = B.Kelompok_Id Group By B.Nama_Kelompok';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
@@ -67,7 +67,7 @@ const SyncPencairan = () => {
         if (__DEV__) console.log('post pencairan keyword:', keyword);
         setLoaded(true)
         let query = 'SELECT A.* FROM Table_Pencairan_Post A '+
-                    'LEFT JOIN Table_Pencairan B on A.Kelompok_ID = B.kelompok_Id '+
+                    'LEFT JOIN Table_Pencairan B on A.Kelompok_ID = B.Kelompok_Id '+
                     'where B.kelompok_Id = "'+ Kelompok_ID +'" and A.LRP_TTD_AO is not null and A.LRP_TTD_Nasabah is not null';
         db.transaction(
             tx => {
@@ -123,17 +123,6 @@ const SyncPencairan = () => {
                                         })
                                     }, function(error) {
                                         if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
-                                    }, function() {}
-                                );
-
-                                const queryDeletePencairanNasabah = 'DELETE FROM Table_Pencairan_Nasabah where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql(queryDeletePencairanNasabah, [], (tx, results) => {
-                                            if (__DEV__) console.log(`${queryDeletePencairanNasabah} RESPONSE:`, results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log(`${queryDeletePencairanNasabah} ERROR:`, error);
                                     }, function() {}
                                 );
                                 const queryDeleteJumlah = 'Update Table_Pencairan set Jumlah_Kelompok = CAST((CAST(Jumlah_Kelompok as int) - '+ dataLength +') as varchar) where kelompok_Id = "'+ Kelompok_ID +'"';

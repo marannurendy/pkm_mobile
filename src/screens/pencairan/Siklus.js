@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { WebView } from 'react-native-webview';
 import { Button } from 'react-native-elements';
+import { currency, inputVal } from '../../utils/Functions';
 
 import db from '../../database/Database'
 
@@ -158,7 +159,7 @@ const Siklus = ({route}) => {
                             <TextInput 
                                 style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold', borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 editable={false} selectTextOnFocus={false}
-                                value={dataNasabah.Jumlah_Pinjaman}
+                                value={"Rp. "+currency(parseInt(dataNasabah.Jumlah_Pinjaman))}
                                 returnKeyType="done"
                             />
 
