@@ -233,6 +233,7 @@ db.transaction(tx => {
             is_pernyataan_dibaca varchar,
             lokasi_sosialisasi varchar,
             is_alamat_domisili_sesuai_ktp varchar,
+            is_nik_valid_dukcapil varchar,
             idSosialisasiDatabase varchar
         );`
     )

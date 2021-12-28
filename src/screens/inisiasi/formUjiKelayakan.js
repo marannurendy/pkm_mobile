@@ -131,7 +131,7 @@ const FormUjiKelayakan = ({route}) => {
 
     const doSubmit = () => {
         if (__DEV__) console.log('doSubmit loaded');
-
+        
         if (submitted) return true;
 
         setSubmitted(true);
@@ -144,6 +144,7 @@ const FormUjiKelayakan = ({route}) => {
 
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
+
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
 
                         if (statusSosialisasi === '3') {
@@ -325,7 +326,8 @@ const FormUjiKelayakan = ({route}) => {
                             "Kehadiran_PKM": data.kehadiran_pkm,
                             "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm,
                             "Sisipan": isSisipan,
-                            "Siklus": data.siklus
+                            "Siklus": data.siklus,
+                            "IsSesuaiDukcapil": data.is_nik_valid_dukcapil
                         }
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
 
