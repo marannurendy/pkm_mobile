@@ -31,10 +31,12 @@ const FormUjiKelayakan = ({route}) => {
     const [valuePilihSubKelompok, setValuePilihSubKelompok] = useState('');
     const [itemsSubGroup, setItemsSubGroup] = useState([]);
     const [tempItemsSubGroup, setTempItemsSubGroup] = useState([]);
+    const [isFormUKDisiplinNasabahDone, setIsFormUKDisiplinNasabahDone] = useState(null);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             setInfo();
+            getStorageIsFormUKDisiplinNasabahDone();
             getUserData();
             getUKMaster();
             getGroupList();
@@ -59,6 +61,16 @@ const FormUjiKelayakan = ({route}) => {
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         setCurrentDate(tanggal)
+    }
+
+    const getStorageIsFormUKDisiplinNasabahDone = async () => {
+        if (__DEV__) console.log('getStorageIsFormUKDisiplinNasabahDone loaded');
+        
+        const isFormUKDisiplinNasabahDone = await AsyncStorage.getItem('isFormUKDisiplinNasabahDone');
+        if (__DEV__) console.log('getStorageIsFormUKDisiplinNasabahDone', isFormUKDisiplinNasabahDone);
+
+        if (isFormUKDisiplinNasabahDone) setIsFormUKDisiplinNasabahDone(isFormUKDisiplinNasabahDone);
+        else setIsFormUKDisiplinNasabahDone(null);
     }
 
     const getUKMaster = () => {
@@ -570,7 +582,8 @@ const FormUjiKelayakan = ({route}) => {
                                                     const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
                                                     Alert.alert(responseJSON.responseDescription, message);
                                                     setSubmitted(false);
-                                                    navigation.goBack();
+                                                    // navigation.goBack();
+                                                    navigation.replace('UjiKelayakan', { groupName: groupName });
                                                 }
                                             );
                                         }, function(error) {
@@ -698,32 +711,51 @@ const FormUjiKelayakan = ({route}) => {
                                 <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Disiplin Nasabah</Text>
                             </View>
                             <View style={{alignItems: 'flex-end'}}>
-                            <BouncyCheckbox 
-                                size={20}
-                                isChecked={true}
-                                fillColor={'green'}
-                                disableBuiltInState
-                            />
-                        </View>
+                                <BouncyCheckbox 
+                                    size={20}
+                                    isChecked={isFormUKDisiplinNasabahDone === '1' && true}
+                                    fillColor={isFormUKDisiplinNasabahDone === '1' ? 'green' : 'white'}
+                                    disableBuiltInState
+                                />
+                            </View>
                         </TouchableOpacity>
                     )}
 
-                    <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
-                        <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
-                            <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Data Diri Pribadi</Text>
-                        </View>
-                        <View style={{alignItems: 'flex-end'}}>
-                            <BouncyCheckbox 
-                                size={20}
-                                isChecked={screenState > 0}
-                                fillColor={screenState > 0 ? 'green' : 'white'}
-                                disableBuiltInState
-                            />
-                        </View>
-                    </TouchableOpacity>
+                    {statusSosialisasi === '3' ? (
+                        <TouchableOpacity onPress={() => isFormUKDisiplinNasabahDone === '1' ? navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: isFormUKDisiplinNasabahDone === '1' ? '#0c5da0' : 'gray'}}>
+                            <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Data Diri Pribadi</Text>
+                            </View>
+                            <View style={{alignItems: 'flex-end'}}>
+                                <BouncyCheckbox 
+                                    size={20}
+                                    isChecked={isFormUKDisiplinNasabahDone === '1' && screenState > 0}
+                                    fillColor={isFormUKDisiplinNasabahDone === '1' && screenState > 0 ? 'green' : 'white'}
+                                    disableBuiltInState
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                            <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Data Diri Pribadi</Text>
+                            </View>
+                            <View style={{alignItems: 'flex-end'}}>
+                                <BouncyCheckbox 
+                                    size={20}
+                                    isChecked={screenState > 0}
+                                    fillColor={screenState > 0 ? 'green' : 'white'}
+                                    disableBuiltInState
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    )}
 
                     <TouchableOpacity onPress={() => screenState > 0 ? navigation.navigate('ProdukPembiayaan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 0 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>

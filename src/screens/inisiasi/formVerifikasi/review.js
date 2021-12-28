@@ -111,7 +111,8 @@ const VerifikasiFormReview = ({ route }) => {
 
                 AsyncStorage.setItem(`formVerifikasi_body_${idProspek}`, JSON.stringify(body)).then(() => {
                     setTimeout(() => {
-                        navigation.goBack();
+                        // navigation.goBack();
+                        navigation.replace('Verifikasi', { groupName: groupName });
                     }, 600);
                 });
             }

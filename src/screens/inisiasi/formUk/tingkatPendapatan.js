@@ -622,7 +622,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
             {renderSpace()}
             {renderFormPendapatanSuami()}
             {renderSpace()}
-            {renderFormKemampuanBayar()}
+            {/* {renderFormKemampuanBayar()} */}
             {renderSpace()}
             {renderFormPendapatanPerkapita()}
         </View>

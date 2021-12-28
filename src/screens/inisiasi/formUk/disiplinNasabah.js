@@ -120,6 +120,7 @@ const InisiasiFormUKDisiplinNasabah = ({ route }) => {
 
         setSubmmitted(false);
         alert('Berhasil');
+        AsyncStorage.setItem('isFormUKDisiplinNasabahDone', '1');
         navigation.goBack();
     }
 
