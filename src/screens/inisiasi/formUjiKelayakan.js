@@ -604,8 +604,8 @@ const FormUjiKelayakan = ({route}) => {
                                                     const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
                                                     Alert.alert(responseJSON.responseDescription, message);
                                                     setSubmitted(false);
-                                                    // navigation.goBack();
-                                                    navigation.replace('UjiKelayakan', { groupName: groupName });
+                                                    navigation.goBack();
+                                                    // navigation.replace('UjiKelayakan', { groupName: groupName });
                                                 }
                                             );
                                         }, function(error) {
