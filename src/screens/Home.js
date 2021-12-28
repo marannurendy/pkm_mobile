@@ -884,7 +884,7 @@ export default function FrontHome() {
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                            <TouchableOpacity onPress={() => navigation.navigate('Pencairan')} style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff',
+                            <TouchableOpacity onPress={() => navigation.replace('Pencairan')} style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff',
                                 shadowColor: '#000',
                                 shadowOffset: {
                                 width: 0,

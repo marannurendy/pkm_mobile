@@ -125,16 +125,6 @@ const SyncPencairan = () => {
                                         if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
                                     }, function() {}
                                 );
-                                const queryDeleteJumlah = 'Update Table_Pencairan set Jumlah_Kelompok = CAST((CAST(Jumlah_Kelompok as int) - '+ dataLength +') as varchar) where kelompok_Id = "'+ Kelompok_ID +'"';
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql(queryDeleteJumlah, [], (tx, results) => {
-                                            if (__DEV__) console.log(`${queryDeleteJumlah} RESPONSE:`, results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log(`${queryDeleteJumlah} ERROR:`, error);
-                                    }, function() {}
-                                );
                             }
                             return true;
                         }
