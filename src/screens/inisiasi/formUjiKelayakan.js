@@ -66,7 +66,7 @@ const FormUjiKelayakan = ({route}) => {
     const getStorageIsFormUKDisiplinNasabahDone = async () => {
         if (__DEV__) console.log('getStorageIsFormUKDisiplinNasabahDone loaded');
         
-        const isFormUKDisiplinNasabahDone = await AsyncStorage.getItem('isFormUKDisiplinNasabahDone');
+        const isFormUKDisiplinNasabahDone = await AsyncStorage.getItem(`isFormUKDisiplinNasabahDone_${id}`);
         if (__DEV__) console.log('getStorageIsFormUKDisiplinNasabahDone', isFormUKDisiplinNasabahDone);
 
         if (isFormUKDisiplinNasabahDone) setIsFormUKDisiplinNasabahDone(isFormUKDisiplinNasabahDone);

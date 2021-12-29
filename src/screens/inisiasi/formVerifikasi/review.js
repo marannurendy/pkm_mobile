@@ -25,12 +25,35 @@ const VerifikasiFormReview = ({ route }) => {
     const [uname, setUname] = useState('');
     const [selectedProdukPembiayaan, setSelectedProdukPembiayaan] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [sp, setSp] = useState('0');
 
     useEffect(() => {
         getUserData();
+        getUKDataDiri();
         getUKProdukPembiayaan();
         setInfo();
     }, []);
+
+    const getUKDataDiri = () => {
+        let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE id_prospek = '` + idProspek + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+
+                        if (data.siklus_pembiayaan !== null && typeof data.siklus_pembiayaan !== 'undefined') setSp(data.siklus_pembiayaan);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
+                })
+            }
+        )
+    }
 
     const getUKProdukPembiayaan = () => {
         if (__DEV__) console.log('getUKProdukPembiayaan loaded');
@@ -267,12 +290,12 @@ const VerifikasiFormReview = ({ route }) => {
                 <WebView
                     renderLoading={renderLoadingView}
                     onLoad={() => setStatusMounting(true)}
-                    source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : 'FP4_KONVE'}_T1.html?ID_Prospek=${idProspek}` }}
+                    source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}` }}
                     startInLoadingState={true}
                     style={styles.F1}
                 />
             </View>
-            <Text style={[styles.MH16, styles.MT16, { fontSize: 11 }]}>{`http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : 'FP4_KONVE'}_T1.html?ID_Prospek=${idProspek}`}</Text>
+            <Text style={[styles.MH16, styles.MT16, { fontSize: 11 }]}>[{sp}] - {`http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}`}</Text>
             {renderButton()}
         </View>
     )
