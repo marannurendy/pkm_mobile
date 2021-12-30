@@ -745,14 +745,13 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKabupaten:', dataKabupaten);
         if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
         if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri longitude:', location?.coords?.longitude ?? '0');
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri latitude:', location?.coords?.latitude ?? '0');
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri location:', location);
         if (__DEV__) console.log('doSubmitDataIdentitasDiri statusAgreement:', statusAgreement);
         if (__DEV__) console.log('doSubmitDataIdentitasDiri valueNomorIdentitas:', valueNomorIdentitas);
 
         if (addressDomisiliLikeIdentitas) {
             alamatDomisili = alamatIdentitas;
-            fotoSuratKeteranganDomisili = 'data:image/jpeg;base64,';
+            fotoSuratKeteranganDomisili = '';
         }
 
         const longitude = location?.coords?.longitude ?? '0';

@@ -155,7 +155,7 @@ const ProdukPembiayaan = ({ route }) => {
                             if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
                             if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
                             if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
-                        }) ;
+                        });
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan error:', error.message);
