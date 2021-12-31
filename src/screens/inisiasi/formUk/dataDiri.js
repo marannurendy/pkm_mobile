@@ -1558,6 +1558,7 @@ const DataDiri = ({route}) => {
                                     <FontAwesome5 name={'address-card'} size={18} />
                                 </View>
                             </View>
+                            <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat identitas wajib menyertakan RT dan RW</Text>
                         </View>
 
                         <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18}}>
@@ -1581,6 +1582,7 @@ const DataDiri = ({route}) => {
                                         <FontAwesome5 name={'address-card'} size={18} />
                                     </View>
                                 </View>
+                                <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat domisili wajib menyertakan RT dan RW</Text>
                             </View>
                         )}
 
