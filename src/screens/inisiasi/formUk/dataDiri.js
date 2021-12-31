@@ -15,6 +15,7 @@ import Geolocation from 'react-native-geolocation-service';
 
 import db from '../../../database/Database'
 import { replaceSpecialChar } from '../../../utils/Functions'
+import { ApiDukcapil } from '../../../../dataconfig'
 
 const MIN_TANGGAL_LAHIR = 15;
 const MAX_TANGGAL_LAHIR = 64;
@@ -160,6 +161,8 @@ const DataDiri = ({route}) => {
     const [key_keteranganDomisili, setKey_keteranganDomisili] = useState(`formUK_keteranganDomisili_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     const [key_kartuIdentitas, setKey_kartuIdentitas] = useState(`formUK_kartuIdentitas_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     const [addressDomisiliLikeIdentitas, setAddressDomisiliLikeIdentitas] = useState(false);
+    const [valueNomorIdentitas, setValueNomorIdentitas] = useState('0');
+    const [fetchCheckNIK, setFetchCheckNIK] = useState(false);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -232,6 +235,7 @@ const DataDiri = ({route}) => {
                                 if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined') setFotoDataPenjamin(fotoDataPenjamin);
                                 if (data.is_pernyataan_dibaca !== null && typeof data.is_pernyataan_dibaca !== 'undefined') setStatusAgreement(data.suami_diluar_kota === 'true' || data.is_pernyataan_dibaca === '1' ? true : false);
                                 if (data.is_alamat_domisili_sesuai_ktp !== null && typeof data.is_alamat_domisili_sesuai_ktp !== 'undefined') setAddressDomisiliLikeIdentitas(data.is_alamat_domisili_sesuai_ktp === 'true' || data.is_alamat_domisili_sesuai_ktp === '1' ? true : false);
+                                if (data.is_nik_valid_dukcapil !== null && typeof data.is_nik_valid_dukcapil !== 'undefined') setValueNomorIdentitas(data.is_nik_valid_dukcapil);
                             }
                             return true;
                         }, function(error) {
@@ -404,6 +408,40 @@ const DataDiri = ({route}) => {
             setFotoDataPenjamin(fotoKartuIdentitasSuami);
         }
     }, [statusSuami]);
+
+    const checkNIK = () => {
+        if (__DEV__) console.log('checkNIK loaded');
+
+        if (!nomorIdentitas || typeof nomorIdentitas === 'undefined' || nomorIdentitas === '' || nomorIdentitas === 'null') return alert('Nomor Identitas (*) tidak boleh kosong');
+        
+        const body = {
+            NIK: nomorIdentitas
+        };
+
+        setFetchCheckNIK(true);
+        fetch(`${ApiDukcapil}/dukcapil/check`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        .then((response) => response.json())
+        .then((responseJson) => {
+            if (__DEV__) console.log('$post /dukcapil/check success:', responseJson);
+            if (responseJson.code === 400) {
+                setValueNomorIdentitas('0');
+                setFetchCheckNIK(false);
+                Alert.alert('Error', responseJson.message);
+                return;
+            }
+
+            setValueNomorIdentitas('1');
+            setFetchCheckNIK(false);
+            Alert.alert('Berhasil', 'Nomor Identitas terdaftar di dukcapil');
+        })
+    }
 
     if (hasPermission === null) {
         return <View />
@@ -707,13 +745,13 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKabupaten:', dataKabupaten);
         if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKecamatan:', dataKecamatan);
         if (__DEV__) console.log('doSubmitDataIdentitasDiri dataKelurahan:', dataKelurahan);
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri longitude:', location?.coords?.longitude ?? '0');
-        if (__DEV__) console.log('doSubmitDataIdentitasDiri latitude:', location?.coords?.latitude ?? '0');
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri location:', location);
         if (__DEV__) console.log('doSubmitDataIdentitasDiri statusAgreement:', statusAgreement);
+        if (__DEV__) console.log('doSubmitDataIdentitasDiri valueNomorIdentitas:', valueNomorIdentitas);
 
         if (addressDomisiliLikeIdentitas) {
             alamatDomisili = alamatIdentitas;
-            fotoSuratKeteranganDomisili = 'data:image/jpeg;base64,';
+            fotoSuratKeteranganDomisili = '';
         }
 
         const longitude = location?.coords?.longitude ?? '0';
@@ -729,9 +767,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca, is_alamat_domisili_sesuai_ktp, idSosialisasiDatabase) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + longitude + '","' + latitude + '","' + status_agreement + '","' + addressDomisiliLikeIdentitas + '","' + id + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, longitude, latitude, is_pernyataan_dibaca, is_alamat_domisili_sesuai_ktp, is_nik_valid_dukcapil, idSosialisasiDatabase) values ("' + key_kartuIdentitas + '","' + valueJenisKartuIdentitas + '","' + nomorIdentitas + '","' + namaCalonNasabah + '","' + tempatLahir + '","' + tanggalLahir + '","' + valueStatusPerkawinan + '","' + alamatIdentitas + '","' + alamatDomisili + '","' + key_keteranganDomisili + '","' + dataProvinsi + '","' + dataKabupaten + '","' + dataKecamatan + '","' + dataKelurahan + '","' + longitude + '","' + latitude + '","' + status_agreement + '","' + addressDomisiliLikeIdentitas + '","' + valueNomorIdentitas + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + longitude + '", latitude = "' + latitude + '", is_pernyataan_dibaca = "' + status_agreement + '", is_alamat_domisili_sesuai_ktp = "' + addressDomisiliLikeIdentitas + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET foto_Kartu_Identitas = "' + key_kartuIdentitas + '", jenis_Kartu_Identitas = "' + valueJenisKartuIdentitas + '", nomor_Identitas = "' + nomorIdentitas + '", nama_lengkap = "' + namaCalonNasabah + '", tempat_lahir = "' + tempatLahir + '", tanggal_Lahir = "' + tanggalLahir + '", status_Perkawinan = "' + valueStatusPerkawinan + '", alamat_Identitas = "' + alamatIdentitas + '", alamat_Domisili = "' + alamatDomisili + '", foto_Surat_Keterangan_Domisili = "' + key_keteranganDomisili + '", provinsi = "' + dataProvinsi + '", kabupaten = "' + dataKabupaten + '", kecamatan = "' + dataKecamatan + '", kelurahan = "' + dataKelurahan + '", longitude = "' + longitude + '", latitude = "' + latitude + '", is_pernyataan_dibaca = "' + status_agreement + '", is_alamat_domisili_sesuai_ktp = "' + addressDomisiliLikeIdentitas + '", is_nik_valid_dukcapil = "' + valueNomorIdentitas + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
@@ -877,7 +915,7 @@ const DataDiri = ({route}) => {
         try {
             setLoading(true)
             SetButtonCam(true)
-            const options = { quality: 0.5, base64: true };
+            const options = { quality: 0.3, base64: true };
             const data = await camera.current.takePictureAsync(options)
 
             if (type === "dataPenjamin") {
@@ -1416,26 +1454,26 @@ const DataDiri = ({route}) => {
                         <View style={{margin: 20}}>
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Identitas (*)</Text>
                             <View style={{flexDirection: 'row'}}>
-                            <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'id-badge'} size={18} />
-                                </View>
-                                
-                            </View>
-                            <View style={{ backgroundColor: '#003049', borderRadius: 10, borderWidth: 1, padding: 8, alignContent: 'center', marginLeft: 8 }}>
-                                <TouchableOpacity
-                                    onPress={() => null}
-                                >
-                                    <View>
-                                        <Text style={{ color: 'white' }}>Cek Data</Text>
+                                <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                                    <View style={{flex: 1}}>
+                                        <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                     </View>
-                                </TouchableOpacity>
+                                    <View>
+                                        <FontAwesome5 name={'id-badge'} size={18} />
+                                    </View>
+                                </View>
+                                {valueJenisKartuIdentitas === '1' && (
+                                    <View>
+                                        <TouchableOpacity
+                                            onPress={() => fetchCheckNIK ? null : checkNIK()}
+                                            style={{ backgroundColor: fetchCheckNIK ? 'gray' : '#003049', borderRadius: 10, borderWidth: 1, padding: 8, alignContent: 'center', marginLeft: 8 }}
+                                        >
+                                            <Text style={{ color: 'white' }}>{fetchCheckNIK ? 'Loading...' : 'Cek Data'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )}
                             </View>
-                            </View>
-                            
+                            {valueJenisKartuIdentitas === '1' && valueNomorIdentitas === '1' && <Text style={{ color: '#3CB371', fontWeight: 'bold', marginTop: 6 }}>* Nomor Identitas KTP Terdaftar di dukcapil</Text>}
                         </View>
 
                         <View style={{margin: 20}}>
@@ -1520,6 +1558,7 @@ const DataDiri = ({route}) => {
                                     <FontAwesome5 name={'address-card'} size={18} />
                                 </View>
                             </View>
+                            <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat identitas wajib menyertakan RT dan RW</Text>
                         </View>
 
                         <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18}}>
@@ -1543,6 +1582,7 @@ const DataDiri = ({route}) => {
                                         <FontAwesome5 name={'address-card'} size={18} />
                                     </View>
                                 </View>
+                                <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat domisili wajib menyertakan RT dan RW</Text>
                             </View>
                         )}
 
@@ -1797,7 +1837,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }} maxLength={2} />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'chart-pie'} size={18} />

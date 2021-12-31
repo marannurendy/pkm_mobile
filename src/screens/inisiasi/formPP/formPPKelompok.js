@@ -10,6 +10,7 @@ import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import { showMessage } from "react-native-flash-message"
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Crypto from 'expo-crypto';
 import db from '../../../database/Database';
 
 
@@ -71,6 +72,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
 
     let [branchid, setBranchid] = useState();
     let [currentDate, setCurrentDate] = useState();
+    let [userName, setUserName] = useState();
 
     useEffect(() => {
         GetInfo();
@@ -81,11 +83,11 @@ const InisiasiFormPPKelompok = ({ route }) => {
 
         const detailBranch = await AsyncStorage.getItem('userData')
         let branchid = JSON.parse(detailBranch).kodeCabang
-
-        // console.log(branchid)
+        let uname = JSON.parse(detailBranch).userName
         
         setBranchid(branchid)
         setCurrentDate(tanggal)
+        setUserName(uname)
     }
 
     const tanggalPKMPertamaDatePickerHandler = (event, date) => {
@@ -253,7 +255,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
         });
       }
 
-    const SubmitHandler = () => {
+    const SubmitHandler = async () => {
         if (!namaKelompok || typeof namaKelompok === 'undefined' || namaKelompok === '' || namaKelompok === 'null') return flashNotification("Alert", "Nama kelompok tidak boleh kosong", "#ff6347", "#fff");
         if (!valueGroupProduk || typeof valueGroupProduk === 'undefined' || valueGroupProduk === '' || valueGroupProduk === 'null') return flashNotification("Alert", "Silahkan pilih group product", "#ff6347", "#fff");
         if (!tanggalPKMPertama || typeof tanggalPKMPertama === 'undefined' || tanggalPKMPertama === '' || tanggalPKMPertama === 'null') return flashNotification("Alert", "Tanggal PKM pertama tidak boleh kosong", "#ff6347", "#fff");
@@ -261,9 +263,24 @@ const InisiasiFormPPKelompok = ({ route }) => {
         if (!valueWaktuPertemuan || typeof valueWaktuPertemuan === 'undefined' || valueWaktuPertemuan === '' || valueWaktuPertemuan === 'null') return flashNotification("Alert", "Silahkan pilih waktu pertemuan", "#ff6347", "#fff");
         if (!lokasiPertemuan || typeof lokasiPertemuan === 'undefined' || lokasiPertemuan === '' || lokasiPertemuan === 'null') return flashNotification("Alert", "Lokasi pertemuan tidak boleh kosong", "#ff6347", "#fff");
 
+        let timestamp = new Date()
+
+        // console.log(timestamp)
+
+        let idTemp = branchid + "_" + userName + "_" + timestamp
+
+        // console.log(idTemp)
+
+        const encrypt = await Crypto.digestStringAsync(
+            Crypto.CryptoDigestAlgorithm.SHA512,
+            idTemp
+          );
+
+        console.log(encrypt)
+
         let queryInsertKelompokBaru = "INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, group_Produk, tanggal_Pertama, hari_Pertemuan, waktu_Pertemuan, lokasi_Pertemuan, branchid, input_Date, status ) VALUES "
             + "( '"
-            + ""
+            + encrypt
             + "', '"
             + namaKelompok
             + "', '"
@@ -301,36 +318,36 @@ const InisiasiFormPPKelompok = ({ route }) => {
             + 0
             + "' );"
         
-        try {
-            db.transaction(
-                tx => {
-                    tx.executeSql(queryInsertKelompokBaru)
-                }, function(error) {
-                    flashNotification("Error", error, "#ff6347", "#fff")
-                    return
-                }, function() {
-                    try{
-                        db.transaction(
-                            tx => {
-                                tx.executeSql(queryInsertSubKelompokBaru)
-                            }, function(error) {
-                                flashNotification("Error", error, "#ff6347", "#fff")
-                                return
-                            }, function() {
-                                flashNotification("Success", 'Kelompok berhasil ditambahkan', "#1F8327", "#fff")
-                                navigation.goBack()
-                            }
-                        )
-                    }catch(error){
-                        flashNotification("Error", error, "#ff6347", "#fff")
-                        return
-                    }
-                }
-            )
-        }catch(error){
-            flashNotification("Error", error, "#ff6347", "#fff")
-            return
-        }
+        // try {
+        //     db.transaction(
+        //         tx => {
+        //             tx.executeSql(queryInsertKelompokBaru)
+        //         }, function(error) {
+        //             flashNotification("Error", error, "#ff6347", "#fff")
+        //             return
+        //         }, function() {
+        //             try{
+        //                 db.transaction(
+        //                     tx => {
+        //                         tx.executeSql(queryInsertSubKelompokBaru)
+        //                     }, function(error) {
+        //                         flashNotification("Error", error, "#ff6347", "#fff")
+        //                         return
+        //                     }, function() {
+        //                         flashNotification("Success", 'Kelompok berhasil ditambahkan', "#1F8327", "#fff")
+        //                         navigation.goBack()
+        //                     }
+        //                 )
+        //             }catch(error){
+        //                 flashNotification("Error", error, "#ff6347", "#fff")
+        //                 return
+        //             }
+        //         }
+        //     )
+        // }catch(error){
+        //     flashNotification("Error", error, "#ff6347", "#fff")
+        //     return
+        // }
         
     }
 

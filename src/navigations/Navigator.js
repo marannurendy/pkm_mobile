@@ -228,7 +228,7 @@ function CustomDrawerContent(props) {
 
     const LogOutButton = () => {
         AsyncStorage.removeItem('userData')
-        // AsyncStorage.removeItem('SyncBy')
+        AsyncStorage.removeItem('SyncBy')
         navigation.replace('Login')
     }
 

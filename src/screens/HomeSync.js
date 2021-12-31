@@ -12,6 +12,7 @@ import SearchListView from '../components/SearchListView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, Colors } from 'react-native-paper';
 import db from '../database/Database'
+import { RadioButton } from 'react-native-paper';
 
 const colors = {
     HITAM: '#000',
@@ -47,10 +48,119 @@ export default function FrontHomeSync(props) {
     const [selectedItemsProspekLama, setSelectedItemsProspekLama] = useState([]);
     const [fetchingProspekLama, setFetchingProspekLama] = useState(false);
     const [isVisibleModalProspekLamaSearchListView, setIsVisibleModalProspekLamaSearchListView] = useState(false);
+    const [valueGetMaster, setValueGetMaster] = useState(true);
+    const [absentMaster, setAbsentMaster] = useState(null);
+    const [religionMaster, setReligionMaster] = useState(null);
+    const [livingTypeMaster, setLivingTypeMaster] = useState(null);
+    const [identityTypeMaster, setIdentityTypeMaster] = useState(null);
+    const [partnerJobMaster, setPartnerJobMaster] = useState(null);
+    const [residenceLocationMaster, setResidenceLocationMaster] = useState(null);
+    const [dwellingConditionMaster, setDwellingConditionMaster] = useState(null);
+    const [pembiayaanLainMaster, setPembiayaanLainMaster] = useState(null);
+    const [educationMaster, setEducationMaster] = useState(null);
+    const [productMaster, setProductMaster] = useState(null);
+    const [economicSectorMaster, setEconomicSectorMaster] = useState(null);
+    const [relationStatusMaster, setRelationStatusMaster] = useState(null);
+    const [marriageStatusMaster, setMarriageStatusMaster] = useState(null);
+    const [homeStatusMaster, setHomeStatusnMaster] = useState(null);
+    const [referralMaster, setReferralMaster] = useState(null);
+    const [transFundMaster, setTransFundMaster] = useState(null);
+    const [jenisPembiayaanMaster, setJenisPembiayaanMaster] = useState(null);
+    const [subjenisPembiayaanMaster, setSubjenisPembiayaanMaster] = useState(null);
+    const [tujuanPembiayaanMaster, setTujuanPembiayaanMaster] = useState(null);
+    const [kategoritujuanPembiayaanMaster, setKategoritujuanPembiayaanMaster] = useState(null);
+    const [frekuensiMaster, setFrekuensiMaster] = useState(null);
+    const [wilayahMobileMaster, setWilayahMobileMaster] = useState(null);
+    const [setUKtimeOutMaster, setSetUKtimeOutMaster] = useState(null);
+    const [masterAvailableSubGroupMaster, setMasterAvailableSubGroupMaster] = useState(null);
 
     useEffect(() => {
         syncData();
+        getMasterAsyncStorage();
     }, []);
+
+    async function getMasterAsyncStorage() {
+        if (__DEV__) console.log('getMasterAsyncStorage loaded');
+
+        const absent = await AsyncStorage.getItem('Absent');
+        const religion = await AsyncStorage.getItem('Religion');
+        const livingType = await AsyncStorage.getItem('LivingType');
+        const identityType = await AsyncStorage.getItem('IdentityType');
+        const partnerJob = await AsyncStorage.getItem('PartnerJob');
+        const dwellingCondition = await AsyncStorage.getItem('DwellingCondition');
+        const residenceLocation = await AsyncStorage.getItem('ResidenceLocation');
+        const pembiayaanLain = await AsyncStorage.getItem('PembiayaanLain');
+        const education = await AsyncStorage.getItem('Education');
+        const product = await AsyncStorage.getItem('Product');
+        const economicSector = await AsyncStorage.getItem('EconomicSector');
+        const relationStatus = await AsyncStorage.getItem('RelationStatus');
+        const marriageStatus = await AsyncStorage.getItem('MarriageStatus');
+        const homeStatus = await AsyncStorage.getItem('HomeStatus');
+        const referral = await AsyncStorage.getItem('Referral');
+        const transFund = await AsyncStorage.getItem('TransFund');
+        const jenisPembiayaan = await AsyncStorage.getItem('JenisPembiayaan');
+        const subjenisPembiayaan = await AsyncStorage.getItem('SubjenisPembiayaan');
+        const tujuanPembiayaan = await AsyncStorage.getItem('TujuanPembiayaan');
+        const kategoritujuanPembiayaan = await AsyncStorage.getItem('KategoritujuanPembiayaan');
+        const frekuensi = await AsyncStorage.getItem('Frekuensi');
+        const wilayahMobile = await AsyncStorage.getItem('WilayahMobile');
+        const setUKtimeOut = await AsyncStorage.getItem('SetUKtimeOut');
+        const masterAvailableSubGroup = await AsyncStorage.getItem('MasterAvailableSubGroup');
+
+        if (__DEV__) console.log('getMasterAsyncStorage absent:', absent);
+        if (__DEV__) console.log('getMasterAsyncStorage religion:', religion);
+        if (__DEV__) console.log('getMasterAsyncStorage livingType:', livingType);
+        if (__DEV__) console.log('getMasterAsyncStorage identityType:', identityType);
+        if (__DEV__) console.log('getMasterAsyncStorage partnerJob:', partnerJob);
+        if (__DEV__) console.log('getMasterAsyncStorage dwellingCondition:', dwellingCondition);
+        if (__DEV__) console.log('getMasterAsyncStorage residenceLocation:', residenceLocation);
+        if (__DEV__) console.log('getMasterAsyncStorage pembiayaanLain:', pembiayaanLain);
+        if (__DEV__) console.log('getMasterAsyncStorage education:', education);
+        if (__DEV__) console.log('getMasterAsyncStorage product:', product);
+        if (__DEV__) console.log('getMasterAsyncStorage economicSector:', economicSector);
+        if (__DEV__) console.log('getMasterAsyncStorage relationStatus:', relationStatus);
+        if (__DEV__) console.log('getMasterAsyncStorage marriageStatus:', marriageStatus);
+        if (__DEV__) console.log('getMasterAsyncStorage homeStatus:', homeStatus);
+        if (__DEV__) console.log('getMasterAsyncStorage referral:', referral);
+        if (__DEV__) console.log('getMasterAsyncStorage transFund:', transFund);
+        if (__DEV__) console.log('getMasterAsyncStorage jenisPembiayaan:', jenisPembiayaan);
+        if (__DEV__) console.log('getMasterAsyncStorage subjenisPembiayaan:', subjenisPembiayaan);
+        if (__DEV__) console.log('getMasterAsyncStorage tujuanPembiayaan:', tujuanPembiayaan);
+        if (__DEV__) console.log('getMasterAsyncStorage kategoritujuanPembiayaan:', kategoritujuanPembiayaan);
+        if (__DEV__) console.log('getMasterAsyncStorage frekuensi:', frekuensi);
+        if (__DEV__) console.log('getMasterAsyncStorage wilayahMobile:', wilayahMobile);
+        if (__DEV__) console.log('getMasterAsyncStorage setUKtimeOut:', setUKtimeOut);
+        if (__DEV__) console.log('getMasterAsyncStorage masterAvailableSubGroup:', masterAvailableSubGroup);
+
+        setAbsentMaster(absent);
+        setReligionMaster(religion);
+        setLivingTypeMaster(livingType);
+        setIdentityTypeMaster(identityType);
+        setPartnerJobMaster(partnerJob);
+        setDwellingConditionMaster(dwellingCondition);
+        setResidenceLocationMaster(residenceLocation);
+        setPembiayaanLainMaster(pembiayaanLain);
+        setEducationMaster(education);
+        setProductMaster(product);
+        setEconomicSectorMaster(economicSector);
+        setRelationStatusMaster(relationStatus);
+        setMarriageStatusMaster(marriageStatus);
+        setHomeStatusnMaster(homeStatus);
+        setReferralMaster(referral);
+        setTransFundMaster(transFund);
+        setJenisPembiayaanMaster(jenisPembiayaan);
+        setSubjenisPembiayaanMaster(subjenisPembiayaan);
+        setTujuanPembiayaanMaster(tujuanPembiayaan);
+        setKategoritujuanPembiayaanMaster(kategoritujuanPembiayaan);
+        setFrekuensiMaster(frekuensi);
+        setWilayahMobileMaster(wilayahMobile);
+        setSetUKtimeOutMaster(setUKtimeOut);
+        setMasterAvailableSubGroupMaster(masterAvailableSubGroup);
+    }
+
+    useEffect(() => {
+        setValueGetMaster(!isGetMaster());
+    }, [absentMaster, religionMaster, livingTypeMaster, identityTypeMaster, partnerJobMaster, dwellingConditionMaster, residenceLocationMaster, pembiayaanLainMaster, educationMaster, productMaster, economicSectorMaster, relationStatusMaster, marriageStatusMaster, homeStatusMaster, referralMaster, transFundMaster, jenisPembiayaanMaster, tujuanPembiayaanMaster, kategoritujuanPembiayaanMaster, frekuensiMaster, wilayahMobileMaster, setUKtimeOutMaster, masterAvailableSubGroupMaster]);
 
     async function syncData() {
         moment.locale('id');
@@ -214,7 +324,8 @@ export default function FrontHomeSync(props) {
             username: props.username,
             cabangid: props.cabangid,
             prospekMap,
-            prospekFilter: selectedIndexFilterProspek
+            prospekFilter: selectedIndexFilterProspek,
+            isGetMaster: valueGetMaster
         };
         getSyncData(params).then((responseJson) => {
             if (__DEV__) console.log('doSubmit getSyncData response:', responseJson);
@@ -270,6 +381,10 @@ export default function FrontHomeSync(props) {
         );
     }
 
+    const isGetMaster = () => {
+        return absentMaster !== null && religionMaster !== null && livingTypeMaster !== null && identityTypeMaster !== null && partnerJobMaster !== null && dwellingConditionMaster !== null && residenceLocationMaster !== null && pembiayaanLainMaster !== null && educationMaster !== null && productMaster !== null && economicSectorMaster !== null && relationStatusMaster !== null && marriageStatusMaster !== null && homeStatusMaster !== null && referralMaster !== null && transFundMaster !== null && jenisPembiayaanMaster !== null && subjenisPembiayaanMaster !== null && tujuanPembiayaanMaster !== null && kategoritujuanPembiayaanMaster !== null && frekuensiMaster !== null && wilayahMobileMaster !== null && setUKtimeOutMaster !== null && masterAvailableSubGroupMaster !== null
+    }
+
     const renderHeaderMenu = () => (
         <View
             style={styles.containerHeader}
@@ -303,6 +418,23 @@ export default function FrontHomeSync(props) {
             {renderHeaderMenu()}
             {renderHeaderProfile()}
         </View>
+    )
+
+    const renderCustomList = () => (
+        <RadioButton.Group onValueChange={newValue => setValueGetMaster(newValue)} value={valueGetMaster}>
+            <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
+                    <RadioButton value={true} />
+                    <Text>Tarik Master</Text>
+                </View>
+                {isGetMaster() && (
+                    <View style={[{ flexDirection: 'row', alignItems: 'center' }]}>
+                        <RadioButton value={false} />
+                        <Text>Skip</Text>
+                    </View>
+                )}
+            </View>
+        </RadioButton.Group>
     )
 
     const renderProspekList = () => dataFilterProspek.map((item, index) => (
@@ -369,6 +501,62 @@ export default function FrontHomeSync(props) {
                 Prospek
             </Text>
             {renderProspekList()}
+        </View>
+    )
+
+    const renderCustomFilter = () => (
+        <View style={{ marginBottom: 16, backgroundColor: 'whitesmoke', paddingVertical: 8 }}>
+            <View style={{flexDirection: 'row', alignItems: 'center', alignContent: 'center'}}>
+                <Text style={
+                    {
+                        marginRight: 16,
+                        fontSize: 16,
+                        color: colors.HITAM
+                    }
+                }>
+                    Get Master
+                </Text>
+                {renderCustomList()}
+            </View>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={true}>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ marginRight: 12 }}>
+                        <Text style={{ fontSize: 12, color: absentMaster === null ? 'red' : 'green' }}>Absent</Text>
+                        <Text style={{ fontSize: 12, color: religionMaster === null ? 'red' : 'green' }}>Religion</Text>
+                        <Text style={{ fontSize: 12, color: livingTypeMaster === null ? 'red' : 'green' }}>LivingType</Text>
+                        <Text style={{ fontSize: 12, color: identityTypeMaster === null ? 'red' : 'green' }}>IdentityType</Text>
+                        <Text style={{ fontSize: 12, color: partnerJobMaster === null ? 'red' : 'green' }}>PartnerJob</Text>
+                    </View>
+                    <View style={{ marginRight: 12 }}>
+                        <Text style={{ fontSize: 12, color: dwellingConditionMaster === null ? 'red' : 'green' }}>DwellingCondition</Text>
+                        <Text style={{ fontSize: 12, color: residenceLocationMaster === null ? 'red' : 'green' }}>ResidenceLocation</Text>
+                        <Text style={{ fontSize: 12, color: pembiayaanLainMaster === null ? 'red' : 'green' }}>PembiayaanLain</Text>
+                        <Text style={{ fontSize: 12, color: educationMaster === null ? 'red' : 'green' }}>Education</Text>
+                        <Text style={{ fontSize: 12, color: productMaster === null ? 'red' : 'green' }}>Product</Text>
+                    </View>
+                    <View style={{ marginRight: 12 }}>
+                        <Text style={{ fontSize: 12, color: economicSectorMaster === null ? 'red' : 'green' }}>EconomicSector</Text>
+                        <Text style={{ fontSize: 12, color: relationStatusMaster === null ? 'red' : 'green' }}>RelationStatus</Text>
+                        <Text style={{ fontSize: 12, color: marriageStatusMaster === null ? 'red' : 'green' }}>MarriageStatus</Text>
+                        <Text style={{ fontSize: 12, color: homeStatusMaster === null ? 'red' : 'green' }}>HomeStatus</Text>
+                        <Text style={{ fontSize: 12, color: referralMaster === null ? 'red' : 'green' }}>Referral</Text>
+                    </View>
+                    <View style={{ marginRight: 12 }}>
+                        <Text style={{ fontSize: 12, color: transFundMaster === null ? 'red' : 'green' }}>TransFund</Text>
+                        <Text style={{ fontSize: 12, color: jenisPembiayaanMaster === null ? 'red' : 'green' }}>JenisPembiayaan</Text>
+                        <Text style={{ fontSize: 12, color: subjenisPembiayaanMaster === null ? 'red' : 'green' }}>SubjenisPembiayaan</Text>
+                        <Text style={{ fontSize: 12, color: tujuanPembiayaanMaster === null ? 'red' : 'green' }}>TujuanPembiayaan</Text>
+                        <Text style={{ fontSize: 12, color: kategoritujuanPembiayaanMaster === null ? 'red' : 'green' }}>KategoritujuanPembiayaan</Text>
+                    </View>
+                    <View style={{ marginRight: 12 }}>
+                        <Text style={{ fontSize: 12, color: frekuensiMaster === null ? 'red' : 'green' }}>Frekuensi</Text>
+                        <Text style={{ fontSize: 12, color: wilayahMobileMaster === null ? 'red' : 'green' }}>WilayahMobile</Text>
+                        <Text style={{ fontSize: 12, color: setUKtimeOutMaster === null ? 'red' : 'green' }}>SetUKtimeOut</Text>
+                        <Text style={{ fontSize: 12, color: masterAvailableSubGroupMaster === null ? 'red' : 'green' }}>MasterAvailableSubGroup</Text>
+                    </View>
+                </View>
+            </ScrollView>
+            
         </View>
     )
 
@@ -531,14 +719,14 @@ export default function FrontHomeSync(props) {
                         borderColor: colors.HITAM,
                         borderRadius: 4,
                         marginTop: 8,
-                        height: 260
+                        minHeight: 160
                     }
                 }
             >
                 {renderProspekResultSearch()}
-                <ScrollView>
+                <View>
                     {selectedItemsProspek.length > 0 ? renderProspekResultList() : renderProspekResultEmpty()}
-                </ScrollView>
+                </View>
             </View>
         </>
     )
@@ -552,20 +740,21 @@ export default function FrontHomeSync(props) {
                         borderColor: colors.HITAM,
                         borderRadius: 4,
                         marginTop: 8,
-                        height: 260
+                        minHeight: 160
                     }
                 }
             >
                 {renderProspekLamaResultSearch()}
-                <ScrollView>
+                <View>
                     {selectedItemsProspekLama.length > 0 ? renderProspekLamaResultList() : renderProspekLamaResultEmpty()}
-                </ScrollView>
+                </View>
             </View>
         </>
     )
 
     const renderProspek = () => (
         <>
+            {renderCustomFilter()}
             {renderProspekFilter()}
             {renderProspekButton()}
             {renderProspekResult()}

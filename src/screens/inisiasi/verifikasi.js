@@ -79,7 +79,8 @@ const Verifikasi = ({ route }) => {
                                 return await Promise.all(
                                     items.map(async item => {
                                         const body = await AsyncStorage.getItem(`formVerifikasi_body_${item.idProspek}`);
-                                        if (__DEV__) console.log('doSync nestedPromise:', body);
+                                        if (__DEV__) console.log('doSync nestedPromise item:', item);
+                                        if (__DEV__) console.log('doSync nestedPromise body:', body);
 
                                         if (item.syncVerif === '1' && body) {
                                             return fetch(ApiSyncPostInisiasi + 'post_verif_status', {
@@ -95,13 +96,13 @@ const Verifikasi = ({ route }) => {
                                             .then((responseJSON) => {
                                                 if (__DEV__) console.error('$post /post_inisiasi/post_verif_status response', responseJSON);
 
-                                                const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE namaCalonNasabah = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE nama_lengkap = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE nama_lengkap = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE nama_lengkap = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE nama_lengkap = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE nama_lengkap = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE nama_lengkap = '" + item.namaNasabah + "'";
+                                                const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id_prospek = '" + item.idProspek + "'";
+                                                const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE id_prospek = '" + item.idProspek + "'";
+                                                const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE id_prospek = '" + item.idProspek + "'";
+                                                const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE id_prospek = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE id_prospek = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE id_prospek = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE id_prospek = '" + item.namaNasabah + "'";
                                                 db.transaction(
                                                     tx => {
                                                         tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {

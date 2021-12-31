@@ -448,7 +448,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
             try {
                 var query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, verifikasiTanggal, verifikasiStatus, verifikasiReason, id_prospek) values ';
                 var queryUKMaster = 'INSERT INTO Table_UK_Master (namaNasabah, status, idSosialisasiDatabase, id_prospek) values ';
-                var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, longitude, latitude, agama, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek, is_pernyataan_dibaca, lokasi_sosialisasi, is_alamat_domisili_sesuai_ktp, idSosialisasiDatabase) values ';
+                var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, longitude, latitude, agama, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek, is_pernyataan_dibaca, lokasi_sosialisasi, is_alamat_domisili_sesuai_ktp, siklus_pembiayaan, idSosialisasiDatabase) values ';
                 var queryUKPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, nomor_Identitas, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKKondisiRumah = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, nomor_Identitas, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKSektorEkonomi = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, nomor_Identitas, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha, id_prospek, idSosialisasiDatabase) values ';
@@ -749,6 +749,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + uk_client_data[i].Lokasi_Sos
                     + "','"
                     + isAlamatDomisiliSesuaiKtp
+                    + "','"
+                    + uk_client_data[i].Siklus_Pembiayaan
                     + "','"
                     + uniqueNumber
                     + "')";
@@ -1434,9 +1436,12 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const jsonGetDate = await getDate.json(getDate);
         if (__DEV__) console.log('ACTIONS GET SYNC DATE:', jsonGetDate);
 
-        const MasterData = await fetch(getMasterData);
-        const jsonMasterData = await MasterData.json(MasterData);
-        // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
+        let jsonMasterData = null;
+        if (params.isGetMaster) {
+            const MasterData = await fetch(getMasterData);
+            jsonMasterData = await MasterData.json(MasterData);
+            if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
+        }
 
         // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonPencairanData);
 
@@ -1474,30 +1479,33 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         AsyncStorage.setItem('SyncDate', jsonGetDate.currentDate);
         AsyncStorage.setItem('TransactionDate', jsonGetDate.currentDate);
-        AsyncStorage.setItem('Absent', JSON.stringify(jsonMasterData.data.absent));
-        AsyncStorage.setItem('Religion', JSON.stringify(jsonMasterData.data.religion));
-        AsyncStorage.setItem('LivingType', JSON.stringify(jsonMasterData.data.livingType));
-        AsyncStorage.setItem('IdentityType', JSON.stringify(jsonMasterData.data.identityType));
-        AsyncStorage.setItem('PartnerJob', JSON.stringify(jsonMasterData.data.partnerJob));
-        AsyncStorage.setItem('DwellingCondition', JSON.stringify(jsonMasterData.data.dwellingCondition));
-        AsyncStorage.setItem('ResidenceLocation', JSON.stringify(jsonMasterData.data.residenceLocation));
-        AsyncStorage.setItem('PembiayaanLain', JSON.stringify(jsonMasterData.data.pembiayaanLain));
-        AsyncStorage.setItem('Education', JSON.stringify(jsonMasterData.data.education));
-        AsyncStorage.setItem('Product', JSON.stringify(jsonMasterData.data.product));
-        AsyncStorage.setItem('EconomicSector', JSON.stringify(jsonMasterData.data.economicSector));
-        AsyncStorage.setItem('RelationStatus', JSON.stringify(jsonMasterData.data.relationStatus));
-        AsyncStorage.setItem('MarriageStatus', JSON.stringify(jsonMasterData.data.marriageStatus));
-        AsyncStorage.setItem('HomeStatus', JSON.stringify(jsonMasterData.data.homeStatus));
-        AsyncStorage.setItem('Referral', JSON.stringify(jsonMasterData.data.referral));
-        AsyncStorage.setItem('TransFund', JSON.stringify(jsonMasterData.data.transFund));
-        AsyncStorage.setItem('JenisPembiayaan', JSON.stringify(jsonMasterData.data.jenisPembiayaan));
-        AsyncStorage.setItem('SubjenisPembiayaan', JSON.stringify(jsonMasterData.data.subjenisPembiayaan));
-        AsyncStorage.setItem('TujuanPembiayaan', JSON.stringify(jsonMasterData.data.tujuanPembiayaan));
-        AsyncStorage.setItem('KategoritujuanPembiayaan', JSON.stringify(jsonMasterData.data.kategoritujuanPembiayaan));
-        AsyncStorage.setItem('Frekuensi', JSON.stringify(jsonMasterData.data.Frekuensi));
-        AsyncStorage.setItem('WilayahMobile', JSON.stringify(jsonMasterData.data.WilayahMobile));
-        AsyncStorage.setItem('SetUKtimeOut', JSON.stringify(jsonMasterData.data.SetUKtimeOut));
-        AsyncStorage.setItem('MasterAvailableSubGroup', JSON.stringify(jsonMasterData.data.MasterAvailableSubGroup));
+
+        if (params.isGetMaster) {
+            AsyncStorage.setItem('Absent', JSON.stringify(jsonMasterData.data.absent));
+            AsyncStorage.setItem('Religion', JSON.stringify(jsonMasterData.data.religion));
+            AsyncStorage.setItem('LivingType', JSON.stringify(jsonMasterData.data.livingType));
+            AsyncStorage.setItem('IdentityType', JSON.stringify(jsonMasterData.data.identityType));
+            AsyncStorage.setItem('PartnerJob', JSON.stringify(jsonMasterData.data.partnerJob));
+            AsyncStorage.setItem('DwellingCondition', JSON.stringify(jsonMasterData.data.dwellingCondition));
+            AsyncStorage.setItem('ResidenceLocation', JSON.stringify(jsonMasterData.data.residenceLocation));
+            AsyncStorage.setItem('PembiayaanLain', JSON.stringify(jsonMasterData.data.pembiayaanLain));
+            AsyncStorage.setItem('Education', JSON.stringify(jsonMasterData.data.education));
+            AsyncStorage.setItem('Product', JSON.stringify(jsonMasterData.data.product));
+            AsyncStorage.setItem('EconomicSector', JSON.stringify(jsonMasterData.data.economicSector));
+            AsyncStorage.setItem('RelationStatus', JSON.stringify(jsonMasterData.data.relationStatus));
+            AsyncStorage.setItem('MarriageStatus', JSON.stringify(jsonMasterData.data.marriageStatus));
+            AsyncStorage.setItem('HomeStatus', JSON.stringify(jsonMasterData.data.homeStatus));
+            AsyncStorage.setItem('Referral', JSON.stringify(jsonMasterData.data.referral));
+            AsyncStorage.setItem('TransFund', JSON.stringify(jsonMasterData.data.transFund));
+            AsyncStorage.setItem('JenisPembiayaan', JSON.stringify(jsonMasterData.data.jenisPembiayaan));
+            AsyncStorage.setItem('SubjenisPembiayaan', JSON.stringify(jsonMasterData.data.subjenisPembiayaan));
+            AsyncStorage.setItem('TujuanPembiayaan', JSON.stringify(jsonMasterData.data.tujuanPembiayaan));
+            AsyncStorage.setItem('KategoritujuanPembiayaan', JSON.stringify(jsonMasterData.data.kategoritujuanPembiayaan));
+            AsyncStorage.setItem('Frekuensi', JSON.stringify(jsonMasterData.data.Frekuensi));
+            AsyncStorage.setItem('WilayahMobile', JSON.stringify(jsonMasterData.data.WilayahMobile));
+            AsyncStorage.setItem('SetUKtimeOut', JSON.stringify(jsonMasterData.data.SetUKtimeOut));
+            AsyncStorage.setItem('MasterAvailableSubGroup', JSON.stringify(jsonMasterData.data.MasterAvailableSubGroup));
+        }
 
         return 'SYNC DONE';
     }

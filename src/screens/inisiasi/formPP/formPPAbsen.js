@@ -231,7 +231,11 @@ const InisiasiFormPPAbsen = ({ route }) => {
                     )
                 }
             }
+
             let queryUpdateKelompok = "UPDATE Table_PP_Kelompok SET status = '" + param.val + "' WHERE kelompok = '" + param.groupName + "'"
+            if(param.val === 3 || param.val === '3') {
+                queryUpdateKelompok = "UPDATE Table_PP_Kelompok SET status = '" + 4 + "' WHERE kelompok = '" + param.groupName + "'"
+            }
 
             try{
                 db.transaction(
@@ -244,8 +248,8 @@ const InisiasiFormPPAbsen = ({ route }) => {
             }catch(error){
                 alert(error)
             }
-            
-            alert("Persiapan Pembiayaan 1 berhasil dilakukan")
+
+            alert("Persiapan Pembiayaan berhasil dilakukan")
 
             navigation.goBack()
         }catch(error){
