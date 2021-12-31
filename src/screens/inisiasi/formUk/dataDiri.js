@@ -1519,7 +1519,7 @@ const DataDiri = ({route}) => {
                                     <FontAwesome5 name={'id-badge'} size={18} />
                                 </View>
                             </TouchableOpacity>
-                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {MIN_TANGGAL_LAHIR + 1}-{MAX_TANGGAL_LAHIR - 1} tahun</Text>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {MIN_TANGGAL_LAHIR + 1}-{MAX_TANGGAL_LAHIR - 2} tahun ({MAX_TANGGAL_LAHIR - 1} saat lunas)</Text>
                             {showCalendar && (
                                 <DateTimePicker
                                     value={date}
