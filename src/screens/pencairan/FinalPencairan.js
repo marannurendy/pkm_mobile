@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, ToastAndroid, Modal, CheckBox, SafeAreaView, ActivityIndicator, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, ToastAndroid, Modal, CheckBox, SafeAreaView, TextInput, ActivityIndicator, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -414,6 +414,7 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
+                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Ketua Sub Kelompok(*)</Text>
