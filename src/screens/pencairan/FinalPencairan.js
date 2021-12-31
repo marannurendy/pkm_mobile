@@ -414,6 +414,7 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
+                                    <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
                                     <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
@@ -427,6 +428,7 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureSubKel}} style={{margin: 10}} />
                                     </View>
+                                    <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Ketua Kelompok(*)</Text>
@@ -439,6 +441,7 @@ const FinalPencairan = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureKetuaKel}} style={{margin: 10}} />
                                     </View>
+                                    <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
                                 </View>
                             </Card>
                         </View>
@@ -534,18 +537,8 @@ const styles = StyleSheet.create({
       },
       modalView: {
         backgroundColor: "#ECE9E4",
-        // borderRadius: 5,
-        // alignItems: "center",
-        // shadowColor: "#000",
         height: window.height,
         width: window.width,
-        // shadowOffset: {
-        //   width: 0,
-        //   height: 2
-        // },
-        // shadowOpacity: 0.25,
-        // shadowRadius: 4,
-        // elevation: 5,
       },
       preview: {
         flex: 1,
