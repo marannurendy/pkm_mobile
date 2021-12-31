@@ -274,7 +274,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
         const encrypt = await Crypto.digestStringAsync(
             Crypto.CryptoDigestAlgorithm.SHA512,
             idTemp
-          );
+        );
 
         console.log(encrypt)
 
