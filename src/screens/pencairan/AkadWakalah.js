@@ -4,13 +4,12 @@ import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import ActionButton from 'react-native-action-button'
-import { scale, verticalScale } from 'react-native-size-matters'
 import { Card, Divider } from 'react-native-elements';
 import SignatureScreen from "react-native-signature-canvas";
 import { Button } from 'react-native-elements';
 import bismillah from '../../images/bismillah.png';
-
+import moment from 'moment'
+import { currency, inputVal } from '../../utils/Functions';
 import db from '../../database/Database'
 
 const window = Dimensions.get('window');
@@ -24,19 +23,21 @@ const AkadWakalah = ({route}) => {
     let [branchName, setBranchName] = useState();
     let [uname, setUname] = useState();
     let [aoName, setAoName] = useState();
-    let [menuShow, setMenuShow] = useState(0);
-    let [menuToggle, setMenuToggle] = useState(false);
-    let [data, setData] = useState([]);
     let [akadmenu, setakadmenu] = useState(0);
-    let [dataNasabah, setDataNasabah] = useState();
-    const [keyword, setKeyword] = useState('');
+    let [dataNasabah, setDataNasabah] = useState(route.params.data);
+    let [postPencairan, setPostPencairan] = useState();
+    moment.locale('id');
+    var Tanggal = moment(new Date()).format('LL')
+    var hariIni = moment(new Date()).format('dddd')
+    var uniqueNumber = (new Date().getTime()).toString(36);
+    const [key_tandaTanganNasabah, setKey_tandaTanganNasabah] = useState(`formUK_tandaTanganNasabah_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
+    const [key_tandaTanganSAOKC, setKey_tandaTanganSAOKC] = useState(`formUK_tandaTanganSAOKC_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
     const [modalVisibleAO, setModalVisibleAO] = useState(false);
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
     const [signatureAO, setSignatureAO] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
 
     useEffect(() => {
-        setDataNasabah(route.params.data)
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -50,68 +51,11 @@ const AkadWakalah = ({route}) => {
         }
 
         getUserData();
-        getSosialisasiDatabase();
-
-        // AsyncStorage.getItem('userData', (error, result) => {
-        //     let dt = JSON.parse(result)
-
-        //     setBranchId(dt.kodeCabang)
-        //     setBranchName(dt.namaCabang)
-        //     setUname(dt.userName)
-        //     setAoName(dt.AOname)
-        // })
-
-        // let GetInisiasi = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database GROUP BY lokasiSosialisasi;'
-        // db.transaction(
-        //     tx => {
-        //         tx.executeSql(GetInisiasi, [], (tx, results) => {
-        //             console.log(JSON.stringify(results.rows._array))
-        //             let dataLength = results.rows.length
-        //             // console.log(dataLength)
-
-        //             var arrayHelper = []
-        //             for(let a = 0; a < dataLength; a ++) {
-        //                 let data = results.rows.item(a)
-        //                 arrayHelper.push({'groupName' : data.lokasiSosialisasi, 'totalnasabah': data.jumlahNasabah, 'date': '08-09-2021'})
-        //                 // console.log("this")
-        //                 // console.log(data.COUNT(namaCalonNasabah))
-        //             }
-        //             console.log(arrayHelper)
-        //             setData(arrayHelper)
-        //         }
-        //         )
-        //     }
-        // )
-
-        // AsyncStorage.getItem('DwellingCondition', (error, result) => {
-        //     console.log(result)
-        // })
     }, []);
-
-    const getSosialisasiDatabase = () => {
-        if (__DEV__) console.log('getSosialisasiDatabase loaded');
-        if (__DEV__) console.log('getSosialisasiDatabase keyword:', keyword);
-
-        let query = 'SELECT lokasiSosialisasi, COUNT(namaCalonNasabah) as jumlahNasabah FROM Sosialisasi_Database WHERE lokasiSosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasiSosialisasi';
-        db.transaction(
-            tx => {
-                tx.executeSql(query, [], (tx, results) => {
-                    if (__DEV__) console.log('getSosialisasiDatabase results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({'groupName' : data.lokasiSosialisasi, 'Nomor': '08-09-2021'});
-                    }
-                    setData([{'groupName' :'Vina binti Supardi', 'Nomor': '900900102/3000000/25'}]);
-                })
-            }
-        )
-    }
     
     // Simpan Handler
     const submitHandler = () => {
-        navigation.navigate("FinalPencairan", {data: dataNasabah})
+        navigation.replace("FinalPencairan", {data: dataNasabah})
     }
 
     function ModalSignAO(text, onOK){
@@ -121,6 +65,7 @@ const AkadWakalah = ({route}) => {
         const handleOK = (signature) => {
             setSignatureAO(signature)
             setModalVisibleAO(!modalVisibleAO);
+            setPostPencairan({...postPencairan, "TTD_KC":key_tandaTanganSAOKC})
         }
 
         const handleEmpty = () => {
@@ -164,6 +109,7 @@ const AkadWakalah = ({route}) => {
         const handleOK = (signature) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
+            setPostPencairan({...postPencairan, "TTD_Nasabah":key_tandaTanganNasabah})
         }
 
         const handleEmpty = () => {
@@ -225,29 +171,32 @@ const AkadWakalah = ({route}) => {
             >
                 {ModalSignNasabah()}
             </Modal>
-            <View
-            style={{
+            <View style={{
                 flexDirection: "row",
                 justifyContent: 'space-between',
-                marginTop: 10,
+                marginTop: 40,
                 alignItems: "center",
-            }}
-            >
-                <View style={{height: dimension.height/4, marginHorizontal: 10, borderRadius: 20, marginTop: 30, flex: 1}}>
-                    <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover"}} imageStyle={{borderRadius: 20}}>
+                paddingHorizontal: 20,
+            }}>
+                <TouchableOpacity onPress={() => navigation.replace("FlowPencairan")} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10}}>
+                    <View>
+                        <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
+                    </View>
+                    <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>BACK</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.replace('FrontHome')}>
+                    <View style={{ flexDirection: 'row', alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, paddingHorizontal: 8 }}>
+                        <MaterialCommunityIcons name="home" size={30} color="#2e2e2e" />
+                        <Text>Home</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
 
-                        <TouchableOpacity onPress={() => navigation.replace('FrontHome')} style={{flexDirection: "row", alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, margin: 20, width: dimension.width/3}}>
-                            <View>
-                                <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
-                            </View>
-                            <Text style={{flex: 1, textAlign: 'center', borderRadius: 20, fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>MENU</Text>
-                        </TouchableOpacity>
-
-                        <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5, marginHorizontal: 20}}>{branchName}</Text>
-                        <Text numberOfLines={2} style={{fontSize: 13, fontWeight: 'bold', color: '#FFF', marginHorizontal: 20}}>{branchId} - {branchName}</Text>
-                        <Text style={{fontSize: 15, fontWeight: 'bold', color: '#FFF', marginHorizontal: 20}}>{uname} - {aoName}</Text>
-                    </ImageBackground>
-                </View>
+            <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>
+                <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover", justifyContent: 'center'}} imageStyle={{borderRadius: 20}}>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Akad</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{dataNasabah.Nama_Prospek}</Text>
+                </ImageBackground>
             </View>
             {akadmenu == 0 ?(
             <View style={{flex: 1, marginTop: 10, marginHorizontal:10, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#FFFCFA'}}>
@@ -258,8 +207,8 @@ const AkadWakalah = ({route}) => {
                             <Image style={{width: '100%', height: 75, resizeMode : 'contain', marginBottom: 10 }} 
                             source={bismillah}/>
                             <Text style={{fontSize: 14}}>Pada hari ini :{"\n"}
-                            {<Text style={{fontSize: 14, color:"#0645AD"}}>Kamis{"\n"}</Text>}
-                            Tanggal : {"\n"}{<Text style={{fontSize: 14, color:"#0645AD"}}>01/07/2021{"\n"}</Text>}
+                            {<Text style={{fontSize: 14, color:"#0645AD"}}>{hariIni}{"\n"}</Text>}
+                            Tanggal : {"\n"}{<Text style={{fontSize: 14, color:"#0645AD"}}>{Tanggal}{"\n"}</Text>}
                             PNM memberikan kuasa kepada nasabah untuk membeli
                                     barang-barang berupa (terlampir):</Text>
                             <TextInput 
@@ -271,9 +220,7 @@ const AkadWakalah = ({route}) => {
                                 returnKeyType="done"
                             />
                             <Text style={{fontSize: 14}}>Seharga (harga beli){"\n"}
-                            Rp. 2.000.000{"\n"}
-                            Terbilang{"\n"}
-                            Dua juta rupiah{"\n"}
+                            {<Text style={{fontSize: 14, color:"#0645AD"}}>Rp. {currency(parseInt(dataNasabah.Jumlah_Pinjaman||0))}</Text>}{"\n"}
                             sesuai dengan kebutuhannya. Kuasa ini diberikan dengan
                             hak subtitusi. PNM dan Nasabah dengan ini menyatakan
                             sepakat atas hak dan kewajiban dalam akad ini. Akad ini
@@ -294,7 +241,7 @@ const AkadWakalah = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
-                                    <Text style={{ fontWeight: 'bold' }}>{route.params.data.kelName}</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Tanda Tangan KC/SAO(*)</Text>
@@ -330,24 +277,24 @@ const AkadWakalah = ({route}) => {
                             <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Akad Murabahah </Text>
                             <Image style={{width: '100%', height: 75, resizeMode : 'contain', marginBottom: 10 }} 
                             source={bismillah}/>
-                            <Text style={{fontSize: 14}}>Akad Murabahah ini dibuat dan ditandatangani di {<Text style={{fontSize: 14, color:"#0645AD"}}>Jakarta </Text>} 
-                            pada tanggal {<Text style={{fontSize: 14, color:"#0645AD"}}>14 Juni 2021</Text>}  oleh dan antara:{"\n"}{"\n"}
+                            <Text style={{fontSize: 14}}>Akad Murabahah ini dibuat dan ditandatangani di {<Text style={{fontSize: 14, color:"#0645AD"}}>{branchName} </Text>} 
+                            pada tanggal {<Text style={{fontSize: 14, color:"#0645AD"}}>{Tanggal}</Text>} oleh dan antara:{"\n"}{"\n"}
                             1. PT. Permodalan Nasional Madani, berkedudukan 
                             dan berkantor pusat di Jakarta, dalam hal ini diwakili oleh 
-                            Istiqomah selaku Kepala Cabang/SAO Mekaar, selanjutnya 
+                            {aoName} selaku Kepala Cabang/SAO Mekaar, selanjutnya 
                             disebut PNM.{"\n"}{"\n"}
-                            2. Sri Rahayu bertempat Tinggal di JL. Mamalia Raya Gang
-                            Kelinci No. 4, RT 04 RW 10, KTP No. 3674000100020003,
+                            2. {dataNasabah.Nama_Prospek} bertempat Tinggal <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Alamat_Domisili}, </Text> 
+                            KTP No. <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Nomor_Identitas}</Text>,
                             selanjutnya disebut Nasabah.{"\n"}{"\n"}
-                            Nasabah dengan perseyujuan penjamin, yaitu Ahmad Sanusi, 
+                            Nasabah dengan perseyujuan penjamin, yaitu <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Nama_Penjamin}</Text>, 
                             sebagaimana dalam permohonan pembiayaan, telah 
                             menerima fasilitas pembiayaan Murabahah dari PNM 
                             dengan ketentuan sebagai berikut:{"\n"}
-                            a. Harga Beli Barang                : 3.000.000 {"\n"}
-                            b. Margin                                   : 250.000 {"\n"}
-                            c. Harga Jual Barang               : 3.250.000 {"\n"}
-                            d. Jangka Waktu                      : 25 Minggu {"\n"}
-                            e. Angsuran per Minggu          : 150.000 {"\n"}{"\n"}
+                            a. Harga Beli Barang    : <Text style={{fontSize: 14, color:"#0645AD"}}>Rp. {currency(parseInt(dataNasabah.Jumlah_Pinjaman))}</Text> {"\n"}
+                            b. Margin               : <Text style={{fontSize: 14, color:"#0645AD"}}>Rp. {currency(parseInt(dataNasabah.Jasa.split('.')[0]))}</Text> {"\n"}
+                            c. Harga Jual Barang    : <Text style={{fontSize: 14, color:"#0645AD"}}>Rp. {currency((parseInt(dataNasabah.Jasa.split('.')[0]) + parseInt(dataNasabah.Jumlah_Pinjaman)))} </Text>{"\n"}
+                            d. Jangka Waktu         : <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Term_Pembiayaan} Minggu </Text>{"\n"}
+                            e. Angsuran per Minggu  : <Text style={{fontSize: 14, color:"#0645AD"}}>Rp. {currency(parseInt(dataNasabah.Angsuran_Per_Minggu.split('.')[0]))} </Text>{"\n"}{"\n"}
 
                             Kewajiban Nasabah{"\n"}
                             a. Hadir tepat waktu dalam pertemuan Kelompok{"\n"}
@@ -396,6 +343,7 @@ const AkadWakalah = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
+                                    <Text style={{ fontWeight: 'bold' }}>{dataNasabah.Nama_Prospek}</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
                                     <Text style={{ fontWeight: 'bold' }}>Tanda Tangan KC/SAO(*)</Text>
@@ -408,6 +356,7 @@ const AkadWakalah = ({route}) => {
                                         />
                                         <Card.Image source={{uri: signatureAO}} style={{margin: 10}} />
                                     </View>
+                                    <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
                                 </View>
                             </Card>
                             <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>

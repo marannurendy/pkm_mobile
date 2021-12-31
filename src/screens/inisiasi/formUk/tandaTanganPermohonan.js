@@ -36,7 +36,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKemlompok] = useState(null);
     const [scrollEnabled, setScrollEnabled] = useState(true);
     const [submmitted, setSubmmitted] = useState(false);
-    const [valueNamaTandaTanganNasabah, setValueNamaTandaTanganNasabah] = useState(namaNasabah);
+    const [valueNamaTandaTanganNasabah, setValueNamaTandaTanganNasabah] = useState('');
     const [valueNamaTandaTanganSuamiPenjamin, setValueNamaTandaTanganSuamiPenjamin] = useState('');
     const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
     const [valueNamaTandaTanganKetuaKelompok, setValueNamaTandaTanganKetuaKelompok] = useState('');
@@ -174,6 +174,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         if (__DEV__) console.log('tx.executeSql data:', data);
 
                         if (data.nama_penjamin !== null && typeof data.nama_penjamin !== 'undefined') setValueNamaTandaTanganSuamiPenjamin(data.nama_penjamin);
+                        if (data.nama_lengkap !== null && typeof data.nama_lengkap !== 'undefined') setValueNamaTandaTanganNasabah(data.nama_lengkap);
                     }
                     return true;
                 }, function(error) {

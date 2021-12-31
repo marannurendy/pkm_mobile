@@ -15,6 +15,8 @@ let ApiSyncPostInisiasi = 'http://devpkm.pnm.co.id/v1/post_inisiasi/'
 
 let ApiPkmb = 'http://devpkm.pnm.co.id/v1/pkmb/get_pkmb/'
 
+let ApiDukcapil = 'http://api-dukcapilmicro.pnm.co.id/pnm-dukcapil-micro/public'
+
 // let ApiSync = 'http://api-pkmmobile.pnm.co.id/' //production
 
 //---------------------API POST-----------------------//
@@ -28,4 +30,4 @@ let Get_notification = "GetNotification"
 let Get_Date = "GetDate"
 
 // export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb}
-export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi}
+export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil}

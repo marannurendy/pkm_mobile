@@ -10,7 +10,7 @@ import { Checkbox } from 'react-native-paper';
 import { Button } from 'react-native-elements';
 import { Camera } from 'expo-camera'
 import moment from 'moment'
-
+import { currency, inputVal } from '../../utils/Functions';
 import db from '../../database/Database'
 
 const window = Dimensions.get('window');
@@ -45,7 +45,7 @@ const FinalPencairan = ({route}) => {
     const [key_tandaTanganKetKel, setkey_tandaTanganKetKel] = useState(`formUK_tandaTanganKetKel_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
     const [key_tandaTanganSubKel, setkey_tandaTanganSubKel] = useState(`formUK_tandaTanganSubKel_${uniqueNumber}_${dataNasabah.Nama_Prospek.replace(/\s+/g, '')}`);
     moment.locale('id');
-    var Tanggal = moment(new Date()).format('DD-MMM-YYYY')
+    var Tanggal = moment(new Date()).format('LL')
     var hariIni = moment(new Date()).format('dddd')
     var Jam = moment(new Date()).format('HH:mm')
 
@@ -392,7 +392,7 @@ const FinalPencairan = ({route}) => {
                             <Text style={{fontSize: 14}}>Saya yang bertanda Tangan dibawah ini:{"\n"}{"\n"}
                             Nama            :  {dataNasabah.Nama_Prospek}{"\n"}
                             Dengan ini menyatakan telah menerima pembiayaan
-                            sebesar: {dataNasabah.Jumlah_Pinjaman} rupiah, dan bersedia untuk
+                            sebesar: <Text style={{fontSize: 14, color:"#0645AD"}}>{currency(parseInt(dataNasabah.Jumlah_Pinjaman))}</Text> rupiah, dan bersedia untuk
                             bertanggung jawab sampai pelunasan pembiayaan,
                             serta mematuhi dan menerima semua keputusan / peraturan
                             yang berlaku di PT. Permodalan Nasional Madani.{"\n"}{"\n"}
@@ -400,7 +400,7 @@ const FinalPencairan = ({route}) => {
                             Hari                    :  {hariIni} {"\n"}
                             Tanggal             :  {Tanggal} {"\n"}
                             Jam                     :  {Jam} {"\n"}
-                            Kelompok          :  Gang Kelinci {"\n"}</Text>
+                            Kelompok          :  {dataNasabah.Nama_Kelompok} {"\n"}</Text>
                             <Card>
                                 <Card.Divider />
                                 <View style={{marginBottom: 10}}>

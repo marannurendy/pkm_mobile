@@ -155,7 +155,7 @@ const ProdukPembiayaan = ({ route }) => {
                             if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
                             if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
                             if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
-                        }) ;
+                        });
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan error:', error.message);
@@ -175,7 +175,6 @@ const ProdukPembiayaan = ({ route }) => {
                 if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0) {
                     let isRegular = rw;
-                    // if (rw === '1') isRegular = '1';
                     if (__DEV__) console.log('getStorageProduk isRegular:', isRegular);
                     var responseFiltered = await responseJSON.filter(data => data.isReguler === isRegular).map((data, i) => {
                         return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
@@ -530,6 +529,9 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
                         setValueJenisPembiayaan(itemValue);
+                        setValueNamaProduk(null);
+                        setValueProdukPembiayaan(null);
+                        setValueJumlahPinjaman(null);
                         getStorageNamaProduk(itemValue);
                     }}
                 >
@@ -549,6 +551,8 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
                         setValueNamaProduk(itemValue);
+                        setValueProdukPembiayaan(null);
+                        setValueJumlahPinjaman(null);
                         getStorageProduk(itemValue);
                     }}
                 >
@@ -568,6 +572,7 @@ const ProdukPembiayaan = ({ route }) => {
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
                         setValueProdukPembiayaan(itemValue);
+                        setValueJumlahPinjaman(null);
                         setSelectedProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1]);
                         setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex - 1].paymentTerm);
                     }}
@@ -656,7 +661,16 @@ const ProdukPembiayaan = ({ route }) => {
                 <Picker
                     selectedValue={valueTypePencairan}
                     style={{ height: 50, width: withTextInput }}
-                    onValueChange={(itemValue, itemIndex) => setValueTypePencairan(itemValue)}
+                    onValueChange={(itemValue, itemIndex) => {
+                        if (itemValue === '3') {
+                            setValueRekeningBank(true);
+                            setValueTypePencairan(itemValue);
+                            return;
+                        }
+
+                        setValueRekeningBank(false);
+                        setValueTypePencairan(itemValue);
+                    }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsTypePencairan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}

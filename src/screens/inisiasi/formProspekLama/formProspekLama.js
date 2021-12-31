@@ -218,7 +218,7 @@ const InisiasiFormProspekLama = ({ route }) => {
                 const responseJSON = JSON.parse(response);
                 if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0) {
-                    var responseFiltered = await responseJSON.filter((x) => x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}M`).map((data, i) => {
+                    var responseFiltered = await responseJSON.filter((x) => x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}M` || x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}S` || x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}Y`).map((data, i) => {
                         return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                     }) ?? [];
                     if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);

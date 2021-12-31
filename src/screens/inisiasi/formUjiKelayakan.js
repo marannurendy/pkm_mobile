@@ -31,10 +31,12 @@ const FormUjiKelayakan = ({route}) => {
     const [valuePilihSubKelompok, setValuePilihSubKelompok] = useState('');
     const [itemsSubGroup, setItemsSubGroup] = useState([]);
     const [tempItemsSubGroup, setTempItemsSubGroup] = useState([]);
+    const [isFormUKDisiplinNasabahDone, setIsFormUKDisiplinNasabahDone] = useState(null);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             setInfo();
+            getStorageIsFormUKDisiplinNasabahDone();
             getUserData();
             getUKMaster();
             getGroupList();
@@ -59,6 +61,16 @@ const FormUjiKelayakan = ({route}) => {
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         setCurrentDate(tanggal)
+    }
+
+    const getStorageIsFormUKDisiplinNasabahDone = async () => {
+        if (__DEV__) console.log('getStorageIsFormUKDisiplinNasabahDone loaded');
+        
+        const isFormUKDisiplinNasabahDone = await AsyncStorage.getItem(`isFormUKDisiplinNasabahDone_${id}`);
+        if (__DEV__) console.log('getStorageIsFormUKDisiplinNasabahDone', isFormUKDisiplinNasabahDone);
+
+        if (isFormUKDisiplinNasabahDone) setIsFormUKDisiplinNasabahDone(isFormUKDisiplinNasabahDone);
+        else setIsFormUKDisiplinNasabahDone(null);
     }
 
     const getUKMaster = () => {
@@ -131,7 +143,7 @@ const FormUjiKelayakan = ({route}) => {
 
     const doSubmit = () => {
         if (__DEV__) console.log('doSubmit loaded');
-
+        
         if (submitted) return true;
 
         setSubmitted(true);
@@ -144,6 +156,7 @@ const FormUjiKelayakan = ({route}) => {
 
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
+
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
 
                         if (statusSosialisasi === '3') {
@@ -325,7 +338,8 @@ const FormUjiKelayakan = ({route}) => {
                             "Kehadiran_PKM": data.kehadiran_pkm,
                             "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm,
                             "Sisipan": isSisipan,
-                            "Siklus": data.siklus
+                            "Siklus": data.siklus,
+                            "IsSesuaiDukcapil": data.is_nik_valid_dukcapil
                         }
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
 
@@ -341,7 +355,7 @@ const FormUjiKelayakan = ({route}) => {
                                 body: JSON.stringify(body)
                             });
                             const responseJSON = await response.json();
-                            if (__DEV__) console.error('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
+                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
 
                             if (responseJSON.responseCode === 200) {
                                 const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
@@ -412,7 +426,6 @@ const FormUjiKelayakan = ({route}) => {
                                                                             }
                                                                         ];
                                                                         if (__DEV__) console.log('doSubmit bodyProspekLama:', bodyProspekLama);
-                                                                
                                                                         try {
                                                                             fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
                                                                                 method: 'POST',
@@ -436,7 +449,30 @@ const FormUjiKelayakan = ({route}) => {
                                                             }
                                                         );
                                                     }
-                                                    
+
+                                                    const bodyKetuaSubketua = {
+                                                        "ID_Prospek": responseJSON.data[0].ID_Prospek,
+                                                        "Nama_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
+                                                        "Nama_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok
+                                                    };
+                                                    if (__DEV__) console.log('doSubmit bodyKetuaSubketua:', bodyKetuaSubketua);
+                                                    try {
+                                                        fetch(`${ApiSyncPostInisiasi}post_ketua_subketua`, {
+                                                            method: 'POST',
+                                                            headers: {
+                                                                Accept: 'application/json',
+                                                                'Content-Type': 'application/json'
+                                                            },
+                                                            body: JSON.stringify(bodyKetuaSubketua)
+                                                        })
+                                                        .then((response) => response.json())
+                                                        .then((responseJson) => {
+                                                            if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua success:', responseJson);
+                                                        })
+                                                    } catch(error) {
+                                                        if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua error:', error);
+                                                    }
+
                                                     if (__DEV__) {
                                                         db.transaction(
                                                             tx => {
@@ -569,6 +605,7 @@ const FormUjiKelayakan = ({route}) => {
                                                     Alert.alert(responseJSON.responseDescription, message);
                                                     setSubmitted(false);
                                                     navigation.goBack();
+                                                    // navigation.replace('UjiKelayakan', { groupName: groupName });
                                                 }
                                             );
                                         }, function(error) {
@@ -663,18 +700,19 @@ const FormUjiKelayakan = ({route}) => {
                                     <Picker
                                         selectedValue={valuePilihSubKelompok}
                                         onValueChange={(itemValue, itemIndex) => {
-                                            if (__DEV__) console.log('Pilih Sub Kelompok:', tempItemsSubGroup[itemIndex - 1]);
-
-                                            const data = tempItemsSubGroup[itemIndex - 1];
-                                            if (data) {
-                                                const total = parseInt(data.Total) || 15;
-                                                if (total >= 15) {
-                                                    Alert.alert('Error', `Sub kelompok br.net penuh (Max 15)`);
-                                                    setValuePilihSubKelompok('');
-                                                    return;
+                                            if (itemIndex > 0) {
+                                                const data = itemsSubGroup[itemIndex - 1];
+                                                if (data) {
+                                                    const label = data.label.slice(12, -1).trim();
+                                                    const total = parseInt(label) || 0;
+                                                    if (total >= 15) {
+                                                        Alert.alert('Error', `Sub kelompok br.net penuh (Max 15)`);
+                                                        setValuePilihSubKelompok('');
+                                                        return;
+                                                    }
                                                 }
+                                                if (__DEV__) console.log('Pilih Sub Kelompok:', itemIndex, data.label.slice(12, -1));
                                             }
-
                                             setValuePilihSubKelompok(itemValue);
                                         }}
                                     >
@@ -695,32 +733,51 @@ const FormUjiKelayakan = ({route}) => {
                                 <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Disiplin Nasabah</Text>
                             </View>
                             <View style={{alignItems: 'flex-end'}}>
-                            <BouncyCheckbox 
-                                size={20}
-                                isChecked={true}
-                                fillColor={'green'}
-                                disableBuiltInState
-                            />
-                        </View>
+                                <BouncyCheckbox 
+                                    size={20}
+                                    isChecked={isFormUKDisiplinNasabahDone === '1' && true}
+                                    fillColor={isFormUKDisiplinNasabahDone === '1' ? 'green' : 'white'}
+                                    disableBuiltInState
+                                />
+                            </View>
                         </TouchableOpacity>
                     )}
 
-                    <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
-                        <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
-                            <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Data Diri Pribadi</Text>
-                        </View>
-                        <View style={{alignItems: 'flex-end'}}>
-                            <BouncyCheckbox 
-                                size={20}
-                                isChecked={screenState > 0}
-                                fillColor={screenState > 0 ? 'green' : 'white'}
-                                disableBuiltInState
-                            />
-                        </View>
-                    </TouchableOpacity>
+                    {statusSosialisasi === '3' ? (
+                        <TouchableOpacity onPress={() => isFormUKDisiplinNasabahDone === '1' ? navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: isFormUKDisiplinNasabahDone === '1' ? '#0c5da0' : 'gray'}}>
+                            <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Data Diri Pribadi</Text>
+                            </View>
+                            <View style={{alignItems: 'flex-end'}}>
+                                <BouncyCheckbox 
+                                    size={20}
+                                    isChecked={isFormUKDisiplinNasabahDone === '1' && screenState > 0}
+                                    fillColor={isFormUKDisiplinNasabahDone === '1' && screenState > 0 ? 'green' : 'white'}
+                                    disableBuiltInState
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    ) : (
+                        <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                            <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Data Diri Pribadi</Text>
+                            </View>
+                            <View style={{alignItems: 'flex-end'}}>
+                                <BouncyCheckbox 
+                                    size={20}
+                                    isChecked={screenState > 0}
+                                    fillColor={screenState > 0 ? 'green' : 'white'}
+                                    disableBuiltInState
+                                />
+                            </View>
+                        </TouchableOpacity>
+                    )}
 
                     <TouchableOpacity onPress={() => screenState > 0 ? navigation.navigate('ProdukPembiayaan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 0 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
