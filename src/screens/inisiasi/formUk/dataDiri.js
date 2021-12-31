@@ -915,7 +915,7 @@ const DataDiri = ({route}) => {
         try {
             setLoading(true)
             SetButtonCam(true)
-            const options = { quality: 0.5, base64: true };
+            const options = { quality: 0.3, base64: true };
             const data = await camera.current.takePictureAsync(options)
 
             if (type === "dataPenjamin") {
@@ -1835,7 +1835,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }} maxLength={2} />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'chart-pie'} size={18} />
