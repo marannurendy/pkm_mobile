@@ -56,8 +56,8 @@ const InisiasiFormPPH = ({ route }) => {
         console.log(val)
         // let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + val + " GROUP BY a.kelompok, b.Nasabah_Id "
         // let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok GROUP BY a.kelompok "
-        // let queryGetGroup2 = "SELECT * FROM Table_PP_ListNasabah WHERE status <> 'null' AND status = " + 4
-        let queryGetGroup3 = "SELECT DISTINCT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status <> 'null' AND b.status = " + val + " GROUP BY a.kelompok"
+        let queryGetGroup2 = "SELECT * FROM Table_PP_ListNasabah WHERE status <> 'null' AND status = " + 3
+        let queryGetGroup3 = "SELECT DISTINCT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status <> 'null' AND a.status <> '4' AND b.status = " + val + " GROUP BY a.kelompok"
         
 
         const listData = (queryGetGroup) => (new Promise ((resolve,reject) => {
@@ -84,7 +84,7 @@ const InisiasiFormPPH = ({ route }) => {
         }))
 
         const listDataGet = await listData(queryGetGroup3)
-        console.log(listDataGet)
+        console.log(listDataGet.length)
         setData(listDataGet)
     }
 
