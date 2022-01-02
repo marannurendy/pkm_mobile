@@ -915,7 +915,7 @@ const DataDiri = ({route}) => {
         try {
             setLoading(true)
             SetButtonCam(true)
-            const options = { quality: 0.5, base64: true };
+            const options = { quality: 0.3, base64: true };
             const data = await camera.current.takePictureAsync(options)
 
             if (type === "dataPenjamin") {
@@ -1519,7 +1519,7 @@ const DataDiri = ({route}) => {
                                     <FontAwesome5 name={'id-badge'} size={18} />
                                 </View>
                             </TouchableOpacity>
-                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {MIN_TANGGAL_LAHIR + 1}-{MAX_TANGGAL_LAHIR - 1} tahun</Text>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {MIN_TANGGAL_LAHIR + 1}-{MAX_TANGGAL_LAHIR - 2} tahun ({MAX_TANGGAL_LAHIR - 1} saat lunas)</Text>
                             {showCalendar && (
                                 <DateTimePicker
                                     value={date}
@@ -1558,6 +1558,7 @@ const DataDiri = ({route}) => {
                                     <FontAwesome5 name={'address-card'} size={18} />
                                 </View>
                             </View>
+                            <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat identitas wajib menyertakan RT dan RW</Text>
                         </View>
 
                         <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18}}>
@@ -1581,6 +1582,7 @@ const DataDiri = ({route}) => {
                                         <FontAwesome5 name={'address-card'} size={18} />
                                     </View>
                                 </View>
+                                <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat domisili wajib menyertakan RT dan RW</Text>
                             </View>
                         )}
 
@@ -1835,7 +1837,7 @@ const DataDiri = ({route}) => {
                             <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }} maxLength={2} />
                                 </View>
                                 <View>
                                     <FontAwesome5 name={'chart-pie'} size={18} />

@@ -1436,9 +1436,12 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const jsonGetDate = await getDate.json(getDate);
         if (__DEV__) console.log('ACTIONS GET SYNC DATE:', jsonGetDate);
 
-        const MasterData = await fetch(getMasterData);
-        const jsonMasterData = await MasterData.json(MasterData);
-        // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
+        let jsonMasterData = null;
+        if (params.isGetMaster) {
+            const MasterData = await fetch(getMasterData);
+            jsonMasterData = await MasterData.json(MasterData);
+            if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
+        }
 
         // if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonPencairanData);
 
@@ -1476,30 +1479,33 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         AsyncStorage.setItem('SyncDate', jsonGetDate.currentDate);
         AsyncStorage.setItem('TransactionDate', jsonGetDate.currentDate);
-        AsyncStorage.setItem('Absent', JSON.stringify(jsonMasterData.data.absent));
-        AsyncStorage.setItem('Religion', JSON.stringify(jsonMasterData.data.religion));
-        AsyncStorage.setItem('LivingType', JSON.stringify(jsonMasterData.data.livingType));
-        AsyncStorage.setItem('IdentityType', JSON.stringify(jsonMasterData.data.identityType));
-        AsyncStorage.setItem('PartnerJob', JSON.stringify(jsonMasterData.data.partnerJob));
-        AsyncStorage.setItem('DwellingCondition', JSON.stringify(jsonMasterData.data.dwellingCondition));
-        AsyncStorage.setItem('ResidenceLocation', JSON.stringify(jsonMasterData.data.residenceLocation));
-        AsyncStorage.setItem('PembiayaanLain', JSON.stringify(jsonMasterData.data.pembiayaanLain));
-        AsyncStorage.setItem('Education', JSON.stringify(jsonMasterData.data.education));
-        AsyncStorage.setItem('Product', JSON.stringify(jsonMasterData.data.product));
-        AsyncStorage.setItem('EconomicSector', JSON.stringify(jsonMasterData.data.economicSector));
-        AsyncStorage.setItem('RelationStatus', JSON.stringify(jsonMasterData.data.relationStatus));
-        AsyncStorage.setItem('MarriageStatus', JSON.stringify(jsonMasterData.data.marriageStatus));
-        AsyncStorage.setItem('HomeStatus', JSON.stringify(jsonMasterData.data.homeStatus));
-        AsyncStorage.setItem('Referral', JSON.stringify(jsonMasterData.data.referral));
-        AsyncStorage.setItem('TransFund', JSON.stringify(jsonMasterData.data.transFund));
-        AsyncStorage.setItem('JenisPembiayaan', JSON.stringify(jsonMasterData.data.jenisPembiayaan));
-        AsyncStorage.setItem('SubjenisPembiayaan', JSON.stringify(jsonMasterData.data.subjenisPembiayaan));
-        AsyncStorage.setItem('TujuanPembiayaan', JSON.stringify(jsonMasterData.data.tujuanPembiayaan));
-        AsyncStorage.setItem('KategoritujuanPembiayaan', JSON.stringify(jsonMasterData.data.kategoritujuanPembiayaan));
-        AsyncStorage.setItem('Frekuensi', JSON.stringify(jsonMasterData.data.Frekuensi));
-        AsyncStorage.setItem('WilayahMobile', JSON.stringify(jsonMasterData.data.WilayahMobile));
-        AsyncStorage.setItem('SetUKtimeOut', JSON.stringify(jsonMasterData.data.SetUKtimeOut));
-        AsyncStorage.setItem('MasterAvailableSubGroup', JSON.stringify(jsonMasterData.data.MasterAvailableSubGroup));
+
+        if (params.isGetMaster) {
+            AsyncStorage.setItem('Absent', JSON.stringify(jsonMasterData.data.absent));
+            AsyncStorage.setItem('Religion', JSON.stringify(jsonMasterData.data.religion));
+            AsyncStorage.setItem('LivingType', JSON.stringify(jsonMasterData.data.livingType));
+            AsyncStorage.setItem('IdentityType', JSON.stringify(jsonMasterData.data.identityType));
+            AsyncStorage.setItem('PartnerJob', JSON.stringify(jsonMasterData.data.partnerJob));
+            AsyncStorage.setItem('DwellingCondition', JSON.stringify(jsonMasterData.data.dwellingCondition));
+            AsyncStorage.setItem('ResidenceLocation', JSON.stringify(jsonMasterData.data.residenceLocation));
+            AsyncStorage.setItem('PembiayaanLain', JSON.stringify(jsonMasterData.data.pembiayaanLain));
+            AsyncStorage.setItem('Education', JSON.stringify(jsonMasterData.data.education));
+            AsyncStorage.setItem('Product', JSON.stringify(jsonMasterData.data.product));
+            AsyncStorage.setItem('EconomicSector', JSON.stringify(jsonMasterData.data.economicSector));
+            AsyncStorage.setItem('RelationStatus', JSON.stringify(jsonMasterData.data.relationStatus));
+            AsyncStorage.setItem('MarriageStatus', JSON.stringify(jsonMasterData.data.marriageStatus));
+            AsyncStorage.setItem('HomeStatus', JSON.stringify(jsonMasterData.data.homeStatus));
+            AsyncStorage.setItem('Referral', JSON.stringify(jsonMasterData.data.referral));
+            AsyncStorage.setItem('TransFund', JSON.stringify(jsonMasterData.data.transFund));
+            AsyncStorage.setItem('JenisPembiayaan', JSON.stringify(jsonMasterData.data.jenisPembiayaan));
+            AsyncStorage.setItem('SubjenisPembiayaan', JSON.stringify(jsonMasterData.data.subjenisPembiayaan));
+            AsyncStorage.setItem('TujuanPembiayaan', JSON.stringify(jsonMasterData.data.tujuanPembiayaan));
+            AsyncStorage.setItem('KategoritujuanPembiayaan', JSON.stringify(jsonMasterData.data.kategoritujuanPembiayaan));
+            AsyncStorage.setItem('Frekuensi', JSON.stringify(jsonMasterData.data.Frekuensi));
+            AsyncStorage.setItem('WilayahMobile', JSON.stringify(jsonMasterData.data.WilayahMobile));
+            AsyncStorage.setItem('SetUKtimeOut', JSON.stringify(jsonMasterData.data.SetUKtimeOut));
+            AsyncStorage.setItem('MasterAvailableSubGroup', JSON.stringify(jsonMasterData.data.MasterAvailableSubGroup));
+        }
 
         return 'SYNC DONE';
     }

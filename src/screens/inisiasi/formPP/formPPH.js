@@ -295,7 +295,7 @@ const InisiasiFormPPH = ({ route }) => {
                         // console.log(dataGroupCollect)
                         // console.log(dataGroupTotal)
 
-                        let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
+                        let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, ID_DK_Mobile: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
 
                         console.log(dataSend)
 

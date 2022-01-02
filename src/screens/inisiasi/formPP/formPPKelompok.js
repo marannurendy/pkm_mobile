@@ -274,7 +274,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
         const encrypt = await Crypto.digestStringAsync(
             Crypto.CryptoDigestAlgorithm.SHA512,
             idTemp
-          );
+        );
 
         console.log(encrypt)
 
@@ -318,36 +318,36 @@ const InisiasiFormPPKelompok = ({ route }) => {
             + 0
             + "' );"
         
-        // try {
-        //     db.transaction(
-        //         tx => {
-        //             tx.executeSql(queryInsertKelompokBaru)
-        //         }, function(error) {
-        //             flashNotification("Error", error, "#ff6347", "#fff")
-        //             return
-        //         }, function() {
-        //             try{
-        //                 db.transaction(
-        //                     tx => {
-        //                         tx.executeSql(queryInsertSubKelompokBaru)
-        //                     }, function(error) {
-        //                         flashNotification("Error", error, "#ff6347", "#fff")
-        //                         return
-        //                     }, function() {
-        //                         flashNotification("Success", 'Kelompok berhasil ditambahkan', "#1F8327", "#fff")
-        //                         navigation.goBack()
-        //                     }
-        //                 )
-        //             }catch(error){
-        //                 flashNotification("Error", error, "#ff6347", "#fff")
-        //                 return
-        //             }
-        //         }
-        //     )
-        // }catch(error){
-        //     flashNotification("Error", error, "#ff6347", "#fff")
-        //     return
-        // }
+        try {
+            db.transaction(
+                tx => {
+                    tx.executeSql(queryInsertKelompokBaru)
+                }, function(error) {
+                    flashNotification("Error", error, "#ff6347", "#fff")
+                    return
+                }, function() {
+                    try{
+                        db.transaction(
+                            tx => {
+                                tx.executeSql(queryInsertSubKelompokBaru)
+                            }, function(error) {
+                                flashNotification("Error", error, "#ff6347", "#fff")
+                                return
+                            }, function() {
+                                flashNotification("Success", 'Kelompok berhasil ditambahkan', "#1F8327", "#fff")
+                                navigation.goBack()
+                            }
+                        )
+                    }catch(error){
+                        flashNotification("Error", error, "#ff6347", "#fff")
+                        return
+                    }
+                }
+            )
+        }catch(error){
+            flashNotification("Error", error, "#ff6347", "#fff")
+            return
+        }
         
     }
 
