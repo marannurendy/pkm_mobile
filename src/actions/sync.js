@@ -1414,17 +1414,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 "OurBranchID": params.cabangid.toString()
             });
             if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE BODY', body);
-
-            // const responseGetSosialisasiMobile = await fetch(postGetSosialisasiMobile, {
-            //     method: 'POST',
-            //     headers: {
-            //         Accept:
-            //             'application/json',
-            //             'Content-Type': 'application/json'
-            //         },
-            //     body: body
-            // });
-
+            
             try {
                 const responseGetSosialisasiMobile = await fetchWithTimeout(postGetSosialisasiMobile, {
                     timeout: 360000, // 6 menit
@@ -1442,10 +1432,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE DONE', jsonGetSosialisasiMobile);
             } catch (error) {
                 if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
+
+                let message = JSON.stringify(error);
                 if (error.name === 'AbortError') {
-                    Alert.alert('Error', 'Request timeout');
-                    return 'SYNC FAILED TIMEOUT';
+                    message = 'Request timeout';
                 }
+
+                Alert.alert('Error', message);
+                return 'SYNC FAILED TIMEOUT';
             }
         }
 
