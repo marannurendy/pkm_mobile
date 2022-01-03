@@ -114,7 +114,7 @@ const ProdukPembiayaan = ({ route }) => {
                                 if (data.nama_Produk !== null && typeof data.nama_Produk !== 'undefined') {
                                     setTimeout(() => {
                                         setValueNamaProduk(data.nama_Produk);
-                                        getStorageProduk(data.nama_Produk);
+                                        getStorageProduk(data.nama_Produk, data.jenis_Pembiayaan);
                                         return resolve('next');
                                     }, 1500);
                                 }
@@ -164,9 +164,10 @@ const ProdukPembiayaan = ({ route }) => {
         )
     }
 
-    const getStorageProduk = async (rw) => {
+    const getStorageProduk = async (rw, rs) => {
         if (__DEV__) console.log('getStorageProduk loaded');
         if (__DEV__) console.log('getStorageProduk rw:', rw);
+        if (__DEV__) console.log('getStorageProduk rs:', rs);
 
         try {
             const response = await AsyncStorage.getItem('Product');
@@ -175,14 +176,16 @@ const ProdukPembiayaan = ({ route }) => {
                 if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0) {
                     let IsMP = rw;
+                    let IsReguler = rs;
                     if (__DEV__) console.log('getStorageProduk IsMP:', IsMP);
+                    if (__DEV__) console.log('getStorageProduk IsIsRegulerMP:', IsReguler);
                     var responseFiltered = [];
                     if (valueJenisPembiayaan === '1') {
-                        responseFiltered = await responseJSON.filter(data => data.isReguler === valueJenisPembiayaan && data.IsMP === IsMP).map((data, i) => {
+                        responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler && data.IsMP === IsMP).map((data, i) => {
                             return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                         }) ?? [];
                     } else {
-                        responseFiltered = await responseJSON.filter(data => data.isReguler === valueJenisPembiayaan).map((data, i) => {
+                        responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler).map((data, i) => {
                             return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                         }) ?? [];
                     }
@@ -562,7 +565,7 @@ const ProdukPembiayaan = ({ route }) => {
                         setValueNamaProduk(itemValue);
                         setValueProdukPembiayaan(null);
                         setValueJumlahPinjaman(null);
-                        getStorageProduk(itemValue);
+                        getStorageProduk(itemValue, valueJenisPembiayaan);
                     }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
@@ -620,8 +623,9 @@ const ProdukPembiayaan = ({ route }) => {
                         value={valueTermPembiayaan} 
                         onChangeText={(text) => setValueTermPembiayaan(text)} 
                         keyboardType='numeric'
-                        placeholder="0" 
+                        placeholder="0"
                         style={styles.F1}
+                        editable={false}
                     />
                 </View>
                 <View>

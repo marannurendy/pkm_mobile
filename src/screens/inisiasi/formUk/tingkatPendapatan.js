@@ -595,7 +595,8 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         <View style={styles.MB16}>
             <Text>Hasil</Text>
             <View style={styles.F1}>
-                <Text style={[styles.P4, { color: 'gray' }]}>{((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1)) / 4) + (((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0) / ((dataProdukPembiayaan.jumlahPinjaman / dataProdukPembiayaan.termPembiayaan) + ((dataProdukPembiayaan.jumlahPinjaman * dataProdukPembiayaan.termPembiayaan) / 100 / dataProdukPembiayaan.termPembiayaan)) < 2 ? 'Tidak Layak' : 'Layak'}</Text>
+                {/* <Text style={[styles.P4, { color: 'gray' }]}>{((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1)) / 4) + (((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0) / ((dataProdukPembiayaan.jumlahPinjaman / dataProdukPembiayaan.termPembiayaan) + ((dataProdukPembiayaan.jumlahPinjaman * dataProdukPembiayaan.termPembiayaan) / 100 / dataProdukPembiayaan.termPembiayaan)) < 2 ? 'Tidak Layak' : 'Layak'}</Text> */}
+                <Text style={[styles.P4, { color: 'gray' }]}>{`>= 800.000 Layak`}</Text>
             </View>
         </View>
     )
