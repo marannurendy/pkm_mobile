@@ -623,8 +623,9 @@ const ProdukPembiayaan = ({ route }) => {
                         value={valueTermPembiayaan} 
                         onChangeText={(text) => setValueTermPembiayaan(text)} 
                         keyboardType='numeric'
-                        placeholder="0" 
+                        placeholder="0"
                         style={styles.F1}
+                        editable={false}
                     />
                 </View>
                 <View>
