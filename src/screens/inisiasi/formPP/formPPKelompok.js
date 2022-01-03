@@ -30,6 +30,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
     ]);
     const [tanggalPKMPertama, setTanggalPKMPertama] = useState('');
     const [showCalendar, setShowCalendar] = useState(false);
+    const [showTime, setShowTIme] = useState(false);
     const [valueHariPertemuan, setValueHariPertemuan] = useState(null);
     const [itemsHariPertemuan, setItemsHariPertemuan] = useState([
         {
@@ -53,7 +54,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
             value: '6'
         }
     ]);
-    const [valueWaktuPertemuan, setValueWaktuPertemuan] = useState(null);
+    const [valueWaktuPertemuan, setValueWaktuPertemuan] = useState('');
     const [itemsWaktuPertemuan, setItemsWaktuPertemuan] = useState([
         {
             label: '10:00',
@@ -94,6 +95,12 @@ const InisiasiFormPPKelompok = ({ route }) => {
         let dateValue = moment(date).format('YYYY-MM-DD');
         setShowCalendar(false);
         setTanggalPKMPertama(dateValue);
+    }
+
+    const waktuPKMPertamaDatePickerHandler = (event, time) => {
+        let timeValue = moment(time).format('LT');
+        setShowTIme(false);
+        setValueWaktuPertemuan(timeValue);
     }
 
     const renderFormNamaKelompok = () => (
@@ -185,20 +192,51 @@ const InisiasiFormPPKelompok = ({ route }) => {
     const renderFormWaktuPertemuan = () => (
         <View style={styles.MT8}>
             <Text>Waktu Pertemuan (*)</Text>
-            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                <Picker
-                    selectedValue={valueWaktuPertemuan}
-                    style={{ height: 50, width: withTextInput }}
-                    onValueChange={(itemValue, itemIndex) => {
-                        setValueWaktuPertemuan(itemValue);
-                    }}
-                >
-                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsWaktuPertemuan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                </Picker>
-            </View>
+            <TouchableOpacity
+                onPress={() => setShowTIme(true)}
+            >
+                <View style={[styles.textInputContainer, { width: withTextInput }]}>
+                    <View style={styles.F1}>
+                        <TextInput 
+                            value={valueWaktuPertemuan}
+                            editable={false}
+                            style={styles.F1}
+                        />
+                    </View>
+                    <View>
+                        <FontAwesome5 name={'clock'} size={18} />
+                    </View>
+                </View>
+            </TouchableOpacity>
+            {showTime && (
+                <DateTimePicker
+                    value={date}
+                    mode={'time'}
+                    is24Hour={true}
+                    display="default"
+                    onChange={waktuPKMPertamaDatePickerHandler}
+                />
+            )}
         </View>
     )
+
+    // const renderFormWaktuPertemuan = () => (
+    //     <View style={styles.MT8}>
+    //         <Text>Waktu Pertemuan (*)</Text>
+    //         <View style={{ borderWidth: 1, borderRadius: 6 }}>
+    //             <Picker
+    //                 selectedValue={valueWaktuPertemuan}
+    //                 style={{ height: 50, width: withTextInput }}
+    //                 onValueChange={(itemValue, itemIndex) => {
+    //                     setValueWaktuPertemuan(itemValue);
+    //                 }}
+    //             >
+    //                 <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+    //                 {itemsWaktuPertemuan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+    //             </Picker>
+    //         </View>
+    //     </View>
+    // )
 
     const renderFormLokasiPertemuan = () => (
         <View style={styles.MT8}>
