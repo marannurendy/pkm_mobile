@@ -276,7 +276,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
             idTemp
         );
 
-        console.log(encrypt)
+        console.log("ini")
 
         let queryInsertKelompokBaru = "INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, group_Produk, tanggal_Pertama, hari_Pertemuan, waktu_Pertemuan, lokasi_Pertemuan, branchid, input_Date, status ) VALUES "
             + "( '"
@@ -332,7 +332,6 @@ const InisiasiFormPPKelompok = ({ route }) => {
                                 tx.executeSql(queryInsertSubKelompokBaru)
                             }, function(error) {
                                 flashNotification("Error", error, "#ff6347", "#fff")
-                                return
                             }, function() {
                                 flashNotification("Success", 'Kelompok berhasil ditambahkan', "#1F8327", "#fff")
                                 navigation.goBack()
@@ -340,13 +339,11 @@ const InisiasiFormPPKelompok = ({ route }) => {
                         )
                     }catch(error){
                         flashNotification("Error", error, "#ff6347", "#fff")
-                        return
                     }
                 }
             )
         }catch(error){
             flashNotification("Error", error, "#ff6347", "#fff")
-            return
         }
         
     }

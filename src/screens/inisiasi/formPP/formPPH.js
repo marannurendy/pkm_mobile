@@ -119,9 +119,8 @@ const InisiasiFormPPH = ({ route }) => {
 
     const syncHandler = async (val) => {
             let queryGetDataPP = "SELECT * FROM Table_PP_ListNasabah WHERE isPP = '" + val + "'"
-            // let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah WHERE isPP = '" + val + "'"
-            let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah"
-            // console.log(queryGetDataPP)
+            let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah WHERE status <> 'null'"
+
             var listKelompok = []
 
             const getDataKelompok = (queryGetGroupPP) => (new Promise ((resolve, reject) => {
@@ -152,8 +151,6 @@ const InisiasiFormPPH = ({ route }) => {
                     tx => {
                         tx.executeSql(queryGetDataPP, [], (tx, results) => {
                             let length = results.rows.length
-
-                            console.log(length)
 
                             for(let a = 0; a < length; a++) {
                                 let data = results.rows.item(a)
@@ -232,12 +229,6 @@ const InisiasiFormPPH = ({ route }) => {
             if(val === 1 || val === '1') {
                 const dataGroup = await getDataKelompok(queryGetGroupPP)
                 let dataLength = dataGroup.length
-                // console.log(dataGroup)
-                // console.log(dataLength)
-
-                // console.log(dataLength)
-                // let queryGetGroupDetail = "SELECT * FROM Table_PP_Kelompok WHERE kelompok = '" + dataGroup[0].groupName + "'"
-                // console.log(queryGetGroupDetail)
 
                 const getDataKelompokPP = (query) => (new Promise((resolve, reject) => {
                     try{
@@ -283,21 +274,19 @@ const InisiasiFormPPH = ({ route }) => {
 
                 try{
                     for(let a = 0; a < dataLength; a++) {
-                        console.log(dataGroup[a].groupName)
                         let groupName = dataGroup[a].groupName
                         let queryGetGroupDetail = "SELECT * FROM Table_PP_Kelompok WHERE kelompok = '" + groupName + "'"
                         let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.kelompok = '" + groupName + "' GROUP BY a.kelompok "
 
-                        // console.log(queryGetGroup)
+                        console.log(queryGetGroup)
                         const dataGroupCollect = await getDataKelompokPP(queryGetGroupDetail)
                         const dataGroupTotal = await getDataJumlahPP(queryGetGroup)
 
-                        // console.log(dataGroupCollect)
-                        // console.log(dataGroupTotal)
+                        let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok : "", ID_DK_Mobile: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
 
-                        let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok : dataGroupCollect.kelompok_Id, ID_DK_Mobile: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
-
-                        console.log(dataSend)
+                        if(dataGroupCollect.isSisipan === 1 || dataGroupCollect.isSisipan === '1') {
+                            dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok : dataGroupCollect.kelompok_Id, ID_DK_Mobile: "", LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}  
+                        }
 
                         try{
                             fetch(ApiSyncPostInisiasi + "post_data_kelompok", {
@@ -317,16 +306,13 @@ const InisiasiFormPPH = ({ route }) => {
                                     flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
                                     getData(val)
                                 }else{
-                                    // setLoading(false)
                                     flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
                                 }
                             }).catch((error) => {
-                                // setLoading(false)
                                 flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
                             })
                         }catch(error){
                             console.log("disini")
-                            // setLoading(false)
                             flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
                         }
                     }
