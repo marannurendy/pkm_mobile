@@ -69,9 +69,17 @@ const Inisasi = () => {
     }, [navigation]);
 
     const getInfoHeader = async () => {
+        const roleUser = await AsyncStorage.getItem('roleUser');
+        const userData = await AsyncStorage.getItem('userData');
+        const user =  JSON.parse(userData);
+
         let queryDetailSosUk = "SELECT COUNT(namaCalonNasabah) as totalSos FROM Sosialisasi_Database"
         let queryDetailVerif = "SELECT COUNT(nama_lengkap) as totalVerif FROM Table_UK_DataDiri WHERE status_Verif = '1' AND status_UK_Pass = '1' AND status_Verifikasi_Pass = '0'"
         let queryDetailPp = "SELECT COUNT(Nama_Nasabah) as totalPp FROM Table_PP_ListNasabah WHERE status <> 'null' AND status IS NOT NULL"
+
+        if (roleUser === 'SAO') {
+            queryDetailVerif += ' AND created_by != "' + user.userName + '"';
+        }
 
         const totDetailSosUk = (queryDetailSosUk) => (new Promise((resolve, reject) => {
             try{
@@ -175,12 +183,23 @@ const Inisasi = () => {
         )
     }
 
-    const getUKDataDiriVerifikasi = () => {
+    const getUKDataDiriVerifikasi = async () => {
         if (__DEV__) console.log('getUKDataDiri loaded');
         if (__DEV__) console.log('getUKDataDiri keyword', keyword);
 
-        let query = 'SELECT lokasi_sosialisasi, COUNT(lokasi_sosialisasi) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND lokasi_sosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasi_sosialisasi';
+        const roleUser = await AsyncStorage.getItem('roleUser');
+        const userData = await AsyncStorage.getItem('userData');
+        const user =  JSON.parse(userData);
+
+        let query = 'SELECT lokasi_sosialisasi, COUNT(lokasi_sosialisasi) as jumlah FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND lokasi_sosialisasi LIKE "%'+ keyword +'%"';
         // let query = 'SELECT lokasi_sosialisasi, COUNT(lokasi_sosialisasi) as jumlah FROM Table_UK_DataDiri WHERE lokasi_sosialisasi LIKE "%'+ keyword +'%" GROUP BY lokasi_sosialisasi';
+        
+        if (roleUser === 'SAO') {
+            query += ' AND created_by != "' + user.userName + '"';
+        }
+
+        query += ' GROUP BY lokasi_sosialisasi'
+        
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {

@@ -235,7 +235,8 @@ db.transaction(tx => {
             is_alamat_domisili_sesuai_ktp varchar,
             is_nik_valid_dukcapil varchar,
             siklus_pembiayaan varchar,
-            idSosialisasiDatabase varchar
+            idSosialisasiDatabase varchar,
+            created_by varchar
         );`
     )
 

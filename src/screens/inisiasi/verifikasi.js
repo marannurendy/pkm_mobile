@@ -18,14 +18,35 @@ const Verifikasi = ({ route }) => {
     const [data, setData] = useState([]);
     const [keyword, setKeyword] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [role, setRole] = useState(null);
+    const [username, setUsername] = useState("")
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             GetInfo();
+            getRole();
+            getUserData();
             getDataDiri();
         });
         return unsubscribe;
     }, [navigation]);
+
+    const getRole = async () => {
+        if (__DEV__) console.log('getRole loaded');
+        
+        const roleUser = await AsyncStorage.getItem('roleUser');
+        setRole(roleUser);
+    }
+
+    const getUserData = () => {
+        AsyncStorage.getItem('userData', (error, result) => {
+            if (error) __DEV__ && console.log('userData error:', error);
+
+            __DEV__ && console.log('userData response:', result);
+            let data = JSON.parse(result);
+            setUsername(data.userName);
+        });
+    }
 
     const getDataDiri = () => {
         if (__DEV__) console.log('getDataDiri loaded');
@@ -33,6 +54,11 @@ const Verifikasi = ({ route }) => {
 
         let query = 'SELECT * FROM Table_UK_DataDiri WHERE status_Verif = "1" AND status_UK_Pass = "1" AND status_Verifikasi_Pass = "0" AND lokasi_sosialisasi = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
         // let query = 'SELECT * FROM Table_UK_DataDiri WHERE lokasi_sosialisasi = "'+ groupName +'" AND nama_lengkap LIKE "%'+ keyword +'%"';
+        
+        if (role === 'SAO') {
+            query += ' AND created_by != "' + username + '"';
+        }
+        
         db.transaction(
             tx => {
                 tx.executeSql(query, [], (tx, results) => {
