@@ -310,11 +310,11 @@ const InisiasiFormPPKelompok = ({ route }) => {
         // console.log(idTemp)
 
         const encrypt = await Crypto.digestStringAsync(
-            Crypto.CryptoDigestAlgorithm.SHA512,
+            Crypto.CryptoDigestAlgorithm.MD5,
             idTemp
         );
 
-        console.log("ini")
+        console.log(encrypt)
 
         let queryInsertKelompokBaru = "INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, group_Produk, tanggal_Pertama, hari_Pertemuan, waktu_Pertemuan, lokasi_Pertemuan, branchid, input_Date, status ) VALUES "
             + "( '"
