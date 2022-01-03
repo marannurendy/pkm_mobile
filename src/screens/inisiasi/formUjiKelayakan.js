@@ -631,6 +631,7 @@ const FormUjiKelayakan = ({route}) => {
                             setSubmitted(false);
                         }
                     }
+                    setSubmitted(false);
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
                     ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
