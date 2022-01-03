@@ -33,6 +33,7 @@ export default function FrontHome() {
     const [modalVisible, setModalVisible] = useState(false)
 
     let [isKc, setIsKc] = useState(false)
+    let [isAo, setIsAo] = useState(false)
     let [isRkh, setIsRkh] = useState(false)
 
     const netInfo = useNetInfo()
@@ -127,8 +128,13 @@ export default function FrontHome() {
             // })
 
             const roleUser = await AsyncStorage.getItem('roleUser')
+
+            console.log(roleUser)
+
             if(roleUser === 'KC'){
                 setIsKc(true)
+            }else if(roleUser === 'AO'){
+                setIsAo(true)
             }
 
             const syncStatus = await AsyncStorage.getItem('userData')
@@ -884,7 +890,7 @@ export default function FrontHome() {
 
                         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 
-                            <TouchableOpacity onPress={() => navigation.replace('Pencairan')} style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: '#fff',
+                            <TouchableOpacity disabled={isAo} onPress={() => navigation.replace('Pencairan')} style={{height: window.height/6.5, width: window.width/2.5, borderRadius: 20, backgroundColor: isAo === true ? '#E6E6E6' : '#fff',
                                 shadowColor: '#000',
                                 shadowOffset: {
                                 width: 0,

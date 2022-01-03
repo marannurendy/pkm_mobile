@@ -394,7 +394,7 @@ const Inisasi = () => {
                             <Text numberOfLines={1} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Verifikasi</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity disabled={roleCheck === 3 ? true : false} onPress={() => ppPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: roleCheck === 3 ? '#E6E6E6' : '#17BEBB', padding: 20}}>
+                        <TouchableOpacity onPress={() => ppPressHandler()} style={{width: dimension.width/2.5, height: dimension.height/6, borderRadius: 20, backgroundColor: '#17BEBB', padding: 20}}>
                             <FontAwesome5 name="get-pocket" size={50} color="#FFFCFA" />
                             <Text numberOfLines={2} style={{color: "#FFFCFA", fontSize: 20, fontWeight: 'bold', marginTop: 10}}>Persiapan Pembiayaan</Text>
                         </TouchableOpacity>
@@ -556,58 +556,91 @@ const Inisasi = () => {
                         <Text style={{fontSize: 30, fontWeight: 'bold'}}>Persiapan Pembiayaan</Text>
                     </View>
 
-                    <View style={{flex: 1, justifyContent: 'center'}}>
-                        <View style={{width: '100%', height: dimension.height/2.5}}>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{height: dimension.height/6}} >
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('InisiasiFormPPKelompokIntro')}
-                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
-                                >
-                                    <FontAwesome5 name={'users'} size={50} color={'#FFF'} />
-                                    <View style={{flex: 1}}>
-                                        <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>Kelompok</Text>
-                                    </View>
-                                </TouchableOpacity>
+                    <View style={{flex: 1}}>
+                        <View style={{width: '100%', height: '100%'}}>
+                            <ScrollView showsHorizontalScrollIndicator={false} style={{height: dimension.height/6}} >
+                                {roleCheck === 1 ? (<View></View>) : (
+                                    <View>
+                                        <TouchableOpacity
+                                            onPress={() => navigation.navigate('InisiasiFormPPKelompokIntro')}
+                                            style={{margin: 10, backgroundColor: '#17BEBB', borderRadius: 10}}
+                                        >
+                                            <View style={{flexDirection: 'row', alignItems: 'center', margin: 15}}>
+                                                <View style={{padding: 10, width: 50, alignItems: 'center'}}>
+                                                    <FontAwesome5 name={'users'} size={20} color={'#FFF'} />
+                                                </View>
+                                                <View style={{flex: 1, marginHorizontal: 20}}>
+                                                    <Text numberOfLines={1} style={{fontSize: 20, fontWeight: 'bold', color: '#FFF'}}>Kelompok</Text>
+                                                </View>
+                                            </View>
+                                            
+                                        </TouchableOpacity>
 
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('InisiasiFormPPH', { source: '1' })}
-                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
-                                >
-                                    <FontAwesome5 name={'calendar'} size={50} color={'#FFF'} />
-                                    <View style={{flex: 1}}>
-                                        <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 1</Text>
+                                        <TouchableOpacity
+                                        onPress={() => navigation.navigate('InisiasiFormPPH', { source: '1' })}
+                                        style={{margin: 10, backgroundColor: '#17BEBB', borderRadius: 10}}
+                                        >
+                                        <View style={{flexDirection: 'row', alignItems: 'center', margin: 15}}>
+                                            <View style={{padding: 10, width: 50, alignItems: 'center'}}>
+                                                <FontAwesome5 name={'calendar'} size={20} color={'#FFF'} />
+                                            </View>
+                                            <View style={{flex: 1, marginHorizontal: 20}}>
+                                                <Text numberOfLines={1} style={{fontSize: 20, fontWeight: 'bold', color: '#FFF'}}>PP Hari 1</Text>
+                                            </View>
+                                        </View>
+
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            onPress={() => navigation.navigate('InisiasiFormPPH', { source: '2' })}
+                                            style={{margin: 10, backgroundColor: '#17BEBB', borderRadius: 10}}
+                                        >
+                                            <View style={{flexDirection: 'row', alignItems: 'center', margin: 15}}>
+                                                <View style={{padding: 10, width: 50, alignItems: 'center'}}>
+                                                    <FontAwesome5 name={'calendar-alt'} size={20} color={'#FFF'} />
+                                                </View>
+                                                <View style={{flex: 1, marginHorizontal: 20}}>
+                                                    <Text numberOfLines={1} style={{fontSize: 20, fontWeight: 'bold', color: '#FFF'}}>PP Hari 2</Text>
+                                                </View>
+                                            </View>
+                                            
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            onPress={() => navigation.navigate('InisiasiFormPPH', { source: '3' })}
+                                            style={{margin: 10, backgroundColor: '#17BEBB', borderRadius: 10}}
+                                        >
+                                            <View style={{flexDirection: 'row', alignItems: 'center', margin: 15}}>
+                                                <View style={{padding: 10, width: 50, alignItems: 'center'}}>
+                                                    <FontAwesome5 name={'calendar-check'} size={20} color={'#FFF'} />
+                                                </View>
+                                                <View style={{flex: 1, marginHorizontal: 20}}>
+                                                    <Text numberOfLines={1} style={{fontSize: 20, fontWeight: 'bold', color: '#FFF'}}>PP Hari 3</Text>
+                                                </View>
+                                            </View>
+                                            
+                                        </TouchableOpacity>
                                     </View>
-                                </TouchableOpacity>
+                                    
+                                )}
+
+                                {roleCheck === 3 ? (<View></View>) : (
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('InisiasiFormPP')}
+                                        style={{margin: 10, backgroundColor: '#17BEBB', borderRadius: 10}}
+                                    >
+                                        <View style={{flexDirection: 'row', alignItems: 'center', margin: 15}}>
+                                            <View style={{padding: 10, width: 50, alignItems: 'center'}}>
+                                                <FontAwesome5 name={'money-check'} size={20} color={'#FFF'} />
+                                            </View>
+                                            <View style={{flex: 1, marginHorizontal: 20}}>
+                                                <Text numberOfLines={1} style={{fontSize: 20, fontWeight: 'bold', color: '#FFF'}}>Persetujuan Pembiayaan</Text>
+                                            </View>
+                                        </View>
+                                        
+                                    </TouchableOpacity>
+                                )}
                                 
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('InisiasiFormPPH', { source: '2' })}
-                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
-                                >
-                                    <FontAwesome5 name={'calendar-alt'} size={50} color={'#FFF'} />
-                                    <View style={{flex: 1}}>
-                                        <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 2</Text>
-                                    </View>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('InisiasiFormPPH', { source: '3' })}
-                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
-                                >
-                                    <FontAwesome5 name={'calendar-check'} size={50} color={'#FFF'} />
-                                    <View style={{flex: 1}}>
-                                        <Text numberOfLines={1} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>PP Hari 3</Text>
-                                    </View>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity
-                                    onPress={() => navigation.navigate('InisiasiFormPP')}
-                                    style={{width: dimension.width/2, margin: 10, backgroundColor: '#17BEBB', borderRadius: 40, paddingHorizontal: 20, paddingTop: 30}}
-                                >
-                                    <FontAwesome5 name={'money-check'} size={50} color={'#FFF'} />
-                                    <View style={{flex: 1}}>
-                                        <Text numberOfLines={2} style={{fontSize: 30, fontWeight: 'bold', color: '#FFF'}}>Persetujuan Pembiayaan</Text>
-                                    </View>
-                                </TouchableOpacity>
                             </ScrollView>
                         </View>
                     </View>
