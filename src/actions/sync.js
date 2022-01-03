@@ -918,6 +918,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             statusKelompok = 1
                         }
 
+                        if(uk_client_data[i].ID_MPP === 1 || uk_client_data[i].ID_MPP === '1') {
+                            statusKelompok = 2
+                        }else if(uk_client_data[i].ID_MPP === 2 || uk_client_data[i].ID_MPP === '2') {
+                            statusKelompok = 3
+                        }else if(uk_client_data[i].ID_MPP === 3 || uk_client_data[i].ID_MPP === '3') {
+                            statusKelompok = 4
+                        }
+
                         queryPPKelompok = queryPPKelompok + "('"
                             + uk_client_data[i].Kelompok_ID
                             + "','"
@@ -996,6 +1004,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     }
 
                     if(uk_client_data[i].Is_Sisipan === 1 || uk_client_data[i].Is_Sisipan === '1') {
+
+                        let statusSisipan = 1
+
+                        if(uk_client_data[i].ID_MPP === 2 || uk_client_data[i].ID_MPP === '2') {
+                            statusSisipan = 4
+                        }
+
                         queryPPSisipan = queryPPSisipan + "('"
                         + uk_client_data[i].Kelompok_ID
                         + "','"

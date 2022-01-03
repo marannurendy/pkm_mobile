@@ -417,11 +417,9 @@ const InisiasiFormPPH = ({ route }) => {
             <View style={stylesheet.containerProspek}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20}}>
                     <Text style={stylesheet.textProspek}>Persiapan Pembiayaan {source}</Text>
-                    {source === '3' ? (<View></View>) : (
-                        <TouchableOpacity onPress={() => syncHandler(source)} style={{ alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, justifyContent: 'center' }}>
-                            <Text style={{ textAlign: 'center', borderRadius: 20, fontSize: 16, fontWeight: 'bold', marginHorizontal: 20}}>SYNC</Text>
-                        </TouchableOpacity>
-                    )}
+                    <TouchableOpacity onPress={() => syncHandler(source)} style={{ alignItems: "center", backgroundColor: "#BCC8C6", borderRadius: 10, justifyContent: 'center' }}>
+                        <Text style={{ textAlign: 'center', borderRadius: 20, fontSize: 16, fontWeight: 'bold', marginHorizontal: 20}}>SYNC</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={stylesheet.containerSearch}>
                     <FontAwesome5 name="search" size={15} color="#2e2e2e" style={styles.MH8} />

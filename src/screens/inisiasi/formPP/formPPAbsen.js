@@ -219,23 +219,23 @@ const InisiasiFormPPAbsen = ({ route }) => {
                     }
                 )
 
-                if(param.val === '3' || param.val === 3) {
-                    var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data[a].Nasabah_Id + `'`
+                // if(param.val === '3' || param.val === 3) {
+                //     var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data[a].Nasabah_Id + `'`
 
-                    db.transaction(
-                        tx => {
-                            tx.executeSql(queryUpdate)
-                        }, function(error) {
-                            alert(error)
-                        }
-                    )
-                }
+                //     db.transaction(
+                //         tx => {
+                //             tx.executeSql(queryUpdate)
+                //         }, function(error) {
+                //             alert(error)
+                //         }
+                //     )
+                // }
             }
 
             let queryUpdateKelompok = "UPDATE Table_PP_Kelompok SET status = '" + param.val + "' WHERE kelompok = '" + param.groupName + "'"
-            if(param.val === 3 || param.val === '3') {
-                queryUpdateKelompok = "UPDATE Table_PP_Kelompok SET status = '" + 4 + "' WHERE kelompok = '" + param.groupName + "'"
-            }
+            // if(param.val === 3 || param.val === '3') {
+            //     queryUpdateKelompok = "UPDATE Table_PP_Kelompok SET status = '" + 4 + "' WHERE kelompok = '" + param.groupName + "'"
+            // }
 
             try{
                 db.transaction(
