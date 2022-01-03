@@ -118,7 +118,7 @@ const InisiasiFormPPH = ({ route }) => {
       }
 
     const syncHandler = async (val) => {
-            let queryGetDataPP = "SELECT * FROM Table_PP_ListNasabah WHERE isPP = '" + val + "'"
+            let queryGetDataPP = "SELECT * FROM Table_PP_ListNasabah a INNER JOIN Table_PP_Kelompok b ON a.kelompok = b.kelompok WHERE isPP = '" + val + "'"
             let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah WHERE status <> 'null'"
 
             var listKelompok = []
@@ -151,15 +151,23 @@ const InisiasiFormPPH = ({ route }) => {
                     tx => {
                         tx.executeSql(queryGetDataPP, [], (tx, results) => {
                             let length = results.rows.length
+                            let datas = []
 
                             for(let a = 0; a < length; a++) {
                                 let data = results.rows.item(a)
                                 let ketAbsen = data.AbsPP === '1' ? "Hadir" : data.AbsPP === '2' ? "Tidak Hadir" : "Tanpa Keterangan"
-                                let dataSend = {ID_Absen: data.AbsPP, ID_MPP: val, ID_Prospek: data.Nasabah_Id, Keterangan_Absen: ketAbsen, Nama_Kelompok: data.kelompok, Sub_Kelompok: data.subKelompok}
+
+                                let dataSend = {ID_Absen: data.AbsPP, ID_DK_Mobile: data.kelompok_Id, ID_Kelompok: '', ID_MPP: val, ID_Prospek: data.Nasabah_Id, Keterangan_Absen: ketAbsen, Nama_Kelompok: data.kelompok, Sub_Kelompok: data.subKelompok}
+
+                                if(data.isSisipan === '1' || data.isSisipan === 1) {
+                                    dataSend = {ID_Absen: data.AbsPP, ID_DK_Mobile: '', ID_Kelompok: data.kelompok_Id, ID_MPP: val, ID_Prospek: data.Nasabah_Id, Keterangan_Absen: ketAbsen, Nama_Kelompok: data.kelompok, Sub_Kelompok: data.subKelompok}
+                                }
 
                                 listKelompok.push(data.groupName)
+                                datas.push(data)
 
-                                console.log(dataSend)
+                                // console.log(dataSend)
+                                // console.log(datas)
 
                                 try{
                                     fetch(ApiSyncPostInisiasi + "post_pp", {
