@@ -175,7 +175,6 @@ const ProdukPembiayaan = ({ route }) => {
                 if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0) {
                     let IsMP = rw;
-                    alert(`${valueJenisPembiayaan}-${IsMP}`);
                     if (__DEV__) console.log('getStorageProduk IsMP:', IsMP);
                     var responseFiltered = [];
                     if (valueJenisPembiayaan === '1') {
