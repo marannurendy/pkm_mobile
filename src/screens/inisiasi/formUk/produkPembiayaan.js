@@ -174,11 +174,20 @@ const ProdukPembiayaan = ({ route }) => {
                 const responseJSON = JSON.parse(response);
                 if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0) {
-                    let isRegular = rw;
-                    if (__DEV__) console.log('getStorageProduk isRegular:', isRegular);
-                    var responseFiltered = await responseJSON.filter(data => data.isReguler === isRegular).map((data, i) => {
-                        return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
-                    }) ?? [];
+                    let IsMP = rw;
+                    alert(`${valueJenisPembiayaan}-${IsMP}`);
+                    if (__DEV__) console.log('getStorageProduk IsMP:', IsMP);
+                    var responseFiltered = [];
+                    if (valueJenisPembiayaan === '1') {
+                        responseFiltered = await responseJSON.filter(data => data.isReguler === valueJenisPembiayaan && data.IsMP === IsMP).map((data, i) => {
+                            return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                        }) ?? [];
+                    } else {
+                        responseFiltered = await responseJSON.filter(data => data.isReguler === valueJenisPembiayaan).map((data, i) => {
+                            return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                        }) ?? [];
+                    }
+                    
                     if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
                     setItemsProdukPembiayaan(responseFiltered);
                     return;
@@ -236,6 +245,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getStorageNamaProduk = async (rw) => {
         if (__DEV__) console.log('getStorageNamaProduk loaded');
+        if (__DEV__) console.log('getStorageNamaProduk rw:', rw);
 
         try {
             const response = await AsyncStorage.getItem('SubjenisPembiayaan');
