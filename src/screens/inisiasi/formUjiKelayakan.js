@@ -619,7 +619,7 @@ const FormUjiKelayakan = ({route}) => {
 
                             Alert.alert('Error', responseJSON.responseDescription);
                             setSubmitted(false);
-
+                            return;
                         } catch (error) {
                             if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
                             if (error.name === 'AbortError') {
@@ -629,16 +629,19 @@ const FormUjiKelayakan = ({route}) => {
                             }
 
                             setSubmitted(false);
+                            return;
                         }
                     }
                     setSubmitted(false);
+                    return;
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
                     ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
                     setSubmitted(false);
+                    return;
                 })
             }
-        )
+        );
     }
 
     return(
