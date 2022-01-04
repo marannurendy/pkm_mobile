@@ -596,12 +596,16 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
             <Text>Hasil</Text>
             <View style={styles.F1}>
                 {/* <Text style={[styles.P4, { color: 'gray' }]}>{((((parseInt(valuePedapatanKotorPerhari) - parseInt(valuePengeluaranKeluargaPerhari)) * parseInt(valueJumlahHariUsahPerbulan || 1)) / 4) + (((parseInt(valuePedapatanKotorPerhariSuami) - parseInt(valuePengeluaranKeluargaPerhariSuami)) * parseInt(valueJumlahHariUsahPerbulanSuami || 1)) / 4) || 0) / ((dataProdukPembiayaan.jumlahPinjaman / dataProdukPembiayaan.termPembiayaan) + ((dataProdukPembiayaan.jumlahPinjaman * dataProdukPembiayaan.termPembiayaan) / 100 / dataProdukPembiayaan.termPembiayaan)) < 2 ? 'Tidak Layak' : 'Layak'}</Text> */}
-                <Text style={[styles.P4, { color: 'gray' }]}>{`>= 800.000 Layak`}</Text>
+                {statusSosialisasi === '1' ? (
+                    <Text style={[styles.P4, { color: 'gray' }]}>{`>= 800.000 Layak`}</Text>
+                ) : (
+                    <Text style={[styles.P4, { color: 'gray' }]}>{`>= 800.000 Layak`}</Text>
+                )}
             </View>
         </View>
     )
 
-    const renderFormKemampuanBayar = () => statusSosialisasi === '3' && (
+    const renderFormKemampuanBayar = () => ['1', '3'].includes(statusSosialisasi) && (
         <View style={styles.MT8}>
             <Text style={[styles.FS18, styles.MB16]}>KEMAMPUAN BAYAR</Text>
             {renderFormKemampuanBayarHasil()}
@@ -623,7 +627,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
             {renderSpace()}
             {renderFormPendapatanSuami()}
             {renderSpace()}
-            {renderFormKemampuanBayar()}
+            {/* {renderFormKemampuanBayar()} */}
             {renderSpace()}
             {renderFormPendapatanPerkapita()}
         </View>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, SafeAreaView, ToastAndroid, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, FlatList, Alert, SafeAreaView, ToastAndroid, ScrollView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -20,6 +20,7 @@ const SyncPencairan = () => {
     let [isLoaded, setLoaded] = useState(false)
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [TokenHeader, setTokenHeader] = useState();
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
@@ -34,7 +35,7 @@ const SyncPencairan = () => {
                 setAoName(data.AOname);
             });
         }
-
+        getToken();
         getUserData();
         getSyncDataPencairan();
     }, []);
@@ -60,6 +61,11 @@ const SyncPencairan = () => {
                 })
             }
         )
+    }
+
+    const getToken = async () => {
+        const token = await AsyncStorage.getItem('token');
+        setTokenHeader(token)
     }
 
     const doSubmit = (Kelompok_ID) => {
@@ -102,16 +108,23 @@ const SyncPencairan = () => {
                     fetch(ApiSyncPostInisiasi + 'post_pencairan', {
                         method: 'POST',
                         headers: {
+                            Authorization: TokenHeader,
                             Accept:
                                 'application/json',
                                 'Content-Type': 'application/json'
-                            },
+                            }, 
                         body: JSON.stringify(ah)
                     })
                     .then((response) => response.json())
                     .then((responseJSON) => {
                         if (responseJSON.code === 200) {
-                            ToastAndroid.show("Sync Data berhasil!", ToastAndroid.SHORT);
+                            Alert.alert(  
+                                'Berhasil',  
+                                'Sync Data Berhasil',  
+                                [  
+                                    {text: 'OK', onPress: () => buttonFinish()},  
+                                ]
+                            )  
                             if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
                             for(let a = 0; a < ah.length; a++){
                                 const queryDeleteSosialisasiDatabase = 'DELETE FROM Table_Pencairan_Post where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
@@ -127,17 +140,24 @@ const SyncPencairan = () => {
                                 );
                             }
                             return true;
+                        }else{
+                            Alert.alert(  
+                                'Gagal!',  
+                                'Sync Data Tidak Berhasil',  
+                                [  
+                                    {text: 'OK', onPress: () => buttonFinish()},  
+                                ]
+                            )  
                         }
                     })
                 })
             }
         )
-        buttonFinish();
     }
 
     const buttonFinish = async () => {
         setLoaded(false)
-        navigation.replace('FrontHome')
+        navigation.replace('Pencairan')
     }
 
     // LIST VIEW PENCAIRAN

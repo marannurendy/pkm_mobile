@@ -142,9 +142,12 @@ const FormUjiKelayakan = ({route}) => {
     }
 
     const doSubmit = () => {
-        if (__DEV__) console.log('doSubmit loaded');
+        console.log('doSubmit loaded');
+        console.log('doSubmit submitted:', submitted);
         
         if (submitted) return true;
+
+        console.log('doSubmit next');
 
         setSubmitted(true);
         let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok, g.siklus, h.kehadiran_pkm, h.angsuran_pada_saat_pkm FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id LEFT JOIN Table_UK_DisipinNasabah h ON a.idSosialisasiDatabase = h.idSosialisasiDatabase WHERE a.idSosialisasiDatabase = "' + id + '"';
@@ -153,6 +156,9 @@ const FormUjiKelayakan = ({route}) => {
                 tx.executeSql(query, [], async (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
+
+                    const token = await AsyncStorage.getItem('token');
+                    if (__DEV__) console.log('ACTIONS TOKEN', token);
 
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
@@ -348,10 +354,10 @@ const FormUjiKelayakan = ({route}) => {
                                 timeout: timeOut, // 6 menit
                                 method: 'POST',
                                 headers: {
-                                    Accept:
-                                        'application/json',
-                                        'Content-Type': 'application/json'
-                                    },
+                                    Authorization: token,
+                                    Accept: 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
                                 body: JSON.stringify(body)
                             });
                             const responseJSON = await response.json();
@@ -430,6 +436,7 @@ const FormUjiKelayakan = ({route}) => {
                                                                             fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
                                                                                 method: 'POST',
                                                                                 headers: {
+                                                                                    Authorization: token,
                                                                                     Accept: 'application/json',
                                                                                     'Content-Type': 'application/json'
                                                                                 },
@@ -460,6 +467,7 @@ const FormUjiKelayakan = ({route}) => {
                                                         fetch(`${ApiSyncPostInisiasi}post_ketua_subketua`, {
                                                             method: 'POST',
                                                             headers: {
+                                                                Authorization: token,
                                                                 Accept: 'application/json',
                                                                 'Content-Type': 'application/json'
                                                             },
