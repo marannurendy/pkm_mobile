@@ -357,7 +357,7 @@ const FormUjiKelayakan = ({route}) => {
                                     Authorization: token,
                                     Accept: 'application/json',
                                     'Content-Type': 'application/json'
-                                    },
+                                },
                                 body: JSON.stringify(body)
                             });
                             const responseJSON = await response.json();
@@ -436,6 +436,7 @@ const FormUjiKelayakan = ({route}) => {
                                                                             fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
                                                                                 method: 'POST',
                                                                                 headers: {
+                                                                                    Authorization: token,
                                                                                     Accept: 'application/json',
                                                                                     'Content-Type': 'application/json'
                                                                                 },
@@ -466,6 +467,7 @@ const FormUjiKelayakan = ({route}) => {
                                                         fetch(`${ApiSyncPostInisiasi}post_ketua_subketua`, {
                                                             method: 'POST',
                                                             headers: {
+                                                                Authorization: token,
                                                                 Accept: 'application/json',
                                                                 'Content-Type': 'application/json'
                                                             },
