@@ -293,6 +293,12 @@ export default function FrontHome() {
         )
     }
 
+    const renderVersion = () => (
+        <View style={{ marginVertical: 8 }}>
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-047-dev @ 2021-01-04</Text>
+        </View>
+    )
+
     return(
         // <View style={styles.container}>            
         <View style={{flex: 1, backgroundColor: '#0D67B2'}}>            
@@ -479,7 +485,7 @@ export default function FrontHome() {
                         </View>
 
                     </View>
-            
+                    {renderVersion()}
                 </View>
 
                 {/* <View style={{margin: 20}}> */}
