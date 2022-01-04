@@ -33,6 +33,7 @@ const InisiasiFormPP = ({ route }) => {
         // let queryGetdataGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status, a.isSisipan, a.isTahapLanjut FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + 4 + " GROUP BY a.kelompok "
         // let queryGetdataGroup1 = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status, a.isSisipan, a.isTahapLanjut FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + 4 + " GROUP BY a.kelompok, b.Nasabah_Id "
         let queryGetdataGroup2 = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status, a.isSisipan, a.isTahapLanjut FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status <> 'null' AND b.status = " + 4 + " GROUP BY a.kelompok"
+        // let queryGetdataGroup3 = "SELECT * FROM Table_PP_ListNasabah"
 
         // let queryGetdataGroup = "SELECT * FROM Table_PP_ListNasabah WHERE status <> 'null'"
 
