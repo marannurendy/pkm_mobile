@@ -81,8 +81,11 @@ const Verifikasi = ({ route }) => {
         setCurrentDate(tanggal)
     }
 
-    const doSync = () => {
+    const doSync = async () => {
         if (submitted) return true;
+
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
 
         if (data.length > 0) {
             Alert.alert(
@@ -112,10 +115,10 @@ const Verifikasi = ({ route }) => {
                                             return fetch(ApiSyncPostInisiasi + 'post_verif_status', {
                                                 method: 'POST',
                                                 headers: {
-                                                    Accept:
-                                                        'application/json',
-                                                        'Content-Type': 'application/json'
-                                                    },
+                                                    Authorization: token,
+                                                    Accept: 'application/json',
+                                                    'Content-Type': 'application/json'
+                                                },
                                                 body: body
                                             })
                                             .then((response) => response.json())
@@ -125,10 +128,10 @@ const Verifikasi = ({ route }) => {
                                                 const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id_prospek = '" + item.idProspek + "'";
                                                 const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE id_prospek = '" + item.idProspek + "'";
                                                 const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE id_prospek = '" + item.idProspek + "'";
-                                                const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE id_prospek = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE id_prospek = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE id_prospek = '" + item.namaNasabah + "'";
-                                                const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE id_prospek = '" + item.namaNasabah + "'";
+                                                const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE id_prospek = '" + item.idProspek + "'";
+                                                const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE id_prospek = '" + item.idProspek + "'";
+                                                const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE id_prospek = '" + item.idProspek + "'";
+                                                const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE id_prospek = '" + item.idProspek + "'";
                                                 db.transaction(
                                                     tx => {
                                                         tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {

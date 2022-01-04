@@ -109,6 +109,10 @@ export default function Login() {
                       //     userName: responseJson.data.userName
                       // }
 
+                      AsyncStorage.setItem('token', responseJson.token).then((response) => {
+                        console.log('AsyncStorage.setItem.token success:', responseJson.token)
+                      });
+                      
                       if(responseJson.data.jabatan === 'Kepala Cabang Mekaar' || responseJson.data.jabatan === 'Pj Kepala Cabang Mekaar') {
                         AsyncStorage.setItem('roleUser', 'KC') 
                         // AsyncStorage.setItem('SyncBy', JSON.stringify(dataLogin)) 

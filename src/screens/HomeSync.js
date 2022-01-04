@@ -863,7 +863,7 @@ export default function FrontHomeSync(props) {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            <Text style={{ textAlign: 'right' }}>version pkm_mobile-0.0.1-047-dev @ 2021-01-04</Text>
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-047-dev @ 2021-01-04</Text>
         </View>
     )
 

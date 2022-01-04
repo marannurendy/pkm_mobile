@@ -1381,6 +1381,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
         // await clearData();
         // if (__DEV__) console.log('ACTIONS GET SYNC DATA NEW SYNC CLEAR DATA');
 
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         const responseListGroup = await fetch(getListGroup);
         const jsonListGroup = await responseListGroup.json(responseListGroup);
         await insertListGroup(jsonListGroup);
@@ -1420,14 +1423,19 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     timeout: 360000, // 6 menit
                     method: 'POST',
                     headers: {
-                        Accept:
-                            'application/json',
-                            'Content-Type': 'application/json'
+                        Authorization: token,
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
                         },
                     body: body
                 });
     
                 const jsonGetSosialisasiMobile = await responseGetSosialisasiMobile.json(responseGetSosialisasiMobile);
+
+                if (jsonGetSosialisasiMobile.responseCode !== 200) {
+                    ToastAndroid.show(jsonGetSosialisasiMobile.responseDescription, ToastAndroid.LONG);
+                }
+
                 await insertGetSosialisasiMobile(jsonGetSosialisasiMobile);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE DONE', jsonGetSosialisasiMobile);
             } catch (error) {
