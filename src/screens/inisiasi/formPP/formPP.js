@@ -60,7 +60,7 @@ const InisiasiFormPP = ({ route }) => {
             }
         }))
 
-        const data = await getDataPembiayaan(queryGetdataGroup3)
+        const data = await getDataPembiayaan(queryGetdataGroup2)
         console.log(data)
         setData(data)
     }
