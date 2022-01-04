@@ -112,7 +112,7 @@ const SyncPencairan = () => {
                             Accept:
                                 'application/json',
                                 'Content-Type': 'application/json'
-                            },
+                            }, 
                         body: JSON.stringify(ah)
                     })
                     .then((response) => response.json())
