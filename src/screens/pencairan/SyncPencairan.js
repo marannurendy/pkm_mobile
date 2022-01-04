@@ -20,6 +20,7 @@ const SyncPencairan = () => {
     let [isLoaded, setLoaded] = useState(false)
     let [menuToggle, setMenuToggle] = useState(false);
     let [data, setData] = useState([]);
+    let [TokenHeader, setTokenHeader] = useState();
     const [keyword, setKeyword] = useState('');
 
     useEffect(() => {
@@ -34,7 +35,7 @@ const SyncPencairan = () => {
                 setAoName(data.AOname);
             });
         }
-
+        getToken();
         getUserData();
         getSyncDataPencairan();
     }, []);
@@ -60,6 +61,11 @@ const SyncPencairan = () => {
                 })
             }
         )
+    }
+
+    const getToken = async () => {
+        const token = await AsyncStorage.getItem('token');
+        setTokenHeader(token)
     }
 
     const doSubmit = (Kelompok_ID) => {
@@ -102,6 +108,7 @@ const SyncPencairan = () => {
                     fetch(ApiSyncPostInisiasi + 'post_pencairan', {
                         method: 'POST',
                         headers: {
+                            Authorization: TokenHeader,
                             Accept:
                                 'application/json',
                                 'Content-Type': 'application/json'
