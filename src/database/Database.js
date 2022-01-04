@@ -352,7 +352,7 @@ db.transaction(tx => {
     tx.executeSql(
         `create table if not exists Table_PP_Kelompok(
             kelompok_Id varchar,
-            kelompok varchar,
+            kelompok varchar UNIQUE,
             group_Produk varchar,
             tanggal_Pertama varchar,
             hari_Pertemuan varchar,
