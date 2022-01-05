@@ -296,32 +296,34 @@ const InisiasiFormPPH = ({ route }) => {
                             dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok : dataGroupCollect.kelompok_Id, ID_DK_Mobile: "", LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}  
                         }
 
-                        try{
-                            fetch(ApiSyncPostInisiasi + "post_data_kelompok", {
-                                    method: 'POST',
-                                    headers: {
-                                        Accept: 'application/json',
-                                                'Content-Type': 'application/json'
-                                        },
-                                    body: JSON.stringify(dataSend)
+                        if(dataGroupCollect.isSisipan !== 1 || dataGroupCollect.isSisipan !== '1') {
+                            try{
+                                fetch(ApiSyncPostInisiasi + "post_data_kelompok", {
+                                        method: 'POST',
+                                        headers: {
+                                            Accept: 'application/json',
+                                                    'Content-Type': 'application/json'
+                                            },
+                                        body: JSON.stringify(dataSend)
+                                    })
+                                .then((response) => response.json())
+                                .then((responseJson) => {
+                                    console.log("second")
+                
+                                    console.log(responseJson)
+                                    if(responseJson.code === 200) {
+                                        flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                                        getData(val)
+                                    }else{
+                                        flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
+                                    }
+                                }).catch((error) => {
+                                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
                                 })
-                            .then((response) => response.json())
-                            .then((responseJson) => {
-                                console.log("second")
-            
-                                console.log(responseJson)
-                                if(responseJson.code === 200) {
-                                    flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
-                                    getData(val)
-                                }else{
-                                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
-                                }
-                            }).catch((error) => {
-                                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
-                            })
-                        }catch(error){
-                            console.log("disini")
-                            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+                            }catch(error){
+                                console.log("disini")
+                                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+                            }
                         }
                     }
                 }catch(error){
