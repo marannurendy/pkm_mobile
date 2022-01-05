@@ -22,9 +22,14 @@ const MAX_TANGGAL_LAHIR = 64;
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 8;
 
+const MIN_TANGGAL_LAHIR_NON_TL = 16;
+const MAX_TANGGAL_LAHIR_NON_TL = 62;
+const MIN_TANGGAL_LAHIR_TL = 16;
+const MAX_TANGGAL_LAHIR_TL = 64;
+
 const DataDiri = ({route}) => {
     const uniqueNumber = (new Date().getTime()).toString(36);
-    const { id, groupName, namaNasabah, nomorHandphone, screenState } = route.params
+    const { id, groupName, namaNasabah, nomorHandphone, screenState, statusSosialisasi } = route.params
 
     const navigation = useNavigation()
     const phoneRef = useRef(undefined)
@@ -163,6 +168,8 @@ const DataDiri = ({route}) => {
     const [addressDomisiliLikeIdentitas, setAddressDomisiliLikeIdentitas] = useState(false);
     const [valueNomorIdentitas, setValueNomorIdentitas] = useState('0');
     const [fetchCheckNIK, setFetchCheckNIK] = useState(false);
+    const [minTanggalLahir, setMinTanggalLahir] = useState(0);
+    const [maxTanggalLahir, setMaxTanggalLahir] = useState(0);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -379,8 +386,30 @@ const DataDiri = ({route}) => {
 
             setItemsJenisKartuIdentitas(arrayIdentity);
             setItemsStatusPerkawinan(arrayMarriage);
-            
+
+            let min = MIN_TANGGAL_LAHIR_NON_TL;
+            let max = MAX_TANGGAL_LAHIR_NON_TL;
+            if (statusSosialisasi === '3') {
+                min = MIN_TANGGAL_LAHIR_TL;
+                max = MAX_TANGGAL_LAHIR_TL;
+            }
+
+            setMinTanggalLahir(min);
+            setMaxTanggalLahir(max);
         })();
+
+        
+
+        // let dateValue = moment(date).format('YYYY-MM-DD');
+        // let rangeDateValue = moment().diff(moment(moment(dateValue).format("DD-MM-YYYY"), "DD-MM-YYYY"), 'years');
+        // if (__DEV__) console.log('dateLahirHandler rangeDateValue:', rangeDateValue);
+        // if (__DEV__) console.log('dateLahirHandler dateValue:', dateValue);
+
+        // if (rangeDateValue > MIN_TANGGAL_LAHIR && rangeDateValue < MAX_TANGGAL_LAHIR) {
+        //     setShowCalendar(false);
+        //     setTanggalLahir(dateValue);
+        //     return;
+        // }
     }, []);
 
     useEffect(() => {
@@ -404,6 +433,7 @@ const DataDiri = ({route}) => {
             setNamaPenjamin('');
             setFotoDataPenjamin();
         } else {
+            setValueStatusHubunganKeluarga('1');
             setNamaPenjamin(namaSuami);
             setFotoDataPenjamin(fotoKartuIdentitasSuami);
         }
@@ -480,13 +510,15 @@ const DataDiri = ({route}) => {
 
     const dateLahirHandler = (event, date) => {
         if (__DEV__) console.log('dateLahirHandler loaded');
-
+        
         let dateValue = moment(date).format('YYYY-MM-DD');
         let rangeDateValue = moment().diff(moment(moment(dateValue).format("DD-MM-YYYY"), "DD-MM-YYYY"), 'years');
-        if (__DEV__) console.log('dateLahirHandler rangeDateValue:', rangeDateValue);
-        if (__DEV__) console.log('dateLahirHandler dateValue:', dateValue);
 
-        if (rangeDateValue > MIN_TANGGAL_LAHIR && rangeDateValue < MAX_TANGGAL_LAHIR) {
+        if (__DEV__) console.log('MIN_TANGGAL_LAHIR', minTanggalLahir);
+        if (__DEV__) console.log('MAX_TANGGAL_LAHIR', maxTanggalLahir);
+        if (__DEV__) console.log('rangeDateValue:', rangeDateValue);
+
+        if (rangeDateValue >= minTanggalLahir && rangeDateValue <= maxTanggalLahir) {
             setShowCalendar(false);
             setTanggalLahir(dateValue);
             return;
@@ -1413,7 +1445,7 @@ const DataDiri = ({route}) => {
                     </View>
             ) : (
                 <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
-                    <Text style={{fontSize: 25, fontWeight: 'bold', margin: 20}}>Form Data Diri Pribadi</Text>
+                    <Text style={{fontSize: 25, fontWeight: 'bold', margin: 20}}>Form Data Diri Pribadi {statusSosialisasi}</Text>
                     <ScrollView style={{borderTopRightRadius: 20, borderTopLeftRadius: 20}}>
 
                     <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Identitas Diri</Text>
@@ -1519,7 +1551,7 @@ const DataDiri = ({route}) => {
                                     <FontAwesome5 name={'id-badge'} size={18} />
                                 </View>
                             </TouchableOpacity>
-                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {MIN_TANGGAL_LAHIR + 1}-{MAX_TANGGAL_LAHIR - 2} tahun ({MAX_TANGGAL_LAHIR - 1} saat lunas)</Text>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {minTanggalLahir}-{maxTanggalLahir} tahun ({maxTanggalLahir + 1} saat lunas)</Text>
                             {showCalendar && (
                                 <DateTimePicker
                                     value={date}
