@@ -433,6 +433,7 @@ const DataDiri = ({route}) => {
             setNamaPenjamin('');
             setFotoDataPenjamin();
         } else {
+            setValueStatusHubunganKeluarga('1');
             setNamaPenjamin(namaSuami);
             setFotoDataPenjamin(fotoKartuIdentitasSuami);
         }
