@@ -414,6 +414,37 @@ const InisiasiFormPPH = ({ route }) => {
         </View>
     )
 
+    const findGroupPP = async () => {
+        let queryFind = "SELECT DISTINCT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status <> 'null' AND a.status <> '4' AND b.status = " + source + " AND a.kelompok LIKE '%" + keyword + "%' GROUP BY a.kelompok"
+
+        const listData = (queryGetGroup) => (new Promise ((resolve,reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryGetGroup, [], (tx, results) => {
+                            let dataLength = results.rows.length
+                            let dataArr = []
+
+                            for(let a = 0; a < dataLength; a++) {
+                                let data = results.rows.item(a)
+                                dataArr.push(data)
+                            }
+                            resolve(dataArr)
+                        })
+                    }, function(error) {
+                        alert(error)
+                    }
+                )
+            }catch(error){
+                alert(error)
+            }
+        }))
+
+        const listDataGet = await listData(queryFind)
+        console.log(listDataGet.length)
+        setData(listDataGet)
+    }
+
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <View style={stylesheet.containerProspek}>
@@ -430,14 +461,13 @@ const InisiasiFormPPH = ({ route }) => {
                         style={
                             {
                                 padding: 5,
-                                borderBottomLeftRadius: 20,
-                                borderBottomRightRadius: 20
+                                flex: 1
                             }
                         }
                         onChangeText={(text) => setKeyword(text)}
                         value={keyword}
                         returnKeyType="done"
-                        onSubmitEditing={() => getSosialisasiDatabase()}
+                        onSubmitEditing={() => findGroupPP()}
                     />
                 </View>
                 <SafeAreaView style={{flex: 1}}>

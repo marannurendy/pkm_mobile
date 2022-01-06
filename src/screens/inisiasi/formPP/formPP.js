@@ -114,6 +114,37 @@ const InisiasiFormPP = ({ route }) => {
         </View>
     )
 
+    const findKelompok = async () => {
+        let queryFind = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status, a.isSisipan, a.isTahapLanjut FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status <> 'null' AND b.status = " + 4 + " AND a.kelompok LIKE '%" + keyword + "%' GROUP BY a.kelompok"
+
+        const getDataPembiayaan = (queryGetdataGroup) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryGetdataGroup, [], (tx, results) => {
+                            let dataLength = results.rows.length
+                            let data = []
+
+                            for(let a = 0; a < dataLength; a++) {
+                                let i = results.rows.item(a)
+
+                                data.push(i)
+                            }
+
+                            resolve(data)
+                        })
+                    }
+                )
+            }catch(error){
+                alert(error)
+            }
+        }))
+
+        const data = await getDataPembiayaan(queryFind)
+        console.log(data)
+        setData(data)
+    }
+
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <View style={stylesheet.containerProspek}>
@@ -125,14 +156,13 @@ const InisiasiFormPP = ({ route }) => {
                         style={
                             {
                                 padding: 5,
-                                borderBottomLeftRadius: 20,
-                                borderBottomRightRadius: 20
+                                flex: 1
                             }
                         }
                         onChangeText={(text) => setKeyword(text)}
                         value={keyword}
                         returnKeyType="done"
-                        onSubmitEditing={() => getSosialisasiDatabase()}
+                        onSubmitEditing={() => findKelompok()}
                     />
                 </View>
                 <SafeAreaView style={{flex: 1}}>

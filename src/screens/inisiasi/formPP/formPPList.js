@@ -110,6 +110,37 @@ const InisiasiFormPPList = ({ route }) => {
         </View>
     )
 
+    const findGroupMember = async () => {
+        let queryFind = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status <> 'null' AND Nama_Nasabah like '%" + keyword + "%'"
+
+        const ListData = (queryList) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryList, [], (tx, results) => {
+                            let dataLength = results.rows.length
+                            let dataList = []
+
+                            for(let a = 0; a < dataLength; a++) {
+                                let i = results.rows.item(a)
+
+                                dataList.push(i)
+                            }
+
+                            resolve(dataList)
+                        })
+                    }
+                )
+            }catch(error){
+                alert(error)
+            }
+        }))
+
+        const DataList = await ListData(queryFind)
+        console.log(DataList)
+        setData(DataList)
+    }
+
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <View style={stylesheet.containerProspek}>
@@ -121,14 +152,13 @@ const InisiasiFormPPList = ({ route }) => {
                         style={
                             {
                                 padding: 5,
-                                borderBottomLeftRadius: 20,
-                                borderBottomRightRadius: 20
+                                flex: 1
                             }
                         }
                         onChangeText={(text) => setKeyword(text)}
                         value={keyword}
                         returnKeyType="done"
-                        onSubmitEditing={() => getSosialisasiDatabase()}
+                        onSubmitEditing={() => findGroupMember()}
                     />
                 </View>
                 <SafeAreaView style={{flex: 1}}>

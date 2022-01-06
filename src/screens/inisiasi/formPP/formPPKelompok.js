@@ -71,6 +71,9 @@ const InisiasiFormPPKelompok = ({ route }) => {
     ]);
     const [lokasiPertemuan, setLokasiPertemuan] = useState('');
 
+    let [hariPertemuan, setHariPertemuan] = useState();
+    let [hariPertemuanVal, setHariPertemuanVal] = useState();
+
     let [branchid, setBranchid] = useState();
     let [currentDate, setCurrentDate] = useState();
     let [userName, setUserName] = useState();
@@ -93,7 +96,29 @@ const InisiasiFormPPKelompok = ({ route }) => {
 
     const tanggalPKMPertamaDatePickerHandler = (event, date) => {
         let dateValue = moment(date).format('YYYY-MM-DD');
+        let dayValue = moment(date).format('dddd');
+
+        let dayVal = 0
+
+        if(dayValue === 'Senin') {
+            dayVal = 2
+        }else if(dayValue === 'Selasa') {
+            dayVal = 3
+        }else if(dayValue === 'Rabu') {
+            dayVal = 4
+        }else if(dayValue === 'Kamis') {
+            dayVal = 5
+        }else if(dayValue === 'Jumat') {
+            dayVal = 6
+        }else{
+            alert('Hari PKM tidak sesuai')
+            setShowCalendar(false);
+            return false;
+        }
+
         setShowCalendar(false);
+        setHariPertemuanVal(dayVal);
+        setHariPertemuan(dayValue);
         setTanggalPKMPertama(dateValue);
     }
 
@@ -173,21 +198,38 @@ const InisiasiFormPPKelompok = ({ route }) => {
 
     const renderFormHariPertemuan = () => (
         <View style={styles.MT8}>
-            <Text>Hari Pertemuan (*)</Text>
-            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                <Picker
-                    selectedValue={valueHariPertemuan}
-                    style={{ height: 50, width: withTextInput }}
-                    onValueChange={(itemValue, itemIndex) => {
-                        setValueHariPertemuan(itemValue);
-                    }}
-                >
-                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsHariPertemuan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                </Picker>
+            <Text>Hari Pertemuan</Text>
+            <View style={[styles.textInputContainer, { width: withTextInput }]}>
+                <View style={styles.F1}>
+                    <TextInput 
+                        value={hariPertemuan} 
+                        placeholder='Hari Pertemuan'
+                        style={styles.F1}
+                        editable={false}
+                    />
+                </View>
+                <View />
             </View>
         </View>
     )
+
+    // const renderFormHariPertemuan = () => (
+    //     <View style={styles.MT8}>
+    //         <Text>Hari Pertemuan (*)</Text>
+    //         <View style={{ borderWidth: 1, borderRadius: 6 }}>
+    //             <Picker
+    //                 selectedValue={valueHariPertemuan}
+    //                 style={{ height: 50, width: withTextInput }}
+    //                 onValueChange={(itemValue, itemIndex) => {
+    //                     setValueHariPertemuan(itemValue);
+    //                 }}
+    //             >
+    //                 <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+    //                 {itemsHariPertemuan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+    //             </Picker>
+    //         </View>
+    //     </View>
+    // )
 
     const renderFormWaktuPertemuan = () => (
         <View style={styles.MT8}>
@@ -297,7 +339,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
         if (!namaKelompok || typeof namaKelompok === 'undefined' || namaKelompok === '' || namaKelompok === 'null') return flashNotification("Alert", "Nama kelompok tidak boleh kosong", "#ff6347", "#fff");
         if (!valueGroupProduk || typeof valueGroupProduk === 'undefined' || valueGroupProduk === '' || valueGroupProduk === 'null') return flashNotification("Alert", "Silahkan pilih group product", "#ff6347", "#fff");
         if (!tanggalPKMPertama || typeof tanggalPKMPertama === 'undefined' || tanggalPKMPertama === '' || tanggalPKMPertama === 'null') return flashNotification("Alert", "Tanggal PKM pertama tidak boleh kosong", "#ff6347", "#fff");
-        if (!valueHariPertemuan || typeof valueHariPertemuan === 'undefined' || valueHariPertemuan === '' || valueHariPertemuan === 'null') return flashNotification("Alert", "Silahkan pilih hari pertemuan", "#ff6347", "#fff");
+        if (!hariPertemuanVal || typeof hariPertemuanVal === 'undefined' || hariPertemuanVal === '' || hariPertemuanVal === 'null') return flashNotification("Alert", "Silahkan pilih hari pertemuan", "#ff6347", "#fff");
         if (!valueWaktuPertemuan || typeof valueWaktuPertemuan === 'undefined' || valueWaktuPertemuan === '' || valueWaktuPertemuan === 'null') return flashNotification("Alert", "Silahkan pilih waktu pertemuan", "#ff6347", "#fff");
         if (!lokasiPertemuan || typeof lokasiPertemuan === 'undefined' || lokasiPertemuan === '' || lokasiPertemuan === 'null') return flashNotification("Alert", "Lokasi pertemuan tidak boleh kosong", "#ff6347", "#fff");
 
@@ -326,7 +368,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
             + "', '"
             + tanggalPKMPertama
             + "', '"
-            + valueHariPertemuan
+            + hariPertemuanVal
             + "', '"
             + valueWaktuPertemuan
             + "', '"
@@ -341,7 +383,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
 
         let queryInsertSubKelompokBaru = "INSERT INTO Table_PP_SubKelompok ( kelompok_Id, subKelompok_Id, kelompok, subKelompok, num, branchid, status ) VALUES "
             + "( '"
-            + ""
+            + encrypt
             + "', '"
             + ""
             + "', '"
@@ -355,6 +397,10 @@ const InisiasiFormPPKelompok = ({ route }) => {
             + "', '"
             + 0
             + "' );"
+
+
+        console.log(queryInsertKelompokBaru)
+        console.log(queryInsertSubKelompokBaru)
         
         try {
             db.transaction(

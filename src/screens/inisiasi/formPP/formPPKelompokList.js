@@ -136,6 +136,40 @@ const InisiasiFormPPKelompokList = ({ route }) => {
         </ActionButton>
     )
 
+    const findSearchGroup = async () => {
+        let queryFind =  "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status = '0' AND a.kelompok <> '' AND a.kelompok LIKE '%" + keyword + "%' GROUP BY a.kelompok"
+
+        const getDataGroup = (queryGetGroup) => (new Promise((resolve, reject) => {
+            try{
+                db.transaction(
+                    tx => {
+                        tx.executeSql(queryGetGroup, [], (tx, results) => {
+                            let dataLength = results.rows.length
+
+                            var dataArr = []
+                            for(let a = 0; a < dataLength; a++) {
+                                let data = results.rows.item(a)
+                                dataArr.push(data)
+                            }
+
+                            resolve(dataArr)
+
+                        })
+                    }, function(error) {
+                        reject(error)
+                    }
+                )
+            }catch(error){
+                reject(error)
+            }
+        }))
+
+        const ListData = await getDataGroup(queryFind)
+
+        console.log(ListData)
+        setData(ListData)
+    }
+
     const renderBody = () => (
         <View style={styles.bodyContainer}>
             <View style={stylesheet.containerProspek}>
@@ -147,14 +181,13 @@ const InisiasiFormPPKelompokList = ({ route }) => {
                         style={
                             {
                                 padding: 5,
-                                borderBottomLeftRadius: 20,
-                                borderBottomRightRadius: 20
+                                flex: 1
                             }
                         }
                         onChangeText={(text) => setKeyword(text)}
                         value={keyword}
                         returnKeyType="done"
-                        onSubmitEditing={() => getSosialisasiDatabase()}
+                        onSubmitEditing={() => findSearchGroup()}
                     />
                 </View>
                 <SafeAreaView style={{flex: 1}}>
