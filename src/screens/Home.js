@@ -295,7 +295,7 @@ export default function FrontHome() {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-051-dev @ 2021-01-05</Text>
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-047-dev @ 2021-01-04</Text>
         </View>
     )
 
@@ -362,7 +362,7 @@ export default function FrontHome() {
                     </TouchableOpacity> */}
                 </View>
 
-                <View style={{flex: 1, marginTop: scale(10), borderTopLeftRadius: scale(20), borderTopRightRadius: scale(20), marginHorizontal: scale(5), backgroundColor: '#fff'}}>
+                <View style={{flex: 1, marginTop: scale(10), borderTopLeftRadius: scale(20), borderTopRightRadius: scale(20), borderBottomLeftRadius: scale(20), borderBottomRightRadius: scale(20), marginHorizontal: scale(5), backgroundColor: '#fff'}}>
                 {/* <View style={{flex: 1, marginTop: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 10}}> */}
                     
                     <View style={{marginHorizontal: scale(20), marginBottom: 20, marginTop: scale(20), flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
