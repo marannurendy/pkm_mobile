@@ -362,7 +362,7 @@ export default function FrontHome() {
                     </TouchableOpacity> */}
                 </View>
 
-                <View style={{flex: 1, marginTop: scale(10), borderTopLeftRadius: scale(20), borderTopRightRadius: scale(20), borderBottomLeftRadius: scale(20), borderBottomRightRadius: scale(20), marginHorizontal: scale(5), backgroundColor: '#fff'}}>
+                <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1, marginTop: scale(10), borderTopLeftRadius: scale(20), borderTopRightRadius: scale(20), borderBottomLeftRadius: scale(20), borderBottomRightRadius: scale(20), marginHorizontal: scale(5), backgroundColor: '#fff'}}>
                 {/* <View style={{flex: 1, marginTop: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 10}}> */}
                     
                     <View style={{marginHorizontal: scale(20), marginBottom: 20, marginTop: scale(20), flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -425,9 +425,9 @@ export default function FrontHome() {
 
                     </View>
 
-                    <View style={{marginHorizontal: 20, marginBottom: 20, flex: 1, justifyContent: 'space-between'}}>
+                    <View style={{marginHorizontal: 20, marginBottom: 20, flex: 1}}>
 
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{flexDirection: 'row', marginBottom: 20}}>
                             <TouchableOpacity onPress={() => navigation.navigate('Inisiasi')} style={{height: window.width/3, flex: 1, borderRadius: 20, backgroundColor: '#fff',
                                 shadowColor: '#000',
                                 shadowOffset: {
@@ -486,7 +486,7 @@ export default function FrontHome() {
 
                     </View>
                     {renderVersion()}
-                </View>
+                </ScrollView>
 
                 {/* <View style={{margin: 20}}> */}
                     {/* <TouchableOpacity style={ styles.imageStyle } onPress={() => pkmHandler()}> */}
