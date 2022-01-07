@@ -592,6 +592,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     );
                     /* ============== FINISH HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
                     if (uk_client_data[i].PostStatus === 3) {
+                        let isSisipan = 1;
+                        if (uk_client_data[i].Is_Sisipan === '1' || uk_client_data[i].Is_Sisipan === 1) isSisipan = 2;
+
                         query = query + "('"
                         + uniqueNumber
                         + "','"
@@ -603,7 +606,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         + "','"
                         + ""
                         + "','"
-                        + ""
+                        + isSisipan
                         + "','"
                         + moment(uk_client_data[i].Tanggal_Sos).format('YYYY-MM-DD') 
                         + "','"

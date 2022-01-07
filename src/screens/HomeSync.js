@@ -819,7 +819,7 @@ export default function FrontHomeSync(props) {
                 {renderProspek()}
                 {renderProspekLama()}
                 {renderButton()}
-                <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text>
+                {/* <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text> */}
                 {renderVersion()}
             </ScrollView>
         </View>
