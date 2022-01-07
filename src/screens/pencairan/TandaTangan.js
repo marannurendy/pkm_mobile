@@ -293,7 +293,7 @@ const TandaTanganPencairan = ({route}) => {
                                     <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
-                                    <Text style={{ fontWeight: 'bold' }}>Tanda Tangan {"\n"}Account Officer</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>Tanda Tangan {"\n"}Account Officer / SAO / KC</Text>
                                     <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
                                         <Button 
                                             icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
