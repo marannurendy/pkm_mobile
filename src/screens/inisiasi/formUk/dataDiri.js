@@ -205,7 +205,7 @@ const DataDiri = ({route}) => {
                                 if (__DEV__) console.log('fotoKeteranganDomisili :', data.foto_Surat_Keterangan_Domisili, fotoKeteranganDomisili);
                                 if (__DEV__) console.log('fotoKartuIdentitas :', data.foto_Kartu_Identitas, fotoKartuIdentitas);
 
-                                if (data.foto_Kartu_Identitas !== null && typeof data.foto_Kartu_Identitas !== 'undefined') setFotoKartuIdentitas(fotoKartuIdentitas);
+                                if (data.foto_Kartu_Identitas !== null && typeof data.foto_Kartu_Identitas !== 'undefined' && data.foto_Kartu_Identitas !== '') setFotoKartuIdentitas(fotoKartuIdentitas);
                                 if (data.jenis_Kartu_Identitas !== null && typeof data.jenis_Kartu_Identitas !== 'undefined') setValueJenisKartuIdentitas(data.jenis_Kartu_Identitas);
                                 if (data.nomor_Identitas !== null && typeof data.nomor_Identitas !== 'undefined') setNomorIdentitas(data.nomor_Identitas);
                                 if (data.nama_lengkap !== null && typeof data.nama_lengkap !== 'undefined') {
@@ -217,12 +217,12 @@ const DataDiri = ({route}) => {
                                 if (data.status_Perkawinan !== null && typeof data.status_Perkawinan !== 'undefined') setValueStatusPerkawinan(data.status_Perkawinan);
                                 if (data.alamat_Identitas !== null && typeof data.alamat_Identitas !== 'undefined') setAlamatIdentitas(data.alamat_Identitas);
                                 if (data.alamat_Domisili !== null && typeof data.alamat_Domisili !== 'undefined') setAlamatDomisili(data.alamat_Domisili);
-                                if (data.foto_Surat_Keterangan_Domisili !== null && typeof data.foto_Surat_Keterangan_Domisili !== 'undefined') setFotoSuratKeteranganDomisili(fotoKeteranganDomisili);
+                                if (data.foto_Surat_Keterangan_Domisili !== null && typeof data.foto_Surat_Keterangan_Domisili !== 'undefined' && data.foto_Surat_Keterangan_Domisili !== '') setFotoSuratKeteranganDomisili(fotoKeteranganDomisili);
                                 if (data.provinsi !== null && typeof data.provinsi !== 'undefined') setDataProvinsi(data.provinsi);
                                 if (data.kabupaten !== null && typeof data.kabupaten !== 'undefined') setDataKabupaten(data.kabupaten);
                                 if (data.kecamatan !== null && typeof data.kecamatan !== 'undefined') setDataKecamatan(data.kecamatan);
                                 if (data.kelurahan !== null && typeof data.kelurahan !== 'undefined') setDataKelurahan(data.kelurahan);
-                                if (data.foto_kk !== null && typeof data.foto_kk !== 'undefined') setFotoKartuKeluarga(fotoKartuKeluarga);
+                                if (data.foto_kk !== null && typeof data.foto_kk !== 'undefined' && data.foto_kk !== '') setFotoKartuKeluarga(fotoKartuKeluarga);
                                 if (data.no_kk !== null && typeof data.no_kk !== 'undefined') setNomorKartuKeluarga(data.no_kk);
                                 if (data.nama_ayah !== null && typeof data.nama_ayah !== 'undefined') setNamaAyah(data.nama_ayah);
                                 if (data.nama_gadis_ibu !== null && typeof data.nama_gadis_ibu !== 'undefined') setNamaGadisIbu(data.nama_gadis_ibu);
@@ -235,11 +235,11 @@ const DataDiri = ({route}) => {
                                 if (data.nama_suami !== null && typeof data.nama_suami !== 'undefined' && data.foto_Kartu_Identitas !== 'undefined') setNamaSuami(data.nama_suami);
                                 if (data.usaha_pekerjaan_suami !== null && typeof data.usaha_pekerjaan_suami !== 'undefined') setUsahaPekerjaanSuami(data.usaha_pekerjaan_suami);
                                 if (data.jumlah_tenaga_kerja_suami !== null && typeof data.jumlah_tenaga_kerja_suami !== 'undefined') setJumlahTenagaKerjaSuami(data.jumlah_tenaga_kerja_suami);
-                                if (data.foto_ktp_suami !== null && typeof data.foto_ktp_suami !== 'undefined') setFotoKartuIdentitasSuami(fotoDataSuami);
+                                if (data.foto_ktp_suami !== null && typeof data.foto_ktp_suami !== 'undefined' && data.foto_ktp_suami !== '') setFotoKartuIdentitasSuami(fotoDataSuami);
                                 if (data.suami_diluar_kota !== null && typeof data.suami_diluar_kota !== 'undefined') setStatusSuami(data.suami_diluar_kota === 'true' || data.suami_diluar_kota === '1' ? true : false);
                                 if (data.status_hubungan_keluarga !== null && typeof data.status_hubungan_keluarga !== 'undefined') setValueStatusHubunganKeluarga(data.status_hubungan_keluarga);
                                 if (data.nama_penjamin !== null && typeof data.nama_penjamin !== 'undefined') setNamaPenjamin(data.nama_penjamin);
-                                if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined') setFotoDataPenjamin(fotoDataPenjamin);
+                                if (data.foto_ktp_penjamin !== null && typeof data.foto_ktp_penjamin !== 'undefined' && data.foto_ktp_penjamin !== '') setFotoDataPenjamin(fotoDataPenjamin);
                                 if (data.is_pernyataan_dibaca !== null && typeof data.is_pernyataan_dibaca !== 'undefined') setStatusAgreement(data.suami_diluar_kota === 'true' || data.is_pernyataan_dibaca === '1' ? true : false);
                                 if (data.is_alamat_domisili_sesuai_ktp !== null && typeof data.is_alamat_domisili_sesuai_ktp !== 'undefined') setAddressDomisiliLikeIdentitas(data.is_alamat_domisili_sesuai_ktp === 'true' || data.is_alamat_domisili_sesuai_ktp === '1' ? true : false);
                                 if (data.is_nik_valid_dukcapil !== null && typeof data.is_nik_valid_dukcapil !== 'undefined') setValueNomorIdentitas(data.is_nik_valid_dukcapil);
@@ -1488,7 +1488,7 @@ const DataDiri = ({route}) => {
                             <View style={{flexDirection: 'row'}}>
                                 <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                     <View style={{flex: 1}}>
-                                        <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                        <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }} maxLength={16} />
                                     </View>
                                     <View>
                                         <FontAwesome5 name={'id-badge'} size={18} />
