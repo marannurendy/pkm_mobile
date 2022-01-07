@@ -304,7 +304,6 @@ const TandaTanganPencairan = ({route}) => {
                                         <Card.Image source={{uri: signatureKetuaKel}} style={{margin: 10}} />
                                     </View>
                                     <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
-                                    <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
                                 </View>
                             </Card>
                             <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
