@@ -363,7 +363,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 </View>
                 <View />
             </View>
-            <Text style={styles.note}>Termasuk Jumlah angsuran dari Pembiayaan lain</Text>
+            <Text style={[styles.note, { color: 'red' }]}>Termasuk Jumlah angsuran dari Pembiayaan lain</Text>
         </View>
     )
 
@@ -517,7 +517,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 </View>
                 <View />
             </View>
-            <Text style={styles.note}>Termasuk Jumlah angsuran dari Pembiayaan lain</Text>
+            <Text style={[styles.note, { color: 'red' }]}>Termasuk Jumlah angsuran dari Pembiayaan lain</Text>
         </View>
     )
 
