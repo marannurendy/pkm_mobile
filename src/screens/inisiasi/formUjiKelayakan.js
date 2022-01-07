@@ -47,6 +47,9 @@ const FormUjiKelayakan = ({route}) => {
 
     useEffect(() => {
         if (__DEV__) console.log('useEffect valuePilihKelompok:', valuePilihKelompok);
+
+        const selectedPilihKelompok = itemsPilihKelompok.filter(data => data.value === valuePilihKelompok) ?? [];
+        setSelectedPilihKelompok(selectedPilihKelompok);
         getStorageSubGroup(valuePilihKelompok);
     }, [valuePilihKelompok]);
 

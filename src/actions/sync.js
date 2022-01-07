@@ -433,16 +433,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const persetujuan_pembiayaan_kelompok = responseJson.data?.persetujuan_pembiayaan_kelompok || [];
         const persetujuan_pembiayaan_client_kelompok = responseJson.data?.persetujuan_pembiayaan_client_kelompok || [];
 
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT sosialisai:', sosialisai.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk:', uk.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk_detail:', uk_detail.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk_client_data:', uk_client_data.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_kelompok:', pp_kelompok.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_2_kelompok:', pp_2_kelompok.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_3_kelompok:', pp_3_kelompok.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_kelompok:', persetujuan_pembiayaan_kelompok.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
-        // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT sosialisai:', sosialisai.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk:', uk.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk_detail:', uk_detail.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT uk_client_data:', uk_client_data.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_kelompok:', pp_kelompok.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_2_kelompok:', pp_2_kelompok.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT pp_3_kelompok:', pp_3_kelompok.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_kelompok:', persetujuan_pembiayaan_kelompok.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
+        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
 
         if (uk_client_data.length > 0) {
             try {
