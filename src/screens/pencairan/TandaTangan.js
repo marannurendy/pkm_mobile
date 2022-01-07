@@ -293,7 +293,7 @@ const TandaTanganPencairan = ({route}) => {
                                     <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
                                 </View>
                                 <View style={{marginBottom: 10}}>
-                                    <Text style={{ fontWeight: 'bold' }}>Tanda Tangan {"\n"}Account Officer / SAO / KC</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>Tanda Tangan {"\n"}Account Officer</Text>
                                     <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
                                         <Button 
                                             icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
@@ -304,7 +304,6 @@ const TandaTanganPencairan = ({route}) => {
                                         <Card.Image source={{uri: signatureKetuaKel}} style={{margin: 10}} />
                                     </View>
                                     <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
-                                    <Text style={{ fontWeight: 'bold' }}>{aoName}</Text>
                                 </View>
                             </Card>
                             <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
