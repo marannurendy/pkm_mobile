@@ -172,7 +172,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
                     }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsGroupProduk.map((x, i) => <Picker.Item key={i} label={x.Description} value={x.ID_Group_Product} />)}
+                    {itemsGroupProduk.map((x, i) => <Picker.Item key={i} label={x.Description} value={x.Group_Product_Name} />)}
                 </Picker>
             </View>
         </View>
