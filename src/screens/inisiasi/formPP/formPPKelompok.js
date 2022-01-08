@@ -22,12 +22,15 @@ const InisiasiFormPPKelompok = ({ route }) => {
     const [date, setDate] = useState(new Date());
     const [namaKelompok, setNamaKelompok] = useState('');
     const [valueGroupProduk, setValueGroupProduk] = useState(null);
-    const [itemsGroupProduk, setItemsGroupProduk] = useState([
-        {
-            label: 'Mingguan',
-            value: 'W'
-        }
-    ]);
+    // const [itemsGroupProduk, setItemsGroupProduk] = useState([
+    //     {
+    //         label: 'Mingguan',
+    //         value: 'W'
+    //     }
+    // ]);
+
+    const [itemsGroupProduk, setItemsGroupProduk] = useState([])
+
     const [tanggalPKMPertama, setTanggalPKMPertama] = useState('');
     const [showCalendar, setShowCalendar] = useState(false);
     const [showTime, setShowTIme] = useState(false);
@@ -80,6 +83,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
 
     useEffect(() => {
         GetInfo();
+        GetMaster();
     }, [])
 
     const GetInfo = async () => {
@@ -92,6 +96,17 @@ const InisiasiFormPPKelompok = ({ route }) => {
         setBranchid(branchid)
         setCurrentDate(tanggal)
         setUserName(uname)
+    }
+
+    const GetMaster = async () => {
+        try{
+            const groupProduct = await AsyncStorage.getItem('MasterGroupProduct')
+            let dataGroupProduct = JSON.parse(groupProduct)
+            // console.log(dataGroupProduct)
+            setItemsGroupProduk(dataGroupProduct)
+        }catch{
+            alert('error get master data')
+        }
     }
 
     const tanggalPKMPertamaDatePickerHandler = (event, date) => {
@@ -157,7 +172,7 @@ const InisiasiFormPPKelompok = ({ route }) => {
                     }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsGroupProduk.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsGroupProduk.map((x, i) => <Picker.Item key={i} label={x.Description} value={x.ID_Group_Product} />)}
                 </Picker>
             </View>
         </View>

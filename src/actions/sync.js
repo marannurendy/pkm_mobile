@@ -455,13 +455,13 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 var queryUKPendapatanNasabah = 'INSERT INTO Table_UK_PendapatanNasabah (nama_lengkap, nomor_Identitas, pendapatan_Kotor_perhari, pengeluaran_Keluarga_Perhari, pendapatan_Bersih_Perhari, jumlah_Hari_Usaha_Perbulan, pendapatan_Bersih_Perbulan, pendapatan_Bersih_Perminggu, pembiayaan_Dari_Lembaga, Pembiayaan_Dari_LembagaLain, Pembiayaan_Dari_LembagaLainFreetext, jumlah_Angsuran, pendapatanSuami_Kotor_Perhari, pendapatanSuami_Pengeluaran_Keluarga_Perhari, pendapatanSuami_Pendapatan_Bersih_Perhari, pendapatanSuami_jumlah_Hari_Usaha_Perbulan, pendapatanSuami_pendapatan_Bersih_Perbulan, pendapatanSuami_pendapatan_Bersih_Perminggu, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKPermohonanPembiayaan = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_lengkap, nomor_Identitas, produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, tanda_Tangan_AOSAO, tanda_Tangan_Nasabah, tanda_Tangan_SuamiPenjamin, tanda_Tangan_Ketua_SubKelompok, tanda_Tangan_Ketua_Kelompok, nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, nama_tanda_Tangan_Ketua_SubKelompok, nama_tanda_Tangan_Ketua_Kelompok, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKDisiplinNasabah = 'INSERT INTO Table_UK_DisipinNasabah (nama_lengkap, kehadiran_pkm, angsuran_pada_saat_pkm, id_prospek, idSosialisasiDatabase) values ';
-                var queryPPKelompok = 'INSERT INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, subKelompok, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isSisipan, Nama_TTD_AO ) values ';
+                var queryPPKelompok = 'INSERT OR IGNORE INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, subKelompok, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isSisipan, Nama_TTD_AO ) values ';
                 var queryPPGroup = 'INSERT OR IGNORE INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, status ) values ';
 
-                var queryPPSisipan = 'INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isSisipan, status ) values ';
+                var queryPPSisipan = 'INSERT OR IGNORE INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isSisipan, status ) values ';
                 
                 var queryPPKelompokTahapLanjut = 'INSERT OR IGNORE INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isTahapLanjut, Nama_TTD_AO ) values ';
-                var queryPPSisipanTahapLanjut = 'INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isTahapLanjut, status ) values ';
+                var queryPPSisipanTahapLanjut = 'INSERT OR IGNORE INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isTahapLanjut, status ) values ';
 
                 for (let i = 0; i < uk_client_data.length; i++) {
                     let uniqueNumber = (new Date().getTime()).toString(36);
@@ -1648,6 +1648,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
             AsyncStorage.setItem('WilayahMobile', JSON.stringify(jsonMasterData.data.WilayahMobile));
             AsyncStorage.setItem('SetUKtimeOut', JSON.stringify(jsonMasterData.data.SetUKtimeOut));
             AsyncStorage.setItem('MasterAvailableSubGroup', JSON.stringify(jsonMasterData.data.MasterAvailableSubGroup));
+            AsyncStorage.setItem('MasterGroupProduct', JSON.stringify(jsonMasterData.data.MasterGroupProduct));
         }
 
         return 'SYNC DONE';
