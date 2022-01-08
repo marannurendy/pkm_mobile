@@ -520,6 +520,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
                     const queryDeleteUKDisiplinNasabah = "DELETE FROM Table_UK_DisipinNasabah WHERE id_prospek = '" + uk_client_data[i].ID_Prospek + "'";
+
+                    const queryDeletePPNasabah = "DELETE FROM Table_PP_ListNasabah WHERE Nasabah_Id = '" + uk_client_data[i].ID_Prospek + "'";
                     
                     db.transaction(
                         tx => {
@@ -600,6 +602,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             })
                         }, function(error) {
                             if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} ERROR:`, error);
+                        }, function() {}
+                    );
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeletePPNasabah, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeletePPNasabah} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeletePPNasabah} ERROR:`, error);
                         }, function() {}
                     );
 
