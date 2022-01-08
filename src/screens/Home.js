@@ -295,7 +295,7 @@ export default function FrontHome() {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-053-dev @ 2021-01-06</Text>
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-055-dev @ 2021-01-08</Text>
         </View>
     )
 
