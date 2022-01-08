@@ -384,7 +384,7 @@ db.transaction(tx => {
             subKelompok_Id varchar,
             kelompok varchar,
             subKelompok varchar,
-            Nasabah_Id varchar,
+            Nasabah_Id varchar UNIQUE,
             Nama_Nasabah varchar,
             is_Ketua_Kelompok varchar,
             is_KetuaSubKelompok varchar,

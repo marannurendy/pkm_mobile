@@ -459,7 +459,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
                 var queryPPSisipan = 'INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isSisipan, status ) values ';
                 
-                var queryPPKelompokTahapLanjut = 'INSERT INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isTahapLanjut, Nama_TTD_AO ) values ';
+                var queryPPKelompokTahapLanjut = 'INSERT OR IGNORE INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isTahapLanjut, Nama_TTD_AO ) values ';
                 var queryPPSisipanTahapLanjut = 'INSERT INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isTahapLanjut, status ) values ';
 
                 for (let i = 0; i < uk_client_data.length; i++) {
