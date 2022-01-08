@@ -345,6 +345,7 @@ db.transaction(tx => {
             nama_lengkap varchar,
             kehadiran_pkm varchar,
             angsuran_pada_saat_pkm varchar,
+            id_prospek varchar,
             idSosialisasiDatabase varchar
         );`
     )

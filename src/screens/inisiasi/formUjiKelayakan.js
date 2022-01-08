@@ -40,9 +40,40 @@ const FormUjiKelayakan = ({route}) => {
             getUserData();
             getUKMaster();
             getGroupList();
+            getSosialisasiDatabase();
         });
         return unsubscribe;
     }, [navigation]);
+
+    useEffect(() => {
+        if (__DEV__) console.log('useEffect valuePilihKelompok:', valuePilihKelompok);
+
+        const selectedPilihKelompok = itemsPilihKelompok.filter(data => data.value === valuePilihKelompok) ?? [];
+        setSelectedPilihKelompok(selectedPilihKelompok);
+        getStorageSubGroup(valuePilihKelompok);
+    }, [valuePilihKelompok]);
+
+    const getSosialisasiDatabase = () => {
+        let queryUKDataDiri = `SELECT * FROM Sosialisasi_Database WHERE id = '` + id + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database length:', dataLength);
+                    if (dataLength > 0) {
+                        
+                        let data = results.rows.item(0);
+                        if (__DEV__) console.log('tx.executeSql data:', data);
+                        
+                        if (data.kelompokID !== null && typeof data.kelompokID !== 'undefined') setValuePilihKelompok(data.kelompokID);
+                        if (data.subKelompok !== null && typeof data.subKelompok !== 'undefined') setValuePilihSubKelompok(data.subKelompok);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database error:', error.message);
+                })
+            }
+        )
+    }
 
     const getUserData = () => {
         AsyncStorage.getItem('userData', (error, result) => {
@@ -698,7 +729,6 @@ const FormUjiKelayakan = ({route}) => {
                                         onValueChange={(itemValue, itemIndex) => { 
                                             setSelectedPilihKelompok(itemsPilihKelompok[itemIndex - 1]);
                                             setValuePilihKelompok(itemValue);
-                                            getStorageSubGroup(itemValue);
                                         }}
                                     >
                                         <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />

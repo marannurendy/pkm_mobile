@@ -126,7 +126,8 @@ const VerifikasiFormReview = ({ route }) => {
                     "TTD_KC_SAO": image !== '' ? image.split(',')[1] : '',
                     "VerifBy": uname,
                     "PostStatus": status,
-                    "Reason": reason
+                    "Reason": reason,
+                    "URL_FP4": `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}`
                 };
                 if (__DEV__) console.log('doSave body:', body);
 

@@ -115,22 +115,26 @@ export default({
                 <View
                     style={
                         {
+                            flex: 1,
                             flexDirection: 'row',
                             marginBottom: 12
                         }
                     }
                 >
-                    <View style={
-                        [
-                            styles.checkbox,
-                            {
-                                backgroundColor: getSelectedProspek(item) ? colors.DEFAULT : colors.PUTIH
-                            }
-                        ]
-                    }>
-                        {getSelectedProspek(item) ? <FontAwesomeIcon name="check" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
+                    <View>
+                        <View style={
+                            [
+                                styles.checkbox,
+                                {
+                                    backgroundColor: getSelectedProspek(item) ? colors.DEFAULT : colors.PUTIH,
+                                    width: 26
+                                }
+                            ]
+                        }>
+                            {getSelectedProspek(item) ? <FontAwesomeIcon name="check" size={16} color={colors.PUTIH} /> : <Text>{`     `}</Text>}
+                        </View>
                     </View>
-                    <Text style={{ flex: 1 }} numberOfLines={1}>{item[keyName]}</Text>
+                    <Text style={{ flex: 1 }} numberOfLines={2}>{item[keyName]}</Text>
                 </View>
             </TouchableOpacity>
         ))

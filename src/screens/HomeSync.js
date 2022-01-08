@@ -819,7 +819,7 @@ export default function FrontHomeSync(props) {
                 {renderProspek()}
                 {renderProspekLama()}
                 {renderButton()}
-                <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text>
+                {/* <Text style={{ fontSize: 10, marginTop: 16 }}>{JSON.stringify(selectedItemsProspek)}</Text> */}
                 {renderVersion()}
             </ScrollView>
         </View>
@@ -863,7 +863,7 @@ export default function FrontHomeSync(props) {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-051-dev @ 2021-01-05</Text>
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-053-dev @ 2021-01-06</Text>
         </View>
     )
 
