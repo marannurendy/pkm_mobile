@@ -1445,7 +1445,7 @@ const DataDiri = ({route}) => {
                     </View>
             ) : (
                 <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
-                    <Text style={{fontSize: 25, fontWeight: 'bold', margin: 20}}>Form Data Diri Pribadi {statusSosialisasi}</Text>
+                    <Text style={{fontSize: 25, fontWeight: 'bold', margin: 20}}>Form Data Diri Pribadi</Text>
                     <ScrollView style={{borderTopRightRadius: 20, borderTopLeftRadius: 20}}>
 
                     <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Identitas Diri</Text>
