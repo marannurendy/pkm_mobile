@@ -73,6 +73,7 @@ export default function FrontHomeSync(props) {
     const [wilayahMobileMaster, setWilayahMobileMaster] = useState(null);
     const [setUKtimeOutMaster, setSetUKtimeOutMaster] = useState(null);
     const [masterAvailableSubGroupMaster, setMasterAvailableSubGroupMaster] = useState(null);
+    const [masterGroupProduct, setMasterGroupProduct] = useState(null);
 
     useEffect(() => {
         syncData();
@@ -106,6 +107,7 @@ export default function FrontHomeSync(props) {
         const wilayahMobile = await AsyncStorage.getItem('WilayahMobile');
         const setUKtimeOut = await AsyncStorage.getItem('SetUKtimeOut');
         const masterAvailableSubGroup = await AsyncStorage.getItem('MasterAvailableSubGroup');
+        const masterGroupProduct = await AsyncStorage.getItem('MasterGroupProduct');
 
         if (__DEV__) console.log('getMasterAsyncStorage absent:', absent);
         if (__DEV__) console.log('getMasterAsyncStorage religion:', religion);
@@ -131,6 +133,7 @@ export default function FrontHomeSync(props) {
         if (__DEV__) console.log('getMasterAsyncStorage wilayahMobile:', wilayahMobile);
         if (__DEV__) console.log('getMasterAsyncStorage setUKtimeOut:', setUKtimeOut);
         if (__DEV__) console.log('getMasterAsyncStorage masterAvailableSubGroup:', masterAvailableSubGroup);
+        if (__DEV__) console.log('getMasterAsyncStorage MasterGroupProduct:', MasterGroupProduct);
 
         setAbsentMaster(absent);
         setReligionMaster(religion);
@@ -156,11 +159,12 @@ export default function FrontHomeSync(props) {
         setWilayahMobileMaster(wilayahMobile);
         setSetUKtimeOutMaster(setUKtimeOut);
         setMasterAvailableSubGroupMaster(masterAvailableSubGroup);
+        setMasterGroupProduct(masterGroupProduct);
     }
 
     useEffect(() => {
         setValueGetMaster(!isGetMaster());
-    }, [absentMaster, religionMaster, livingTypeMaster, identityTypeMaster, partnerJobMaster, dwellingConditionMaster, residenceLocationMaster, pembiayaanLainMaster, educationMaster, productMaster, economicSectorMaster, relationStatusMaster, marriageStatusMaster, homeStatusMaster, referralMaster, transFundMaster, jenisPembiayaanMaster, tujuanPembiayaanMaster, kategoritujuanPembiayaanMaster, frekuensiMaster, wilayahMobileMaster, setUKtimeOutMaster, masterAvailableSubGroupMaster]);
+    }, [absentMaster, religionMaster, livingTypeMaster, identityTypeMaster, partnerJobMaster, dwellingConditionMaster, residenceLocationMaster, pembiayaanLainMaster, educationMaster, productMaster, economicSectorMaster, relationStatusMaster, marriageStatusMaster, homeStatusMaster, referralMaster, transFundMaster, jenisPembiayaanMaster, tujuanPembiayaanMaster, kategoritujuanPembiayaanMaster, frekuensiMaster, wilayahMobileMaster, setUKtimeOutMaster, masterAvailableSubGroupMaster, masterGroupProduct]);
 
     async function syncData() {
         moment.locale('id');
@@ -382,7 +386,7 @@ export default function FrontHomeSync(props) {
     }
 
     const isGetMaster = () => {
-        return absentMaster !== null && religionMaster !== null && livingTypeMaster !== null && identityTypeMaster !== null && partnerJobMaster !== null && dwellingConditionMaster !== null && residenceLocationMaster !== null && pembiayaanLainMaster !== null && educationMaster !== null && productMaster !== null && economicSectorMaster !== null && relationStatusMaster !== null && marriageStatusMaster !== null && homeStatusMaster !== null && referralMaster !== null && transFundMaster !== null && jenisPembiayaanMaster !== null && subjenisPembiayaanMaster !== null && tujuanPembiayaanMaster !== null && kategoritujuanPembiayaanMaster !== null && frekuensiMaster !== null && wilayahMobileMaster !== null && setUKtimeOutMaster !== null && masterAvailableSubGroupMaster !== null
+        return absentMaster !== null && religionMaster !== null && livingTypeMaster !== null && identityTypeMaster !== null && partnerJobMaster !== null && dwellingConditionMaster !== null && residenceLocationMaster !== null && pembiayaanLainMaster !== null && educationMaster !== null && productMaster !== null && economicSectorMaster !== null && relationStatusMaster !== null && marriageStatusMaster !== null && homeStatusMaster !== null && referralMaster !== null && transFundMaster !== null && jenisPembiayaanMaster !== null && subjenisPembiayaanMaster !== null && tujuanPembiayaanMaster !== null && kategoritujuanPembiayaanMaster !== null && frekuensiMaster !== null && wilayahMobileMaster !== null && setUKtimeOutMaster !== null && masterAvailableSubGroupMaster !== null && masterGroupProduct !== null
     }
 
     const renderHeaderMenu = () => (
@@ -553,6 +557,7 @@ export default function FrontHomeSync(props) {
                         <Text style={{ fontSize: 12, color: wilayahMobileMaster === null ? 'red' : 'green' }}>WilayahMobile</Text>
                         <Text style={{ fontSize: 12, color: setUKtimeOutMaster === null ? 'red' : 'green' }}>SetUKtimeOut</Text>
                         <Text style={{ fontSize: 12, color: masterAvailableSubGroupMaster === null ? 'red' : 'green' }}>MasterAvailableSubGroup</Text>
+                        <Text style={{ fontSize: 12, color: masterGroupProduct === null ? 'red' : 'green' }}>MasterGroupProduct</Text>
                     </View>
                 </View>
             </ScrollView>
