@@ -123,50 +123,67 @@ const SyncPencairan = () => {
                             await AsyncStorage.removeItem(data.TTD_Nasabah_2)
                             await AsyncStorage.removeItem(data.Foto_Pencairan)
                         }
-                        fetch(ApiSyncPostInisiasi + 'post_pencairan', {
-                            method: 'POST',
-                            headers: {
-                                Authorization: TokenHeader,
-                                Accept:
-                                    'application/json',
-                                    'Content-Type': 'application/json'
-                                }, 
-                            body: JSON.stringify(ah)
-                        })
-                        .then((response) => response.json())
-                        .then((responseJSON) => {
-                            if (responseJSON.code === 200) {
-                                Alert.alert(  
-                                    'Berhasil',  
-                                    'Sync Data Berhasil',  
-                                    [  
-                                        {text: 'OK', onPress: () => buttonFinish()},  
-                                    ]
-                                )  
-                                if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
-                                for(let a = 0; a < ah.length; a++){
-                                    const queryDeleteSosialisasiDatabase = 'DELETE FROM Table_Pencairan_Post where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
-                                    db.transaction(
-                                        tx => {
-                                            tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
-                                                if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
-                                            })
-                                        }, function(error) {
-                                            if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
-                                        }, function() {}
-                                    );
+                        await AsyncStorage.removeItem(`formPencairan_tandaTanganSAOKCLRP_${Kelompok_ID}`)
+                        await AsyncStorage.removeItem(`formPencairan_tandaTanganNasabahLRP_${Kelompok_ID}`)
+                        try {
+                            fetch(`${ApiSyncPostInisiasi}post_pencairan`, {
+                                method: 'POST',
+                                headers: {
+                                    Authorization: TokenHeader,
+                                    Accept:
+                                        'application/json',
+                                        'Content-Type': 'application/json'
+                                    }, 
+                                body: JSON.stringify(ah)
+                            })
+                            .then((response) => response.json())
+                            .then((responseJSON) => {
+                                if (responseJSON.code === 200) {
+                                    setLoaded(false)  
+                                    if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
+                                    for(let a = 0; a < ah.length; a++){
+                                        const queryDeleteSosialisasiDatabase = 'DELETE FROM Table_Pencairan_Post where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
+                                        db.transaction(
+                                            tx => {
+                                                tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                                                    if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                                                })
+                                            }, function(error) {
+                                                if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                            }, function() {}
+                                        );
+                                    }
+                                    Alert.alert(  
+                                        'Berhasil',  
+                                        'Sync Data Berhasil',  
+                                        [  
+                                            {text: 'OK', onPress: () => buttonFinish()},  
+                                        ]
+                                    )
+                                    return true;
+                                }else{
+                                    setLoaded(false)
+                                    if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update Gagal');
+                                    Alert.alert(  
+                                        'Gagal!',  
+                                        'Sync Data Tidak Berhasil',  
+                                        [  
+                                            {text: 'OK', onPress: () => buttonExit()},  
+                                        ]
+                                    )  
                                 }
-                                return true;
-                            }else{
-                                Alert.alert(  
-                                    'Gagal!',  
-                                    'Sync Data Tidak Berhasil',  
-                                    [  
-                                        {text: 'OK', onPress: () => buttonFinish()},  
-                                    ]
-                                )  
-                            }
-                        })
+                            })
+                        }
+                        catch(error) {
+                            if (__DEV__) console.log('$post /post_inisiasi/post_pencairan error:', error);
+                            Alert.alert(  
+                                'Gagal!',  
+                                'Sync Data Tidak Berhasil',  
+                                [  
+                                    {text: 'OK', onPress: () => buttonExit()},  
+                                ]
+                            )  
+                        }
                     })
                 }
             )
@@ -174,14 +191,10 @@ const SyncPencairan = () => {
     }
 
     const buttonFinish = async () => {
-        setLoaded(false)
-        await AsyncStorage.removeItem(`formPencairan_tandaTanganSAOKCLRP_${Kelompok_ID}`)
-        await AsyncStorage.removeItem(`formPencairan_tandaTanganNasabahLRP_${Kelompok_ID}`)
         navigation.replace('Pencairan')
     }
 
     const buttonExit = async () => {
-        setLoaded(false)
         navigation.replace('FlowPencairan')
     }
 
