@@ -139,7 +139,6 @@ const SyncPencairan = () => {
                             .then((response) => response.json())
                             .then((responseJSON) => {
                                 if (responseJSON.code === 200) {
-                                    setLoaded(false)  
                                     if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
                                     for(let a = 0; a < ah.length; a++){
                                         const queryDeleteSosialisasiDatabase = 'DELETE FROM Table_Pencairan_Post where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
@@ -153,6 +152,7 @@ const SyncPencairan = () => {
                                             }, function() {}
                                         );
                                     }
+                                    setLoaded(false)  
                                     Alert.alert(  
                                         'Berhasil',  
                                         'Sync Data Berhasil',  
@@ -162,8 +162,8 @@ const SyncPencairan = () => {
                                     )
                                     return true;
                                 }else{
-                                    setLoaded(false)
                                     if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update Gagal');
+                                    setLoaded(false)
                                     Alert.alert(  
                                         'Gagal!',  
                                         'Sync Data Tidak Berhasil',  
