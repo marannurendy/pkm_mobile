@@ -170,6 +170,7 @@ const InisiasiFormPPForm = ({ route }) => {
                     setLoading(false)
                     flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
                     var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 2, AbsPP = '0' WHERE Nasabah_Id = '` + Nasabah_Id + `'`
+                    var queryDelete = `DELETE FROM Table_PP_ListNasabah WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
 
                     db.transaction(
                         tx => {
@@ -178,9 +179,15 @@ const InisiasiFormPPForm = ({ route }) => {
                             tx.executeSql(queryUpdate)
                         },function(error) {
                             console.log('Transaction ERROR: ' + error.message);
-                          }, function() {
-                            console.log('Delete Table OK');
-                      }
+                        }, function() {
+                            db.transaction(
+                                tx => {
+                                    tx.executeSql(queryDelete)
+                                }, function(error) {
+                                    alert('Transaction Error: ' + error.message);
+                                }
+                            )
+                        }
                     )
 
                 }else{

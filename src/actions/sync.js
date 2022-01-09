@@ -188,7 +188,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         try {
             if(responseJson !== null) {
-                let query = 'INSERT INTO GroupList (OurBranchID, GroupName, GroupID, MeetingDay, AnggotaAktif, JumlahTagihan, MeetingPlace, MeetingTime, syncby) values ';
+                let query = 'INSERT OR IGNORE INTO GroupList (OurBranchID, GroupName, GroupID, MeetingDay, AnggotaAktif, JumlahTagihan, MeetingPlace, MeetingTime, syncby) values ';
                 for (let i = 0; i < responseJson.length; i++) {
                     query = query + "('"
                     + responseJson[i].OurBranchID
@@ -245,7 +245,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         try {
             if(responseJson !== null) {
-                var query = 'INSERT INTO AccountList (OurBranchID, GroupName, GroupID, MeetingDay, ClientID, ClientName, AccountID, ProductID, InstallmentAmount, rill, ke, VolSavingsBal, StatusPAR, totalSetor, syncby) values ';
+                var query = 'INSERT OR IGNORE INTO AccountList (OurBranchID, GroupName, GroupID, MeetingDay, ClientID, ClientName, AccountID, ProductID, InstallmentAmount, rill, ke, VolSavingsBal, StatusPAR, totalSetor, syncby) values ';
                 for (let i = 0; i < responseJson.length; i++) {
                     query = query + "('"
                     + responseJson[i].OurBranchID
@@ -314,7 +314,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         try {
             if(responseJson !== null) {
-                var query = 'INSERT INTO UpAccountList (OurBranchID, ClientID, ClientName, GroupID, GroupName, MeetingDay, JumlahUP, syncby) values ';
+                var query = 'INSERT OR IGNORE INTO UpAccountList (OurBranchID, ClientID, ClientName, GroupID, GroupName, MeetingDay, JumlahUP, syncby) values ';
                 for (let i = 0; i < responseJson.length; i++) {
                     query = query + "('"
                     + responseJson[i].OurBranchID
@@ -368,7 +368,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         try {
             if(responseJson !== null) {
-                var query = 'INSERT INTO PAR_AccountList (OurBranchID, ClientID, ClientName, AccountID, ProductID, GroupID, GroupName, ODAmount, syncby) values ';
+                var query = 'INSERT OR IGNORE INTO PAR_AccountList (OurBranchID, ClientID, ClientName, AccountID, ProductID, GroupID, GroupName, ODAmount, syncby) values ';
                 for (let i = 0; i < responseJson.length; i++) {
                     query = query + "('"
                     + responseJson[i].OurBranchID

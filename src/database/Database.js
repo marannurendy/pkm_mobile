@@ -17,7 +17,7 @@ db.transaction(tx => {
         `create table if not exists GroupList(
             OurBranchID varchar, 
             GroupName varchar, 
-            GroupID varchar, 
+            GroupID varchar UNIQUE, 
             MeetingDay varchar, 
             AnggotaAktif varchar, 
             JumlahTagihan varchar, 
@@ -30,13 +30,23 @@ db.transaction(tx => {
     );
 
     tx.executeSql(
-        'create table if not exists UpAccountList(OurBranchID varchar, ClientID varchar, ClientName varchar, GroupID varchar, GroupName varchar, MeetingDay varchar, JumlahUP varchar, status varchar, syncby varchar);'
+        `create table if not exists UpAccountList(
+            OurBranchID varchar, 
+            ClientID varchar UNIQUE, 
+            ClientName varchar, 
+            GroupID varchar, 
+            GroupName varchar, 
+            MeetingDay varchar, 
+            JumlahUP varchar, 
+            status varchar, 
+            syncby varchar)
+        ;`
     )
 
     tx.executeSql(
         `create table if not exists PAR_AccountList(
             OurBranchID varchar,
-            ClientID varchar,
+            ClientID varchar UNIQUE,
             ClientName varchar,
             AccountID varchar,
             ProductID varchar,
@@ -57,7 +67,7 @@ db.transaction(tx => {
             GroupName varchar, 
             GroupID varchar, 
             MeetingDay varchar, 
-            ClientID varchar, 
+            ClientID varchar UNIQUE, 
             ClientName varchar, 
             AccountID varchar, 
             ProductID varchar, 

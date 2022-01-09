@@ -8,6 +8,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { showMessage } from "react-native-flash-message"
 import { flex } from 'styled-system'
 import {ApiSync, PostPKM} from '../../dataconfig/index'
+import { scale, verticalScale } from 'react-native-size-matters'
 
 const MeetingMenu = ({route}) => {
 
@@ -357,21 +358,21 @@ const MeetingMenu = ({route}) => {
                         <TouchableOpacity disabled={buttonPkm} onPress={() => navigation.navigate('GroupCollection', {groupid: groupid})} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonPkm === true ? '#CCCCC4' : '#32908F'}}>
                             <FontAwesome5 name="users" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
-                                <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FAFAF8'}}>PKM</Text> 
+                                <Text style={{fontWeight: 'bold', fontSize: scale(20), color: '#FAFAF8'}}>PKM</Text> 
                             </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity disabled={buttonUp} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonUp === true ? '#CCCCC4' : '#FF521B'}}>
                             <FontAwesome5 name="user-check" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
-                                <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 19, color: '#FAFAF8'}}>Uang Pertanggungjawaban</Text> 
+                                <Text style={{fontWeight: 'bold', fontSize: scale(20), color: '#FAFAF8'}}>UP</Text> 
                             </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity disabled={buttonTtd} onPress={() => navigation.navigate('SignNew', {id: groupid, username: userName})} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonTtd === true ? '#CCCCC4' : '#9C482E'}}>
                             <FontAwesome5 name="signature" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
-                                <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 18, color: '#FAFAF8'}}>Tanda Tangan</Text> 
+                                <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: scale(15), color: '#FAFAF8'}}>Tanda Tangan</Text> 
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -380,21 +381,21 @@ const MeetingMenu = ({route}) => {
                         <TouchableOpacity onPress={() => navigation.navigate('Report', {groupid: groupid, cabangid: branchid})} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: '#E94F37'}}>
                             <FontAwesome5 name="clipboard-check" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
-                                <Text style={{fontWeight: 'bold', fontSize: 20, color: '#FAFAF8'}}>Report</Text> 
+                                <Text style={{fontWeight: 'bold', fontSize: scale(17), color: '#FAFAF8'}}>Report</Text> 
                             </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity disabled={buttonPkmb} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonPkmb === true ? '#CCCCC4' : '#F4A634'}}>
                             <FontAwesome5 name="clipboard-list" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
-                                <Text numberOfLines={2} style={{fontWeight: 'bold', fontSize: 20, color: '#FAFAF8'}}>PKM Bermakna</Text> 
+                                <Text style={{fontWeight: 'bold', fontSize: scale(17), color: '#FAFAF8'}}>PKMB</Text> 
                             </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={() => SyncData(groupid)} disabled={buttonSync} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonSync === true ? '#CCCCC4' : '#FAD133'}}>
                             <FontAwesome5 name="sync-alt" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
-                                <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FAFAF8'}}>Sync</Text> 
+                                <Text style={{fontWeight: 'bold', fontSize: scale(20), color: '#FAFAF8'}}>Sync</Text> 
                             </View>
                         </TouchableOpacity>
                     </View>

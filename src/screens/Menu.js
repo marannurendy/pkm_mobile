@@ -348,51 +348,51 @@ export default class Menu extends React.Component {
 
         console.log(dataSync)
 
-        if(CollectDatapkm.length > 0 ) {
-            try{
-                return fetch(ApiSync+PostPKM, {
-                        method: 'POST',
-                        headers: {
-                            Accept: 'application/json',
-                                    'Content-Type': 'application/json'
-                            },
-                        body: JSON.stringify(dataSync)
-                    })
-                .then((response) => response.json())
-                .then((responseJson) => {
-                    console.log(responseJson)
-                    if(responseJson.ResponseStatus === true) {
-                        flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
-                        this.setState({
-                            loading: false
-                        })
-                        db.transaction(
-                            tx => {
-                                tx.executeSql("DELETE FROM AccountList WHERE GroupID = '" + id + "'")
-                                tx.executeSql("DELETE FROM pkmTransaction WHERE GroupID = '" + id + "'")
-                                tx.executeSql("DELETE FROM Totalpkm WHERE GroupID = '" + id + "'")
-                            },function(error) {
-                                console.log('Transaction ERROR: ' + error.message);
-                              }, function() {
-                                  console.log('Delete Table OK');
-                          }
-                        )
-                    }else{
-                        flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.Message, "#ff6347", "#fff")
-                        this.setState({
-                            loading: false
-                        })
-                    }
-                })
-            }catch(error){
-                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
-                this.setState({
-                    loading: false
-                })
-            }
-        }else{
-            flashNotification("Alert", "Data PKM telah di kirim", "#ff6347", "#fff")
-        }
+        // if(CollectDatapkm.length > 0 ) {
+        //     try{
+        //         return fetch(ApiSync+PostPKM, {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     Accept: 'application/json',
+        //                             'Content-Type': 'application/json'
+        //                     },
+        //                 body: JSON.stringify(dataSync)
+        //             })
+        //         .then((response) => response.json())
+        //         .then((responseJson) => {
+        //             console.log(responseJson)
+        //             if(responseJson.ResponseStatus === true) {
+        //                 flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+        //                 this.setState({
+        //                     loading: false
+        //                 })
+        //                 db.transaction(
+        //                     tx => {
+        //                         tx.executeSql("DELETE FROM AccountList WHERE GroupID = '" + id + "'")
+        //                         tx.executeSql("DELETE FROM pkmTransaction WHERE GroupID = '" + id + "'")
+        //                         tx.executeSql("DELETE FROM Totalpkm WHERE GroupID = '" + id + "'")
+        //                     },function(error) {
+        //                         console.log('Transaction ERROR: ' + error.message);
+        //                       }, function() {
+        //                           console.log('Delete Table OK');
+        //                   }
+        //                 )
+        //             }else{
+        //                 flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.Message, "#ff6347", "#fff")
+        //                 this.setState({
+        //                     loading: false
+        //                 })
+        //             }
+        //         })
+        //     }catch(error){
+        //         flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+        //         this.setState({
+        //             loading: false
+        //         })
+        //     }
+        // }else{
+        //     flashNotification("Alert", "Data PKM telah di kirim", "#ff6347", "#fff")
+        // }
     }
 
     render() {

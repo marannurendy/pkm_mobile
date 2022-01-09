@@ -363,23 +363,23 @@ const Inisasi = () => {
 
                                 <View style={{flexDirection: 'row', justifyContent: 'space-around', paddingHorizontal: 5, paddingVertical: 10, flex: 1}}>
                                     <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#003049', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>{totSos}</Text>
-                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>Sosialisasi</Text>
+                                        <Text style={{fontWeight: 'bold', fontSize: scale(18), color: '#FFF'}}>{totSos}</Text>
+                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: scale(10)}}>Sos</Text>
                                     </View>
 
                                     <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#D62828', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>{totUk}</Text>
-                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>UK</Text>
+                                        <Text style={{fontWeight: 'bold', fontSize: scale(18), color: '#FFF'}}>{totUk}</Text>
+                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: scale(10)}}>UK</Text>
                                     </View>
 
                                     <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#F77F00', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>{totVerif}</Text>
-                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>Verifikasi</Text>
+                                        <Text style={{fontWeight: 'bold', fontSize: scale(18), color: '#FFF'}}>{totVerif}</Text>
+                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: scale(10)}}>Verif</Text>
                                     </View>
 
                                     <View style={{width: dimension.width/6, borderRadius: 10, backgroundColor: '#17BEBB', padding: 5, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontWeight: 'bold', fontSize: 25, color: '#FFF'}}>{totPp}</Text>
-                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: 10}}>PP</Text>
+                                        <Text style={{fontWeight: 'bold', fontSize: scale(18), color: '#FFF'}}>{totPp}</Text>
+                                        <Text numberOfLines={1} style={{fontWeight: 'bold', color: '#FFF', marginHorizontal: scale(10)}}>PP</Text>
                                     </View>
                                 </View>
                             </View>
