@@ -116,6 +116,12 @@ const SyncPencairan = () => {
                                 "TTD_Nasabah": await AsyncStorage.getItem(data.TTD_Nasabah),
                                 "TTD_Nasabah_2": await AsyncStorage.getItem(data.TTD_Nasabah_2)
                             });
+                            await AsyncStorage.removeItem(data.TTD_KC)
+                            await AsyncStorage.removeItem(data.TTD_KK)
+                            await AsyncStorage.removeItem(data.TTD_KSK)
+                            await AsyncStorage.removeItem(data.TTD_Nasabah)
+                            await AsyncStorage.removeItem(data.TTD_Nasabah_2)
+                            await AsyncStorage.removeItem(data.Foto_Pencairan)
                         }
                         fetch(ApiSyncPostInisiasi + 'post_pencairan', {
                             method: 'POST',
@@ -140,7 +146,6 @@ const SyncPencairan = () => {
                                 if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
                                 for(let a = 0; a < ah.length; a++){
                                     const queryDeleteSosialisasiDatabase = 'DELETE FROM Table_Pencairan_Post where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
-                                
                                     db.transaction(
                                         tx => {
                                             tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
@@ -170,6 +175,8 @@ const SyncPencairan = () => {
 
     const buttonFinish = async () => {
         setLoaded(false)
+        await AsyncStorage.removeItem(`formPencairan_tandaTanganSAOKCLRP_${Kelompok_ID}`)
+        await AsyncStorage.removeItem(`formPencairan_tandaTanganNasabahLRP_${Kelompok_ID}`)
         navigation.replace('Pencairan')
     }
 

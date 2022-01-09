@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, FlatList, SafeAreaView, ToastAndroid, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Dimensions, TouchableOpacity, TextInput, Modal, ActivityIndicator, SafeAreaView, ToastAndroid, ScrollView, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -53,6 +53,20 @@ const Siklus = ({route}) => {
         console.log(route.params.postPencairan)
         getUserData();
     }, []);
+
+    const renderLoadingView = () => {
+        const marginTop = 0;
+    
+        return (
+            <ActivityIndicator
+                animating = {true}
+                color = '#0076BE'
+                size = 'large'
+                hidesWhenStopped={true}
+                style={{ marginTop }}
+            />
+        );
+    }
 
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST DATA PENCAIRAN INSERT LOCAL', dataNasabah.ID_Prospek);
@@ -197,6 +211,7 @@ const Siklus = ({route}) => {
                 <View style={styles.bodyContainer}>
                     <View style={styles.F1}>
                         <WebView
+                            renderLoading={renderLoadingView}
                             source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_${route.params.data.Jenis_Pembiayaan.includes('S') || route.params.data.Jenis_Pembiayaan.includes('Y') ? 'SYARIAH': `${route.params.data.Jenis_Pembiayaan.charAt(0) == '1' && route.params.data.Jenis_Pembiayaan.includes('M') ? 'KONVE': 'KONVENSIONAL'}`}_${route.params.data.Jenis_Pembiayaan.charAt(0) == '1' ? 'T1' : 'TL'}.html?ID_Prospek=${dataNasabah.ID_Prospek}` }}
                             startInLoadingState={true}
                             style={styles.F1}
