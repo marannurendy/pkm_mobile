@@ -100,7 +100,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         if (__DEV__) console.log('tandaTanganKetuaKelompok :', data.tanda_Tangan_Ketua_Kelompok, tandaTanganKetuaKelompok);
 
                         if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
-                        if (data.frekuensi_Pembiayaan !== null && typeof data.frekuensi_Pembiayaan !== 'undefined') setValueFrekuensiPembiayaan(data.frekuensi_Pembiayaan);
+                        // if (data.frekuensi_Pembiayaan !== null && typeof data.frekuensi_Pembiayaan !== 'undefined') setValueFrekuensiPembiayaan(data.frekuensi_Pembiayaan);
                         if (data.tanda_Tangan_AOSAO !== null && typeof data.tanda_Tangan_AOSAO !== 'undefined') setValueTandaTanganAOSAO(tandaTanganAOSAO);
                         if (data.tanda_Tangan_Nasabah !== null && typeof data.tanda_Tangan_Nasabah !== 'undefined') setValueTandaTanganNasabah(tandaTanganNasabah);
                         if (data.tanda_Tangan_SuamiPenjamin !== null && typeof data.tanda_Tangan_SuamiPenjamin !== 'undefined') setValueTandaTanganSuamiPenjamin(tandaTanganSuamiPenjamin);
@@ -146,7 +146,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                             const response = await AsyncStorage.getItem('Frekuensi');
                             if (response !== null) {
                                 const responseJSON = JSON.parse(response);
-                                if (__DEV__) console.log('AsyncStorage Frekuensi responseJSON:', responseJSON);
+                                if (__DEV__) console.log('AsyncStorage Frekuensi responseJSON:', responseJSON.length, responseJSON);
                                 if (responseJSON.length > 0 ?? false) {
                                     let value = data.frekuensi_Pembayaran;
                                     setValueFrekuensiPembiayaan(responseJSON.filter(data => data.id === value)[0].namafrekuensi.trim() || '');

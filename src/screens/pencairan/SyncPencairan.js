@@ -68,96 +68,134 @@ const SyncPencairan = () => {
         setTokenHeader(token)
     }
 
-    const doSubmit = (Kelompok_ID) => {
+    const doSubmit = async (Kelompok_ID) => {
         if (__DEV__) console.log('post pencairan loaded');
         if (__DEV__) console.log('post pencairan keyword:', keyword);
-        setLoaded(true)
-        let query = 'SELECT A.* FROM Table_Pencairan_Post A '+
+        let LRP_TTD_AO = await AsyncStorage.getItem(`formPencairan_tandaTanganSAOKCLRP_${Kelompok_ID}`);
+        let LRP_TTD_Nasabah =  await AsyncStorage.getItem(`formPencairan_tandaTanganNasabahLRP_${Kelompok_ID}`)
+        console.log(LRP_TTD_AO)
+        if(LRP_TTD_AO == null && LRP_TTD_Nasabah == null){
+            Alert.alert(  
+                'Gagal!',  
+                'Tidak ada tanda tangan LRP',  
+                [  
+                    {text: 'OK', onPress: () => buttonExit()},  
+                ]
+            )
+        }else{
+            setLoaded(true)
+            let query = 'SELECT A.* FROM Table_Pencairan_Post A '+
                     'LEFT JOIN Table_Pencairan B on A.Kelompok_ID = B.Kelompok_Id '+
-                    'where B.kelompok_Id = "'+ Kelompok_ID +'" and A.LRP_TTD_AO is not null and A.LRP_TTD_Nasabah is not null';
-        db.transaction(
-            tx => {
-                tx.executeSql(query, [], async (tx, results) => {
-                    if (__DEV__) console.log('post pencairan results:', results.rows);
-                    let dataLength = results.rows.length
-                    var ah = []
-                    for(let a = 0; a < dataLength; a++) {
-                        let data = results.rows.item(a);
-                        ah.push({
-                            "FP4": "",
-                            "Foto_Kegiatan": null,
-                            "Foto_Pencairan": await AsyncStorage.getItem(data.Foto_Pencairan),
-                            "ID_Prospek": data.ID_Prospek,
-                            "Is_Batal": null,
-                            "Is_Dicairkan": data.Is_Dicairkan,
-                            "Is_Ludin": null,
-                            "Is_PMU": null,
-                            "Jml_Cair_PMU": null,
-                            "Jml_RealCair": data.Jml_RealCair,
-                            "Jml_Sisa_UP": null,
-                            "Jml_UP": "0",
-                            "LRP_TTD_AO": await AsyncStorage.getItem(data.LRP_TTD_AO),
-                            "LRP_TTD_Nasabah": await AsyncStorage.getItem(data.LRP_TTD_Nasabah),
-                            "TTD_KC": await AsyncStorage.getItem(data.TTD_KC),
-                            "TTD_KK": await AsyncStorage.getItem(data.TTD_KK),
-                            "TTD_KSK": await AsyncStorage.getItem(data.TTD_KSK),
-                            "TTD_Nasabah": await AsyncStorage.getItem(data.TTD_Nasabah),
-                            "TTD_Nasabah_2": await AsyncStorage.getItem(data.TTD_Nasabah_2)
-                        });
-                    }
-                    fetch(ApiSyncPostInisiasi + 'post_pencairan', {
-                        method: 'POST',
-                        headers: {
-                            Authorization: TokenHeader,
-                            Accept:
-                                'application/json',
-                                'Content-Type': 'application/json'
-                            }, 
-                        body: JSON.stringify(ah)
-                    })
-                    .then((response) => response.json())
-                    .then((responseJSON) => {
-                        if (responseJSON.code === 200) {
-                            Alert.alert(  
-                                'Berhasil',  
-                                'Sync Data Berhasil',  
-                                [  
-                                    {text: 'OK', onPress: () => buttonFinish()},  
-                                ]
-                            )  
-                            if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
-                            for(let a = 0; a < ah.length; a++){
-                                const queryDeleteSosialisasiDatabase = 'DELETE FROM Table_Pencairan_Post where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
-                            
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
-                                            if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
-                                        })
-                                    }, function(error) {
-                                        if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
-                                    }, function() {}
-                                );
-                            }
-                            return true;
-                        }else{
+                    'where B.kelompok_Id = "'+ Kelompok_ID +'"';
+            db.transaction(
+                tx => {
+                    tx.executeSql(query, [], async (tx, results) => {
+                        if (__DEV__) console.log('post pencairan results:', results.rows);
+                        let dataLength = results.rows.length
+                        var ah = []
+                        for(let a = 0; a < dataLength; a++) {
+                            let data = results.rows.item(a);
+                            ah.push({
+                                "FP4": "",
+                                "Foto_Kegiatan": null,
+                                "Foto_Pencairan": await AsyncStorage.getItem(data.Foto_Pencairan),
+                                "ID_Prospek": data.ID_Prospek,
+                                "Is_Batal": null,
+                                "Is_Dicairkan": data.Is_Dicairkan,
+                                "Is_Ludin": null,
+                                "Is_PMU": null,
+                                "Jml_Cair_PMU": null,
+                                "Jml_RealCair": data.Jml_RealCair,
+                                "Jml_Sisa_UP": null,
+                                "Jml_UP": "0",
+                                "LRP_TTD_AO": LRP_TTD_AO,
+                                "LRP_TTD_Nasabah":LRP_TTD_Nasabah,
+                                "TTD_KC": await AsyncStorage.getItem(data.TTD_KC),
+                                "TTD_KK": await AsyncStorage.getItem(data.TTD_KK),
+                                "TTD_KSK": await AsyncStorage.getItem(data.TTD_KSK),
+                                "TTD_Nasabah": await AsyncStorage.getItem(data.TTD_Nasabah),
+                                "TTD_Nasabah_2": await AsyncStorage.getItem(data.TTD_Nasabah_2)
+                            });
+                            await AsyncStorage.removeItem(data.TTD_KC)
+                            await AsyncStorage.removeItem(data.TTD_KK)
+                            await AsyncStorage.removeItem(data.TTD_KSK)
+                            await AsyncStorage.removeItem(data.TTD_Nasabah)
+                            await AsyncStorage.removeItem(data.TTD_Nasabah_2)
+                            await AsyncStorage.removeItem(data.Foto_Pencairan)
+                        }
+                        await AsyncStorage.removeItem(`formPencairan_tandaTanganSAOKCLRP_${Kelompok_ID}`)
+                        await AsyncStorage.removeItem(`formPencairan_tandaTanganNasabahLRP_${Kelompok_ID}`)
+                        try {
+                            fetch(`${ApiSyncPostInisiasi}post_pencairan`, {
+                                method: 'POST',
+                                headers: {
+                                    Authorization: TokenHeader,
+                                    Accept:
+                                        'application/json',
+                                        'Content-Type': 'application/json'
+                                    }, 
+                                body: JSON.stringify(ah)
+                            })
+                            .then((response) => response.json())
+                            .then((responseJSON) => {
+                                if (responseJSON.code === 200) {
+                                    if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update success');
+                                    for(let a = 0; a < ah.length; a++){
+                                        const queryDeleteSosialisasiDatabase = 'DELETE FROM Table_Pencairan_Post where ID_Prospek = "'+ ah[a].ID_Prospek +'"';
+                                        db.transaction(
+                                            tx => {
+                                                tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                                                    if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                                                })
+                                            }, function(error) {
+                                                if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                                            }, function() {}
+                                        );
+                                    }
+                                    setLoaded(false)  
+                                    Alert.alert(  
+                                        'Berhasil',  
+                                        'Sync Data Berhasil',  
+                                        [  
+                                            {text: 'OK', onPress: () => buttonFinish()},  
+                                        ]
+                                    )
+                                    return true;
+                                }else{
+                                    if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update Gagal');
+                                    setLoaded(false)
+                                    Alert.alert(  
+                                        'Gagal!',  
+                                        'Sync Data Tidak Berhasil',  
+                                        [  
+                                            {text: 'OK', onPress: () => buttonExit()},  
+                                        ]
+                                    )  
+                                }
+                            })
+                        }
+                        catch(error) {
+                            if (__DEV__) console.log('$post /post_inisiasi/post_pencairan error:', error);
                             Alert.alert(  
                                 'Gagal!',  
                                 'Sync Data Tidak Berhasil',  
                                 [  
-                                    {text: 'OK', onPress: () => buttonFinish()},  
+                                    {text: 'OK', onPress: () => buttonExit()},  
                                 ]
                             )  
                         }
                     })
-                })
-            }
-        )
+                }
+            )
+        }
     }
 
     const buttonFinish = async () => {
-        setLoaded(false)
         navigation.replace('Pencairan')
+    }
+
+    const buttonExit = async () => {
+        navigation.replace('FlowPencairan')
     }
 
     // LIST VIEW PENCAIRAN

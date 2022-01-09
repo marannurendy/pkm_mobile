@@ -288,7 +288,7 @@ const AkadWakalah = ({route}) => {
                             2. {dataNasabah.Nama_Prospek} bertempat Tinggal <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Alamat_Domisili}, </Text> 
                             KTP No. <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Nomor_Identitas}</Text>,
                             selanjutnya disebut Nasabah.{"\n"}{"\n"}
-                            Nasabah dengan perseyujuan penjamin, yaitu <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Nama_Penjamin}</Text>, 
+                            Nasabah dengan persetujuan penjamin, yaitu <Text style={{fontSize: 14, color:"#0645AD"}}>{dataNasabah.Nama_Penjamin}</Text>, 
                             sebagaimana dalam permohonan pembiayaan, telah 
                             menerima fasilitas pembiayaan Murabahah dari PNM 
                             dengan ketentuan sebagai berikut:{"\n"}

@@ -48,7 +48,7 @@ const FormUjiKelayakan = ({route}) => {
     useEffect(() => {
         if (__DEV__) console.log('useEffect valuePilihKelompok:', valuePilihKelompok);
 
-        const selectedPilihKelompok = itemsPilihKelompok.filter(data => data.value === valuePilihKelompok) ?? [];
+        const selectedPilihKelompok = itemsPilihKelompok.filter(data => data.value === valuePilihKelompok)[0] ?? [];
         setSelectedPilihKelompok(selectedPilihKelompok);
         getStorageSubGroup(valuePilihKelompok);
     }, [valuePilihKelompok]);
@@ -196,6 +196,7 @@ const FormUjiKelayakan = ({route}) => {
 
                         if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri data:', data);
 
+                        let siklus = 1;
                         if (statusSosialisasi === '3') {
                             if (!data.kehadiran_pkm || typeof data.kehadiran_pkm === 'undefined' || data.kehadiran_pkm === '' || data.kehadiran_pkm === 'null') {
                                 setSubmitted(false);
@@ -205,6 +206,8 @@ const FormUjiKelayakan = ({route}) => {
                                 setSubmitted(false);
                                 return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
                             }
+
+                            siklus = parseInt(data.siklus) ?? 1;
                         }
 
                         if (statusSosialisasi === '1') {
@@ -268,6 +271,9 @@ const FormUjiKelayakan = ({route}) => {
                             kelompokID = selectedPilihKelompok.value;
                             namaKelompok = selectedPilihKelompok.label;
                             subKelompok = valuePilihSubKelompok;
+
+                            console.log('ABIBANYU HARSA selectedPilihKelompok:', selectedPilihKelompok);
+                            console.log('ABIBANYU HARSA valuePilihSubKelompok:', valuePilihSubKelompok);
                         }
                         
                         const body = {
@@ -375,10 +381,12 @@ const FormUjiKelayakan = ({route}) => {
                             "Kehadiran_PKM": data.kehadiran_pkm,
                             "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm,
                             "Sisipan": isSisipan,
-                            "Siklus": data.siklus,
+                            "Siklus": '' + siklus,
                             "IsSesuaiDukcapil": data.is_nik_valid_dukcapil
                         }
+                        // alert(`${kelompokID} - ${subKelompok} - ${namaKelompok}`)
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
+                        // return;
 
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
