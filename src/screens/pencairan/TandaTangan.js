@@ -36,8 +36,8 @@ const TandaTanganPencairan = ({route}) => {
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
     const [signatureKetuaKel, setSignatureKetuaKel] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
-    const [key_tandaTanganSAOKCLRP, setKey_tandaTanganSAOKCLRP] = useState(`formUK_tandaTanganSAOKCLRP_${uniqueNumber}_${dataNasabah}_${uniqueNumber}`);
-    const [key_tandaTanganNasabahLRP, setKey_tandaTanganNasabahLRP] = useState(`formUK_tandaTanganNasabahLRP_${uniqueNumber}_${dataNasabah}_${uniqueNumber}`);
+    const [key_tandaTanganSAOKCLRP, setKey_tandaTanganSAOKCLRP] = useState(`formPencairan_tandaTanganSAOKCLRP_${route.params.data}`);
+    const [key_tandaTanganNasabahLRP, setKey_tandaTanganNasabahLRP] = useState(`formPencairan_tandaTanganNasabahLRP_${route.params.data}`);
 
     useEffect(() => {
         const getUserData = () => {
@@ -79,39 +79,11 @@ const TandaTanganPencairan = ({route}) => {
         )
     }
 
-    const getListNasabahLocal = (ah) => {
-        if (__DEV__) console.log('getListNasabah loaded');
-        if (__DEV__) console.log('getListNasabah keyword');
-        var bah = []
-        console.log(ah)
-        if(ah.length > 0 && signatureKetuaKel != undefined && signatureNasabah != undefined){
-            for(let i = 0; i < ah.length; i++){
-                let query = 'SELECT * FROM Table_Pencairan_Post WHERE ID_Prospek = "'+ ah[i].ID_Prospek +'"';
-                db.transaction(
-                    tx => {
-                        tx.executeSql(query, [], (tx, results) => {
-                            if (__DEV__) console.log('getListNasabah results:', results.rows.length);
-                            let dataLength = results.rows.length
-                            for(let a = 0; a < dataLength; a++) {
-                                let data = results.rows.item(a);
-                                console.log(data.ID_Prospek)
-                                bah.push({'ID_Prospek' : data.ID_Prospek});
-                            }
-                        })
-                    }
-                )
-            }
-        }else{
-            ToastAndroid.show("Silahkan Isi Tanda Tangan", ToastAndroid.SHORT);
-        }
-    }
-
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS UPDATE DATA PENCAIRAN LOCAL');
             try{
                 if(dataIDProspek.length > 0){
                     for(let a = 0; a < dataIDProspek.length; a++) {
-                        console.log(key_tandaTanganSAOKCLRP, key_tandaTanganNasabahLRP, dataIDProspek)
                         let query = 'UPDATE Table_Pencairan_Post SET LRP_TTD_AO = "' + key_tandaTanganSAOKCLRP + '", LRP_TTD_Nasabah = "' + key_tandaTanganNasabahLRP + '" WHERE ID_Prospek = "' + dataIDProspek[a].ID_Prospek + '"';
                         console.log(query)
                         db.transaction(
@@ -123,7 +95,7 @@ const TandaTanganPencairan = ({route}) => {
                         )
                     }
                     if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
-                    navigation.navigate("FlowPencairan", {kelompok_Id:dataNasabah, Open:2})
+                    navigation.replace("FlowPencairan", {kelompok_Id:dataNasabah, Open:2})
                 }
             }
             catch(error){
@@ -161,7 +133,7 @@ const TandaTanganPencairan = ({route}) => {
                             <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                                 <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>Pencairan Signature</Text>
                             </TouchableOpacity>
-                            <Text style={{ alignSelf: 'center', margin: 20, fontSize: 18, fontWeight: 'bold' }}>Tanda Tangan KC/SAO</Text>
+                            <Text style={{ alignSelf: 'center', margin: 20, fontSize: 18, fontWeight: 'bold' }}>Tanda Tangan Ketua Kelompok</Text>
                         <SignatureScreen
                             ref={ref}
                             onOK={handleOK}
@@ -205,7 +177,7 @@ const TandaTanganPencairan = ({route}) => {
                             <MaterialCommunityIcons name="chevron-left" size={30} color="#2e2e2e" />
                                 <Text style={{fontSize: 18, paddingHorizontal: 15, fontWeight: 'bold'}}>Pencairan Signature</Text>
                             </TouchableOpacity>
-                            <Text style={{ alignSelf: 'center', margin: 20, fontSize: 18, fontWeight: 'bold' }}>Tanda Tangan Nasabah</Text>
+                            <Text style={{ alignSelf: 'center', margin: 20, fontSize: 18, fontWeight: 'bold' }}>Tanda Tangan Acount Officer</Text>
                         <SignatureScreen
                             ref={ref}
                             onOK={handleOK}
@@ -284,11 +256,11 @@ const TandaTanganPencairan = ({route}) => {
                                     <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
                                         <Button 
                                             icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
-                                            title= {signatureNasabah === undefined ? "Add Signature" : "Change Signature" }  
-                                            buttonStyle= {{margin: 10, backgroundColor: signatureNasabah === undefined ? '#2196F3' : '#ff6347'}}
-                                            onPress={() => setModalVisibleNasabah(!modalVisibleNasabah)}
+                                            title= {signatureKetuaKel === undefined ? "Add Signature" : "Change Signature" }  
+                                            buttonStyle= {{margin: 10, backgroundColor: signatureKetuaKel === undefined ? '#2196F3' : '#ff6347'}}
+                                            onPress={() => setModalVisibleKetuaKel(!modalVisibleKetuaKel)}
                                         />
-                                        <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
+                                        <Card.Image source={{uri: signatureKetuaKel}} style={{margin: 10}} />
                                     </View>
                                     <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
                                 </View>
@@ -297,11 +269,11 @@ const TandaTanganPencairan = ({route}) => {
                                     <View style={{borderWidth: 1, marginVertical: 5, borderRadius: 10}}>
                                         <Button 
                                             icon={ <FontAwesome5 name="signature" size={15} color="white" style={{marginHorizontal: 10}} />} 
-                                            title= {signatureKetuaKel === undefined ? "Add Signature" : "Change Signature" }  
-                                            buttonStyle= {{margin: 10, backgroundColor: signatureKetuaKel === undefined ? '#2196F3' : '#ff6347'}}
-                                            onPress={() => setModalVisibleKetuaKel(!modalVisibleKetuaKel)}
+                                            title= {signatureNasabah === undefined ? "Add Signature" : "Change Signature" }  
+                                            buttonStyle= {{margin: 10, backgroundColor: signatureNasabah === undefined ? '#2196F3' : '#ff6347'}}
+                                            onPress={() => setModalVisibleNasabah(!modalVisibleNasabah)}
                                         />
-                                        <Card.Image source={{uri: signatureKetuaKel}} style={{margin: 10}} />
+                                        <Card.Image source={{uri: signatureNasabah}} style={{margin: 10}} />
                                     </View>
                                     <Text style={{ fontWeight: 'bold', fontStyle:'italic', color:'#D0342C' }}>*Isi tanda tangan dengan benar</Text>
                                 </View>
