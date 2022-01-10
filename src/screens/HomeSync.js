@@ -133,7 +133,7 @@ export default function FrontHomeSync(props) {
         if (__DEV__) console.log('getMasterAsyncStorage wilayahMobile:', wilayahMobile);
         if (__DEV__) console.log('getMasterAsyncStorage setUKtimeOut:', setUKtimeOut);
         if (__DEV__) console.log('getMasterAsyncStorage masterAvailableSubGroup:', masterAvailableSubGroup);
-        if (__DEV__) console.log('getMasterAsyncStorage MasterGroupProduct:', MasterGroupProduct);
+        if (__DEV__) console.log('getMasterAsyncStorage MasterGroupProduct:', masterGroupProduct);
 
         setAbsentMaster(absent);
         setReligionMaster(religion);
@@ -868,7 +868,8 @@ export default function FrontHomeSync(props) {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-058-dev @ 2021-01-10</Text>
+            {/* <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-058-dev @ 2021-01-10</Text> */}
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-002-prod @ 2021-01-10</Text>
         </View>
     )
 
