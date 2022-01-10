@@ -157,62 +157,6 @@ export default function FormIndividualCollection({route}) {
                     <Text style={{ fontSize: 20, color: '#FFF', fontWeight: 'bold' }}>SUBMIT</Text>
                 </TouchableOpacity>
             </View>
-
-            <View style={{marginTop: 50 }}>
-                <Text style={{color: '#51534E', fontSize: 15, marginBottom: 10, fontWeight: 'bold'}}>Ringkasan Transaksi</Text>
-                <View style={{borderWidth: 1.5, borderColor: '#fff', borderRadius: 10}}>
-                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
-                        <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Setoran :</Text>
-                        <CurrencyInput
-                            value={totalSetoran}
-                            prefix="Rp "
-                            delimiter=","
-                            separator="."
-                            precision={0}
-                            editable= {false}
-                            style={{
-                                color: 'black',
-                                fontSize: 16,
-                                flex: 4
-                            }}
-                        />
-                    </View>
-
-                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
-                        <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Angsuran :</Text>
-                        <CurrencyInput
-                            value={totalAngsuran}
-                            prefix="Rp "
-                            delimiter=","
-                            separator="."
-                            precision={0}
-                            editable= {false}
-                            style={{
-                                color: 'black',
-                                fontSize: 16,
-                                flex: 4
-                            }}
-                        />
-                    </View>
-
-                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
-                        <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Titipan :</Text>
-                        <CurrencyInput
-                            value={totalTitipan}
-                            prefix="Rp "
-                            delimiter=","
-                            separator="."
-                            precision={0}
-                            editable= {false}
-                            style={{
-                                color: 'black',
-                                fontSize: 16,
-                                flex: 4
-                            }}
-                        />
-                    </View>
-                </View>
-            </View>
             
         </KeyboardAvoidingView>
       );
@@ -429,7 +373,7 @@ export default function FormIndividualCollection({route}) {
                         {isLoaded ?
                             <View>
                                 <View style={{ flexDirection: 'row', borderWidth: 1, justifyContent: 'space-between', padding: 5, alignItems: 'center', borderRadius: 10 }}>
-                                    <Text style={{ flex: 2 }}>Nama Nasabaha</Text>
+                                    <Text style={{ flex: 2 }}>Nama Nasabah</Text>
                                     <Text numberOfLines={1} style={{ flex: 4 }}>{clientDetail.ClientName}</Text>
                                 </View>
                                 <View style={{ flexDirection: 'row', borderWidth: 1, justifyContent: 'space-between', padding: 5, alignItems: 'center', marginVertical: 10, borderRadius: 10 }}>
@@ -520,7 +464,7 @@ export default function FormIndividualCollection({route}) {
 
             <BottomSheet
                 ref={btmsheet}
-                snapPoints={[450, 100, 60]}
+                snapPoints={[110, 100, 60]}
                 initialSnap={2}
                 borderRadius={20}
                 renderContent={renderContent}
