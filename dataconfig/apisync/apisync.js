@@ -9,13 +9,18 @@ import {View, Texr} from "react-native"
 //let ApiSync = 'http://10.50.0.34:9005/' //development
 // let ApiSync = 'http://192.168.233.159:9005/'
 
-let ApiSync = 'http://103.105.216.134/v1/pkm/' //development v2
-let ApiSyncInisiasi = 'http://103.105.216.134/v1/inisiasi/' //Inisiasi development
-let ApiSyncPostInisiasi = 'http://103.105.216.134/v1/post_inisiasi/' 
+const IS_DEVELOPMENT = false;
+let base_url = 'http://pkmmekaar.kresnasaraswati.id';
+let api_version = 'v1';
+if (IS_DEVELOPMENT) {
+    base_url = 'http://103.105.216.134';
+}
 
-let ApiPkmb = 'http://103.105.216.134/v1/pkmb/get_pkmb/'
-
-let ApiDukcapil = 'http://api-dukcapilmicro.pnm.co.id/pnm-dukcapil-micro/public'
+let ApiSync = `${base_url}/${api_version}/pkm/`;
+let ApiSyncInisiasi = `${base_url}/${api_version}/inisiasi/`;
+let ApiSyncPostInisiasi = `${base_url}/${api_version}/post_inisiasi/`;
+let ApiPkmb = `${base_url}/${api_version}/pkmb/get_pkmb/`;
+let ApiDukcapil = `http://api-dukcapilmicro.pnm.co.id/pnm-dukcapil-micro/public`;
 
 // let ApiSync = 'http://api-pkmmobile.pnm.co.id/' //production
 
@@ -30,4 +35,4 @@ let Get_notification = "GetNotification"
 let Get_Date = "GetDate"
 
 // export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb}
-export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil}
+export { ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil }
