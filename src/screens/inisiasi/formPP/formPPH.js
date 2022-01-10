@@ -43,6 +43,8 @@ const InisiasiFormPPH = ({ route }) => {
     const [showCalendar, setShowCalendar] = useState(false);
     const [statusMelakukan, setStatusMelakukan] = useState(false)
 
+    let [loading, setLoading] = useState(false)
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             generateDate();
@@ -56,7 +58,7 @@ const InisiasiFormPPH = ({ route }) => {
         console.log(val)
         // let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.status = " + val + " GROUP BY a.kelompok, b.Nasabah_Id "
         // let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok GROUP BY a.kelompok "
-        let queryGetGroup2 = "SELECT * FROM Table_PP_ListNasabah WHERE status <> 'null' AND status = " + 3
+        let queryGetGroup2 = "SELECT * FROM Table_PP_ListNasabah WHERE status <> 'null' "
         let queryGetGroup3 = "SELECT DISTINCT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah, a.isSisipan, a.status FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE a.status <> 'null' AND a.status <> '4' AND b.status = " + val + " GROUP BY a.kelompok"
         
 
@@ -84,7 +86,7 @@ const InisiasiFormPPH = ({ route }) => {
         }))
 
         const listDataGet = await listData(queryGetGroup3)
-        console.log(listDataGet.length)
+        console.log(listDataGet)
         setData(listDataGet)
     }
 
@@ -118,7 +120,44 @@ const InisiasiFormPPH = ({ route }) => {
       }
 
     const syncHandler = async (val) => {
-            let queryGetDataPP = "SELECT * FROM Table_PP_ListNasabah a INNER JOIN Table_PP_Kelompok b ON a.kelompok = b.kelompok WHERE isPP = '" + val + "'"
+        setLoading(true)
+            let queryGetDataPP = `SELECT 
+                a.kelompok_Id,
+                a.subKelompok_Id,
+                a.kelompok,
+                a.subKelompok,
+                a.Nasabah_Id,
+                a.Nama_Nasabah,
+                a.is_Ketua_Kelompok,
+                a.is_KetuaSubKelompok,
+                a.lokasiSos,
+                a.branchid,
+                a.syncBy,
+                a.isPP,
+                a.isPP1,
+                a.isPP2,
+                a.AbsPP,
+                a.AbsPP1,
+                a.AbsPP2,
+                a.jumlah_pembiayaan,
+                a.jangka_waktu,
+                a.jasa,
+                a.Angsuran_per_minggu,
+                a.status,
+                a.isSisipan,
+                a.isTahapLanjut,
+                a.Nama_TTD_AO,
+                b.kelompok_Id,
+                b.kelompok,
+                b.group_Produk,
+                b.tanggal_Pertama,
+                b.hari_Pertemuan,
+                b.waktu_Pertemuan,
+                b.lokasi_Pertemuan,
+                b.branchid,
+                b.input_Date,
+                b.status
+            FROM Table_PP_ListNasabah a INNER JOIN Table_PP_Kelompok b ON a.kelompok = b.kelompok WHERE isPP = '` + val + `'`
             let queryGetGroupPP = "SELECT DISTINCT kelompok FROM Table_PP_ListNasabah WHERE status <> 'null'"
 
             var listKelompok = []
@@ -153,84 +192,99 @@ const InisiasiFormPPH = ({ route }) => {
                             let length = results.rows.length
                             let datas = []
 
-                            for(let a = 0; a < length; a++) {
-                                let data = results.rows.item(a)
-                                let ketAbsen = data.AbsPP === '1' ? "Hadir" : data.AbsPP === '2' ? "Tidak Hadir" : "Tanpa Keterangan"
+                            console.log("yang ini ==> " + length)
 
-                                if(data.isSisipan === '1' || data.isSisipan === 1) {
-                                    var dataSend = {ID_Absen: data.AbsPP, ID_DK_Mobile: '', ID_Kelompok: data.kelompok_Id, ID_MPP: val, ID_Prospek: data.Nasabah_Id, Keterangan_Absen: ketAbsen, Nama_Kelompok: data.kelompok, Sub_Kelompok: data.subKelompok}
-                                }else{
-                                    var dataSend = {ID_Absen: data.AbsPP, ID_DK_Mobile: data.kelompok_Id, ID_Kelompok: '', ID_MPP: val, ID_Prospek: data.Nasabah_Id, Keterangan_Absen: ketAbsen, Nama_Kelompok: data.kelompok, Sub_Kelompok: data.subKelompok}
-                                }
-
-                                listKelompok.push(data.groupName)
-                                datas.push(data)
-
-                                // console.log(dataSend)
-                                // console.log(datas)
-
-                                try{
-                                    fetch(ApiSyncPostInisiasi + "post_pp", {
-                                            method: 'POST',
-                                            headers: {
-                                                Accept: 'application/json',
-                                                        'Content-Type': 'application/json'
-                                                },
-                                            body: JSON.stringify(dataSend)
-                                        })
-                                    .then((response) => response.json())
-                                    .then((responseJson) => {
-                                        console.log("second")
-                    
-                                        console.log(responseJson)
-                                        if(responseJson.code === 200) {
-                                            flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
-                                            if(val === '1' || val === 1) {
-                                                var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 2, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
-                                            }else if(val === '2' || val === 2) {
-                                                if(data.isSisipan === '1' || data.isSisipan === 1){
+                            if(length > 0) {
+                                for(let a = 0; a < length; a++) {
+                                    let data = results.rows.item(a)
+                                    let ketAbsen = data.AbsPP === '1' ? "Hadir" : data.AbsPP === '2' ? "Tidak Hadir" : "Tanpa Keterangan"
+    
+                                    if(data.isSisipan === '1' || data.isSisipan === 1) {
+                                        var dataSend = {ID_Absen: data.AbsPP, ID_DK_Mobile: '', ID_Kelompok: data.kelompok_Id, ID_MPP: val, ID_Prospek: data.Nasabah_Id, Keterangan_Absen: ketAbsen, Nama_Kelompok: data.kelompok, Sub_Kelompok: data.subKelompok}
+                                    }else{
+                                        var dataSend = {ID_Absen: data.AbsPP, ID_DK_Mobile: data.kelompok_Id, ID_Kelompok: '', ID_MPP: val, ID_Prospek: data.Nasabah_Id, Keterangan_Absen: ketAbsen, Nama_Kelompok: data.kelompok, Sub_Kelompok: data.subKelompok}
+                                    }
+    
+                                    listKelompok.push(data.groupName)
+                                    datas.push(data)
+    
+                                    // console.log(dataSend)
+                                    console.log(data)
+    
+                                    try{
+                                        fetch(ApiSyncPostInisiasi + "post_pp", {
+                                                method: 'POST',
+                                                headers: {
+                                                    Accept: 'application/json',
+                                                            'Content-Type': 'application/json'
+                                                    },
+                                                body: JSON.stringify(dataSend)
+                                            })
+                                        .then((response) => response.json())
+                                        .then((responseJson) => {
+                                            console.log("second")
+                        
+                                            console.log(responseJson)
+                                            if(responseJson.code === 200) {
+                                                setLoading(false)
+                                                flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                                                if(val === '1' || val === 1) {
+                                                    var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 2, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                                }else if(val === '2' || val === 2) {
+                                                    if(data.isSisipan === '1' || data.isSisipan === 1){
+                                                        var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0', isPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                                    }else{
+                                                        var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 3, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                                    }
+                                                }else if(val === '3' || val === 3) {
                                                     var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
-                                                }else{
-                                                    var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 3, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
                                                 }
-                                            }else if(val === '3' || val === 3) {
-                                                var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+    
+                                                // console.log(queryUpdate)
+                                                db.transaction(
+                                                    tx => {
+                                                        // tx.executeSql("DELETE FROM Table_PP_ListNasabah WHERE Nasabah_Id = '" + data.Nasabah_Id + "'")
+                                                        // tx.executeSql("DELETE FROM Table_PP_Kelompok WHERE kelompok = '" + kelompok + "'")
+                                                        tx.executeSql(queryUpdate)
+                                                    },function(error) {
+                                                        setLoading(false)
+                                                        console.log('Transaction ERROR: ' + error.message);
+                                                      }, function() {
+                                                        setLoading(false)
+                                                        getData(val)
+                                                        console.log('Delete Table OK');
+                                                  }
+                                                )
+    
+                                            }else{
+                                                setLoading(false)
+                                                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
                                             }
-                    
-                                            db.transaction(
-                                                tx => {
-                                                    // tx.executeSql("DELETE FROM Table_PP_ListNasabah WHERE Nasabah_Id = '" + data.Nasabah_Id + "'")
-                                                    // tx.executeSql("DELETE FROM Table_PP_Kelompok WHERE kelompok = '" + kelompok + "'")
-                                                    tx.executeSql(queryUpdate)
-                                                },function(error) {
-                                                    console.log('Transaction ERROR: ' + error.message);
-                                                  }, function() {
-                                                    getData(val)
-                                                    console.log('Delete Table OK');
-                                              }
-                                            )
-
-                                        }else{
-                                            // setLoading(false)
-                                            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
-                                        }
-                                    }).catch((error) => {
-                                        // setLoading(false)
-                                        flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
-                                    })
-                                }catch(error){
-                                    console.log("disini")
-                                    // setLoading(false)
-                                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+                                        }).catch((error) => {
+                                            setLoading(false)
+                                            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
+                                        })
+                                    }catch(error){
+                                        console.log("disini")
+                                        setLoading(false)
+                                        flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+                                    }
+    
                                 }
-
+                            } else {
+                                setLoading(false)
+                                flashNotification("Alert", "Data persiapan pembiayaan kosong.", "#ff6347", "#fff")
                             }
+
+                            
                         })
                     }, function(error){
+                        setLoading(false)
                         alert(error)
                     }
                 )
             }catch(error){
+                setLoading(false)
                 alert(error)
             }
 
@@ -315,7 +369,7 @@ const InisiasiFormPPH = ({ route }) => {
                                         flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
                                         getData(val)
                                     }else{
-                                        flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
+                                        // flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
                                     }
                                 }).catch((error) => {
                                     flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
@@ -563,6 +617,12 @@ const InisiasiFormPPH = ({ route }) => {
             {renderHeader()}
             {renderBody()}
             {renderModal()}
+
+            {loading &&
+                <View style={styles.loading}>
+                    <ActivityIndicator size="large" color="#00ff00" />
+                </View>
+            }
         </View>
     )
 }
@@ -613,7 +673,18 @@ const stylesheet = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 18,
         color: colors.HITAM
-    }
+    },
+    loading: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        opacity: 0.5,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 });
 
 export default InisiasiFormPPH;

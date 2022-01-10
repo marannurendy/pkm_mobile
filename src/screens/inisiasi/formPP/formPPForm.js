@@ -185,6 +185,8 @@ const InisiasiFormPPForm = ({ route }) => {
                                     tx.executeSql(queryDelete)
                                 }, function(error) {
                                     alert('Transaction Error: ' + error.message);
+                                }, function() {
+                                    navigation.goBack()
                                 }
                             )
                         }
