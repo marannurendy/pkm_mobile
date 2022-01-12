@@ -1006,14 +1006,23 @@ const DataDiri = ({route}) => {
     const submitHandler = () => null;
 
     const renderPickerKabupaten = () => {
+        if (__DEV__) console.log('renderPickerKabupaten loaded');
+        if (__DEV__) console.log('renderPickerKabupaten dataProvinsi:', dataProvinsi);
+
         return [...new Map(dataWilayahMobile.map(item => [item['Nama_KabKot'], item])).values()].filter(data => data.ID_Provinsi === dataProvinsi).map((x, i) => <Picker.Item key={i} label={x.Nama_KabKot} value={x.ID_Kabkot} />);
     }
 
     const renderPickerKecamatan = () => {
-        return [...new Map(dataWilayahMobile.map(item => [item['Nama_KabKot'], item])).values()].filter(data => data.ID_Kabkot === dataKabupaten).map((x, i) => <Picker.Item key={i} label={x.Nama_Kecamatan} value={x.ID_Kecamatan} />);
+        if (__DEV__) console.log('renderPickerKecamatan loaded');
+        if (__DEV__) console.log('renderPickerKecamatan dataKabupaten:', dataKabupaten);
+
+        return [...new Map(dataWilayahMobile.map(item => [item['Nama_Kecamatan'], item])).values()].filter(data => data.ID_Kabkot === dataKabupaten).map((x, i) => <Picker.Item key={i} label={x.Nama_Kecamatan} value={x.ID_Kecamatan} />);
     }
 
     const renderPickerKelurahan = () => {
+        if (__DEV__) console.log('renderPickerKelurahan loaded');
+        if (__DEV__) console.log('renderPickerKelurahan dataKabupaten:', dataKecamatan);
+
         return dataWilayahMobile.filter(data => data.ID_Kecamatan === dataKecamatan).map((x, i) => <Picker.Item key={i} label={x.Nama_KelurahanDesa} value={x.ID_KelDes} />);
     }
 
@@ -1665,7 +1674,12 @@ const DataDiri = ({route}) => {
                                 <Picker
                                     selectedValue={dataProvinsi}
                                     style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setDataProvinsi(itemValue)}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        setDataProvinsi(itemValue);
+                                        setDataKabupaten(null);
+                                        setDataKecamatan(null);
+                                        setDataKelurahan(null);
+                                    }}
                                 >
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {[...new Map(dataWilayahMobile.map(item => [item['Nama_Provinsi'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.Nama_Provinsi} value={x.ID_Provinsi} />)}
@@ -1688,7 +1702,11 @@ const DataDiri = ({route}) => {
                                 <Picker
                                     selectedValue={dataKabupaten}
                                     style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setDataKabupaten(itemValue)}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        setDataKabupaten(itemValue);
+                                        setDataKecamatan(null);
+                                        setDataKelurahan(null);
+                                    }}
                                 >
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {renderPickerKabupaten()}
@@ -1702,7 +1720,10 @@ const DataDiri = ({route}) => {
                                 <Picker
                                     selectedValue={dataKecamatan}
                                     style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setDataKecamatan(itemValue)}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        setDataKecamatan(itemValue);
+                                        setDataKelurahan(null);
+                                    }}
                                 >
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {renderPickerKecamatan()}
