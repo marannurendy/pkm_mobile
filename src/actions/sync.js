@@ -58,7 +58,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         try {
             if(groupPencairan.length  > 0 && ListPencairan.length > 0) {
-                
                 let query = 'INSERT INTO Table_Pencairan (kelompok_Id, Nama_Kelompok, Jumlah_Kelompok, syncby) values ';
                 let querylistPencairan = 'INSERT INTO Table_Pencairan_Nasabah (' +
                     'Alamat_Domisili,' +
@@ -82,6 +81,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     'Term_Pembiayaan, ClientID, Nama_Tipe_Pencairan, ID_Prospek, syncby) values ';
 
                 for (let i = 0; i < groupPencairan.length; i++) {
+                    const queryDeletePencairan = "DELETE FROM Table_Pencairan WHERE kelompok_Id = '" + groupPencairan[i].Kelompok_ID + "'";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeletePencairan, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeletePencairan} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeletePencairan} ERROR:`, error);
+                        }, function() {}
+                    );
                     query = query + "('"
                     + groupPencairan[i].Kelompok_ID
                     + "','"
@@ -96,6 +105,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 }
 
                 for (let i = 0; i < ListPencairan.length ; i++) {
+                    const queryDeletePencairanNasabah = "DELETE FROM Table_Pencairan_Nasabah WHERE ID_Prospek = '" + ListPencairan[i].ID_Prospek + "'";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeletePencairanNasabah, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeletePencairanNasabah} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeletePencairanNasabah} ERROR:`, error);
+                        }, function() {}
+                    );
                     querylistPencairan = querylistPencairan + "('"
                     + ListPencairan[i].Alamat_Domisili
                     + "','"
