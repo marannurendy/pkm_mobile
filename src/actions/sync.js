@@ -463,6 +463,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
 
+        let mappingProspek = [];
+
         if (uk_client_data.length > 0) {
             try {
                 var query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, verifikasiTanggal, verifikasiStatus, verifikasiReason, kelompokID, subKelompok, id_prospek) values ';
@@ -1275,6 +1277,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             queryPPGroup = queryPPGroup + ","
 
                     }
+
+                    mappingProspek.push(uk_client_data[i].ID_Prospek)
                 }
 
                 query = query + ";";
@@ -1504,6 +1508,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         }, function() {}
                     );
                 }
+                AsyncStorage.setItem('ProspekMap', JSON.stringify(mappingProspek));
             } catch (error) {
                 truncat(reject, 'SOSIALISASI MOBILE UK');
                 return;
@@ -1523,6 +1528,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
     const fetchWaterfall = async () => {
         // await clearData();
         // if (__DEV__) console.log('ACTIONS GET SYNC DATA NEW SYNC CLEAR DATA');
+
+        const roleUser = await AsyncStorage.getItem('roleUser');
+        if (__DEV__) console.log('ACTIONS ROLE USER', roleUser);
 
         const token = await AsyncStorage.getItem('token');
         if (__DEV__) console.log('ACTIONS TOKEN', token);
@@ -1552,12 +1560,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
         await insertKelompokPencairan(jsonPencairanData);
         if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN DONE');
 
+        let checkIdProspek = "0";
+        if (["AO", "SAO"].includes(roleUser)) checkIdProspek = "1";
+
         if (![2].includes(params.prospekFilter)) {
             const body = JSON.stringify({
                 "CreatedBy": "",
                 "ID_Prospek": params.prospekMap,
                 "IsPickClient": "1",
-                "OurBranchID": params.cabangid.toString()
+                "OurBranchID": params.cabangid.toString(),
+                "Check_ID_Prospek": checkIdProspek
             });
             if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE BODY', body);
             

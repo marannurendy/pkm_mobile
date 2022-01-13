@@ -19,6 +19,7 @@ if (IS_DEVELOPMENT) {
 let ApiSync = `${base_url}/${api_version}/pkm/`;
 let ApiSyncInisiasi = `${base_url}/${api_version}/inisiasi/`;
 let ApiSyncPostInisiasi = `${base_url}/${api_version}/post_inisiasi/`;
+let ApiSyncOther = `${base_url}/${api_version}/other/`;
 let ApiPkmb = `${base_url}/${api_version}/pkmb/get_pkmb/`;
 let ApiDukcapil = `http://api-dukcapilmicro.pnm.co.id/pnm-dukcapil-micro/public`;
 
@@ -35,4 +36,4 @@ let Get_notification = "GetNotification"
 let Get_Date = "GetDate"
 
 // export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb}
-export { ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil, IS_DEVELOPMENT }
+export { ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther }

@@ -81,6 +81,7 @@ import {
     FormFP4,
     UploadBuktiPem
 } from '../screens/pencairan/index'
+import { ApiSyncOther } from '../../dataconfig'
 
 
 const Stack = createStackNavigator();
@@ -226,10 +227,50 @@ function SurveiPKU() {
 function CustomDrawerContent(props) {
     const navigation = useNavigation();
 
-    const LogOutButton = () => {
-        AsyncStorage.removeItem('userData')
-        AsyncStorage.removeItem('SyncBy')
-        navigation.replace('Login')
+    const LogOutButton = async (source = 'none') => {
+        const responseProspekMap = await AsyncStorage.getItem('ProspekMap');
+        const token = await AsyncStorage.getItem('token');
+        const roleUser = await AsyncStorage.getItem('roleUser');
+        if (__DEV__) console.log('LogOutButton responseProspekMap:', responseProspekMap);
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+        if (__DEV__) console.log('ACTIONS ROLE USER', roleUser);
+
+        if (responseProspekMap && ["AO", "SAO"].includes(roleUser)) {
+            const body = {
+                "ID_Prospek": JSON.parse(responseProspekMap)
+            }
+            fetch(ApiSyncOther + 'AuthLogout', {
+                method: 'POST',
+                headers: {
+                    Authorization: token,
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+            .then((response) => response.json())
+            .then((responseJSON) => {
+                if (__DEV__) console.error('$post /other/AuthLogout response', body, responseJSON);
+            })
+            .catch((error) => {
+                if (__DEV__) console.log('$post /other/AuthLogout response', body, error);
+            });
+        }
+
+        if (source === 'remove-all-asyncstorage') {
+            let keys = await AsyncStorage.getAllKeys();
+            try {
+                AsyncStorage.multiRemove(keys)
+            } catch(error) {
+                alert(error)
+            }
+            alert('Data berhasil di hapus');
+        } else {
+            AsyncStorage.removeItem('userData');
+            AsyncStorage.removeItem('SyncBy');
+        }
+
+        navigation.replace('Login');
     }
 
     const LogOuthandler = () => {
@@ -237,7 +278,7 @@ function CustomDrawerContent(props) {
             "Logout Alert",
             "Apakah anda yakin ingin keluar ?",
             [
-              { text: "OK", onPress: () => LogOutButton()}
+                { text: "OK", onPress: () => LogOutButton()}
             ],
             { cancelable: true }
         );
@@ -248,8 +289,8 @@ function CustomDrawerContent(props) {
             "Logout Alert",
             "Apakah anda yakin ingin Menghapus Semua Data ?",
             [
-              { text: "OK", onPress: () => {
-                  db.transaction(
+                { text: "OK", onPress: () => {
+                    db.transaction(
                         tx => {
                             tx.executeSql('DELETE FROM ListGroup');
                             tx.executeSql('DELETE FROM GroupList');
@@ -285,18 +326,10 @@ function CustomDrawerContent(props) {
                         },function(error) {
                             alert('Transaction ERROR: ' + error.message);
                         }, async function() {
-                            let keys = await AsyncStorage.getAllKeys()
-                            try{
-                                AsyncStorage.multiRemove(keys)
-                            }catch(error){
-                                alert(error)
-                            }
-
-                            alert('Data Berhasil Di hapus');
-                            navigation.replace('Login')
+                            LogOutButton('remove-all-asyncstorage');
                         }
-                  )
-              }}
+                    )
+                }}
             ],
             { cancelable: true }
         );
