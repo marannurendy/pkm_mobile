@@ -8,6 +8,7 @@ import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import { WebView } from 'react-native-webview';
 import db from '../../../database/Database'
+import { IS_DEVELOPMENT } from '../../../../dataconfig';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -127,7 +128,7 @@ const VerifikasiFormReview = ({ route }) => {
                     "VerifBy": uname,
                     "PostStatus": status,
                     "Reason": reason,
-                    "URL_FP4": `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}`
+                    "URL_FP4": `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/${IS_DEVELOPMENT ? 'INISIASI_DEV' : 'INISIASI'}/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}`
                 };
                 if (__DEV__) console.log('doSave body:', body);
 
@@ -291,12 +292,12 @@ const VerifikasiFormReview = ({ route }) => {
                 <WebView
                     renderLoading={renderLoadingView}
                     onLoad={() => setStatusMounting(true)}
-                    source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}` }}
+                    source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/${IS_DEVELOPMENT ? 'INISIASI_DEV' : 'INISIASI'}/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}` }}
                     startInLoadingState={true}
                     style={styles.F1}
                 />
             </View>
-            <Text style={[styles.MH16, styles.MT16, { fontSize: 11 }]}>[{sp}] - {`http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}`}</Text>
+            <Text style={[styles.MH16, styles.MT16, { fontSize: 11 }]}>[{sp}] - {`http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/${IS_DEVELOPMENT ? 'INISIASI_DEV' : 'INISIASI'}/${selectedProdukPembiayaan.isSyariah === '1' ? 'FP4_SYARIAH' : `FP4_${sp === 'Pertama' ? 'KONVE' : 'KONVENSIONAL'}`}_${sp === 'Pertama' ? 'T1' : 'TL'}.html?ID_Prospek=${idProspek}`}</Text>
             {renderButton()}
         </View>
     )

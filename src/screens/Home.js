@@ -7,7 +7,7 @@ import { FAB } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Alert } from 'react-native';
-import {ApiSync, Get_notification, Get_Date, ApiSyncInisiasi, ApiPkmb} from '../../dataconfig/index'
+import {ApiSync, Get_notification, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncOther} from '../../dataconfig/index'
 import moment from 'moment';
 import 'moment/locale/id';
 import { Card, Button } from 'react-native-elements';
@@ -247,21 +247,39 @@ export default function FrontHome() {
         let lengthData = 0;
         if (dataRole !== null) lengthData = dataRole.filter((x) => x.userName === userName).length || 0;
 
-        // if(dataRole === undefined || dataRole === null) {
-        //     var lengthData = 0
-        // }else{
-        // }
-        
-        console.log("ini ==> " + lengthData)
+        const responseProspekMap = await AsyncStorage.getItem('ProspekMap');
+        const token = await AsyncStorage.getItem('token');
+        const roleUser = await AsyncStorage.getItem('roleUser');
+        if (__DEV__) console.log('LogOutButton responseProspekMap:', responseProspekMap);
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+        if (__DEV__) console.log('ACTIONS ROLE USER', roleUser);
 
         AsyncStorage.getItem('SyncDate', (error, syncDate) => {
             if (syncDate !== now || lengthData === 0) {
-                console.log("disini coyyyy")
+                if (responseProspekMap && ["AO", "SAO"].includes(roleUser)) {
+                    const body = {
+                        "ID_Prospek": JSON.parse(responseProspekMap)
+                    }
+                    fetch(ApiSyncOther + 'AuthLogout', {
+                        method: 'POST',
+                        headers: {
+                            Authorization: token,
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    })
+                    .then((response) => response.json())
+                    .then((responseJSON) => {
+                        if (__DEV__) console.error('$post /other/AuthLogout response', body, responseJSON);
+                    })
+                    .catch((error) => {
+                        if (__DEV__) console.log('$post /other/AuthLogout response', body, error);
+                    });
+                }
                 setIsRkh(false);
                 return;
             }
-
-            console.log("keluar")
 
             setIsRkh(true);
         });
@@ -295,8 +313,8 @@ export default function FrontHome() {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            {/* <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-058-dev @ 2021-01-10</Text> */}
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-002-prod @ 2021-01-10</Text>
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-065-dev @ 2021-01-13</Text>
+            {/* <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-003-prod @ 2021-01-11</Text> */}
         </View>
     )
 
@@ -363,7 +381,7 @@ export default function FrontHome() {
                     </TouchableOpacity> */}
                 </View>
 
-                <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1, marginTop: scale(10), borderTopLeftRadius: scale(20), borderTopRightRadius: scale(20), borderBottomLeftRadius: scale(20), borderBottomRightRadius: scale(20), marginHorizontal: scale(5), backgroundColor: '#fff'}}>
+                <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1, marginTop: scale(10), borderTopLeftRadius: scale(20), borderTopRightRadius: scale(20), borderBottomLeftRadius: scale(20), borderBottomRightRadius: scale(20), marginHorizontal: scale(5), backgroundColor: '#fff', marginBottom: 10}}>
                 {/* <View style={{flex: 1, marginTop: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 10}}> */}
                     
                     <View style={{marginHorizontal: scale(20), marginBottom: 20, marginTop: scale(20), flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>

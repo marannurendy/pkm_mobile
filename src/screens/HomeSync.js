@@ -331,7 +331,7 @@ export default function FrontHomeSync(props) {
             prospekFilter: selectedIndexFilterProspek,
             isGetMaster: valueGetMaster
         };
-        getSyncData(params).then((responseJson) => {
+        getSyncData(params).then(async (responseJson) => {
             if (__DEV__) console.log('doSubmit getSyncData response:', responseJson);
 
             if (responseJson === 'SYNC FAILED TIMEOUT') {
@@ -344,9 +344,17 @@ export default function FrontHomeSync(props) {
             }
 
             setSubmitted(false);
+
+            const responseProspekMap = await AsyncStorage.getItem('ProspekMap');
+            let totalProspekMap = prospekMap.length ?? 0;
+            let totalProspekMapBerhasil = [];
+            if (responseProspekMap) totalProspekMapBerhasil = JSON.parse(responseProspekMap)
+            if (__DEV__) console.log('TOTAL PROSPEK MAP:', totalProspekMap);
+            if (__DEV__) console.log('TOTAL PROSPEK MAP BERHASIL:', totalProspekMapBerhasil.length, totalProspekMapBerhasil);
+
             Alert.alert(
                 "Sukses",
-                "Sync berhasil dilakukan, Anda akan memasuki menu utama",
+                `Sync berhasil dilakukan, Anda akan memasuki menu utama.\n\nTotal ${totalProspekMap} Nasabah\nBerhasil ${totalProspekMapBerhasil.length}\nGagal ${totalProspekMap - totalProspekMapBerhasil.length} (Nasabah sudah di prospek user lain)`,
                 [
                     { 
                         text: "OK", 
@@ -868,8 +876,8 @@ export default function FrontHomeSync(props) {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            {/* <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-058-dev @ 2021-01-10</Text> */}
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-002-prod @ 2021-01-10</Text>
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-065-dev @ 2021-01-13</Text>
+            {/* <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-003-prod @ 2021-01-11</Text> */}
         </View>
     )
 

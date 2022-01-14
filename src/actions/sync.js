@@ -58,7 +58,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         try {
             if(groupPencairan.length  > 0 && ListPencairan.length > 0) {
-                
                 let query = 'INSERT INTO Table_Pencairan (kelompok_Id, Nama_Kelompok, Jumlah_Kelompok, syncby) values ';
                 let querylistPencairan = 'INSERT INTO Table_Pencairan_Nasabah (' +
                     'Alamat_Domisili,' +
@@ -82,6 +81,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     'Term_Pembiayaan, ClientID, Nama_Tipe_Pencairan, ID_Prospek, syncby) values ';
 
                 for (let i = 0; i < groupPencairan.length; i++) {
+                    const queryDeletePencairan = "DELETE FROM Table_Pencairan WHERE kelompok_Id = '" + groupPencairan[i].Kelompok_ID + "'";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeletePencairan, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeletePencairan} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeletePencairan} ERROR:`, error);
+                        }, function() {}
+                    );
                     query = query + "('"
                     + groupPencairan[i].Kelompok_ID
                     + "','"
@@ -96,6 +105,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 }
 
                 for (let i = 0; i < ListPencairan.length ; i++) {
+                    const queryDeletePencairanNasabah = "DELETE FROM Table_Pencairan_Nasabah WHERE ID_Prospek = '" + ListPencairan[i].ID_Prospek + "'";
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(queryDeletePencairanNasabah, [], (tx, results) => {
+                                if (__DEV__) console.log(`${queryDeletePencairanNasabah} RESPONSE:`, results.rows);
+                            })
+                        }, function(error) {
+                            if (__DEV__) console.log(`${queryDeletePencairanNasabah} ERROR:`, error);
+                        }, function() {}
+                    );
                     querylistPencairan = querylistPencairan + "('"
                     + ListPencairan[i].Alamat_Domisili
                     + "','"
@@ -443,6 +462,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_kelompok:', persetujuan_pembiayaan_kelompok.length);
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
+
+        let mappingProspek = [];
 
         if (uk_client_data.length > 0) {
             try {
@@ -1256,6 +1277,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             queryPPGroup = queryPPGroup + ","
 
                     }
+
+                    mappingProspek.push(uk_client_data[i].ID_Prospek)
                 }
 
                 query = query + ";";
@@ -1485,6 +1508,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         }, function() {}
                     );
                 }
+                AsyncStorage.setItem('ProspekMap', JSON.stringify(mappingProspek));
             } catch (error) {
                 truncat(reject, 'SOSIALISASI MOBILE UK');
                 return;
@@ -1504,6 +1528,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
     const fetchWaterfall = async () => {
         // await clearData();
         // if (__DEV__) console.log('ACTIONS GET SYNC DATA NEW SYNC CLEAR DATA');
+
+        const roleUser = await AsyncStorage.getItem('roleUser');
+        if (__DEV__) console.log('ACTIONS ROLE USER', roleUser);
 
         const token = await AsyncStorage.getItem('token');
         if (__DEV__) console.log('ACTIONS TOKEN', token);
@@ -1533,12 +1560,16 @@ export const getSyncData = (params) => new Promise((resolve) => {
         await insertKelompokPencairan(jsonPencairanData);
         if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN DONE');
 
+        let checkIdProspek = "0";
+        if (["AO", "SAO"].includes(roleUser)) checkIdProspek = "1";
+
         if (![2].includes(params.prospekFilter)) {
             const body = JSON.stringify({
                 "CreatedBy": "",
                 "ID_Prospek": params.prospekMap,
                 "IsPickClient": "1",
-                "OurBranchID": params.cabangid.toString()
+                "OurBranchID": params.cabangid.toString(),
+                "Check_ID_Prospek": checkIdProspek
             });
             if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE BODY', body);
             

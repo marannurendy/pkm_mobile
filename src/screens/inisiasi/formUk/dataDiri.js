@@ -12,6 +12,7 @@ import { showMessage } from "react-native-flash-message"
 import { Checkbox } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import Geolocation from 'react-native-geolocation-service';
+import wilayahMobile from '../../../local/wilayahMobile.json';
 
 import db from '../../../database/Database'
 import { replaceSpecialChar } from '../../../utils/Functions'
@@ -50,9 +51,9 @@ const DataDiri = ({route}) => {
     let [alamatDomisili, setAlamatDomisili] = useState()
     let [fotoSuratKeteranganDomisili, setFotoSuratKeteranganDomisili] = useState()
     let [dataProvinsi, setDataProvinsi] = useState(null)
-    let [dataKabupaten, setDataKabupaten] = useState()
-    let [dataKecamatan, setDataKecamatan] = useState()
-    let [dataKelurahan, setDataKelurahan] = useState()
+    let [dataKabupaten, setDataKabupaten] = useState(null)
+    let [dataKecamatan, setDataKecamatan] = useState(null)
+    let [dataKelurahan, setDataKelurahan] = useState(null)
 
     //STATE DATA KARTU KELUARGA
     let [fotoKartuKeluarga, setFotoKartuKeluarga] = useState()
@@ -170,6 +171,7 @@ const DataDiri = ({route}) => {
     const [fetchCheckNIK, setFetchCheckNIK] = useState(false);
     const [minTanggalLahir, setMinTanggalLahir] = useState(0);
     const [maxTanggalLahir, setMaxTanggalLahir] = useState(0);
+    const [isShowAllProvinsi, setIsShowAllProvinsi] = useState(false);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -295,9 +297,11 @@ const DataDiri = ({route}) => {
             }
             const getStorageWilayahMobile = async () => {
                 if (__DEV__) console.log('getStorageWilayahMobile loaded');
-        
+                // setDataWilayahMobile(wilayahMobile);
+
                 try {
                     const response = await AsyncStorage.getItem('WilayahMobile');
+                    if (__DEV__) console.log('getStorageWilayahMobile response:', response);
                     if (response !== null) {
                         const responseJSON = JSON.parse(response);
                         if (responseJSON.length > 0 ?? false) {
@@ -397,19 +401,6 @@ const DataDiri = ({route}) => {
             setMinTanggalLahir(min);
             setMaxTanggalLahir(max);
         })();
-
-        
-
-        // let dateValue = moment(date).format('YYYY-MM-DD');
-        // let rangeDateValue = moment().diff(moment(moment(dateValue).format("DD-MM-YYYY"), "DD-MM-YYYY"), 'years');
-        // if (__DEV__) console.log('dateLahirHandler rangeDateValue:', rangeDateValue);
-        // if (__DEV__) console.log('dateLahirHandler dateValue:', dateValue);
-
-        // if (rangeDateValue > MIN_TANGGAL_LAHIR && rangeDateValue < MAX_TANGGAL_LAHIR) {
-        //     setShowCalendar(false);
-        //     setTanggalLahir(dateValue);
-        //     return;
-        // }
     }, []);
 
     useEffect(() => {
@@ -438,6 +429,34 @@ const DataDiri = ({route}) => {
             setFotoDataPenjamin(fotoKartuIdentitasSuami);
         }
     }, [statusSuami]);
+
+    useEffect( ()=> {
+        if (__DEV__) console.log('useEffect isShowAllProvinsi:', isShowAllProvinsi);
+        
+        setDataProvinsi(null);
+        setDataKabupaten(null);
+        setDataKecamatan(null);
+        setDataKelurahan(null);
+        if (isShowAllProvinsi) setDataWilayahMobile(wilayahMobile);
+        else getStorageWilayahMobile();
+    }, [isShowAllProvinsi]);
+
+    const getStorageWilayahMobile = async () => {
+        try {
+            const response = await AsyncStorage.getItem('WilayahMobile');
+            if (__DEV__) console.log('getStorageWilayahMobile response:', response);
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (responseJSON.length > 0 ?? false) {
+                    setDataWilayahMobile(responseJSON);
+                    return;
+                }
+            }
+            setDataWilayahMobile([]);
+        } catch (error) {
+            setDataWilayahMobile([]);
+        }
+    } 
 
     const checkNIK = () => {
         if (__DEV__) console.log('checkNIK loaded');
@@ -987,14 +1006,23 @@ const DataDiri = ({route}) => {
     const submitHandler = () => null;
 
     const renderPickerKabupaten = () => {
+        if (__DEV__) console.log('renderPickerKabupaten loaded');
+        if (__DEV__) console.log('renderPickerKabupaten dataProvinsi:', dataProvinsi);
+
         return [...new Map(dataWilayahMobile.map(item => [item['Nama_KabKot'], item])).values()].filter(data => data.ID_Provinsi === dataProvinsi).map((x, i) => <Picker.Item key={i} label={x.Nama_KabKot} value={x.ID_Kabkot} />);
     }
 
     const renderPickerKecamatan = () => {
-        return [...new Map(dataWilayahMobile.map(item => [item['Nama_KabKot'], item])).values()].filter(data => data.ID_Kabkot === dataKabupaten).map((x, i) => <Picker.Item key={i} label={x.Nama_Kecamatan} value={x.ID_Kecamatan} />);
+        if (__DEV__) console.log('renderPickerKecamatan loaded');
+        if (__DEV__) console.log('renderPickerKecamatan dataKabupaten:', dataKabupaten);
+
+        return [...new Map(dataWilayahMobile.map(item => [item['Nama_Kecamatan'], item])).values()].filter(data => data.ID_Kabkot === dataKabupaten).map((x, i) => <Picker.Item key={i} label={x.Nama_Kecamatan} value={x.ID_Kecamatan} />);
     }
 
     const renderPickerKelurahan = () => {
+        if (__DEV__) console.log('renderPickerKelurahan loaded');
+        if (__DEV__) console.log('renderPickerKelurahan dataKabupaten:', dataKecamatan);
+
         return dataWilayahMobile.filter(data => data.ID_Kecamatan === dataKecamatan).map((x, i) => <Picker.Item key={i} label={x.Nama_KelurahanDesa} value={x.ID_KelDes} />);
     }
 
@@ -1646,11 +1674,25 @@ const DataDiri = ({route}) => {
                                 <Picker
                                     selectedValue={dataProvinsi}
                                     style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setDataProvinsi(itemValue)}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        setDataProvinsi(itemValue);
+                                        setDataKabupaten(null);
+                                        setDataKecamatan(null);
+                                        setDataKelurahan(null);
+                                    }}
                                 >
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {[...new Map(dataWilayahMobile.map(item => [item['Nama_Provinsi'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.Nama_Provinsi} value={x.ID_Provinsi} />)}
                                 </Picker>
+                            </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <Checkbox
+                                    status={isShowAllProvinsi ? 'checked' : 'unchecked'}
+                                    onPress={() => {
+                                        setIsShowAllProvinsi(!isShowAllProvinsi);
+                                    }}
+                                />
+                                <Text style={{flex: 1, fontSize: 15, fontWeight: 'bold'}}>Tampilkan semua provinsi</Text>
                             </View>
                         </View>
 
@@ -1660,7 +1702,11 @@ const DataDiri = ({route}) => {
                                 <Picker
                                     selectedValue={dataKabupaten}
                                     style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setDataKabupaten(itemValue)}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        setDataKabupaten(itemValue);
+                                        setDataKecamatan(null);
+                                        setDataKelurahan(null);
+                                    }}
                                 >
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {renderPickerKabupaten()}
@@ -1674,7 +1720,10 @@ const DataDiri = ({route}) => {
                                 <Picker
                                     selectedValue={dataKecamatan}
                                     style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setDataKecamatan(itemValue)}
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        setDataKecamatan(itemValue);
+                                        setDataKelurahan(null);
+                                    }}
                                 >
                                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                                     {renderPickerKecamatan()}

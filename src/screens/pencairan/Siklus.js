@@ -6,7 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { WebView } from 'react-native-webview';
 import { Button } from 'react-native-elements';
 import { currency, inputVal } from '../../utils/Functions';
-
+import { IS_DEVELOPMENT } from '../../../dataconfig';
 import db from '../../database/Database'
 
 const window = Dimensions.get('window');
@@ -30,15 +30,6 @@ const Siklus = ({route}) => {
     let [JumlahUP, setJumlahUP] = useState((parseInt(dataNasabah.Jumlah_Pinjaman) - ((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100)).toString());
     let [TotalPencairan, setTotalPencairan] =useState((parseInt(dataNasabah.Jumlah_Pinjaman) - ((parseInt(dataNasabah.Jumlah_Pinjaman) * parseInt(dataNasabah.Term_Pembiayaan)) / 100)).toString());
     useEffect(() => {
-        if (route.params.data.Jenis_Pembiayaan.charAt(0) != '1' && route.params.data.Jenis_Pembiayaan.includes('M')){
-            setChari('KONVENSIONAL_TL')
-        }else if ((route.params.data.Jenis_Pembiayaan.includes('S') || route.params.data.Jenis_Pembiayaan.includes('Y')) && route.params.data.Jenis_Pembiayaan.charAt(0) == '1'){
-            setChari('SYARIAH_T1')
-        }else if ((route.params.data.Jenis_Pembiayaan.includes('S') || route.params.data.Jenis_Pembiayaan.includes('Y')) && route.params.data.Jenis_Pembiayaan.charAt(0) != '1'){
-            setChari('SYARIAH_TL')
-        }else{
-            setChari('KONVE_T1')
-        }
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {
                 if (error) __DEV__ && console.log('userData error:', error);
@@ -72,9 +63,9 @@ const Siklus = ({route}) => {
         if (__DEV__) console.log('ACTIONS POST DATA PENCAIRAN INSERT LOCAL', dataNasabah.ID_Prospek);
         let fpp = (route.params.data.Jenis_Pembiayaan.includes("S") || route.params.data.Jenis_Pembiayaan.includes("Y") ? "SYARIAH_" : (route.params.data.Jenis_Pembiayaan.charAt(0) == "1" && route.params.data.Jenis_Pembiayaan.includes("M") ? "KONVE_": "KONVENSIONAL_"))
         let tindak = (route.params.data.Jenis_Pembiayaan.charAt(0) == "1" ? "T1" : "TL")
-        console.log(fpp+tindak)
+        let inis = (IS_DEVELOPMENT ? 'INISIASI_DEV' : 'INISIASI')
         let query = 'INSERT INTO Table_Pencairan_Post (FP4, Foto_Pencairan, Is_Dicairkan, Jml_RealCair, Jml_UP, TTD_KC, TTD_KK, TTD_KSK, TTD_Nasabah, TTD_Nasabah_2, ID_Prospek, Kelompok_ID) ' +
-                    'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_'+fpp+tindak+'.html?ID_Prospek=' + dataNasabah.ID_Prospek + '","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
+                    'values ("http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/'+inis+'/FP4_'+fpp+tindak+'.html?ID_Prospek=' + dataNasabah.ID_Prospek + '","' + postPencairan.Foto_Pencairan + '","' + postPencairan.Is_Dicairkan + '", ' +
                     '"' + TotalPencairan + '","0","' + postPencairan.TTD_KC + '", "' + postPencairan.TTD_KK + '", "' + postPencairan.TTD_KSK + '", "' + postPencairan.TTD_Nasabah + '",'+ 
                     '"' + postPencairan.TTD_Nasabah_2 + '", "' + dataNasabah.ID_Prospek + '", "' + dataNasabah.Kelompok_ID + '")';
         db.transaction(
@@ -212,7 +203,7 @@ const Siklus = ({route}) => {
                     <View style={styles.F1}>
                         <WebView
                             renderLoading={renderLoadingView}
-                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/INISIASI/FP4_${route.params.data.Jenis_Pembiayaan.includes('S') || route.params.data.Jenis_Pembiayaan.includes('Y') ? 'SYARIAH': `${route.params.data.Jenis_Pembiayaan.charAt(0) == '1' && route.params.data.Jenis_Pembiayaan.includes('M') ? 'KONVE': 'KONVENSIONAL'}`}_${route.params.data.Jenis_Pembiayaan.charAt(0) == '1' ? 'T1' : 'TL'}.html?ID_Prospek=${dataNasabah.ID_Prospek}` }}
+                            source={{ uri: `http://reportdpm.pnm.co.id:8080/jasperserver/rest_v2/reports/reports/${IS_DEVELOPMENT ? 'INISIASI_DEV' : 'INISIASI'}/FP4_${route.params.data.Jenis_Pembiayaan.includes('S') || route.params.data.Jenis_Pembiayaan.includes('Y') ? 'SYARIAH': `${route.params.data.Jenis_Pembiayaan.charAt(0) == '1' && route.params.data.Jenis_Pembiayaan.includes('M') ? 'KONVE': 'KONVENSIONAL'}`}_${route.params.data.Jenis_Pembiayaan.charAt(0) == '1' ? 'T1' : 'TL'}.html?ID_Prospek=${dataNasabah.ID_Prospek}` }}
                             startInLoadingState={true}
                             style={styles.F1}
                         />
