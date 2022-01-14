@@ -33,7 +33,7 @@ const InisiasiFormPPList = ({ route }) => {
 
     const getData = async () => {
         console.log(groupName)
-        let queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status <> 'null'"
+        let queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status = 4"
 
         const ListData = (queryList) => (new Promise((resolve, reject) => {
             try{

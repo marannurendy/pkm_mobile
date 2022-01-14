@@ -32,6 +32,7 @@ import MeetingMenu from '../screens/MeetingMenu'
 import GroupCollection from '../screens/groupCollection'
 import IndividualCollection from '../screens/individualCollection'
 import FormIndividualCollection from '../screens/formIndividualCollection'
+import PkmBermakna from '../screens/pkmBermakna'
 
 // import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
 import { 
@@ -630,6 +631,7 @@ export default function AppNavigator() {
 
                 <Stack.Screen name="IndividualCollection" component={IndividualCollection} options={{ headerShown: false }} />
                 <Stack.Screen name="FormIndividualCollection" component={FormIndividualCollection} options={{ headerShown: false }} />
+                <Stack.Screen name="PkmBermakna" component={PkmBermakna} options={{ headerShown: false }} />
 
                 {/* INISIASI */}
 

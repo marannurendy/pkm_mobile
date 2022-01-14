@@ -385,7 +385,7 @@ const MeetingMenu = ({route}) => {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity disabled={buttonPkmb} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonPkmb === true ? '#CCCCC4' : '#F4A634'}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('PkmBermakna')} disabled={buttonPkmb} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonPkmb === true ? '#CCCCC4' : '#F4A634'}}>
                             <FontAwesome5 name="clipboard-list" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
                                 <Text style={{fontWeight: 'bold', fontSize: scale(17), color: '#FAFAF8'}}>PKMB</Text> 
