@@ -381,7 +381,7 @@ const MeetingMenu = ({route}) => {
                         <TouchableOpacity onPress={() => navigation.navigate('Report', {groupid: groupid, cabangid: branchid})} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: '#E94F37'}}>
                             <FontAwesome5 name="clipboard-check" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
-                                <Text style={{fontWeight: 'bold', fontSize: scale(17), color: '#FAFAF8'}}>Report</Text> 
+                                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: scale(17), color: '#FAFAF8'}}>Report</Text> 
                             </View>
                         </TouchableOpacity>
 

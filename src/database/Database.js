@@ -46,9 +46,9 @@ db.transaction(tx => {
     tx.executeSql(
         `create table if not exists PAR_AccountList(
             OurBranchID varchar,
-            ClientID varchar UNIQUE,
+            ClientID varchar,
             ClientName varchar,
-            AccountID varchar,
+            AccountID varchar UNIQUE,
             ProductID varchar,
             GroupID varchar,
             GroupName varchar,
@@ -67,9 +67,9 @@ db.transaction(tx => {
             GroupName varchar, 
             GroupID varchar, 
             MeetingDay varchar, 
-            ClientID varchar UNIQUE, 
+            ClientID varchar, 
             ClientName varchar, 
-            AccountID varchar, 
+            AccountID varchar UNIQUE,
             ProductID varchar, 
             InstallmentAmount varchar, 
             rill varchar, 
