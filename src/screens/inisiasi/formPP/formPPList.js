@@ -37,6 +37,7 @@ const InisiasiFormPPList = ({ route }) => {
         console.log(isTahapLanjut)
 
         let queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status = 4"
+        let queryList2 = "SELECT * FROM Table_PP_ListNasabah WHERE status = 4"
 
         if(isSisipan === "1" && isTahapLanjut !== "1") {
             queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status = 4 AND isSisipan = 1"
@@ -68,7 +69,7 @@ const InisiasiFormPPList = ({ route }) => {
         }))
 
         const DataList = await ListData(queryList)
-        // console.log(DataList)
+        console.log(DataList)
         setData(DataList)
     }
 

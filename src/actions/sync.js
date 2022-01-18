@@ -1133,6 +1133,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                             + ""
                             + "', '"
                             + ""
+                            + "', '"
+                            + ""
                             + "')";
                     }
 
