@@ -28,6 +28,8 @@ const MAX_TANGGAL_LAHIR_NON_TL = 62;
 const MIN_TANGGAL_LAHIR_TL = 16;
 const MAX_TANGGAL_LAHIR_TL = 64;
 
+const MIN_NOMOR_IDENTITAS_INPUT = 16;
+
 const DataDiri = ({route}) => {
     const uniqueNumber = (new Date().getTime()).toString(36);
     const { id, groupName, namaNasabah, nomorHandphone, screenState, statusSosialisasi } = route.params
@@ -462,7 +464,8 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('checkNIK loaded');
 
         if (!nomorIdentitas || typeof nomorIdentitas === 'undefined' || nomorIdentitas === '' || nomorIdentitas === 'null') return alert('Nomor Identitas (*) tidak boleh kosong');
-        
+        if (nomorIdentitas.length < MIN_NOMOR_IDENTITAS_INPUT) return alert('Nomor Identitas (*) belum lengkap. Mohon isi 16 angka.');
+
         const body = {
             NIK: nomorIdentitas
         };
@@ -864,6 +867,7 @@ const DataDiri = ({route}) => {
         if (!fotokartuIdentitas || typeof fotokartuIdentitas === 'undefined' || fotokartuIdentitas === '' || fotokartuIdentitas === 'null') return alert('Foto Kartu Identitas (*) tidak boleh kosong');
         if (!valueJenisKartuIdentitas || typeof valueJenisKartuIdentitas === 'undefined' || valueJenisKartuIdentitas ==='' || valueJenisKartuIdentitas === 'null') return alert('Jenis Kartu Identitas (*) tidak boleh kosong');
         if (!nomorIdentitas || typeof nomorIdentitas === 'undefined' || nomorIdentitas === '' || nomorIdentitas === 'null') return alert('Nomor Identitas (*) tidak boleh kosong');
+        if (nomorIdentitas.length < MIN_NOMOR_IDENTITAS_INPUT) return alert('Nomor Identitas (*) belum lengkap. Mohon isi 16 angka.');
         if (!namaCalonNasabah || typeof namaCalonNasabah === 'undefined' || namaCalonNasabah === '' || namaCalonNasabah === 'null') return alert('Nama Lengkap (*) tidak boleh kosong');
         if (!tempatLahir || typeof tempatLahir === 'undefined' || tempatLahir === '' || tempatLahir === 'null') return alert('Tempat Lahir (*) tidak boleh kosong');
         if (!tanggalLahir || typeof tanggalLahir === 'undefined' || tanggalLahir === '' || tanggalLahir === 'null') return alert('Tanggal Lahir (*) tidak boleh kosong');

@@ -8,6 +8,7 @@ import { styles } from './styles';
 import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
 import { Picker } from '@react-native-picker/picker';
+import { replaceSpecialChar } from '../../../utils/Functions';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -732,7 +733,7 @@ const ProdukPembiayaan = ({ route }) => {
             <View style={[styles.textInputContainer, styles.ML8]}>
                 <TextInput 
                     value={valueNamaBank} 
-                    onChangeText={(text) => setValueNamaBank(text)}
+                    onChangeText={(text) => setValueNamaBank(replaceSpecialChar(text))}
                     placeholder="" 
                     style={styles.F1}
                 />
@@ -746,7 +747,7 @@ const ProdukPembiayaan = ({ route }) => {
             <View style={[styles.textInputContainer, styles.ML8]}>
                 <TextInput 
                     value={valueNoRekening} 
-                    onChangeText={(text) => setValueNoRekening(text)}
+                    onChangeText={(text) => setValueNoRekening(replaceSpecialChar(text))}
                     placeholder="" 
                     style={styles.F1}
                 />
@@ -760,7 +761,7 @@ const ProdukPembiayaan = ({ route }) => {
             <View style={[styles.textInputContainer, styles.ML8]}>
                 <TextInput 
                     value={valuePemilikRekening} 
-                    onChangeText={(text) => setValuePemilikRekening(text)}
+                    onChangeText={(text) => setValuePemilikRekening(replaceSpecialChar(text))}
                     placeholder="" 
                     style={styles.F1}
                 />
