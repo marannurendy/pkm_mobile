@@ -10,7 +10,7 @@ import db from '../../../database/Database';
 import { getSyncData } from '../../../actions/sync';
 
 const InisiasiFormPPList = ({ route }) => {
-    const { groupName } = route.params;
+    const { groupName, isSisipan, isTahapLanjut } = route.params;
     const navigation = useNavigation();
     const [data, setData] = useState([])
     const [keyword, setKeyword] = useState('');
@@ -33,7 +33,16 @@ const InisiasiFormPPList = ({ route }) => {
 
     const getData = async () => {
         console.log(groupName)
+        console.log(isSisipan)
+        console.log(isTahapLanjut)
+
         let queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status = 4"
+
+        if(isSisipan === "1" && isTahapLanjut !== "1") {
+            queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status = 4 AND isSisipan = 1"
+        }else if(isSisipan !== "1" && isTahapLanjut === "1") {
+            queryList = "SELECT * FROM Table_PP_ListNasabah WHERE kelompok = '" + groupName + "' AND status = 4 AND isTahapLanjut = 1"
+        }
 
         const ListData = (queryList) => (new Promise((resolve, reject) => {
             try{
@@ -59,7 +68,7 @@ const InisiasiFormPPList = ({ route }) => {
         }))
 
         const DataList = await ListData(queryList)
-        console.log(DataList)
+        // console.log(DataList)
         setData(DataList)
     }
 

@@ -38,6 +38,8 @@ const GroupCollection = ({route}) => {
                             newData['tarikan'] = newData.withDraw === null ? 0 : newData.withDraw === undefined ? 0 : newData.withDraw;
                             newData['angsuran'] = newData.InstallmentAmount
                             newData['total'] = newData.InstallmentAmount
+                            newData.savings = newData.savings === null ? 0 : newData.savings === undefined ? 0 : newData.savings;
+                            newData.withDraw = newData.withDraw === null ? 0 : newData.withDraw === undefined ? 0 : newData.withDraw;
                             dataList.push(newData);
                         }
 
@@ -132,7 +134,7 @@ const GroupCollection = ({route}) => {
         const statusTotalTitipan = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.titipan) , 0 )
         const statusTotalTarikan = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.tarikan) , 0 )
 
-        console.log(statusTotal)
+        // console.log(statusTotal)
 
         if(DataGroupInfo.Status === '3') {
             setButtonSubmit(true)
