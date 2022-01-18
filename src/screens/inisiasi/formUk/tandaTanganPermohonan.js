@@ -46,10 +46,12 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const [key_tandaTanganSuamiPenjamin, setKey_tandaTanganSuamiPenjamin] = useState(`formUK_tandaTanganSuamiPenjamin_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     const [key_tandaTanganKetuaSubKemlompok, setKey_tandaTanganKetuaSubKemlompok] = useState(`formUK_tandaTanganKetuaSubKemlompok_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     const [key_tandaTanganKetuaKelompok, setKey_tandaTanganKetuaKelompok] = useState(`formUK_tandaTanganKetuaKelompok_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [dataSosialisasiDatabase, setDataSosialisasiDatabase] = useState(false);
 
     useEffect(() => {
         getUserData();
         setInfo();
+        getSosialisasiDatabase();
         getUKDataDiri();
         getUKPermohonanPembiayaan();
         getUKProdukPembiayaan();
@@ -67,6 +69,25 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         setCurrentDate(tanggal)
+    }
+
+    const getSosialisasiDatabase = () => {
+        let queryUKDataDiri = `SELECT * FROM Sosialisasi_Database WHERE id = '` + id + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database length:', dataLength);
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database:', results.rows);
+                    if (dataLength > 0) {
+                        let data = results.rows.item(0);
+                        setDataSosialisasiDatabase(data);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database error:', error.message);
+                })
+            }
+        )
     }
 
     const getUKPermohonanPembiayaan = () => {
@@ -339,6 +360,19 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         if (key === 'tandaTanganAOSAO') return setValueTandaTanganAOSAO(data);
     };
 
+    const generateSiklusName = () => {
+        const siklus = dataSosialisasiDatabase?.siklus ?? '1';
+        if (siklus === '1') return 'Pertama';
+        if (siklus === '2') return 'Kedua';
+        if (siklus === '3') return 'Ketiga';
+        if (siklus === '4') return 'Keempat';
+        if (siklus === '5') return 'Kelima';
+        if (siklus === '6') return 'Keenam';
+        if (siklus === '7') return 'Ketujuh';
+        if (siklus === '8') return 'Kedelapan';
+        if (siklus === '9') return 'Kesembilan';
+    }
+
     const renderHeader = () => (
         <>
             <View style={styles.headerContainer}>
@@ -371,7 +405,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
     const renderFormSiklusPembiayaan = () => (
         <View style={stylesheet.siklusContainer}>
             <Text style={styles.FS18}>SIKLUS PEMBIAYAAN</Text>
-            <Text style={styles.FWBold}>Pertama</Text>
+            <Text style={styles.FWBold}>{generateSiklusName()}</Text>
         </View>
     )
 
