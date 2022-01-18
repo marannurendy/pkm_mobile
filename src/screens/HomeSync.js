@@ -352,9 +352,11 @@ export default function FrontHomeSync(props) {
             if (__DEV__) console.log('TOTAL PROSPEK MAP:', totalProspekMap);
             if (__DEV__) console.log('TOTAL PROSPEK MAP BERHASIL:', totalProspekMapBerhasil.length, totalProspekMapBerhasil);
 
+            const messageRKH = ![2].includes(selectedIndexFilterProspek) ? `\n\nTotal ${totalProspekMap} Nasabah\nBerhasil ${totalProspekMapBerhasil.length}\nGagal ${totalProspekMap - totalProspekMapBerhasil.length} (Nasabah sudah di prospek user lain)` : '';
+
             Alert.alert(
                 "Sukses",
-                `Sync berhasil dilakukan, Anda akan memasuki menu utama.\n\nTotal ${totalProspekMap} Nasabah\nBerhasil ${totalProspekMapBerhasil.length}\nGagal ${totalProspekMap - totalProspekMapBerhasil.length} (Nasabah sudah di prospek user lain)`,
+                `Sync berhasil dilakukan, Anda akan memasuki menu utama.${messageRKH}`,
                 [
                     { 
                         text: "OK", 
@@ -876,7 +878,7 @@ export default function FrontHomeSync(props) {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.2-001-dev @ 2021-01-18</Text>
+            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.2-002-dev @ 2021-01-19</Text>
             {/* <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.1-003-prod @ 2021-01-11</Text> */}
         </View>
     )
