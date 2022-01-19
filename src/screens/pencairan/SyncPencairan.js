@@ -73,7 +73,6 @@ const SyncPencairan = () => {
         if (__DEV__) console.log('post pencairan keyword:', keyword);
         let LRP_TTD_AO = await AsyncStorage.getItem(`formPencairan_tandaTanganSAOKCLRP_${Kelompok_ID}`);
         let LRP_TTD_Nasabah =  await AsyncStorage.getItem(`formPencairan_tandaTanganNasabahLRP_${Kelompok_ID}`)
-        console.log(LRP_TTD_AO)
         if(LRP_TTD_AO == null && LRP_TTD_Nasabah == null){
             Alert.alert(  
                 'Gagal!',  
@@ -93,35 +92,48 @@ const SyncPencairan = () => {
                         if (__DEV__) console.log('post pencairan results:', results.rows);
                         let dataLength = results.rows.length
                         var ah = []
+                        var nosync = 0;
                         for(let a = 0; a < dataLength; a++) {
                             let data = results.rows.item(a);
-                            ah.push({
-                                "FP4": "",
-                                "Foto_Kegiatan": null,
-                                "Foto_Pencairan": await AsyncStorage.getItem(data.Foto_Pencairan),
-                                "ID_Prospek": data.ID_Prospek,
-                                "Is_Batal": null,
-                                "Is_Dicairkan": data.Is_Dicairkan,
-                                "Is_Ludin": null,
-                                "Is_PMU": null,
-                                "Jml_Cair_PMU": null,
-                                "Jml_RealCair": data.Jml_RealCair,
-                                "Jml_Sisa_UP": null,
-                                "Jml_UP": "0",
-                                "LRP_TTD_AO": LRP_TTD_AO,
-                                "LRP_TTD_Nasabah":LRP_TTD_Nasabah,
-                                "TTD_KC": await AsyncStorage.getItem(data.TTD_KC),
-                                "TTD_KK": await AsyncStorage.getItem(data.TTD_KK),
-                                "TTD_KSK": await AsyncStorage.getItem(data.TTD_KSK),
-                                "TTD_Nasabah": await AsyncStorage.getItem(data.TTD_Nasabah),
-                                "TTD_Nasabah_2": await AsyncStorage.getItem(data.TTD_Nasabah_2)
-                            });
-                            await AsyncStorage.removeItem(data.TTD_KC)
-                            await AsyncStorage.removeItem(data.TTD_KK)
-                            await AsyncStorage.removeItem(data.TTD_KSK)
-                            await AsyncStorage.removeItem(data.TTD_Nasabah)
-                            await AsyncStorage.removeItem(data.TTD_Nasabah_2)
-                            await AsyncStorage.removeItem(data.Foto_Pencairan)
+                            let TTD_KK = await AsyncStorage.getItem(data.TTD_KK)
+                            let TTD_KC = await AsyncStorage.getItem(data.TTD_KC)
+                            let TTD_KSK = await AsyncStorage.getItem(data.TTD_KSK)
+                            let TTD_Nasabah = await AsyncStorage.getItem(data.TTD_Nasabah)
+                            let TTD_Nasabah_2 = await AsyncStorage.getItem(data.TTD_Nasabah_2)
+                            let Foto_Pencairan = await AsyncStorage.getItem(data.Foto_Pencairan)
+                            if((TTD_KK == null || TTD_KK == "") && (TTD_KC == null && TTD_KC == "") 
+                            && (TTD_KSK == null && TTD_KSK == "") && (TTD_Nasabah == null && TTD_Nasabah == "") && (TTD_Nasabah_2 == null && TTD_Nasabah_2 == "")
+                            && (Foto_Pencairan == null && Foto_Pencairan == "")){
+                               console.log(data.ID_Prospek)
+                            }else{
+                                ah.push({
+                                    "FP4": data.FP4,
+                                    "Foto_Kegiatan": null,
+                                    "Foto_Pencairan": Foto_Pencairan,
+                                    "ID_Prospek": data.ID_Prospek,
+                                    "Is_Batal": null,
+                                    "Is_Dicairkan": data.Is_Dicairkan,
+                                    "Is_Ludin": null,
+                                    "Is_PMU": null,
+                                    "Jml_Cair_PMU": null,
+                                    "Jml_RealCair": data.Jml_RealCair,
+                                    "Jml_Sisa_UP": null,
+                                    "Jml_UP": "0",
+                                    "LRP_TTD_AO": LRP_TTD_AO,
+                                    "LRP_TTD_Nasabah":LRP_TTD_Nasabah,
+                                    "TTD_KC": TTD_KC,
+                                    "TTD_KK": TTD_KK,
+                                    "TTD_KSK": TTD_KSK,
+                                    "TTD_Nasabah": TTD_Nasabah,
+                                    "TTD_Nasabah_2": TTD_Nasabah_2
+                                });
+                                await AsyncStorage.removeItem(data.TTD_KC)
+                                await AsyncStorage.removeItem(data.TTD_KK)
+                                await AsyncStorage.removeItem(data.TTD_KSK)
+                                await AsyncStorage.removeItem(data.TTD_Nasabah)
+                                await AsyncStorage.removeItem(data.TTD_Nasabah_2)
+                                await AsyncStorage.removeItem(data.Foto_Pencairan)
+                            }
                         }
                         await AsyncStorage.removeItem(`formPencairan_tandaTanganSAOKCLRP_${Kelompok_ID}`)
                         await AsyncStorage.removeItem(`formPencairan_tandaTanganNasabahLRP_${Kelompok_ID}`)
