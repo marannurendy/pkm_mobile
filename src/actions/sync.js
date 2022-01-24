@@ -1631,7 +1631,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         let jsonMasterData = null;
         if (params.isGetMaster) {
-            const MasterData = await fetch(getMasterData);
+            const MasterData = await fetch(getMasterData, {
+                method: 'GET',
+                headers: {
+                    Authorization: token,
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
             jsonMasterData = await MasterData.json(MasterData);
             if (__DEV__) console.log('ACTIONS GET SYNC MASTER DATA:', jsonMasterData);
         }
