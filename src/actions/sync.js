@@ -1567,7 +1567,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
         await insertListPAR(jsongetPAR);
         if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
 
-        const PencairanData = await fetch(getDataPencairan);
+        const PencairanData = await fetch(getDataPencairan, {
+            method: 'GET',
+            headers: {
+                Authorization: token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
         const jsonPencairanData = await PencairanData.json(PencairanData);
         await insertKelompokPencairan(jsonPencairanData);
         if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN DONE');
