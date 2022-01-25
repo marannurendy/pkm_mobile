@@ -15,6 +15,7 @@ let MAJOR_VERSION = '0';
 let MINOR_VERSION = '0';
 let PATCH_VERSION = '2';
 let BUILD = '001';
+let TANGGAL = '2022-01-26';
 
 let base_url = 'http://pkmmekaar.kresnasaraswati.id';
 let api_version = 'v1';
@@ -28,7 +29,7 @@ if (IS_DEVELOPMENT) {
     base_url = 'http://103.105.216.134';
 }
 
-let VERSION = `${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${BUILD}-${IS_DEVELOPMENT ? 'dev' : 'prod'}`
+let VERSION = `${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-${BUILD}-${IS_DEVELOPMENT ? 'dev' : 'prod'} @ ${TANGGAL}`
 let ApiSync = `${base_url}/${api_version}/pkm/`;
 let ApiSyncInisiasi = `${base_url}/${api_version}/inisiasi/`;
 let ApiSyncPostInisiasi = `${base_url}/${api_version}/post_inisiasi/`;

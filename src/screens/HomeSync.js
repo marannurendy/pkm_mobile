@@ -886,7 +886,7 @@ export default function FrontHomeSync(props) {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            <Text style={{ textAlign: 'center' }}>{`version pkm_mobile-${VERSION} @ ${moment().format('YYYY-MM-DD')}`}</Text>
+            <Text style={{ textAlign: 'center' }}>{`version pkm_mobile-${VERSION}}`}</Text>
         </View>
     )
 
