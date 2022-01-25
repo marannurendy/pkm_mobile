@@ -4,7 +4,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { scale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import { ApiSyncInisiasi } from '../../dataconfig/index'
+import { ApiSyncInisiasi, VERSION } from '../../dataconfig/index'
 import { getSyncData } from './../actions/sync';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import 'moment/locale/id';
@@ -187,7 +187,7 @@ export default function FrontHomeSync(props) {
         });
     }
 
-    const fetchData = (keyword = '') => {
+    const fetchData = async (keyword = '') => {
         if (__DEV__) console.log('fetchData loaded');
 
         let search = undefined;
@@ -199,11 +199,15 @@ export default function FrontHomeSync(props) {
         const route = `${ApiSyncInisiasi}GetListClient/${props.cabangid}/${createdBy}/${search}/1/100`;
         if (__DEV__) console.log('fetchData route:', route);
 
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         setFetching(true);
         try {
             fetch(route, {
                 method: 'GET',
                 headers: {
+                    Authorization: token,
                     Accept: 'application/json',
                     'Content-Type': 'application/json'
                 }
@@ -221,7 +225,7 @@ export default function FrontHomeSync(props) {
         }
     }
 
-    const fetchProspekLamaData = (keyword = '') => {
+    const fetchProspekLamaData = async (keyword = '') => {
         if (__DEV__) console.log('fetchProspekLamaData loaded');
 
         let search = undefined;
@@ -233,11 +237,15 @@ export default function FrontHomeSync(props) {
         const route = `${ApiSyncInisiasi}GetListClientBRNET/${props.cabangid}/${createdBy}/${search}/1/100`;
         if (__DEV__) console.log('fetchProspekLamaData route:', route);
 
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         setFetchingProspekLama(true);
         try {
             fetch(route, {
                 method: 'GET',
                 headers: {
+                    Authorization: token,
                     Accept: 'application/json',
                     'Content-Type': 'application/json'
                 }
@@ -878,8 +886,7 @@ export default function FrontHomeSync(props) {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            {/* <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.2-002-dev @ 2021-01-19</Text> */}
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.2-001-prod @ 2021-01-19</Text>
+            <Text style={{ textAlign: 'center' }}>{`version pkm_mobile-${VERSION} @ ${moment().format('YYYY-MM-DD')}`}</Text>
         </View>
     )
 

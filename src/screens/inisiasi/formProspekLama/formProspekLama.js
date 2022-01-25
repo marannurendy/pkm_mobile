@@ -148,8 +148,11 @@ const InisiasiFormProspekLama = ({ route }) => {
         )
     }
 
-    const fetchDetail = () => {
+    const fetchDetail = async () => {
         if (__DEV__) console.log('fetchDetail loaded');
+
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
 
         const body = {
             "ClientID": [clientId]
@@ -160,6 +163,7 @@ const InisiasiFormProspekLama = ({ route }) => {
             fetch(`${ApiSyncInisiasi}GetSiklusNasabahBrnet`, {
                 method: 'POST',
                 headers: {
+                    Authorization: token,
                     Accept: 'application/json',
                     'Content-Type': 'application/json'
                 },

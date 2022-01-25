@@ -7,7 +7,7 @@ import { FAB } from 'react-native-paper';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Alert } from 'react-native';
-import {ApiSync, Get_notification, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncOther} from '../../dataconfig/index'
+import {ApiSync, Get_notification, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncOther, VERSION} from '../../dataconfig/index'
 import moment from 'moment';
 import 'moment/locale/id';
 import { Card, Button } from 'react-native-elements';
@@ -313,8 +313,7 @@ export default function FrontHome() {
 
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
-            {/* <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.2-002-dev @ 2021-01-19</Text> */}
-            <Text style={{ textAlign: 'center' }}>version pkm_mobile-0.0.2-001-prod @ 2021-01-19</Text>
+            <Text style={{ textAlign: 'center' }}>{`version pkm_mobile-${VERSION} @ ${moment().format('YYYY-MM-DD')}`}</Text>
         </View>
     )
 
