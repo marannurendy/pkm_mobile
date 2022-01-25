@@ -8,7 +8,7 @@ import { styles } from './styles';
 import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
 import { Picker } from '@react-native-picker/picker';
-import { currency, inputVal } from '../../../utils/Functions';
+import { currency, getOnlyNumber, inputVal } from '../../../utils/Functions';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -337,7 +337,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <View style={styles.F1}>
                     <TextInput 
                         value={valuePedapatanKotorPerhari} 
-                        onChangeText={(text) => setValuePedapatanKotorPerhari(text)}
+                        onChangeText={(text) => setValuePedapatanKotorPerhari(getOnlyNumber(text))}
                         placeholder='0'
                         style={styles.F1}
                         keyboardType = "number-pad"
@@ -355,7 +355,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <View style={styles.F1}>
                     <TextInput 
                         value={valuePengeluaranKeluargaPerhari} 
-                        onChangeText={(text) => setValuePengeluaranKeluargaPerhari(text)}
+                        onChangeText={(text) => setValuePengeluaranKeluargaPerhari(getOnlyNumber(text))}
                         placeholder='0'
                         style={styles.F1}
                         keyboardType="number-pad"
@@ -491,7 +491,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <View style={styles.F1}>
                     <TextInput 
                         value={valuePedapatanKotorPerhariSuami} 
-                        onChangeText={(text) => setValuePedapatanKotorPerhariSuami(text)}
+                        onChangeText={(text) => setValuePedapatanKotorPerhariSuami(getOnlyNumber(text))}
                         placeholder='0'
                         style={styles.F1}
                         keyboardType="number-pad"
@@ -509,7 +509,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                 <View style={styles.F1}>
                     <TextInput 
                         value={valuePengeluaranKeluargaPerhariSuami} 
-                        onChangeText={(text) => setValuePengeluaranKeluargaPerhariSuami(text)}
+                        onChangeText={(text) => setValuePengeluaranKeluargaPerhariSuami(getOnlyNumber(text))}
                         placeholder='0'
                         style={styles.F1}
                         keyboardType="number-pad"

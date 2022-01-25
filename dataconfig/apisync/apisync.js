@@ -23,7 +23,7 @@ if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
     MINOR_VERSION = '0';
     PATCH_VERSION = '2';
-    BUILD = '005';
+    BUILD = '006';
     
     base_url = 'http://103.105.216.134';
 }
@@ -48,5 +48,10 @@ let PostPKM = 'PostTransaction'
 let Get_notification = "GetNotification"
 let Get_Date = "GetDate"
 
+const GET_CUSTOM_MESSAGES = {
+    'mssql: Error converting data type varchar to money.': 'Salah Input Data. Silakan cek data input UK yang berupa angka.',
+    'mssql: Error converting data type varchar to int.': 'Salah Input Data. Silakan cek data input UK yang berupa angka.'
+}
+
 // export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb}
-export { ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther, VERSION }
+export { ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther, VERSION, GET_CUSTOM_MESSAGES }

@@ -35,11 +35,14 @@ const replaceSpecialChar = (keyword) => (
     keyword.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '')
 );
 
+const getOnlyNumber = (value) => String(value).replace(/[^0-9]/g, '');
+
 export {
     fetchWithTimeout,
     inputVal,
     capitalize,
     currency,
     digits_only,
-    replaceSpecialChar
+    replaceSpecialChar,
+    getOnlyNumber
 }

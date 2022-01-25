@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { Button } from 'react-native-elements'
 import db from '../../database/Database';
-import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync'
+import { ApiSyncPostInisiasi, GET_CUSTOM_MESSAGES } from '../../../dataconfig/apisync/apisync'
 import { fetchWithTimeout } from '../../utils/Functions'
 import { Picker } from '@react-native-picker/picker';
 
@@ -663,8 +663,11 @@ const FormUjiKelayakan = ({route}) => {
                                 );
                                 return true;
                             }
+                            GET_CUSTOM_MESSAGES
+                            let message = responseJSON.responseDescription;
+                            if (GET_CUSTOM_MESSAGES[message]) message = GET_CUSTOM_MESSAGES[message]
 
-                            Alert.alert('Error', responseJSON.responseDescription);
+                            Alert.alert('Error', message);
                             setSubmitted(false);
                             return;
                         } catch (error) {
