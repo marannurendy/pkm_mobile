@@ -176,7 +176,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         reject('GAGAL INPUT DATA GROUP');
                     }, function() {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN INSERT TRANSACTION DONE');
-                        resolve('BERHASIL');
+                        // resolve('BERHASIL');
                     }
                 );
                 db.transaction(
@@ -185,7 +185,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                         reject('GAGAL INPUT DATA GROUP');
                     }, function() {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET DATA PENCAIRAN LIST INSERT TRANSACTION DONE');
-                        resolve('BERHASIL');
+                        // resolve('BERHASIL');
                     }
                 );
                 return resolve('BERHASIL');
@@ -469,7 +469,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
             try {
                 var query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, verifikasiTanggal, verifikasiStatus, verifikasiReason, kelompokID, subKelompok, id_prospek) values ';
                 // var queryUKMaster = 'INSERT INTO Table_UK_Master (namaNasabah, status, idSosialisasiDatabase, id_prospek) values ';
-                var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, longitude, latitude, agama, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek, is_pernyataan_dibaca, lokasi_sosialisasi, is_alamat_domisili_sesuai_ktp, siklus_pembiayaan, idSosialisasiDatabase, created_by) values ';
+                var queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (foto_Kartu_Identitas, jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, tempat_lahir, tanggal_Lahir, status_Perkawinan, alamat_Identitas, alamat_Domisili, foto_Surat_Keterangan_Domisili, provinsi, kabupaten, kecamatan, kelurahan, foto_kk, no_kk, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, pendidikan_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, nama_suami, usaha_pekerjaan_suami, jumlah_tenaga_kerja_suami, foto_ktp_suami, suami_diluar_kota, status_hubungan_keluarga, nama_penjamin, foto_ktp_penjamin, longitude, latitude, agama, status_Verif, status_UK_Pass, status_Verifikasi_Pass, id_prospek, is_pernyataan_dibaca, lokasi_sosialisasi, is_alamat_domisili_sesuai_ktp, siklus_pembiayaan, idSosialisasiDatabase, created_by) values ';
                 var queryUKPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, nomor_Identitas, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKKondisiRumah = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, nomor_Identitas, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, id_prospek, idSosialisasiDatabase) values ';
                 var queryUKSektorEkonomi = 'INSERT INTO Table_UK_SektorEkonomi (nama_lengkap, nomor_Identitas, sektor_Ekonomi, sub_Sektor_Ekonomi, jenis_Usaha, id_prospek, idSosialisasiDatabase) values ';
@@ -494,6 +494,10 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
                     let isAlamatDomisiliSesuaiKtp = "0"
                     if (uk_client_data[i].Alamat_Sesuai_ID === uk_client_data[i].Alamat_Domisili) isAlamatDomisiliSesuaiKtp = "1";
+
+                    let Pendidikan_Anak = "0";
+                    if (uk_client_data[i].Pendidikan_Anak && typeof uk_client_data[i].Pendidikan_Anak !== 'undefined') Pendidikan_Anak = uk_client_data[i].Pendidikan_Anak;
+
 
                     const key_dataPenjamin = `formUK_dataPenjamin_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
                     const key_dataSuami = `formUK_dataSuami_${uk_client_data[i].ID_Prospek}_${namaNasabah.replace(/\s+/g, '')}`;
@@ -791,6 +795,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + uk_client_data[i].No_Telp
                     + "','"
                     + uk_client_data[i].Jml_Anak
+                    + "','"
+                    + Pendidikan_Anak
                     + "','"
                     + uk_client_data[i].Jml_Tanggungan
                     + "','"

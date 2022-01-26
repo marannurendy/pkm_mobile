@@ -174,6 +174,8 @@ const DataDiri = ({route}) => {
     const [minTanggalLahir, setMinTanggalLahir] = useState(0);
     const [maxTanggalLahir, setMaxTanggalLahir] = useState(0);
     const [isShowAllProvinsi, setIsShowAllProvinsi] = useState(false);
+    const [valuePendidikanAnak, setValuePendidikanAnak] = useState('0');
+    const [itemsPendidikanAnak, setItemsPendidikanAnak] = useState([]);
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -233,6 +235,7 @@ const DataDiri = ({route}) => {
                                 if (data.no_tlp_nasabah !== null && typeof data.no_tlp_nasabah !== 'undefined') setNoTelfon(data.no_tlp_nasabah);
                                 if (data.agama !== null && typeof data.agama !== 'undefined') setValueReligion(data.agama);
                                 if (data.jumlah_anak !== null && typeof data.jumlah_anak !== 'undefined') setValueJumlahAnak(data.jumlah_anak);
+                                if (data.pendidikan_anak !== null && typeof data.pendidikan_anak !== 'undefined') setValuePendidikanAnak(data.pendidikan_anak);
                                 if (data.jumlah_tanggungan !== null && typeof data.jumlah_tanggungan !== 'undefined') setValueJumlahTanggungan(data.jumlah_tanggungan);
                                 if (data.status_rumah_tinggal !== null && typeof data.status_rumah_tinggal !== 'undefined') setValueStatusRumahTinggal(data.status_rumah_tinggal);
                                 if (data.lama_tinggal !== null && typeof data.lama_tinggal !== 'undefined') setLamaTinggal(data.lama_tinggal);
@@ -337,6 +340,27 @@ const DataDiri = ({route}) => {
                     setItemsReligion([]);
                 }
             }
+            const getStorageEducation = async () => {
+                if (__DEV__) console.log('getStorageEducation loaded');
+        
+                try {
+                    const response = await AsyncStorage.getItem('Education');
+                    if (response !== null) {
+                        const responseJSON = JSON.parse(response);
+                        if (responseJSON.length > 0 ?? false) {
+                            var responseFiltered = responseJSON.map((data, i) => {
+                                return { label: data.educationDetail, value: data.id };
+                            }) ?? [];
+                            if (__DEV__) console.log('getStorageEducation responseFiltered:', responseFiltered);
+                            setItemsPendidikanAnak(responseFiltered);
+                            return;
+                        }
+                    }
+                    setItemsPendidikanAnak([]);
+                } catch (error) {
+                    setItemsPendidikanAnak([]);
+                }
+            }
             
             const getLocation = async () => {
                 Geolocation.getCurrentPosition(
@@ -357,6 +381,7 @@ const DataDiri = ({route}) => {
             getStorageRumahTinggal();
             getStorageWilayahMobile();
             getStorageReligion();
+            getStorageEducation();
             getLocation();
             /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
@@ -682,6 +707,7 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataDiriPribadi valueStatusRumahTinggal:', valueStatusRumahTinggal);
         if (__DEV__) console.log('doSubmitDataDiriPribadi lamaTinggal:', lamaTinggal);
         if (__DEV__) console.log('doSubmitDataDiriPribadi agama:', valueReligion);
+        if (__DEV__) console.log('doSubmitDataDiriPribadi pendidikanAnak:', valuePendidikanAnak);
 
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
@@ -692,9 +718,9 @@ const DataDiri = ({route}) => {
 
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, agama, idSosialisasiDatabase) values ("' + namaNasabah + '","' + namaAyah + '","' + namaGadisIbu + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '","' + valueReligion + '","' + id + '")';
+                        query = 'INSERT INTO Table_UK_DataDiri (nama_lengkap, nama_ayah, nama_gadis_ibu, no_tlp_nasabah, jumlah_anak, pendidikan_anak, jumlah_tanggungan, status_rumah_tinggal, lama_tinggal, agama, idSosialisasiDatabase) values ("' + namaNasabah + '","' + namaAyah + '","' + namaGadisIbu + '","' + noTelfon + '","' + valueJumlahAnak + '","' + valuePendidikanAnak + '","' + valueJumlahTanggungan + '","' + valueStatusRumahTinggal + '","' + lamaTinggal + '","' + valueReligion + '","' + id + '")';
                     } else {
-                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", nama_gadis_ibu = "' + namaGadisIbu + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '", agama = "' + valueReligion + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                        query = 'UPDATE Table_UK_DataDiri SET nama_ayah = "' + namaAyah + '", nama_gadis_ibu = "' + namaGadisIbu + '", no_tlp_nasabah = "' + noTelfon + '", jumlah_anak = "' + valueJumlahAnak + '", pendidikan_anak = "' + valuePendidikanAnak + '", jumlah_tanggungan = "' + valueJumlahTanggungan + '", status_rumah_tinggal = "' + valueStatusRumahTinggal + '", lama_tinggal = "' + lamaTinggal + '", agama = "' + valueReligion + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDataDiriPribadi db.transaction insert/update query:', query);
@@ -890,6 +916,7 @@ const DataDiri = ({route}) => {
         if (!namaGadisIbu || typeof namaGadisIbu === 'undefined' || namaGadisIbu ==='' || namaGadisIbu === 'null') return alert('Nama Gadis Ibu Kandung (*) tidak boleh kosong');
         if (!noTelfon || typeof noTelfon === 'undefined' || noTelfon ==='' || noTelfon === 'null') return alert('No. Telp/HP Nasabah (*) tidak boleh kosong');
         if (!valueJumlahAnak || typeof valueJumlahAnak === 'undefined' || valueJumlahAnak ==='' || valueJumlahAnak === 'null') return alert('Jumlah Anak (*) tidak boleh kosong');
+        if (!valuePendidikanAnak || typeof valuePendidikanAnak === 'undefined' || valuePendidikanAnak ==='' || valuePendidikanAnak === 'null') return alert('Pendidikan Anak (*) tidak boleh kosong');
         if (!valueJumlahTanggungan || typeof valueJumlahTanggungan === 'undefined' || valueJumlahTanggungan ==='' || valueJumlahTanggungan === 'null') return alert('Jumlah Tanggungan (*) tidak boleh kosong');
         if (!valueStatusRumahTinggal || typeof valueStatusRumahTinggal === 'undefined' || valueStatusRumahTinggal ==='' || valueStatusRumahTinggal === 'null') return alert('Status Rumah Tinggal (*) tidak boleh kosong');
         if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='' || lamaTinggal === 'null') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
@@ -1886,6 +1913,20 @@ const DataDiri = ({route}) => {
                                     onValueChange={(itemValue, itemIndex) => setValueJumlahAnak(itemValue)}
                                 >
                                     {itemsJumlahAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            </View>
+                        </View>
+
+                        <View style={{marginHorizontal: 20, marginBottom: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Pendidikan Anak (*)</Text>
+                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                                <Picker
+                                    selectedValue={valuePendidikanAnak}
+                                    style={{ height: 50, width: withTextInput }}
+                                    onValueChange={(itemValue, itemIndex) => setValuePendidikanAnak(itemValue)}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsPendidikanAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                                 </Picker>
                             </View>
                         </View>
