@@ -142,7 +142,7 @@ const InisiasiFormPPForm = ({ route }) => {
         </View>
     )
 
-    const submitHandler = () => {
+    const submitHandler = async () => {
         if(valueTandaTanganKetuaAO === null || valueTandaTanganKetuaAO === undefined || valueTandaTanganKetuaAO === "null" || valueTandaTanganKetuaAO === "undefined") return flashNotification("Caution!", "Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
         if(valueTandaTanganKCSAO === null || valueTandaTanganKCSAO === undefined || valueTandaTanganKCSAO === "null" || valueTandaTanganKCSAO === "undefined") return flashNotification("Caution!", "Kepala Cabang / Senior Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
 
@@ -152,13 +152,17 @@ const InisiasiFormPPForm = ({ route }) => {
         let ttd_kc = valueTandaTanganKCSAO.split("data:image/png;base64,")
         let dataSend = {ID_Prospek: Nasabah_Id, Keterangan_Pembelian: "", TTD_AO: ttd_ao[1], TTD_KC: ttd_kc[1], TTD_KK: "", TTD_KSK: ""}
 
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         try{
             fetch(ApiSyncPostInisiasi + "persetujuan_pembiayaan", {
                     method: 'POST',
                     headers: {
+                        Authorization: token,
                         Accept: 'application/json',
-                                'Content-Type': 'application/json'
-                        },
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify(dataSend)
                 })
             .then((response) => response.json())

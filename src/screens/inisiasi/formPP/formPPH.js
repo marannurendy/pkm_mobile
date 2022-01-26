@@ -120,6 +120,9 @@ const InisiasiFormPPH = ({ route }) => {
       }
 
     const syncHandler = async (val) => {
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         setLoading(true)
             let queryGetDataPP = `SELECT 
                 a.kelompok_Id,
@@ -210,14 +213,17 @@ const InisiasiFormPPH = ({ route }) => {
     
                                     // console.log(dataSend)
                                     console.log(data)
+
+                                    
     
                                     try{
                                         fetch(ApiSyncPostInisiasi + "post_pp", {
                                                 method: 'POST',
                                                 headers: {
+                                                    Authorization: token,
                                                     Accept: 'application/json',
-                                                            'Content-Type': 'application/json'
-                                                    },
+                                                    'Content-Type': 'application/json'
+                                                },
                                                 body: JSON.stringify(dataSend)
                                             })
                                         .then((response) => response.json())
@@ -355,9 +361,10 @@ const InisiasiFormPPH = ({ route }) => {
                                 fetch(ApiSyncPostInisiasi + "post_data_kelompok", {
                                         method: 'POST',
                                         headers: {
+                                            Authorization: token,
                                             Accept: 'application/json',
-                                                    'Content-Type': 'application/json'
-                                            },
+                                            'Content-Type': 'application/json'
+                                        },
                                         body: JSON.stringify(dataSend)
                                     })
                                 .then((response) => response.json())

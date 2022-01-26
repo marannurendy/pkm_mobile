@@ -65,7 +65,7 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         );
     }
 
-    const fetchData = (keyword = '') => {
+    const fetchData = async (keyword = '') => {
         if (__DEV__) console.log('fetchData loaded');
         if (__DEV__) console.log('fetchData branchId:', branchId);
 
@@ -75,11 +75,15 @@ const InisiasiFormProspekLamaList = ({ route }) => {
         const route = `${ApiSyncInisiasi}GetListClientBRNET/${branchId}/undefined/${search}/1/100`;
         if (__DEV__) console.log('fetchData route:', route);
 
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         setFetching(true);
         try {
             fetch(route, {
                 method: 'GET',
                 headers: {
+                    Authorization: token,
                     Accept: 'application/json',
                     'Content-Type': 'application/json'
                 }

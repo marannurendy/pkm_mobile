@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import base64 from 'react-native-base64';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useNavigation } from '@react-navigation/native';
-import {ApiSync} from "../../dataconfig/index";
+import {ApiSync, VERSION} from "../../dataconfig/index";
 import NetInfo, { useNetInfo } from '@react-native-community/netinfo'
 import { showMessage } from "react-native-flash-message"
 
@@ -85,7 +85,8 @@ export default function Login() {
                   },
                   body: JSON.stringify({
                     username: uname,
-                    password: passwd
+                    password: passwd,
+                    apk_version: VERSION
                   })
               })
               .then((response) => response.json())

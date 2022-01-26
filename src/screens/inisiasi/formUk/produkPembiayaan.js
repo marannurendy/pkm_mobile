@@ -441,6 +441,12 @@ const ProdukPembiayaan = ({ route }) => {
 
         if (submmitted) return true;
 
+        if (valueTypePencairan === '3' && valueRekeningBank) {
+            if (!valueNamaBank || typeof valueNamaBank === 'undefined' || valueNamaBank === '' || valueNamaBank === 'null') return alert('Nama Bank (*) tidak boleh kosong');
+            if (!valueNoRekening || typeof valueNoRekening === 'undefined' || valueNoRekening === '' || valueNoRekening === 'null') return alert('No. Rekening (*) tidak boleh kosong');
+            if (!valuePemilikRekening || typeof valuePemilikRekening === 'undefined' || valuePemilikRekening === '' || valuePemilikRekening === 'null') return alert('Pemilik Rekening (*) tidak boleh kosong');
+        }
+
         setSubmmitted(true);
 
         await doSubmitDraft('submit');
@@ -682,6 +688,9 @@ const ProdukPembiayaan = ({ route }) => {
                             return;
                         }
 
+                        setValueNamaBank('');
+                        setValueNoRekening('');
+                        setValuePemilikRekening('');
                         setValueRekeningBank(false);
                         setValueTypePencairan(itemValue);
                     }}
@@ -709,10 +718,21 @@ const ProdukPembiayaan = ({ route }) => {
         </View>
     )
 
-    const renderFormRekeningBank = () => (
+    const renderFormRekeningBank = () => valueTypePencairan === '3' && (
         <View style={styles.MT8}>
             <Text style={{ width: 100 }}>Rekening Bank</Text>
-            <RadioButton.Group onValueChange={newValue => setValueRekeningBank(newValue)} value={valueRekeningBank}>
+            <RadioButton.Group 
+                onValueChange={newValue => {
+                    if (!newValue) {
+                        setValueNamaBank('');
+                        setValueNoRekening('');
+                        setValuePemilikRekening('');
+                    }
+
+                    setValueRekeningBank(newValue);
+                }} 
+                value={valueRekeningBank}
+            >
                 <View style={[styles.FDRow]}>
                     <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
                         <RadioButton value={true} />
