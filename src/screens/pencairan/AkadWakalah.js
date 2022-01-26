@@ -66,6 +66,7 @@ const AkadWakalah = ({route}) => {
             setSignatureAO(signature)
             setModalVisibleAO(!modalVisibleAO);
             setPostPencairan({...postPencairan, "TTD_KC":key_tandaTanganSAOKC})
+            AsyncStorage.setItem(key_tandaTanganSAOKC, signature.split(',')[1])
         }
 
         const handleEmpty = () => {
@@ -110,6 +111,7 @@ const AkadWakalah = ({route}) => {
             setSignatureNasabah(signature)
             setModalVisibleNasabah(!modalVisibleNasabah);
             setPostPencairan({...postPencairan, "TTD_Nasabah":key_tandaTanganNasabah})
+            AsyncStorage.setItem(key_tandaTanganNasabah, signature.split(',')[1])
         }
 
         const handleEmpty = () => {
