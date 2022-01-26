@@ -221,6 +221,7 @@ db.transaction(tx => {
             nama_gadis_ibu varchar,
             no_tlp_nasabah varchar,
             jumlah_anak varchar,
+            pendidikan_anak varchar,
             jumlah_tanggungan varchar,
             status_rumah_tinggal varchar,
             lama_tinggal varchar,

@@ -182,6 +182,7 @@ const FormUjiKelayakan = ({route}) => {
 
         setSubmitted(true);
         let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok, g.siklus, h.kehadiran_pkm, h.angsuran_pada_saat_pkm FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id LEFT JOIN Table_UK_DisipinNasabah h ON a.idSosialisasiDatabase = h.idSosialisasiDatabase WHERE a.idSosialisasiDatabase = "' + id + '"';
+        // let query = 'SELECT a.* FROM Table_UK_DataDiri a WHERE a.idSosialisasiDatabase = "' + id + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
@@ -271,9 +272,6 @@ const FormUjiKelayakan = ({route}) => {
                             kelompokID = selectedPilihKelompok.value;
                             namaKelompok = selectedPilihKelompok.label;
                             subKelompok = valuePilihSubKelompok;
-
-                            console.log('ABIBANYU HARSA selectedPilihKelompok:', selectedPilihKelompok);
-                            console.log('ABIBANYU HARSA valuePilihSubKelompok:', valuePilihSubKelompok);
                         }
                         
                         const body = {
@@ -306,6 +304,7 @@ const FormUjiKelayakan = ({route}) => {
                             "JmlHariUsaha_perBulan": data.jumlah_Hari_Usaha_Perbulan,
                             "JmlHariUsaha_perBulan_Suami": data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan,
                             "JmlhAnak": data.jumlah_anak,
+                            "PendidikanAnak": data.pendidikan_anak,
                             "JmlhTanggungan": data.jumlah_tanggungan,
                             "JumlahPinjaman": data.jumlah_Pinjaman,
                             "Kabupaten": data.kabupaten,
@@ -384,7 +383,7 @@ const FormUjiKelayakan = ({route}) => {
                             "Siklus": '' + siklus,
                             "IsSesuaiDukcapil": data.is_nik_valid_dukcapil
                         }
-                        // alert(`${kelompokID} - ${subKelompok} - ${namaKelompok}`)
+                        // alert(`${body.PendidikanAnak}`)
                         if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
                         // return;
 
