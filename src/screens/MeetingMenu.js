@@ -229,17 +229,26 @@ const MeetingMenu = ({route}) => {
         
         var dataSync = { "pkm": CollectDatapkm, "up": CollectDataup, "sign": CollectDatasign }
 
+        const timeOut = (milisecond, promise) => {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    reject(new Error("Request Timeout, perhatikan jaringan anda lalu coba sync beberapa saat lagi."))
+                }, milisecond)
+                promise.then(resolve, reject)
+            })
+        }
+
         if(CollectDatapkm.length > 0 ) {
-            console.log("first")
             try{
-                fetch(ApiSync+PostPKM, {
-                        method: 'POST',
-                        headers: {
-                            Accept: 'application/json',
-                                    'Content-Type': 'application/json'
-                            },
-                        body: JSON.stringify(dataSync)
-                    })
+
+                timeOut(60000, fetch(ApiSync+PostPKM, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                                'Content-Type': 'application/json'
+                        },
+                    body: JSON.stringify(dataSync)
+                }))
                 .then((response) => response.json())
                 .then((responseJson) => {
                     console.log("second")
@@ -275,12 +284,12 @@ const MeetingMenu = ({route}) => {
                     }
                 }).catch((error) => {
                     setLoading(false)
-                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
+                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. \nError : " + error.message, "#ff6347", "#fff")
                 })
             }catch(error){
                 console.log("disini")
                 setLoading(false)
-                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. Error : " + error, "#ff6347", "#fff")
             }
         }else{
             setLoading(false)
