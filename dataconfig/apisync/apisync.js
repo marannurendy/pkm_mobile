@@ -24,7 +24,7 @@ if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
     MINOR_VERSION = '0';
     PATCH_VERSION = '2';
-    BUILD = '006';
+    BUILD = '007';
     
     base_url = 'http://103.105.216.134';
 }

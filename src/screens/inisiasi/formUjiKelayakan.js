@@ -663,9 +663,9 @@ const FormUjiKelayakan = ({route}) => {
                                 );
                                 return true;
                             }
-                            GET_CUSTOM_MESSAGES
+                            
                             let message = responseJSON.responseDescription;
-                            if (GET_CUSTOM_MESSAGES[message]) message = GET_CUSTOM_MESSAGES[message]
+                            // if (GET_CUSTOM_MESSAGES[message]) message = GET_CUSTOM_MESSAGES[message]
 
                             Alert.alert('Error', message);
                             setSubmitted(false);
