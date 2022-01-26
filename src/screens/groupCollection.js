@@ -134,7 +134,7 @@ const GroupCollection = ({route}) => {
         const statusTotalTitipan = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.titipan) , 0 )
         const statusTotalTarikan = DataMemberList.reduce((a,v) =>  a = Number(a) + Number(v.tarikan) , 0 )
 
-        // console.log(statusTotal)
+        // console.log(DataMemberList.length)
 
         if(DataGroupInfo.Status === '3') {
             setButtonSubmit(true)
@@ -170,6 +170,7 @@ const GroupCollection = ({route}) => {
 
     const searchHandler = (value, data) => {
         let newData = [];
+        // setLoaded(false)
         // console.log(value)
         if (value) {
             newData = data.filter(function(item) {
@@ -178,9 +179,13 @@ const GroupCollection = ({route}) => {
                 return itemData.includes(textData);
             })
             setMemberList([...newData]);
+            // setLoaded(false)
         } else {
             setMemberList([...listData]);
+            // setLoaded(false)
         }
+
+        // setLoaded(true)
     }
 
     const SubmitHandler = () => {
@@ -467,7 +472,7 @@ const GroupCollection = ({route}) => {
                     ( <ScrollView onScrollBeginDrag={Keyboard.dismiss} style={{ marginHorizontal: 20, marginBottom: 100 }}>
                         {memberList.map((item, index) => (
                             <Child
-                                key={item.ClientID}
+                                key={item.AccountID}
                                 item={item}
                                 index={index}
                                 onChange={onInputChange}
