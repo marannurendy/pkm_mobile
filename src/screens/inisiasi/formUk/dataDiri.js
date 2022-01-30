@@ -949,6 +949,37 @@ const DataDiri = ({route}) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
+                    const find = 'SELECT * FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = "'+ id +'"';
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(find, [], (txFind, resultsFind) => {
+                                let dataLengthFind = resultsFind.rows.length
+                                if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                                let query = '';
+                                if (dataLengthFind === 0) {
+                                    query = 'INSERT INTO Table_UK_PermohonanPembiayaan (nama_tanda_Tangan_Nasabah, nama_tanda_Tangan_SuamiPenjamin, idSosialisasiDatabase) values ("' + namaNasabah + '","' + namaPenjamin + '","' + id + '")';
+                                } else {
+                                    query = 'UPDATE Table_UK_PermohonanPembiayaan SET nama_tanda_Tangan_Nasabah = "' + namaNasabah + '", nama_tanda_Tangan_SuamiPenjamin = "' + namaPenjamin + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                                }
+
+                                if (__DEV__) console.log('doSubmitDraft db.transaction Table_UK_PermohonanPembiayaan insert/update query:', query);
+
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql(query);
+                                    }, function(error) {
+                                        if (__DEV__) console.log('doSubmitDraft db.transaction Table_UK_PermohonanPembiayaan insert/update error:', error.message);
+                                    },function() {
+                                        if (__DEV__) console.log('doSubmitDraft db.transaction Table_UK_PermohonanPembiayaan insert/update success');
+                                    }
+                                );
+                            }, function(error) {
+                                if (__DEV__) console.log('doSubmitDraft db.transaction Table_UK_PermohonanPembiayaan find error:', error.message);
+                            })
+                        }
+                    );
+
                     let query = '';
                     if (dataLengthFind > 0) {
                         setSubmmitted(false);

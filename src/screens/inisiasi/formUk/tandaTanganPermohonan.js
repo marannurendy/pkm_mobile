@@ -102,17 +102,23 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
 
-                        setKey_tandaTanganAOSAO(data.tanda_Tangan_AOSAO);
-                        setKey_tandaTanganNasabah(data.tanda_Tangan_Nasabah);
-                        setKey_tandaTanganSuamiPenjamin(data.tanda_Tangan_SuamiPenjamin);
-                        setKey_tandaTanganKetuaSubKemlompok(data.tanda_Tangan_Ketua_SubKelompok);
-                        setKey_tandaTanganKetuaKelompok(data.tanda_Tangan_Ketua_Kelompok);
+                        setKey_tandaTanganAOSAO(data.tanda_Tangan_AOSAO ?? '');
+                        setKey_tandaTanganNasabah(data.tanda_Tangan_Nasabah ?? '');
+                        setKey_tandaTanganSuamiPenjamin(data.tanda_Tangan_SuamiPenjamin ?? '');
+                        setKey_tandaTanganKetuaSubKemlompok(data.tanda_Tangan_Ketua_SubKelompok ?? '');
+                        setKey_tandaTanganKetuaKelompok(data.tanda_Tangan_Ketua_Kelompok ?? '');
 
-                        const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
-                        const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
-                        const tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
-                        const tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
-                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
+                        let tandaTanganAOSAO = null;
+                        let tandaTanganNasabah = null;
+                        let tandaTanganSuamiPenjamin = null;
+                        let tandaTanganKetuaSubKemlompok = null;
+                        let tandaTanganKetuaKelompok = null;
+                        
+                        if (data.tanda_Tangan_AOSAO !== null && typeof data.tanda_Tangan_AOSAO !== 'undefined') tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
+                        if (data.tanda_Tangan_Nasabah !== null && typeof data.tanda_Tangan_Nasabah !== 'undefined') tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
+                        if (data.tanda_Tangan_SuamiPenjamin !== null && typeof data.tanda_Tangan_SuamiPenjamin !== 'undefined') tandaTanganSuamiPenjamin = await AsyncStorage.getItem(data.tanda_Tangan_SuamiPenjamin);
+                        if (data.tanda_Tangan_Ketua_SubKelompok !== null && typeof data.tanda_Tangan_Ketua_SubKelompok !== 'undefined') tandaTanganKetuaSubKemlompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_SubKelompok);
+                        if (data.tanda_Tangan_Ketua_Kelompok !== null && typeof data.tanda_Tangan_Ketua_Kelompok !== 'undefined') tandaTanganKetuaKelompok = await AsyncStorage.getItem(data.tanda_Tangan_Ketua_Kelompok);
 
                         if (__DEV__) console.log('tandaTanganAOSAO :', data.tanda_Tangan_AOSAO, tandaTanganAOSAO);
                         if (__DEV__) console.log('tandaTanganNasabah :', data.tanda_Tangan_Nasabah, tandaTanganNasabah);
@@ -121,7 +127,6 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         if (__DEV__) console.log('tandaTanganKetuaKelompok :', data.tanda_Tangan_Ketua_Kelompok, tandaTanganKetuaKelompok);
 
                         if (data.produk_Pembiayaan !== null && typeof data.produk_Pembiayaan !== 'undefined') setValueProdukPembiayaan(data.produk_Pembiayaan);
-                        // if (data.frekuensi_Pembiayaan !== null && typeof data.frekuensi_Pembiayaan !== 'undefined') setValueFrekuensiPembiayaan(data.frekuensi_Pembiayaan);
                         if (data.tanda_Tangan_AOSAO !== null && typeof data.tanda_Tangan_AOSAO !== 'undefined') setValueTandaTanganAOSAO(tandaTanganAOSAO);
                         if (data.tanda_Tangan_Nasabah !== null && typeof data.tanda_Tangan_Nasabah !== 'undefined') setValueTandaTanganNasabah(tandaTanganNasabah);
                         if (data.tanda_Tangan_SuamiPenjamin !== null && typeof data.tanda_Tangan_SuamiPenjamin !== 'undefined') setValueTandaTanganSuamiPenjamin(tandaTanganSuamiPenjamin);
@@ -157,7 +162,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                                 if (__DEV__) console.log('AsyncStorage Product responseJSON:', responseJSON);
                                 if (responseJSON.length > 0 ?? false) {
                                     let value = data.produk_Pembiayaan;
-                                    setValueProdukPembiayaan(responseJSON.filter(data => data.id === value)[0].productName.trim() || '');
+                                    setValueProdukPembiayaan(responseJSON.filter(data => data.id === value)[0].productName.trim() ?? '');
                                 }
                             }
                         }
@@ -170,7 +175,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                                 if (__DEV__) console.log('AsyncStorage Frekuensi responseJSON:', responseJSON.length, responseJSON);
                                 if (responseJSON.length > 0 ?? false) {
                                     let value = data.frekuensi_Pembayaran;
-                                    setValueFrekuensiPembiayaan(responseJSON.filter(data => data.id === value)[0].namafrekuensi.trim() || '');
+                                    setValueFrekuensiPembiayaan(responseJSON.filter(data => data.id === value)[0].namafrekuensi.trim() ?? '');
                                 }
                             }
                         }
@@ -295,57 +300,10 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
 
         await doSubmitDraft('submit');
 
-        const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
-        db.transaction(
-            tx => {
-                tx.executeSql(find, [], (txFind, resultsFind) => {
-                    let dataLengthFind = resultsFind.rows.length
-                    if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
-
-                    if (dataLengthFind === 0) {
-                        alert('UK Master not found');
-                        navigation.goBack();
-                        return;
-                    }
-
-                    if (screenState === 5) {
-                        let query = 'UPDATE Table_UK_Master SET status = "6" WHERE idSosialisasiDatabase = "' + id + '"';
-                        if (__DEV__) console.log('doSubmitSave db.transaction insert/update query:', query);
-
-                        db.transaction(
-                            tx => {
-                                tx.executeSql(query);
-                            }, function(error) {
-                                if (__DEV__) console.log('doSubmitSave db.transaction insert/update error:', error.message);
-                                setSubmmitted(false);
-                            },function() {
-                                if (__DEV__) console.log('doSubmitSave db.transaction insert/update success');
-
-                                if (__DEV__) {
-                                    db.transaction(
-                                        tx => {
-                                            tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
-                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
-                                            })
-                                        }, function(error) {
-                                            if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
-                                        }, function() {}
-                                    );
-                                }
-                            }
-                        );
-                    }
-
-                    setSubmmitted(false);
-                    alert('Berhasil');
-                    navigation.goBack();
-                    
-                }, function(error) {
-                    if (__DEV__) console.log('doSubmitSave db.transaction find error:', error.message);
-                    setSubmmitted(false);
-                })
-            }
-        );
+        setSubmmitted(false);
+        alert('Berhasil');
+        AsyncStorage.setItem(`isFormUKTandaTanganPermohonanDone_${id}`, '1');
+        navigation.goBack();
     }
 
     const onSelectSign = (key, data) => {
@@ -414,7 +372,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
             <Text>Produk Pembiayaan</Text>
             <View style={[styles.textInputContainer, { width: withTextInput }]}>
                 <View style={styles.F1}>
-                    <Text style={styles.P4}>{valueProdukPembiayaan}</Text>
+                    <Text style={styles.P4}>{valueProdukPembiayaan !== '' ? valueProdukPembiayaan : '-'}</Text>
                 </View>
                 <View />
             </View>
@@ -438,7 +396,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
             <Text>Jangka Waktu</Text>
             <View style={[styles.textInputContainer]}>
                 <View style={styles.F1}>
-                    <Text style={styles.P4}>{valueJangkaWaktu}</Text>
+                    <Text style={styles.P4}>{valueJangkaWaktu !== '' ? valueJangkaWaktu : '-'}</Text>
                 </View>
                 <View />
             </View>
@@ -450,7 +408,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
             <Text>Frekuensi Pembiayaan</Text>
             <View style={[styles.textInputContainer, { width: withTextInput }]}>
                 <View style={styles.F1}>
-                    <Text style={styles.P4}>{valueFrekuensiPembiayaan}</Text>
+                    <Text style={styles.P4}>{valueFrekuensiPembiayaan !== '' ? valueFrekuensiPembiayaan : '-'}</Text>
                 </View>
                 <View />
             </View>

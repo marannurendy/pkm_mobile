@@ -44,6 +44,8 @@ const ProdukPembiayaan = ({ route }) => {
     const [selectedProdukPembiayaan, setSelectedProdukPembiayaan] = useState(null);
     const [submmitted, setSubmmitted] = useState(false);
     const [dataSosialisasiDatabase, setDataSosialisasiDatabase] = useState(false);
+    const [nameProdukPembiayaan, setNameProdukPembiayaan] = useState('');
+    const [nameFrekuensiPembayaran, setNameFrekuensiPembayaran] = useState('');
 
     useEffect(() => {
         setInfo();
@@ -55,6 +57,44 @@ const ProdukPembiayaan = ({ route }) => {
         getSosialisasiDatabase();
         getUKProdukPembiayaan();
     }, [])
+
+    useEffect(() => {
+        if (__DEV__) console.log('useEffect valueProdukPembiayaan:', valueProdukPembiayaan);
+        (async () => {
+            const response = await AsyncStorage.getItem('Product');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (__DEV__) console.log('useEffect valueProdukPembiayaan AsyncStorage:', responseJSON);
+                if (responseJSON.length > 0 ?? false) {
+                    const findData = responseJSON.filter(data => data.id === valueProdukPembiayaan)[0];
+                    if (__DEV__) console.log('useEffect valueProdukPembiayaan filter:', findData);
+                    if (findData) {
+                        setNameProdukPembiayaan(findData?.productName.trim() ?? '');
+                        setSelectedProdukPembiayaan(findData ?? null);
+                        setValueTermPembiayaan(findData?.paymentTerm ?? null);
+                    }
+                }
+            }
+        })();
+    }, [valueProdukPembiayaan]);
+
+    useEffect(() => {
+        if (__DEV__) console.log('useEffect valueFrekuensiPembayaran:', valueFrekuensiPembayaran);
+        (async () => {
+            const response = await AsyncStorage.getItem('Frekuensi');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage:', responseJSON.length, responseJSON);
+                if (responseJSON.length > 0 ?? false) {
+                    const findData = responseJSON.filter(data => data.id === valueFrekuensiPembayaran)[0];
+                    if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage filter:', findData);
+                    if (findData) {
+                        setNameFrekuensiPembayaran(findData?.namafrekuensi ?? '');
+                    }
+                }
+            }
+        })();
+    }, [valueFrekuensiPembayaran]);
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
@@ -458,6 +498,37 @@ const ProdukPembiayaan = ({ route }) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
+                    const find = 'SELECT * FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = "'+ id +'"';
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(find, [], (txFind, resultsFind) => {
+                                let dataLengthFind = resultsFind.rows.length
+                                if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+
+                                let query = '';
+                                if (dataLengthFind === 0) {
+                                    query = 'INSERT INTO Table_UK_PermohonanPembiayaan (produk_Pembiayaan, jumlah_Pembiayaan_Diajukan, jangka_Waktu, frekuensi_Pembiayaan, idSosialisasiDatabase) values ("' + nameProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + nameFrekuensiPembayaran + '","' + id + '")';
+                                } else {
+                                    query = 'UPDATE Table_UK_PermohonanPembiayaan SET produk_Pembiayaan = "' + nameProdukPembiayaan + '", jumlah_Pembiayaan_Diajukan = "' + valueJumlahPinjaman + '", jangka_Waktu = "' + valueTermPembiayaan + '", frekuensi_Pembiayaan = "' + nameFrekuensiPembayaran + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                                }
+
+                                if (__DEV__) console.log('doSubmitDraft db.transaction Table_UK_PermohonanPembiayaan insert/update query:', query);
+
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql(query);
+                                    }, function(error) {
+                                        if (__DEV__) console.log('doSubmitDraft db.transaction Table_UK_PermohonanPembiayaan insert/update error:', error.message);
+                                    },function() {
+                                        if (__DEV__) console.log('doSubmitDraft db.transaction Table_UK_PermohonanPembiayaan insert/update success');
+                                    }
+                                );
+                            }, function(error) {
+                                if (__DEV__) console.log('doSubmitDraft db.transaction Table_UK_PermohonanPembiayaan find error:', error.message);
+                            })
+                        }
+                    );
+
                     if (dataLengthFind === 0) {
                         alert('UK Master not found');
                         navigation.goBack();
@@ -523,7 +594,7 @@ const ProdukPembiayaan = ({ route }) => {
             </View>
             <View style={styles.headerBoxImageBackground}>
                 <ImageBackground source={images.banner} style={styles.headerImageBackground} imageStyle={{ borderRadius: 20 }}>
-                    <Text style={[styles.headerText, { fontSize: 30 }]}>Form Uji Kelayakan</Text>
+                    <Text style={[styles.headerText, { fontSize: 30 }]}>Form Uji Kelayakan {valueProdukPembiayaan}</Text>
                     <Text style={[styles.headerText, { fontSize: 20 }]}>{groupName}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{namaNasabah}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{currentDate}</Text>
@@ -592,8 +663,9 @@ const ProdukPembiayaan = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => {
                         setValueProdukPembiayaan(itemValue);
                         setValueJumlahPinjaman(null);
-                        setSelectedProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1]);
-                        setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex - 1].paymentTerm);
+                        // setNameProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1]?.label ?? '');
+                        // setSelectedProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1] ?? null);
+                        // setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex - 1]?.paymentTerm ?? null);
                     }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
@@ -709,7 +781,10 @@ const ProdukPembiayaan = ({ route }) => {
                 <Picker
                     selectedValue={valueFrekuensiPembayaran}
                     style={{ height: 50, width: withTextInput }}
-                    onValueChange={(itemValue, itemIndex) => setValueFrekuensiPembayaran(itemValue)}
+                    onValueChange={(itemValue, itemIndex) => {
+                        setValueFrekuensiPembayaran(itemValue);
+                        // setNameFrekuensiPembayaran(itemsFrekuensiPembayaran[itemIndex - 1]?.label ?? '');
+                    }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsFrekuensiPembayaran.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}

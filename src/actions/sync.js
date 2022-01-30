@@ -1594,7 +1594,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 "ID_Prospek": params.prospekMap,
                 "IsPickClient": "1",
                 "OurBranchID": params.cabangid.toString(),
-                "Check_ID_Prospek": checkIdProspek
+                "Check_ID_Prospek": checkIdProspek,
+                "Check_ID_By": params.username
             });
             if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE BODY', body);
             

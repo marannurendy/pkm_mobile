@@ -32,11 +32,13 @@ const FormUjiKelayakan = ({route}) => {
     const [itemsSubGroup, setItemsSubGroup] = useState([]);
     const [tempItemsSubGroup, setTempItemsSubGroup] = useState([]);
     const [isFormUKDisiplinNasabahDone, setIsFormUKDisiplinNasabahDone] = useState(null);
+    const [isFormUKTandaTanganPermohonanDone, setIsFormUKTandaTanganPermohonanDone] = useState(null);
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             setInfo();
             getStorageIsFormUKDisiplinNasabahDone();
+            getStorageIsFormUKTandaTanganPermohonanDone();
             getUserData();
             getUKMaster();
             getGroupList();
@@ -102,6 +104,16 @@ const FormUjiKelayakan = ({route}) => {
 
         if (isFormUKDisiplinNasabahDone) setIsFormUKDisiplinNasabahDone(isFormUKDisiplinNasabahDone);
         else setIsFormUKDisiplinNasabahDone(null);
+    }
+
+    const getStorageIsFormUKTandaTanganPermohonanDone = async () => {
+        if (__DEV__) console.log('getStorageIsFormUKTandaTanganPermohonanDone loaded');
+        
+        const isFormUKTandaTanganPermohonanDone = await AsyncStorage.getItem(`isFormUKTandaTanganPermohonanDone_${id}`);
+        if (__DEV__) console.log('getStorageIsFormUKTandaTanganPermohonanDone', isFormUKTandaTanganPermohonanDone);
+
+        if (isFormUKTandaTanganPermohonanDone) setIsFormUKTandaTanganPermohonanDone(isFormUKTandaTanganPermohonanDone);
+        else setIsFormUKTandaTanganPermohonanDone(null);
     }
 
     const getUKMaster = () => {
@@ -664,7 +676,7 @@ const FormUjiKelayakan = ({route}) => {
                             }
                             
                             let message = responseJSON.responseDescription;
-                            // if (GET_CUSTOM_MESSAGES[message]) message = GET_CUSTOM_MESSAGES[message]
+                            if (responseJSON.code === 403) message = responseJSON.message;
 
                             Alert.alert('Error', message);
                             setSubmitted(false);
@@ -899,7 +911,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 4 ? navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState: screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 4 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKTandaTanganPermohonan', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'signature'} size={25} color={'#FFF'} />
                         </View>
@@ -909,19 +921,19 @@ const FormUjiKelayakan = ({route}) => {
                         <View style={{alignItems: 'flex-end'}}>
                             <BouncyCheckbox 
                                 size={20}
-                                isChecked={screenState > 5}
-                                fillColor={screenState > 5 ? 'green' : 'white'}
+                                isChecked={isFormUKTandaTanganPermohonanDone === '1' && true}
+                                fillColor={isFormUKTandaTanganPermohonanDone === '1' ? 'green' : 'white'}
                                 disableBuiltInState
                             />
                         </View>
                     </TouchableOpacity>
 
-                    {screenState < 7 && (
+                    {screenState < 6 && (
                         <View style={{alignItems: 'center', marginBottom: 20}}>
                             <Button
                                 title={submitted ? 'MENGIRIM...' : "KIRIM UK"}
-                                onPress={() => screenState > 5 ? doSubmit() : null}
-                                buttonStyle={{backgroundColor: screenState > 5 ? '#D62828' : 'gray', width: dimension.width/2}}
+                                onPress={() => screenState > 4 ? doSubmit() : null}
+                                buttonStyle={{backgroundColor: screenState > 4 ? '#D62828' : 'gray', width: dimension.width / 2}}
                                 titleStyle={{fontSize: 20, fontWeight: 'bold'}}
                             />
                         </View>
