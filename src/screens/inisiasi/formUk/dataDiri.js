@@ -176,6 +176,7 @@ const DataDiri = ({route}) => {
     const [isShowAllProvinsi, setIsShowAllProvinsi] = useState(false);
     const [valuePendidikanAnak, setValuePendidikanAnak] = useState('0');
     const [itemsPendidikanAnak, setItemsPendidikanAnak] = useState([]);
+    const [username, setUsername] = useState('');
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -376,6 +377,16 @@ const DataDiri = ({route}) => {
                     { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
                 );
             };
+
+            const getUserData = () => {
+                AsyncStorage.getItem('userData', (error, result) => {
+                    if (error) __DEV__ && console.log('userData error:', error);
+        
+                    __DEV__ && console.log('userData response:', result);
+                    let data = JSON.parse(result);
+                    setUsername(data.userName);
+                });
+            }
             getUKDataDiri();
             getStorageStatusHubunganKeluarga();
             getStorageRumahTinggal();
@@ -383,6 +394,7 @@ const DataDiri = ({route}) => {
             getStorageReligion();
             getStorageEducation();
             getLocation();
+            getUserData();
             /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
             const { status } = await Camera.requestPermissionsAsync();
@@ -496,18 +508,20 @@ const DataDiri = ({route}) => {
         };
 
         setFetchCheckNIK(true);
-        fetch(`${ApiDukcapil}/dukcapil/check`, {
+        fetch(`${ApiDukcapil}/Api/v1/exec`, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-application-id': 'd6f03289-bd60-4104-a92f-a22e1c74bb0a',
+                'x-user-id': username
             },
             body: JSON.stringify(body)
         })
         .then((response) => response.json())
         .then((responseJson) => {
-            if (__DEV__) console.log('$post /dukcapil/check success:', responseJson);
-            if (responseJson.code === 400) {
+            if (__DEV__) console.log('$post /Api/v1/exec success:', responseJson);
+            if (responseJson.status === 'error') {
                 setValueNomorIdentitas('0');
                 setFetchCheckNIK(false);
                 Alert.alert('Error', responseJson.message);
