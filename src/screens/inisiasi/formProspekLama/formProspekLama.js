@@ -222,8 +222,33 @@ const InisiasiFormProspekLama = ({ route }) => {
                 const responseJSON = JSON.parse(response);
                 if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0) {
-                    var responseFiltered = await responseJSON.filter((x) => x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}M` || x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}S` || x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}Y`).map((data, i) => {
-                        return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                    var responseFiltered = await responseJSON.filter((x) => 
+                        x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}M` || 
+                        x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}S` || 
+                        x.productName.trim().substring(0, 2) === `${parseInt(rw.LoanSeries)+1}Y` || 
+                        x.productName.trim().substring(0, 3) === 'HMR' || 
+                        x.productName.trim().substring(0, 3) === 'HMS' ||
+                        x.productName.trim().substring(0, 4) === 'HPMP' ||
+                        x.productName.trim().substring(0, 4) === 'HSMP' ||
+                        x.productName.trim().substring(0, 2) === 'MK' ||
+                        x.productName.trim().substring(0, 2) === 'MP' ||
+                        x.productName.trim().substring(0, 2) === 'MS' ||
+                        x.productName.trim().substring(0, 3) === 'REK' ||
+                        x.productName.trim().substring(0, 2) === 'RP' ||
+                        x.productName.trim().substring(0, 4) === 'WaMP' ||
+                        x.productName.trim().substring(0, 4) === 'Wash' ||
+                        x.productName.trim().substring(0, 4) === 'WaSy'
+                    ).map((data, i) => {
+                        return { 
+                            label: data.productName.trim(),
+                            value: data.id,
+                            interest: data.interest,
+                            isReguler: data.isReguler,
+                            isSyariah: data.isSyariah,
+                            maxPlafond: data.maxPlafond,
+                            minPlafond: data.minPlafond,
+                            paymentTerm: data.paymentTerm 
+                        };
                     }) ?? [];
                     if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
                     setItemsPembiayaanDiajukan(responseFiltered);
