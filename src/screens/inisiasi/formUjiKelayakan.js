@@ -395,8 +395,8 @@ const FormUjiKelayakan = ({route}) => {
                             "Siklus": '' + siklus,
                             "IsSesuaiDukcapil": data.is_nik_valid_dukcapil
                         }
-                        // alert(`${body.PendidikanAnak}`)
-                        if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
+                        // alert(`${body.Siklus}`)
+                        // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
                         // return;
 
                         try {
