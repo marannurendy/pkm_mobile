@@ -1590,7 +1590,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN DONE');
 
         let checkIdProspek = "0";
-        // if (["AO", "SAO"].includes(roleUser)) checkIdProspek = "1";
+        if (["AO", "SAO"].includes(roleUser)) checkIdProspek = "1";
 
         if (![2].includes(params.prospekFilter)) {
             const body = JSON.stringify({
