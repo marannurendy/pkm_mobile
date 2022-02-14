@@ -25,6 +25,7 @@ const dataPilihan = [
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKKondisiRumah = ({ route }) => {
+    const uniqueNumber = (new Date().getTime()).toString(36);
     const { id, groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
@@ -49,6 +50,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const [dataDwellingCondition, setDataDwellingCondition] = useState([]);
     let [loading, setLoading] = useState(false)
     let [fotoRumah, setFotoRumah] = useState(undefined)
+    const [key_fotoRumah, setKey_fotoRumah] = useState(`formUK_KondisiRumah_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     let [cameraShow, setCameraShow] = useState(0)
     let [buttonCam, setButtonCam] = useState(false)
     const camera = useRef(null)
@@ -200,7 +202,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                 tx.executeSql(find, [], async (txFind, resultsFind) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
-                    const fotoRumahBase64 = await AsyncStorage.getItem('key_fotoRumah')
+                    const fotoRumahBase64 = await AsyncStorage.getItem(key_fotoRumah)
                     let query = '';
                     if (dataLengthFind === 0) {
                         query = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, idSosialisasiDatabase, foto_rumah) values ("' + namaNasabah + '","' + valueLuasBangunan + '","' + valueKondisiBangunan + '","' + valueJenisAtap + '","' + valueDinding + '","' + valueLantai + '","' + valueAksesAirBersih + '","' + valueKamarMandi + '","' + id + '","' + fotoRumahBase64 + '")';
@@ -646,7 +648,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
             setButtonCam(true)
             const options = { quality: 0.3, base64: true };
             let getPicture = await camera.current.takePictureAsync(options)
-            await savePictureBase64('key_fotoRumah', 'data:image/jpeg;base64,' + getPicture.base64)
+            await savePictureBase64(key_fotoRumah, 'data:image/jpeg;base64,' + getPicture.base64)
             setFotoRumah(getPicture.uri);
             setLoading(false);
             setButtonCam(false);
