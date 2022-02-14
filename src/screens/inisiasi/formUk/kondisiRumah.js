@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ImageBackground, ScrollView, ToastAndroid } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, TouchableOpacity, Dimensions, ImageBackground, ScrollView, ToastAndroid, ActivityIndicator, Image, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,7 +7,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { styles } from './styles';
 import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { Picker } from '@react-native-picker/picker';
+import { Camera } from 'expo-camera'
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -23,6 +25,7 @@ const dataPilihan = [
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKKondisiRumah = ({ route }) => {
+    const uniqueNumber = (new Date().getTime()).toString(36);
     const { id, groupName, namaNasabah, screenState } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
@@ -45,6 +48,12 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const [valueKamarMandi, setValueKamarMandi] = useState(true);
     const [submmitted, setSubmmitted] = useState(false);
     const [dataDwellingCondition, setDataDwellingCondition] = useState([]);
+    let [loading, setLoading] = useState(false)
+    let [fotoRumah, setFotoRumah] = useState(undefined)
+    const [key_fotoRumah, setKey_fotoRumah] = useState(`formUK_KondisiRumah_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    let [cameraShow, setCameraShow] = useState(0)
+    let [buttonCam, setButtonCam] = useState(false)
+    const camera = useRef(null)
 
     useEffect(() => {
         setInfo();
@@ -134,7 +143,20 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                             });
                         }
 
-                        Promise.all([setLuasBangunan(), setKondisiBangunan(), setJenisAtap(), setDinding(), setLantai()]).then((response) => {
+                        const setRumah = () => {
+                            if (__DEV__) console.log('setFotoRumah');
+                            return new Promise((resolve, reject) => {
+                                if (data.foto_rumah !== null && typeof data.foto_rumah !== 'undefined') {
+                                    setTimeout(() => {
+                                        setFotoRumah(data.foto_rumah);
+                                        return resolve('next');
+                                    }, 3500);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        Promise.all([setLuasBangunan(), setKondisiBangunan(), setJenisAtap(), setDinding(), setLantai(), setRumah()]).then((response) => {
                             if (data.sanitasi_Akses_AirBersih !== null && typeof data.sanitasi_Akses_AirBersih !== 'undefined') setValueAksesAirBersih(data.sanitasi_Akses_AirBersih === 'true' ? true : false);
                             if (data.sanitasi_KamarMandi !== null && typeof data.sanitasi_KamarMandi !== 'undefined') setValueKamarMandi(data.sanitasi_KamarMandi === 'true' ? true : false);
                         });
@@ -177,15 +199,15 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         const find = 'SELECT * FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
-                tx.executeSql(find, [], (txFind, resultsFind) => {
+                tx.executeSql(find, [], async (txFind, resultsFind) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
-
+                    const fotoRumahBase64 = await AsyncStorage.getItem(key_fotoRumah)
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, idSosialisasiDatabase) values ("' + namaNasabah + '","' + valueLuasBangunan + '","' + valueKondisiBangunan + '","' + valueJenisAtap + '","' + valueDinding + '","' + valueLantai + '","' + valueAksesAirBersih + '","' + valueKamarMandi + '","' + id + '")';
+                        query = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, idSosialisasiDatabase, foto_rumah) values ("' + namaNasabah + '","' + valueLuasBangunan + '","' + valueKondisiBangunan + '","' + valueJenisAtap + '","' + valueDinding + '","' + valueLantai + '","' + valueAksesAirBersih + '","' + valueKamarMandi + '","' + id + '","' + fotoRumahBase64 + '")';
                     } else {
-                        query = 'UPDATE Table_UK_KondisiRumah SET luas_Bangunan = "' + valueLuasBangunan + '", kondisi_Bangunan = "' + valueKondisiBangunan + '", jenis_Atap = "' + valueJenisAtap + '", dinding = "' + valueDinding + '", lantai = "' + valueLantai + '", sanitasi_Akses_AirBersih = "' + valueAksesAirBersih + '", sanitasi_KamarMandi = "' + valueKamarMandi + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                        query = 'UPDATE Table_UK_KondisiRumah SET luas_Bangunan = "' + valueLuasBangunan + '", kondisi_Bangunan = "' + valueKondisiBangunan + '", jenis_Atap = "' + valueJenisAtap + '", dinding = "' + valueDinding + '", lantai = "' + valueLantai + '", sanitasi_Akses_AirBersih = "' + valueAksesAirBersih + '", sanitasi_KamarMandi = "' + valueKamarMandi + '", foto_rumah = "' + fotoRumahBase64 + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -229,6 +251,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         if (!valueJenisAtap || typeof valueJenisAtap === 'undefined' || valueJenisAtap ==='' || valueJenisAtap === 'null') return alert('Jenis Atap (*) tidak boleh kosong');
         if (!valueDinding || typeof valueDinding === 'undefined' || valueDinding ==='' || valueDinding === 'null') return alert('Dinding (*) tidak boleh kosong');
         if (!valueLantai || typeof valueLantai === 'undefined' || valueLantai ==='' || valueLantai === 'null') return alert('Lantai (*) tidak boleh kosong');
+        if (!fotoRumah || typeof fotoRumah === 'undefined' || fotoRumah ==='' || fotoRumah === 'null') return alert('Foto Rumah (*) tidak boleh kosong');
 
         if (submmitted) return true;
 
@@ -465,6 +488,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const renderForm = () => (
         <View style={[styles.F1, styles.P16]}>
+            {renderFormRumah()}
             {renderFormLuasBangunan()}
             {renderFormKondisiBangunan()}
             {renderFormJenisAtap()}
@@ -487,10 +511,160 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         </View>
     )
 
+    const renderFormRumah = () => (
+        <View style={styles.MT8}>
+            <Text>Foto Rumah (*)</Text>
+            <TouchableOpacity onPress={async () => {
+                setCameraShow(1)
+            }}>
+                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
+                    {fotoRumah === undefined ? (
+                        <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                            <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                        </View>
+                    ) : (
+                        <Image source={{ uri: fotoRumah }} style={{height: dimension.width/2, borderRadius: 10}}/>
+                    )}
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    const renderCameraRumah = () => (
+        <View style={{flex:1,marginTop: 60, borderRadius: 20, backgroundColor: '#FFF', marginBottom: 60}}>
+            {fotoRumah == undefined ? (
+                <Camera 
+                    ref={camera}
+                    style={{flex: 1, height: '80%'}}
+                    type={Camera.Constants.Type.back}
+                    // flashMode={Camera.Constants.FlashMode.on}
+                    androidCameraPermissionOptions={{
+                        title: 'Permission to use camera',
+                        message: 'We need your permission to use your camera',
+                        buttonPositive: 'Ok',
+                        buttonNegative: 'Cancel'
+                    }}
+                >
+                    {loading &&
+                        <View style={styles.loading}>
+                            <ActivityIndicator size="large" color="#737A82" />
+                        </View>
+                    }
+                    <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
+                        <TouchableOpacity 
+                            style={{
+                                flex: 0,
+                                backgroundColor: '#EB3C27',
+                                borderRadius: 5,
+                                padding: 5,
+                                paddingHorizontal: 5,
+                                alignSelf: 'center',
+                                margin: 20,
+                            }} 
+                            onPress={() => setCameraShow(0)
+                        }>
+                            <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
+                        </TouchableOpacity>
+                    </View>
+                    
+                    <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                        <TouchableOpacity 
+                            disabled={ buttonCam }
+                            style={{
+                                flex: 0,
+                                backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                                borderRadius: 5,
+                                padding: 15,
+                                paddingHorizontal: 20,
+                                alignSelf: 'center',
+                                margin: 20,
+                            }} 
+                            onPress={async() => {await takePicture()}
+                        }>
+                            <Text style={{ fontSize: 14 }}> Ambil Foto Rumah </Text>
+                        </TouchableOpacity>
+                    </View>
+                </Camera>
+            ) : (
+            <View style={{flex:1}}>
+                <Image source={{ uri: fotoRumah }} style={{flex:1}}/>
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
+                    <TouchableOpacity 
+                        style={{
+                            flex: 0,
+                            backgroundColor: '#EB3C27',
+                            borderRadius: 5,
+                            padding: 5,
+                            paddingHorizontal: 5,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => setCameraShow(0)
+                    }>
+                        <Text style={{ fontSize: 14, color: '#FFF' }}> Kembali </Text>
+                    </TouchableOpacity>
+                </View>                
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                    <TouchableOpacity 
+                        disabled={ buttonCam }
+                        style={{
+                            flex: 0,
+                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                            borderRadius: 5,
+                            padding: 15,
+                            paddingHorizontal: 20,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => {setFotoRumah(undefined)}
+                    }>
+                        <Text style={{ fontSize: 14 }}> Ambil lagi Foto Rumah </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            )}
+        </View>
+    )
+
+
+    const savePictureBase64 = (key, data) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await AsyncStorage.setItem(key, data)
+                const getAsyncStorage = await AsyncStorage.getItem(key)
+                if (getAsyncStorage) {
+                    resolve(getAsyncStorage)
+                } else {
+                    resolve(null)
+                }
+            } catch (error) {
+                resolve(null)
+            }
+        })
+    }
+
+    const takePicture = async (type) => {
+        try {
+            setLoading(true)
+            setButtonCam(true)
+            const options = { quality: 0.3, base64: true };
+            let getPicture = await camera.current.takePictureAsync(options)
+            await savePictureBase64(key_fotoRumah, 'data:image/jpeg;base64,' + getPicture.base64)
+            setFotoRumah(getPicture.uri);
+            setLoading(false);
+            setButtonCam(false);
+            setCameraShow(0)
+        } catch (error) {console.log(error)}
+    };
+
     return(
-        <View style={styles.mainContainer}>
-            {renderHeader()}
-            {renderBody()}
+        <View style={styles.mainContainer}> 
+            {cameraShow === 1 ? (
+                renderCameraRumah()
+            ):<View style={styles.mainContainer}>
+                {renderHeader()}
+                {renderBody()}  
+            </View> }
         </View>
     )
 }
