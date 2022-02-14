@@ -251,6 +251,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         if (!valueJenisAtap || typeof valueJenisAtap === 'undefined' || valueJenisAtap ==='' || valueJenisAtap === 'null') return alert('Jenis Atap (*) tidak boleh kosong');
         if (!valueDinding || typeof valueDinding === 'undefined' || valueDinding ==='' || valueDinding === 'null') return alert('Dinding (*) tidak boleh kosong');
         if (!valueLantai || typeof valueLantai === 'undefined' || valueLantai ==='' || valueLantai === 'null') return alert('Lantai (*) tidak boleh kosong');
+        if (!fotoRumah || typeof fotoRumah === 'undefined' || fotoRumah ==='' || fotoRumah === 'null') return alert('Foto Rumah (*) tidak boleh kosong');
 
         if (submmitted) return true;
 
