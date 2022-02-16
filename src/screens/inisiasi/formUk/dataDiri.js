@@ -17,6 +17,7 @@ import wilayahMobile from '../../../local/wilayahMobile.json';
 import db from '../../../database/Database'
 import { replaceSpecialChar } from '../../../utils/Functions'
 import { ApiDukcapil } from '../../../../dataconfig'
+import { ApiSyncInisiasi } from '../../../../dataconfig/apisync/apisync'
 
 const MIN_TANGGAL_LAHIR = 15;
 const MAX_TANGGAL_LAHIR = 64;
@@ -519,7 +520,7 @@ const DataDiri = ({route}) => {
             body: JSON.stringify(body)
         })
         .then((response) => response.json())
-        .then((responseJson) => {
+        .then(async (responseJson) => {
             if (__DEV__) console.log('$post /Api/v1/exec success:', responseJson);
             if (responseJson.status === 'error') {
                 setValueNomorIdentitas('0');
@@ -528,9 +529,33 @@ const DataDiri = ({route}) => {
                 return;
             }
 
-            setValueNomorIdentitas('1');
-            setFetchCheckNIK(false);
-            Alert.alert('Berhasil', 'Nomor Identitas terdaftar di dukcapil');
+            let tokenUser = await AsyncStorage.getItem('token')
+            if (statusSosialisasi == "1" || statusSosialisasi == "2") {
+                fetch(`${ApiSyncInisiasi}/GetCheckNikBRNET/${body["NIK"]}`, {
+                    method: 'GET',
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": tokenUser
+                   }
+                })
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    if (responseJson["RESULT"] == 1) {
+                        setValueNomorIdentitas('0');
+                        setFetchCheckNIK(false);
+                        Alert.alert('Error', 'Nomor Identitas sudah terdaftar di BR.Net');
+                        return;
+                    } else {
+                        setValueNomorIdentitas('1');
+                        setFetchCheckNIK(false);
+                        Alert.alert('Berhasil', 'Nomor Identitas terdaftar di dukcapil');
+                    }
+                })
+            } else {
+                setValueNomorIdentitas('1');
+                setFetchCheckNIK(false);
+                Alert.alert('Berhasil', 'Nomor Identitas terdaftar di dukcapil');
+            }
         })
     }
 
