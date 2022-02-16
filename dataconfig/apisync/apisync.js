@@ -36,7 +36,6 @@ let ApiSyncPostInisiasi = `${base_url}/${api_version}/post_inisiasi/`;
 let ApiSyncOther = `${base_url}/${api_version}/other/`;
 let ApiPkmb = `${base_url}/${api_version}/pkmb/get_pkmb/`;
 let ApiDukcapil = `http://api-dukcapilmicro.pnm.co.id/pnm-dukcapil-micro/public`;
-let ApiCekBRNET = `http://devpkm.pnm.co.id/v1/inisiasi`
 
 // let ApiSync = 'http://api-pkmmobile.pnm.co.id/' //production
 

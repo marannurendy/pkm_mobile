@@ -17,7 +17,7 @@ import wilayahMobile from '../../../local/wilayahMobile.json';
 import db from '../../../database/Database'
 import { replaceSpecialChar } from '../../../utils/Functions'
 import { ApiDukcapil } from '../../../../dataconfig'
-import { ApiCekBRNET } from '../../../../dataconfig/apisync/apisync'
+import { ApiSyncInisiasi } from '../../../../dataconfig/apisync/apisync'
 
 const MIN_TANGGAL_LAHIR = 15;
 const MAX_TANGGAL_LAHIR = 64;
@@ -531,7 +531,7 @@ const DataDiri = ({route}) => {
 
             let tokenUser = await AsyncStorage.getItem('token')
             if (statusSosialisasi == "1" || statusSosialisasi == "2") {
-                fetch(`${ApiCekBRNET}/GetCheckNikBRNET/${body["NIK"]}`, {
+                fetch(`${ApiSyncInisiasi}/GetCheckNikBRNET/${body["NIK"]}`, {
                     method: 'GET',
                     headers: { 
                         "Content-Type": "application/json",
