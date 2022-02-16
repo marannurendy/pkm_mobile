@@ -9,7 +9,7 @@ import {View, Texr} from "react-native"
 //let ApiSync = 'http://10.50.0.34:9005/' //development
 // let ApiSync = 'http://192.168.233.159:9005/'
 
-const IS_DEVELOPMENT = false;
+const IS_DEVELOPMENT = true;
 
 let MAJOR_VERSION = '0';
 let MINOR_VERSION = '0';
@@ -55,4 +55,4 @@ const GET_CUSTOM_MESSAGES = {
 }
 
 // export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb}
-export { ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther, VERSION, GET_CUSTOM_MESSAGES, ApiCekBRNET }
+export { ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiSyncPostInisiasi, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther, VERSION, GET_CUSTOM_MESSAGES }
