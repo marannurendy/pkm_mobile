@@ -17,7 +17,7 @@ const images = {
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const ProdukPembiayaan = ({ route }) => {
-    const { id, groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState, statusSosialisasi } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
@@ -95,6 +95,12 @@ const ProdukPembiayaan = ({ route }) => {
             }
         })();
     }, [valueFrekuensiPembayaran]);
+
+    useEffect(() => {
+        if (__DEV__) console.log('useEffect valueNamaProduk:', valueNamaProduk);
+
+        getStorageProduk(valueNamaProduk, valueJenisPembiayaan);
+    }, [valueNamaProduk]);
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
@@ -221,19 +227,50 @@ const ProdukPembiayaan = ({ route }) => {
                     if (__DEV__) console.log('getStorageProduk IsMP:', IsMP);
                     if (__DEV__) console.log('getStorageProduk IsIsRegulerMP:', IsReguler);
                     var responseFiltered = [];
-                    if (valueJenisPembiayaan === '1') {
+                    if (valueJenisPembiayaan === '1' && statusSosialisasi !== '3') {
                         responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler && data.IsMP === IsMP).map((data, i) => {
                             return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                         }) ?? [];
-                    } else {
+
+                        if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
+                        setItemsProdukPembiayaan(responseFiltered);
+                        return;
+                    }
+                    if (valueJenisPembiayaan === '1' && statusSosialisasi === '3') {
+                        const siklus = dataSosialisasiDatabase?.siklus ?? '1';
+                        responseFiltered = await responseJSON.filter((x) =>
+                            x.productName.trim().substring(0, 2) === `${siklus}M` || 
+                            x.productName.trim().substring(0, 2) === `${siklus}S` || 
+                            x.productName.trim().substring(0, 2) === `${siklus}Y` || 
+                            x.productName.trim().substring(0, 3) === 'HMR' || 
+                            x.productName.trim().substring(0, 3) === 'HMS' ||
+                            x.productName.trim().substring(0, 4) === 'HPMP' ||
+                            x.productName.trim().substring(0, 4) === 'HSMP' ||
+                            x.productName.trim().substring(0, 2) === 'MK' ||
+                            x.productName.trim().substring(0, 2) === 'MP' ||
+                            x.productName.trim().substring(0, 2) === 'MS' ||
+                            x.productName.trim().substring(0, 3) === 'REK' ||
+                            x.productName.trim().substring(0, 2) === 'RP' ||
+                            x.productName.trim().substring(0, 4) === 'WaMP' ||
+                            x.productName.trim().substring(0, 4) === 'Wash' ||
+                            x.productName.trim().substring(0, 4) === 'WaSy'
+                        ).filter(data => data.isReguler === IsReguler && data.IsMP === IsMP).map((data, i) => {
+                            return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                        }) ?? [];
+
+                        if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
+                        setItemsProdukPembiayaan(responseFiltered);
+                        return;
+                    }
+                    if (valueJenisPembiayaan !== '1') {
                         responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler).map((data, i) => {
                             return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                         }) ?? [];
+                        
+                        if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
+                        setItemsProdukPembiayaan(responseFiltered);
+                        return;
                     }
-                    
-                    if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
-                    setItemsProdukPembiayaan(responseFiltered);
-                    return;
                 }
             }
             setItemsProdukPembiayaan([]);
@@ -594,7 +631,7 @@ const ProdukPembiayaan = ({ route }) => {
             </View>
             <View style={styles.headerBoxImageBackground}>
                 <ImageBackground source={images.banner} style={styles.headerImageBackground} imageStyle={{ borderRadius: 20 }}>
-                    <Text style={[styles.headerText, { fontSize: 30 }]}>Form Uji Kelayakan {valueProdukPembiayaan}</Text>
+                    <Text style={[styles.headerText, { fontSize: 30 }]}>Form Uji Kelayakan</Text>
                     <Text style={[styles.headerText, { fontSize: 20 }]}>{groupName}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{namaNasabah}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{currentDate}</Text>
@@ -643,7 +680,6 @@ const ProdukPembiayaan = ({ route }) => {
                         setValueNamaProduk(itemValue);
                         setValueProdukPembiayaan(null);
                         setValueJumlahPinjaman(null);
-                        getStorageProduk(itemValue, valueJenisPembiayaan);
                     }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
