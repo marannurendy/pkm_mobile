@@ -860,6 +860,23 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
+                    <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKKondisiAirBersihDanSanitasi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                        <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                            <FontAwesome5 name={'product-hunt'} size={25} color={'#FFF'} />
+                        </View>
+                        <View style={{flex: 1}}>
+                            <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Kondisi Air Bersih & Sanitasi</Text>
+                        </View>
+                        <View style={{alignItems: 'flex-end'}}>
+                            <BouncyCheckbox 
+                                size={20}
+                                isChecked={1}
+                                fillColor={'green'}
+                                disableBuiltInState
+                            />
+                        </View>
+                    </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'home'} size={25} color={'#FFF'} />

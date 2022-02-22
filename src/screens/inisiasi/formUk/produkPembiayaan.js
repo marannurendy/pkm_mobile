@@ -46,6 +46,12 @@ const ProdukPembiayaan = ({ route }) => {
     const [dataSosialisasiDatabase, setDataSosialisasiDatabase] = useState(false);
     const [nameProdukPembiayaan, setNameProdukPembiayaan] = useState('');
     const [nameFrekuensiPembayaran, setNameFrekuensiPembayaran] = useState('');
+    const [valueLuasA, setValueLuasA] = useState('');
+    const [valueLuasB, setValueLuasB] = useState('');
+    const [valueJenisPekerjaan, setValueJenisPekerjaan] = useState(null);
+    const [itemsJenisPekerjaan, setItemsJenisPekerjaan] = useState([]);
+    const [valueJenisPengadaan, setValueJenisPengadaan] = useState(null);
+    const [itemsJenisPengadaan, setItemsJenisPengadaan] = useState([]);
 
     useEffect(() => {
         setInfo();
@@ -752,7 +758,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const renderFormKategoriTujuanPembiayaan = () => (
         <View style={styles.MT8}>
-            <Text>Kategori Tujuan Pembiayaan</Text>
+            <Text>Kategori Tujuan Pembiayaan (Produk Utama)</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
                     selectedValue={valueKategoriTujuanPembiayaan}
@@ -777,6 +783,62 @@ const ProdukPembiayaan = ({ route }) => {
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsTujuanPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormLuas = () => (
+        <View style={styles.MT8}>
+            <Text>Luas (Produk Pendamping - HOME)</Text>
+            <View style={[styles.FDRow]}>
+                <View style={[styles.textInputContainer, styles.MR8]}>
+                    <TextInput 
+                        value={valueLuasA} 
+                        onChangeText={(text) => setValueLuasA(replaceSpecialChar(text))}
+                        placeholder="6x" 
+                        style={styles.F1}
+                    />
+                </View>
+                <View style={[styles.textInputContainer, styles.ML8]}>
+                    <TextInput 
+                        value={valueLuasB} 
+                        onChangeText={(text) => setValueLuasB(replaceSpecialChar(text))}
+                        placeholder="6x" 
+                        style={styles.F1}
+                    />
+                </View>
+            </View>
+        </View>
+    )
+
+    const renderFormJenisPekerjaan = () => (
+        <View style={styles.MT8}>
+            <Text>Jenis Pekerjaan (Produk Pendamping - WASH)</Text>
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJenisPekerjaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueJenisPekerjaan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsJenisPekerjaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormJenisPengadaan = () => (
+        <View style={styles.MT8}>
+            <Text>Jenis Pengadaan (Produk Pendamping - WASH)</Text>
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJenisPengadaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueJenisPengadaan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsJenisPengadaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>
@@ -910,6 +972,9 @@ const ProdukPembiayaan = ({ route }) => {
             {renderFormTermPembiayaan()}
             {renderFormKategoriTujuanPembiayaan()}
             {renderFormTujuanPembiayaan()}
+            {renderFormLuas()}
+            {renderFormJenisPekerjaan()}
+            {renderFormJenisPengadaan()}
             {renderFormTypePencairan()}
             {renderFormFrekuensiPembayaran()}
             {renderFormRekeningBank()}

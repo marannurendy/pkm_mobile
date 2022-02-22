@@ -26,7 +26,7 @@ const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKKondisiRumah = ({ route }) => {
     const uniqueNumber = (new Date().getTime()).toString(36);
-    const { id, groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState, statusSosialisasi } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [openLuasBangunan, setOpenLuasBangunan] = useState(false);
@@ -48,12 +48,16 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const [valueKamarMandi, setValueKamarMandi] = useState(true);
     const [submmitted, setSubmmitted] = useState(false);
     const [dataDwellingCondition, setDataDwellingCondition] = useState([]);
-    let [loading, setLoading] = useState(false)
-    let [fotoRumah, setFotoRumah] = useState(undefined)
-    const [key_fotoRumah, setKey_fotoRumah] = useState(`formUK_KondisiRumah_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
-    let [cameraShow, setCameraShow] = useState(0)
-    let [buttonCam, setButtonCam] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [buttonCam, setButtonCam] = useState(false)
     const camera = useRef(null)
+    const [fotoRumah, setFotoRumah] = useState(undefined)
+    const [key_fotoRumah, setKey_fotoRumah] = useState(`formUK_KondisiRAB_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [cameraShow, setCameraShow] = useState(0)
+    const [fotoRAB, setFotoRAB] = useState(undefined)
+    const [key_fotoRAB, setKey_fotoRAB] = useState(`formUK_KondisiRAB_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [cameraShowRAB, setCameraShowRAB] = useState(0)
+    
 
     useEffect(() => {
         setInfo();
@@ -488,6 +492,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const renderForm = () => (
         <View style={[styles.F1, styles.P16]}>
+            {renderFormRAB()}
             {renderFormRumah()}
             {renderFormLuasBangunan()}
             {renderFormKondisiBangunan()}
@@ -513,7 +518,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const renderFormRumah = () => (
         <View style={styles.MT8}>
-            <Text>Foto Rumah (*)</Text>
+            <Text>{statusSosialisasi === '3' ? 'Kondisi Sebelum Renovasi (*)' : 'Foto Rumah (Tampak Depan) (*)'}</Text>
             <TouchableOpacity onPress={async () => {
                 setCameraShow(1)
             }}>
@@ -524,6 +529,25 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                         </View>
                     ) : (
                         <Image source={{ uri: fotoRumah }} style={{height: dimension.width/2, borderRadius: 10}}/>
+                    )}
+                </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    const renderFormRAB = () => (
+        <View style={styles.MT8}>
+            <Text>Rencana Anggaran Biaya - Produk Pendamping - HOME (*)</Text>
+            <TouchableOpacity onPress={async () => {
+                setCameraShowRAB(1)
+            }}>
+                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
+                    {fotoRAB === undefined ? (
+                        <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                            <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                        </View>
+                    ) : (
+                        <Image source={{ uri: fotoRAB }} style={{height: dimension.width/2, borderRadius: 10}}/>
                     )}
                 </View>
             </TouchableOpacity>
@@ -579,7 +603,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                                 alignSelf: 'center',
                                 margin: 20,
                             }} 
-                            onPress={async() => {await takePicture()}
+                            onPress={async() => {await takePicture('rumah')}
                         }>
                             <Text style={{ fontSize: 14 }}> Ambil Foto Rumah </Text>
                         </TouchableOpacity>
@@ -626,6 +650,101 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         </View>
     )
 
+    const renderCameraRAB = () => (
+        <View style={{flex:1,marginTop: 60, borderRadius: 20, backgroundColor: '#FFF', marginBottom: 60}}>
+            {fotoRAB == undefined ? (
+                <Camera 
+                    ref={camera}
+                    style={{flex: 1, height: '80%'}}
+                    type={Camera.Constants.Type.back}
+                    // flashMode={Camera.Constants.FlashMode.on}
+                    androidCameraPermissionOptions={{
+                        title: 'Permission to use camera',
+                        message: 'We need your permission to use your camera',
+                        buttonPositive: 'Ok',
+                        buttonNegative: 'Cancel'
+                    }}
+                >
+                    {loading &&
+                        <View style={styles.loading}>
+                            <ActivityIndicator size="large" color="#737A82" />
+                        </View>
+                    }
+                    <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
+                        <TouchableOpacity 
+                            style={{
+                                flex: 0,
+                                backgroundColor: '#EB3C27',
+                                borderRadius: 5,
+                                padding: 5,
+                                paddingHorizontal: 5,
+                                alignSelf: 'center',
+                                margin: 20,
+                            }} 
+                            onPress={() => setCameraShowRAB(0)
+                        }>
+                            <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
+                        </TouchableOpacity>
+                    </View>
+                    
+                    <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                        <TouchableOpacity 
+                            disabled={ buttonCam }
+                            style={{
+                                flex: 0,
+                                backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                                borderRadius: 5,
+                                padding: 15,
+                                paddingHorizontal: 20,
+                                alignSelf: 'center',
+                                margin: 20,
+                            }} 
+                            onPress={async() => {await takePicture('rab')}
+                        }>
+                            <Text style={{ fontSize: 14 }}> Ambil Foto RAB </Text>
+                        </TouchableOpacity>
+                    </View>
+                </Camera>
+            ) : (
+            <View style={{flex:1}}>
+                <Image source={{ uri: fotoRumah }} style={{flex:1}}/>
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
+                    <TouchableOpacity 
+                        style={{
+                            flex: 0,
+                            backgroundColor: '#EB3C27',
+                            borderRadius: 5,
+                            padding: 5,
+                            paddingHorizontal: 5,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => setCameraShowRAB(0)
+                    }>
+                        <Text style={{ fontSize: 14, color: '#FFF' }}> Kembali </Text>
+                    </TouchableOpacity>
+                </View>                
+                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
+                    <TouchableOpacity 
+                        disabled={ buttonCam }
+                        style={{
+                            flex: 0,
+                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
+                            borderRadius: 5,
+                            padding: 15,
+                            paddingHorizontal: 20,
+                            alignSelf: 'center',
+                            margin: 20,
+                        }} 
+                        onPress={() => {setFotoRAB(undefined)}
+                    }>
+                        <Text style={{ fontSize: 14 }}> Ambil lagi Foto RAB </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            )}
+        </View>
+    )
 
     const savePictureBase64 = (key, data) => {
         return new Promise(async (resolve, reject) => {
@@ -643,28 +762,48 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
         })
     }
 
-    const takePicture = async (type) => {
+    const takePicture = async (source) => {
+        if (__DEV__) console.log('takePicture loaded');
+        if (__DEV__) console.log('takePicture source:', source);
+
         try {
             setLoading(true)
             setButtonCam(true)
             const options = { quality: 0.3, base64: true };
             let getPicture = await camera.current.takePictureAsync(options)
-            await savePictureBase64(key_fotoRumah, 'data:image/jpeg;base64,' + getPicture.base64)
-            setFotoRumah(getPicture.uri);
             setLoading(false);
             setButtonCam(false);
-            setCameraShow(0)
+            if (source === 'rumah') {
+                await savePictureBase64(key_fotoRumah, 'data:image/jpeg;base64,' + getPicture.base64)
+                setFotoRumah(getPicture.uri);
+                setCameraShow(0)
+            } else {
+                await savePictureBase64(key_fotoRAB, 'data:image/jpeg;base64,' + getPicture.base64)
+                setFotoRAB(getPicture.uri);
+                setCameraShowRAB(0)
+            }
         } catch (error) {console.log(error)}
     };
 
-    return(
-        <View style={styles.mainContainer}> 
-            {cameraShow === 1 ? (
-                renderCameraRumah()
-            ):<View style={styles.mainContainer}>
+    const renderContainer = () => {
+        if (cameraShow === 1) {
+            return renderCameraRumah()
+        }
+        if (cameraShowRAB === 1) {
+            return renderCameraRAB()
+        }
+
+        return (
+            <View style={styles.mainContainer}>
                 {renderHeader()}
                 {renderBody()}  
-            </View> }
+            </View>
+        )
+    }
+
+    return(
+        <View style={styles.mainContainer}> 
+            {renderContainer()}
         </View>
     )
 }
