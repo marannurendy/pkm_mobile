@@ -269,7 +269,11 @@ db.transaction(tx => {
             no_Rekening varchar,
             pemilik_Rekening varchar,
             id_prospek varchar,
-            idSosialisasiDatabase varchar
+            idSosialisasiDatabase varchar,
+            luas_a varchar,
+            luas_b varchar,
+            jenis_pekerjaan varchar,
+            jenis_pengadaan varchar
         );`
     )
 
