@@ -160,6 +160,12 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + "','"
                     + ListPencairan[i].ID_Prospek
                     + "','"
+                    + ListPencairan[i].Sisa_OS
+                    + "','"
+                    + ListPencairan[i].UP_Baru
+                    + "','"
+                    + ListPencairan[i].UP_Lama
+                    + "','"
                     + params.username
                     + "')";
 

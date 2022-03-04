@@ -502,6 +502,9 @@ db.transaction(tx => {
             Term_Pembiayaan varchar,
             ClientID varchar,
             Nama_Tipe_Pencairan varchar,
+            Sisa_OS varchar,
+            UP_Baru varchar,
+            UP_Lama varchar,
             syncby varchar
         );`
     )
