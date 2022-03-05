@@ -66,7 +66,6 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         const token = await AsyncStorage.getItem('token')
-        console.log(token)
         setCurrentDate(tanggal)
     }
 
@@ -79,7 +78,6 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_AirSanitasi length:', dataLength);
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
-                        console.log(data.KondisiSaluranPembuanganKamarMandiMilikSendiri)
                         if (__DEV__) console.log('tx.executeSql data Table_UK_AirSanitasi:', data);
                         if (data.kamarMandiDanToiletTerpisah !== null && typeof data.kamarMandiDanToiletTerpisah !== 'undefined') setValueKamarMandiDanToiletTerpisah(data.kamarMandiDanToiletTerpisah);
                         if (data.kepemilikanKamarMandi !== null && typeof data.kepemilikanKamarMandi !== 'undefined') setValueKepemilikanKamarMandi(data.kepemilikanKamarMandi);
@@ -533,7 +531,6 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
         </View>
     )
     
-    console.log('itemsKondisiBakAirToiletMilikSendiri ===>', valueKondisiBakAirToiletMilikSendiri)
     const renderFormKondisiBakAirToiletMilikSendiri = () => (
         <View style={styles.MT8}>
             <Text>Kondisi Bak Air Toilet Milik Sendiri</Text>
