@@ -60,26 +60,43 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
     useEffect(() => {
         setInfo();
         getUKDisiplinNasabah();
+        getStorageAirSanitasi();
     }, [])
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
+        const token = await AsyncStorage.getItem('token')
+        console.log(token)
         setCurrentDate(tanggal)
     }
 
     const getUKDisiplinNasabah = () => {
-        let queryUKDataDiri = `SELECT * FROM Table_UK_DisipinNasabah WHERE idSosialisasiDatabase = '` + id + `';`
+        let queryUKDataDiri = `SELECT * FROM Table_UK_AirSanitasi WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], (tx, results) => {
                     let dataLength = results.rows.length;
-                    if (__DEV__) console.log('SELECT * FROM Table_UK_DisipinNasabah length:', dataLength);
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_AirSanitasi length:', dataLength);
                     if (dataLength > 0) {
-                        
                         let data = results.rows.item(0);
-                        if (__DEV__) console.log('tx.executeSql data:', data);
-                        // if (data.kehadiran_pkm !== null && typeof data.kehadiran_pkm !== 'undefined') setValueKehadiranPKM(data.kehadiran_pkm);
-                        // if (data.angsuran_pada_saat_pkm !== null && typeof data.angsuran_pada_saat_pkm !== 'undefined') setValueAngsuranPadaSaatPKM(data.angsuran_pada_saat_pkm);
+                        console.log(data.KondisiSaluranPembuanganKamarMandiMilikSendiri)
+                        if (__DEV__) console.log('tx.executeSql data Table_UK_AirSanitasi:', data);
+                        if (data.kamarMandiDanToiletTerpisah !== null && typeof data.kamarMandiDanToiletTerpisah !== 'undefined') setValueKamarMandiDanToiletTerpisah(data.kamarMandiDanToiletTerpisah);
+                        if (data.kepemilikanKamarMandi !== null && typeof data.kepemilikanKamarMandi !== 'undefined') setValueKepemilikanKamarMandi(data.kepemilikanKamarMandi);
+                        if (data.kepemilikanToilet !== null && typeof data.kepemilikanToilet !== 'undefined') setValueKepemilikanToilet(data.kepemilikanToilet);
+                        if (data.sumberAirUntukMandiDanCuci !== null && typeof data.sumberAirUntukMandiDanCuci !== 'undefined') setValueSumberAirUntukMandiDanCuci(data.sumberAirUntukMandiDanCuci);
+                        if (data.sumberAirUntukMinum !== null && typeof data.sumberAirUntukMinum !== 'undefined') setValueSumberAirUntukMinum(data.sumberAirUntukMinum);
+                        if (data.kuantitasSumberAir !== null && typeof data.kuantitasSumberAir !== 'undefined') setValueKuantitasSumberAir(data.kuantitasSumberAir);
+                        if (data.KondisiAtapKamarMandiMilikSendiri !== null && typeof data.KondisiAtapKamarMandiMilikSendiri !== 'undefined') setValueKondisiAtapKamarMandiMilikSendiri(data.KondisiAtapKamarMandiMilikSendiri);
+                        if (data.KondisiLantaiKamarMandiMilikSendiri !== null && typeof data.KondisiLantaiKamarMandiMilikSendiri !== 'undefined') setValueKondisiLantaiKamarMandiMilikSendiri(data.KondisiLantaiKamarMandiMilikSendiri);
+                        if (data.KondisiDindingKamarMandiMilikSendiri !== null && typeof data.KondisiDindingKamarMandiMilikSendiri !== 'undefined') setValueKondisiDindingKamarMandiMilikSendiri(data.KondisiDindingKamarMandiMilikSendiri);
+                        if (data.KondisiBakAirKamarMandiMilikSendiri !== null && typeof data.KondisiBakAirKamarMandiMilikSendiri !== 'undefined') setValueKondisiBakAirKamarMandiMilikSendiri(data.KondisiBakAirKamarMandiMilikSendiri);
+                        if (data.KondisiSaluranPembuanganKamarMandiMilikSendiri !== null && typeof data.KondisiSaluranPembuanganKamarMandiMilikSendiri !== 'undefined') setValueKondisiSaluranPembuanganKamarMandiMilikSendiri(data.KondisiSaluranPembuanganKamarMandiMilikSendiri);
+                        if (data.KondisiWCKamarMandiMilikSendiri !== null && typeof data.KondisiWCKamarMandiMilikSendiri !== 'undefined') setValueKondisiWCKamarMandiMilikSendiri(data.KondisiWCKamarMandiMilikSendiri);
+                        if (data.KondisiAtapToiletMilikSendiri !== null && typeof data.KondisiAtapToiletMilikSendiri !== 'undefined') setValueKondisiAtapToiletMilikSendiri(data.KondisiAtapToiletMilikSendiri);
+                        if (data.KondisiLantaiToiletMilikSendiri !== null && typeof data.KondisiLantaiToiletMilikSendiri !== 'undefined') setValueKondisiLantaiToiletMilikSendiri(data.KondisiLantaiToiletMilikSendiri);
+                        if (data.KondisiBakAirToiletMilikSendiri !== null && typeof data.KondisiBakAirToiletMilikSendiri !== 'undefined') setValueKondisiBakAirToiletMilikSendiri(data.KondisiBakAirToiletMilikSendiri);
+                        if (data.KondisiWCToiletMilikSendiri !== null && typeof data.KondisiWCToiletMilikSendiri !== 'undefined') setValueKondisiWCToiletMilikSendiri(data.KondisiWCToiletMilikSendiri);                        
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DisipinNasabah error:', error.message);
@@ -88,12 +105,125 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
         )
     }
 
+    const getStorageAirSanitasi = async () => {
+        if (__DEV__) console.log('getStorageWash loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('MasterProdukPendamping');
+            if (response !== null ) {
+                const responseJSON = JSON.parse(response);
+                setItemsKamarMandiDanToiletTerpisah(responseJSON.kamarMandiDanToiletTerpisah)
+                setItemsKepemilikanKamarMandi(responseJSON.kepemilikanKamarMandi)
+                setItemsKepemilikanToilet(responseJSON.kepemilikanToilet)
+                setItemsSumberAirUntukMandiDanCuci(responseJSON.sumberAirUntukMandiDanCuci)
+                setItemsSumberAirUntukMinum(responseJSON.sumberAirUntukMinum)
+                setItemsKuantitasSumberAir(responseJSON.kuantitasSumberAir)
+                setItemsKualitasSumberAir([])
+                setItemsKondisiAtapKamarMandiMilikSendiri(responseJSON.kondisiAtapKamarMandiMilikSendiri)
+                setItemsKondisiLantaiKamarMandiMilikSendiri(responseJSON.kondisiLantaiKamarMandiMilikSendiri)
+                setItemsKondisiDindingKamarMandiMilikSendiri(responseJSON.kondisiDindingKamarMandiMilikSendiri)
+                setItemsKondisiBakAirKamarMandiMilikSendiri(responseJSON.kondisiBakAirKamarMandiMilikSendiri)
+                setItemsKondisiSaluranPembuanganKamarMandiMilikSendiri(responseJSON.kondisiSaluranPembuanganKamarMandiMilikSendiri)
+                setItemsKondisiWCKamarMandiMilikSendiri(responseJSON.kondisiWcKamarMandiMilikSendiri)
+                setItemsKondisiAtapToiletMilikSendiri(responseJSON.kondisiAtapToiletMilikSendiri)
+                setItemsKondisiLantaiToiletMilikSendiri(responseJSON.kondisiLantaiToiletMilikSendiri)
+                setItemsKondisiDindingToiletMilikSendiri([])
+                setItemsKondisiBakAirToiletMilikSendiri(responseJSON.kondisiBakAirToiletMilikSendiri)
+                setItemsSaluranPembuanganToiletMilikSendiri([])
+                setItemsKondisiWCToiletMilikSendiri(responseJSON.kondisiWcToiletMilikSendiri)
+                return;
+            }
+            setItemsKamarMandiDanToiletTerpisah([])
+            setItemsKepemilikanKamarMandi([])
+            setItemsKepemilikanToilet([])
+            setItemsSumberAirUntukMandiDanCuci([])
+            setItemsSumberAirUntukMinum([])
+            setItemsKuantitasSumberAir([])
+            setItemsKualitasSumberAir([])
+            setItemsKondisiAtapKamarMandiMilikSendiri([])
+            setItemsKondisiLantaiKamarMandiMilikSendiri([])
+            setItemsKondisiDindingKamarMandiMilikSendiri([])
+            setItemsKondisiBakAirKamarMandiMilikSendiri([])
+            setItemsKondisiSaluranPembuanganKamarMandiMilikSendiri([])
+            setItemsKondisiWCKamarMandiMilikSendiri([])
+            setItemsKondisiAtapToiletMilikSendiri([])
+            setItemsKondisiLantaiToiletMilikSendiri([])
+            setItemsKondisiDindingToiletMilikSendiri([])
+            setItemsKondisiBakAirToiletMilikSendiri([])
+            setItemsSaluranPembuanganToiletMilikSendiri([])
+            setItemsKondisiWCToiletMilikSendiri([])
+        } catch (error) {
+            setItemsKamarMandiDanToiletTerpisah([])
+            setItemsKepemilikanKamarMandi([])
+            setItemsKepemilikanToilet([])
+            setItemsSumberAirUntukMandiDanCuci([])
+            setItemsSumberAirUntukMinum([])
+            setItemsKuantitasSumberAir([])
+            setItemsKualitasSumberAir([])
+            setItemsKondisiAtapKamarMandiMilikSendiri([])
+            setItemsKondisiLantaiKamarMandiMilikSendiri([])
+            setItemsKondisiDindingKamarMandiMilikSendiri([])
+            setItemsKondisiBakAirKamarMandiMilikSendiri([])
+            setItemsKondisiSaluranPembuanganKamarMandiMilikSendiri([])
+            setItemsKondisiWCKamarMandiMilikSendiri([])
+            setItemsKondisiAtapToiletMilikSendiri([])
+            setItemsKondisiLantaiToiletMilikSendiri([])
+            setItemsKondisiDindingToiletMilikSendiri([])
+            setItemsKondisiBakAirToiletMilikSendiri([])
+            setItemsSaluranPembuanganToiletMilikSendiri([])
+            setItemsKondisiWCToiletMilikSendiri([])
+        }
+    }
+
     const doSubmitDraft = (source = 'draft') => new Promise((resolve) => {
         if (__DEV__) console.log('doSubmitDraft loaded');
         if (__DEV__) console.log('doSubmitDraft valueKamarMandiDanToiletTerpisah:', valueKamarMandiDanToiletTerpisah);
         if (__DEV__) console.log('doSubmitDraft valueKepemilikanKamarMandi:', valueKepemilikanKamarMandi);
 
-        return resolve(true);
+        const find = 'SELECT * FROM Table_UK_AirSanitasi WHERE idSosialisasiDatabase = "'+ id +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], async (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    let query = ''
+                    if (__DEV__) console.log('db.transaction resultsFind: draft', resultsFind.rows);
+                    if (dataLengthFind === 0) {
+                        query = 'INSERT INTO Table_UK_AirSanitasi (kamarMandiDanToiletTerpisah, kepemilikanKamarMandi, kepemilikanToilet, sumberAirUntukMandiDanCuci, sumberAirUntukMinum, kuantitasSumberAir, KualitasSumberAir, KondisiAtapKamarMandiMilikSendiri, KondisiLantaiKamarMandiMilikSendiri, KondisiDindingKamarMandiMilikSendiri, KondisiBakAirKamarMandiMilikSendiri, KondisiSaluranPembuanganKamarMandiMilikSendiri, KondisiWCKamarMandiMilikSendiri, KondisiAtapToiletMilikSendiri, KondisiLantaiToiletMilikSendiri, KondisiDindingToiletMilikSendiri, KondisiBakAirToiletMilikSendiri, KondisiSaluranPembuanganKamarMandiMilikSendiri, KondisiWCToiletMilikSendiri, idSosialisasiDatabase) values ("' + valueKamarMandiDanToiletTerpisah + '","' + valueKepemilikanKamarMandi + '","' + valueKepemilikanToilet + '","' + valueSumberAirUntukMandiDanCuci + '","' + valueSumberAirUntukMinum + '","' + valueKuantitasSumberAir + '","' + valueKualitasSumberAir + '","' + valueKondisiAtapKamarMandiMilikSendiri + '","' + valueKondisiLantaiKamarMandiMilikSendiri + '","' + valueKondisiDindingKamarMandiMilikSendiri + '","' + valueKondisiBakAirKamarMandiMilikSendiri + '", "' + valueKondisiSaluranPembuanganKamarMandiMilikSendiri + '", "' + valueKondisiWCKamarMandiMilikSendiri + '", "' + valueKondisiAtapToiletMilikSendiri + '","' + valueKondisiLantaiToiletMilikSendiri + '","' + valueKondisiDindingToiletMilikSendiri + '","' + valueKondisiBakAirToiletMilikSendiri + '","' + valueKondisiSaluranPembuanganKamarMandiMilikSendiri + '","' + valueKondisiWCToiletMilikSendiri + '","' + id + '")';
+                    } else {
+                        query = 'UPDATE Table_UK_AirSanitasi SET kamarMandiDanToiletTerpisah = "' + valueKamarMandiDanToiletTerpisah + '", kepemilikanKamarMandi = "' + valueKepemilikanKamarMandi + '", kepemilikanToilet = "' + valueKepemilikanToilet + '", sumberAirUntukMandiDanCuci = "' + valueSumberAirUntukMandiDanCuci + '", sumberAirUntukMinum = "' + valueSumberAirUntukMinum + '", kuantitasSumberAir = "' + valueKuantitasSumberAir + '", KondisiAtapKamarMandiMilikSendiri = "' + valueKondisiAtapKamarMandiMilikSendiri + '", KondisiLantaiKamarMandiMilikSendiri = "' + valueKondisiLantaiKamarMandiMilikSendiri + '", KondisiDindingKamarMandiMilikSendiri = "' + valueKondisiDindingKamarMandiMilikSendiri + '", KondisiBakAirKamarMandiMilikSendiri = "' + valueKondisiBakAirKamarMandiMilikSendiri + '", KondisiSaluranPembuanganKamarMandiMilikSendiri = "' + valueKondisiSaluranPembuanganKamarMandiMilikSendiri + '" ,KondisiWCKamarMandiMilikSendiri = "' + valueKondisiWCKamarMandiMilikSendiri + '", KondisiAtapToiletMilikSendiri = "' + valueKondisiAtapToiletMilikSendiri + '", KondisiLantaiToiletMilikSendiri = "' + valueKondisiLantaiToiletMilikSendiri + '", KondisiDindingToiletMilikSendiri = "' + valueKondisiDindingToiletMilikSendiri + '", KondisiBakAirToiletMilikSendiri = "' + valueKondisiBakAirToiletMilikSendiri + '", SaluranPembuanganToiletMilikSendiri = "' + valueSaluranPembuanganToiletMilikSendiri + '",  KondisiWCToiletMilikSendiri = "' + valueKondisiWCToiletMilikSendiri + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                    }
+
+                    if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query: =====>>>>', query);
+
+                    db.transaction(
+                        tx => {
+                            tx.executeSql(query);
+                        }, function(error) {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update error: ==>', error.message);
+                            return resolve(true);
+                        },function() {
+                            if (__DEV__) console.log('doSubmitDraft db.transaction insert/update success ====>');
+                            if (source !== 'submit') ToastAndroid.show("Save draft berhasil!", ToastAndroid.SHORT);
+                            if (__DEV__) {
+                                db.transaction(
+                                    tx => {
+                                        tx.executeSql("SELECT * FROM Table_UK_KondisiRumah", [], (tx, results) => {
+                                            if (__DEV__) console.log('SELECT * FROM Table_UK_AirSanitasi RESPONSE:', results.rows);
+                                        })
+                                    }, function(error) {
+                                        if (__DEV__) console.log('SELECT * FROM Table_UK_AirSanitasi ERROR:', error);
+                                    }, function() {}
+                                );
+                            }
+                            return resolve(true);
+                        }
+                    );
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDraft db.transaction find error:', error.message);
+                    return resolve(true);
+                })
+            }
+        );
     })
 
     const doSubmitSave = async () => {
@@ -108,10 +238,58 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
 
         await doSubmitDraft('submit');
 
-        setSubmmitted(false);
-        alert('Berhasil');
-        AsyncStorage.setItem(`isFormUKKondisiAirBersihDanSanitasiDone_${id}`, '1');
-        navigation.goBack();
+        const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
+        db.transaction(
+            tx => {
+                tx.executeSql(find, [], (txFind, resultsFind) => {
+                    let dataLengthFind = resultsFind.rows.length
+                    if (__DEV__) console.log('db.transaction resultsFind: doSubmitSave', resultsFind.rows);
+
+                    if (dataLengthFind === 0) {
+                        alert('UK Master not found');
+                        navigation.goBack();
+                        return;
+                    }
+
+                    // if (screenState === 2) {
+                    //     let query = 'UPDATE Table_UK_Master SET status = "3" WHERE idSosialisasiDatabase = "' + id + '"';
+                    //     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+
+                    //     db.transaction(
+                    //         tx => {
+                    //             tx.executeSql(query);
+                    //         }, function(error) {
+                    //             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                    //             setSubmmitted(false);
+                    //         },function() {
+                    //             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                                
+                    //             if (__DEV__) {
+                    //                 db.transaction(
+                    //                     tx => {
+                    //                         tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                    //                             if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                    //                         })
+                    //                     }, function(error) {
+                    //                         if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                    //                     }, function() {}
+                    //                 );
+                    //             }
+                    //         }
+                    //     );
+                    // }
+
+                    setSubmmitted(false);
+                    alert('Berhasil');
+                    AsyncStorage.setItem(`isFormUKKondisiAirBersihDanSanitasiDone_${id}`, '1');
+                    navigation.goBack();
+                    
+                }, function(error) {
+                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                    setSubmmitted(false);
+                })
+            }
+        );
     }
 
     const renderFormKamarMandiDanToiletTerpisah = () => (
@@ -123,7 +301,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKamarMandiDanToiletTerpisah(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKamarMandiDanToiletTerpisah.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKamarMandiDanToiletTerpisah.map((x, i) => <Picker.Item key={i} label={x.kamarMandiDanToiletTerpisahDetail } value={x.kamarMandiDanToiletTerpisahDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -138,7 +316,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKepemilikanKamarMandi(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKepemilikanKamarMandi.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKepemilikanKamarMandi.map((x, i) => <Picker.Item key={i} label={x.kepemilikanKamarMandiDetail} value={x.kepemilikanKamarMandiDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -153,7 +331,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKepemilikanToilet(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKepemilikanToilet.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKepemilikanToilet.map((x, i) => <Picker.Item key={i} label={x.kepemilikanToiletDetail} value={x.kepemilikanToiletDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -168,7 +346,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueSumberAirUntukMandiDanCuci(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsSumberAirUntukMandiDanCuci.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsSumberAirUntukMandiDanCuci.map((x, i) => <Picker.Item key={i} label={x.sumberAirUntukMandiDanCuciDetail} value={x.sumberAirUntukMandiDanCuciDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -183,7 +361,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueSumberAirUntukMinum(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsSumberAirUntukMinum.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsSumberAirUntukMinum.map((x, i) => <Picker.Item key={i} label={x.sumberAirUntukMinumDetail} value={x.sumberAirUntukMinumDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -198,7 +376,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKuantitasSumberAir(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKuantitasSumberAir.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKuantitasSumberAir.map((x, i) => <Picker.Item key={i} label={x.kuantitasSumberAirDetail} value={x.kuantitasSumberAirDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -228,7 +406,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiAtapKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiAtapKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiAtapKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiAtapKamarMandiMilikSendiriDetail} value={x.kondisiAtapKamarMandiMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -243,7 +421,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiLantaiKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiLantaiKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiLantaiKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiLantaiKamarMandiMilikSendiriDetail} value={x.kondisiLantaiKamarMandiMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -258,7 +436,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiDindingKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiDindingKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiDindingKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiDindingKamarMandiMilikSendiriDetail} value={x.kondisiDindingKamarMandiMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -273,12 +451,13 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiBakAirKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiBakAirKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiBakAirKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiBakAirKamarMandiMilikSendiriDetail} value={x.kondisiBakAirKamarMandiMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
     )
 
+    
     const renderFormKondisiSaluranPembuanganKamarMandiMilikSendiri = () => (
         <View style={styles.MT8}>
             <Text>Kondisi Saluran Pembuangan Kamar Mandi Milik Sendiri</Text>
@@ -288,7 +467,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiSaluranPembuanganKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiSaluranPembuanganKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiSaluranPembuanganKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiSaluranPembuanganKamarMandiMilikSendiriDetail} value={x.kondisiSaluranPembuanganKamarMandiMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -303,7 +482,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiWCKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiWCKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiWCKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiWcKamarMandiMilikSendiriDetail} value={x.kondisiWcKamarMandiMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -318,7 +497,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiAtapToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiAtapToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiAtapToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiAtapToiletMilikSendiriDetail} value={x.kondisiAtapToiletMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -329,11 +508,11 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
             <Text>Kondisi Lantai Toilet Milik Sendiri</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
-                    selectedValue={valueKondisiAtapToiletMilikSendiri}
+                    selectedValue={valueKondisiLantaiToiletMilikSendiri}
                     onValueChange={(itemValue, itemIndex) => setValueKondisiLantaiToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiLantaiToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiLantaiToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiLantaiToiletMilikSendiriDetail} value={x.kondisiLantaiToiletMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -353,7 +532,8 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
             </View>
         </View>
     )
-
+    
+    console.log('itemsKondisiBakAirToiletMilikSendiri ===>', valueKondisiBakAirToiletMilikSendiri)
     const renderFormKondisiBakAirToiletMilikSendiri = () => (
         <View style={styles.MT8}>
             <Text>Kondisi Bak Air Toilet Milik Sendiri</Text>
@@ -363,7 +543,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiBakAirToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiBakAirToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiBakAirToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiBakAirToiletMilikSendiriDetail} value={x.kondisiBakAirToiletMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -386,14 +566,14 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
 
     const renderFormKondisiWCToiletMilikSendiri = () => (
         <View style={styles.MT8}>
-            <Text>Kondisi Saluran Pembuangan Toilet Milik Sendiri</Text>
+            <Text>Kondisi WC Toilet Milik Sendiri</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
                     selectedValue={valueKondisiWCToiletMilikSendiri}
                     onValueChange={(itemValue, itemIndex) => setValueKondisiWCToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiWCToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiWCToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiWcToiletMilikSendiriDetail} value={x.kondisiWcToiletMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>

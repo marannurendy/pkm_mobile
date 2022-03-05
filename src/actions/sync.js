@@ -1717,6 +1717,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
             AsyncStorage.setItem('SetUKtimeOut', JSON.stringify(jsonMasterData.data.SetUKtimeOut));
             AsyncStorage.setItem('MasterAvailableSubGroup', JSON.stringify(jsonMasterData.data.MasterAvailableSubGroup));
             AsyncStorage.setItem('MasterGroupProduct', JSON.stringify(jsonMasterData.data.MasterGroupProduct));
+            AsyncStorage.setItem('MasterProdukPendamping', JSON.stringify(jsonMasterData.data.masterProdukPendamping));
         }
 
         return 'SYNC DONE';

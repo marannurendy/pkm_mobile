@@ -9,7 +9,6 @@ import { RadioButton } from 'react-native-paper';
 import db from '../../../database/Database';
 import { Picker } from '@react-native-picker/picker';
 import { replaceSpecialChar } from '../../../utils/Functions';
-import { ApiSyncInisiasi} from "../../../../dataconfig";
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -54,9 +53,7 @@ const ProdukPembiayaan = ({ route }) => {
     const [valueJenisPengadaan, setValueJenisPengadaan] = useState(null);
     const [itemsJenisPengadaan, setItemsJenisPengadaan] = useState([]);
 
-    useEffect(async () => {
-        setItemsJenisPekerjaan([{label: 'Pembelian', value: 'Pembelian'}])
-        setItemsJenisPengadaan([{label: 'Individu', value: 'Individu'}])
+    useEffect( () => {
         setInfo();
         getStorageJenisPembiayaan();
         getStorageTipePencairan();
@@ -65,6 +62,7 @@ const ProdukPembiayaan = ({ route }) => {
         getStorageFrekuensi();
         getSosialisasiDatabase();
         getUKProdukPembiayaan();
+        getStorageWash();
     }, [])
 
     useEffect(() => {
@@ -449,6 +447,25 @@ const ProdukPembiayaan = ({ route }) => {
         }
     }
 
+    const getStorageWash = async () => {
+        if (__DEV__) console.log('getStorageWash loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('MasterProdukPendamping');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                setItemsJenisPekerjaan(responseJSON.jenisPekerjaan)
+                setItemsJenisPengadaan(responseJSON.jenisPengadaan)
+                return;
+            }
+            setItemsJenisPekerjaan([]);
+            setItemsJenisPengadaan([]);
+        } catch (error) {
+            setItemsJenisPekerjaan([])
+            setItemsJenisPengadaan([])
+        }
+    }
+
     const generateJumlahPinjaman = (data) => {
         if (__DEV__) console.log('generateJumlahPinjaman loaded');
         if (__DEV__) console.log('generateJumlahPinjaman data:', data);
@@ -507,7 +524,6 @@ const ProdukPembiayaan = ({ route }) => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
-                    console.log('luas_a ===>', valueLuasA)
                     let query = '';
                     if (dataLengthFind === 0) {
                         query = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, idSosialisasiDatabase, luas_a, luas_b, jenis_pekerjaan, jenis_pengadaan) values ("' + namaNasabah + '","' + valueJenisPembiayaan + '","' + valueNamaProduk + '","' + valueProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + valueKategoriTujuanPembiayaan + '","' + valueTujuanPembiayaan + '","' + valueTypePencairan + '","' + valueFrekuensiPembayaran + '","' + valueRekeningBank + '","' + valueNamaBank + '","' + valueNoRekening + '","' + valuePemilikRekening + '","' + id + '", "' + valueLuasA + '", "' + valueLuasB + '", "' + valueJenisPekerjaan + '", "' + valueJenisPembiayaan + '")';
@@ -638,7 +654,6 @@ const ProdukPembiayaan = ({ route }) => {
                     setSubmmitted(false);
                     alert('Berhasil');
                     navigation.goBack();
-                    
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
                     setSubmmitted(false);
@@ -851,7 +866,7 @@ const ProdukPembiayaan = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueJenisPekerjaan(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsJenisPekerjaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsJenisPekerjaan.map((x, i) => <Picker.Item key={i} label={x.jenisPekerjaanDetail} value={x.jenisPekerjaanDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -867,7 +882,7 @@ const ProdukPembiayaan = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueJenisPengadaan(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsJenisPengadaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsJenisPengadaan.map((x, i) => <Picker.Item key={i} label={x.jenisPengadaanDetail} value={x.jenisPengadaanDetail} />)}
                 </Picker>
             </View>
         </View>

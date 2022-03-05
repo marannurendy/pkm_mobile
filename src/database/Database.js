@@ -295,6 +295,31 @@ db.transaction(tx => {
     )
 
     tx.executeSql(
+        `create table if not exists Table_UK_AirSanitasi(
+            kamarMandiDanToiletTerpisah varchar,
+            kepemilikanKamarMandi varchar,
+            kepemilikanToilet varchar,
+            sumberAirUntukMandiDanCuci varchar,
+            sumberAirUntukMinum varchar,
+            kuantitasSumberAir varchar,
+            KualitasSumberAir varchar,
+            KondisiAtapKamarMandiMilikSendiri varchar,
+            KondisiLantaiKamarMandiMilikSendiri varchar,
+            KondisiDindingKamarMandiMilikSendiri varchar,
+            KondisiBakAirKamarMandiMilikSendiri varchar,
+            KondisiSaluranPembuanganKamarMandiMilikSendiri varchar,
+            KondisiWCKamarMandiMilikSendiri varchar,
+            KondisiAtapToiletMilikSendiri varchar,
+            KondisiLantaiToiletMilikSendiri varchar,
+            KondisiDindingToiletMilikSendiri varchar,
+            KondisiBakAirToiletMilikSendiri varchar,
+            SaluranPembuanganToiletMilikSendiri varchar,
+            KondisiWCToiletMilikSendiri varchar,
+            idSosialisasiDatabase varchar
+        );`
+    )
+
+    tx.executeSql(
         `create table if not exists Table_UK_SektorEkonomi(
             nama_lengkap varchar,
             nomor_Identitas varchar,
@@ -567,6 +592,7 @@ db.transaction(tx => {
     // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Post')
     // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Nasabah')
     // tx.executeSql('DROP TABLE IF EXISTS Table_Prospek_Lama_PP_Nasabah')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_AirSanitasi')
 
 },function(error) {
             console.log('Transaction ERROR: ' + error.message);

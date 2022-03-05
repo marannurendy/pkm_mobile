@@ -193,14 +193,13 @@ const FormUjiKelayakan = ({route}) => {
         console.log('doSubmit next');
 
         setSubmitted(true);
-        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok, g.siklus, h.kehadiran_pkm, h.angsuran_pada_saat_pkm FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id LEFT JOIN Table_UK_DisipinNasabah h ON a.idSosialisasiDatabase = h.idSosialisasiDatabase WHERE a.idSosialisasiDatabase = "' + id + '"';
+        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok, g.siklus, h.kehadiran_pkm, h.angsuran_pada_saat_pkm, i.kamarMandiDanToiletTerpisah ,i.kepemilikanKamarMandi ,i.kepemilikanToilet ,i.sumberAirUntukMandiDanCuci ,i.sumberAirUntukMinum ,i.kuantitasSumberAir ,i.KualitasSumberAir ,i.KondisiAtapKamarMandiMilikSendiri ,i.KondisiLantaiKamarMandiMilikSendiri ,i.KondisiDindingKamarMandiMilikSendiri ,i.KondisiBakAirKamarMandiMilikSendiri ,i.KondisiSaluranPembuanganKamarMandiMilikSendiri ,i.KondisiWCKamarMandiMilikSendiri ,i.KondisiAtapToiletMilikSendiri ,i.KondisiLantaiToiletMilikSendiri ,i.KondisiDindingToiletMilikSendiri ,i.KondisiBakAirToiletMilikSendiri ,i.SaluranPembuanganToiletMilikSendiri ,i.KondisiWCToiletMilikSendiri FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id LEFT JOIN Table_UK_DisipinNasabah h ON a.idSosialisasiDatabase = h.idSosialisasiDatabase LEFT JOIN Table_UK_AirSanitasi i ON a.idSosialisasiDatabase = i.idSosialisasiDatabase WHERE a.idSosialisasiDatabase = "' + id + '"';
         // let query = 'SELECT a.* FROM Table_UK_DataDiri a WHERE a.idSosialisasiDatabase = "' + id + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
-
                     const token = await AsyncStorage.getItem('token');
                     if (__DEV__) console.log('ACTIONS TOKEN', token);
 
@@ -393,7 +392,26 @@ const FormUjiKelayakan = ({route}) => {
                             "Angsuran_Pada_Saat_PKM": data.angsuran_pada_saat_pkm,
                             "Sisipan": isSisipan,
                             "Siklus": '' + siklus,
-                            "IsSesuaiDukcapil": data.is_nik_valid_dukcapil
+                            "IsSesuaiDukcapil": data.is_nik_valid_dukcapil,
+                            "kamarMandiDanToiletTerpisah": data.kamarMandiDanToiletTerpisah,
+                            "kepemilikanKamarMandi": data.kepemilikanKamarMandi,
+                            "kepemilikanToilet": data.kepemilikanToilet,
+                            "sumberAirUntukMandiDanCuci": data.sumberAirUntukMandiDanCuci,
+                            "sumberAirUntukMinum": data.sumberAirUntukMinum,
+                            "kuantitasSumberAir": data.kuantitasSumberAir,
+                            "KualitasSumberAir": data.KualitasSumberAir,
+                            "KondisiAtapKamarMandiMilikSendiri": data.KondisiAtapKamarMandiMilikSendiri,
+                            "KondisiLantaiKamarMandiMilikSendiri": data.KondisiLantaiKamarMandiMilikSendiri,
+                            "KondisiDindingKamarMandiMilikSendiri": data.KondisiDindingKamarMandiMilikSendiri,
+                            "KondisiBakAirKamarMandiMilikSendiri": data.KondisiBakAirKamarMandiMilikSendiri,
+                            "KondisiSaluranPembuanganKamarMandiMilikSendiri": data.KondisiSaluranPembuanganKamarMandiMilikSendiri,
+                            "KondisiWCKamarMandiMilikSendiri": data.KondisiWCKamarMandiMilikSendiri,
+                            "KondisiAtapToiletMilikSendiri": data.KondisiAtapToiletMilikSendiri,
+                            "KondisiLantaiToiletMilikSendiri": data.KondisiLantaiToiletMilikSendiri,
+                            "KondisiDindingToiletMilikSendiri": data.KondisiDindingToiletMilikSendiri,
+                            "KondisiBakAirToiletMilikSendiri": data.KondisiBakAirToiletMilikSendiri,
+                            "SaluranPembuanganToiletMilikSendiri": data.SaluranPembuanganToiletMilikSendiri,
+                            "KondisiWCToiletMilikSendiri": data.KondisiWCToiletMilikSendiri
                         }
                         // alert(`${body.Siklus}`)
                         // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
@@ -696,7 +714,7 @@ const FormUjiKelayakan = ({route}) => {
                     setSubmitted(false);
                     return;
                 }, function(error) {
-                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error);
                     ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
                     setSubmitted(false);
                     return;
@@ -860,7 +878,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKKondisiAirBersihDanSanitasi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                    <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiAirBersihDanSanitasi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'product-hunt'} size={25} color={'#FFF'} />
                         </View>
@@ -870,8 +888,8 @@ const FormUjiKelayakan = ({route}) => {
                         <View style={{alignItems: 'flex-end'}}>
                             <BouncyCheckbox 
                                 size={20}
-                                isChecked={1}
-                                fillColor={'green'}
+                                isChecked={screenState > 2}
+                                fillColor={screenState > 2 ? 'green' : 'white'}
                                 disableBuiltInState
                             />
                         </View>
