@@ -78,6 +78,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_AirSanitasi length:', dataLength);
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
+                        console.log('get storeage ====>', data.SaluranPembuanganToiletMilikSendiri)
                         if (__DEV__) console.log('tx.executeSql data Table_UK_AirSanitasi:', data);
                         if (data.kamarMandiDanToiletTerpisah !== null && typeof data.kamarMandiDanToiletTerpisah !== 'undefined') setValueKamarMandiDanToiletTerpisah(data.kamarMandiDanToiletTerpisah);
                         if (data.kepemilikanKamarMandi !== null && typeof data.kepemilikanKamarMandi !== 'undefined') setValueKepemilikanKamarMandi(data.kepemilikanKamarMandi);
@@ -94,7 +95,10 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                         if (data.KondisiAtapToiletMilikSendiri !== null && typeof data.KondisiAtapToiletMilikSendiri !== 'undefined') setValueKondisiAtapToiletMilikSendiri(data.KondisiAtapToiletMilikSendiri);
                         if (data.KondisiLantaiToiletMilikSendiri !== null && typeof data.KondisiLantaiToiletMilikSendiri !== 'undefined') setValueKondisiLantaiToiletMilikSendiri(data.KondisiLantaiToiletMilikSendiri);
                         if (data.KondisiBakAirToiletMilikSendiri !== null && typeof data.KondisiBakAirToiletMilikSendiri !== 'undefined') setValueKondisiBakAirToiletMilikSendiri(data.KondisiBakAirToiletMilikSendiri);
-                        if (data.KondisiWCToiletMilikSendiri !== null && typeof data.KondisiWCToiletMilikSendiri !== 'undefined') setValueKondisiWCToiletMilikSendiri(data.KondisiWCToiletMilikSendiri);                        
+                        if (data.KondisiWCToiletMilikSendiri !== null && typeof data.KondisiWCToiletMilikSendiri !== 'undefined') setValueKondisiWCToiletMilikSendiri(data.KondisiWCToiletMilikSendiri); 
+                        if (data.KualitasSumberAir !== null && typeof data.KualitasSumberAir !== 'undefined') setValueKualitasSumberAir(data.KualitasSumberAir); 
+                        if (data.KondisiDindingToiletMilikSendiri !== null && typeof data.KondisiDindingToiletMilikSendiri !== 'undefined') setValueKondisiDindingToiletMilikSendiri(data.KondisiDindingToiletMilikSendiri);   
+                        if (data.SaluranPembuanganToiletMilikSendiri !== null && typeof data.SaluranPembuanganToiletMilikSendiri !== 'undefined') setValueSaluranPembuanganToiletMilikSendiri(data.SaluranPembuanganToiletMilikSendiri);                     
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DisipinNasabah error:', error.message);
@@ -102,7 +106,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
             }
         )
     }
-
+    
     const getStorageAirSanitasi = async () => {
         if (__DEV__) console.log('getStorageWash loaded');
 
@@ -116,7 +120,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                 setItemsSumberAirUntukMandiDanCuci(responseJSON.sumberAirUntukMandiDanCuci)
                 setItemsSumberAirUntukMinum(responseJSON.sumberAirUntukMinum)
                 setItemsKuantitasSumberAir(responseJSON.kuantitasSumberAir)
-                setItemsKualitasSumberAir([])
+                setItemsKualitasSumberAir(responseJSON.kualitasSumberAir)
                 setItemsKondisiAtapKamarMandiMilikSendiri(responseJSON.kondisiAtapKamarMandiMilikSendiri)
                 setItemsKondisiLantaiKamarMandiMilikSendiri(responseJSON.kondisiLantaiKamarMandiMilikSendiri)
                 setItemsKondisiDindingKamarMandiMilikSendiri(responseJSON.kondisiDindingKamarMandiMilikSendiri)
@@ -125,9 +129,9 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                 setItemsKondisiWCKamarMandiMilikSendiri(responseJSON.kondisiWcKamarMandiMilikSendiri)
                 setItemsKondisiAtapToiletMilikSendiri(responseJSON.kondisiAtapToiletMilikSendiri)
                 setItemsKondisiLantaiToiletMilikSendiri(responseJSON.kondisiLantaiToiletMilikSendiri)
-                setItemsKondisiDindingToiletMilikSendiri([])
+                setItemsKondisiDindingToiletMilikSendiri(responseJSON.kondisiDindingToiletMilikSendiri)
                 setItemsKondisiBakAirToiletMilikSendiri(responseJSON.kondisiBakAirToiletMilikSendiri)
-                setItemsSaluranPembuanganToiletMilikSendiri([])
+                setItemsSaluranPembuanganToiletMilikSendiri(responseJSON.kondisiSaluranPembuanganToiletMilikSendiri)
                 setItemsKondisiWCToiletMilikSendiri(responseJSON.kondisiWcToiletMilikSendiri)
                 return;
             }
@@ -389,7 +393,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKualitasSumberAir(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKualitasSumberAir.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKualitasSumberAir.map((x, i) => <Picker.Item key={i} label={x.kualitasSumberAirDetail} value={x.kualitasSumberAirDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -525,7 +529,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiDindingToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiDindingToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsKondisiDindingToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiDindingToiletMilikSendiriDetail} value={x.kondisiDindingToiletMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -555,7 +559,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueSaluranPembuanganToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsSaluranPembuanganToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsSaluranPembuanganToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiSaluranPembuanganToiletMilikSendiriDetail} value={x.kondisiSaluranPembuanganToiletMilikSendiriDetail} />)}
                 </Picker>
             </View>
         </View>
