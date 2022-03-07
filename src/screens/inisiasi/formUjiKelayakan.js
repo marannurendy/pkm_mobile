@@ -576,7 +576,17 @@ const FormUjiKelayakan = ({route}) => {
                                                     const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKDisiplinNasabah = "DELETE FROM Table_UK_DisipinNasabah WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKAirSanitasi = "DELETE FROM Table_UK_AirSanitasi WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteProspekLamaPP = "DELETE FROM Table_Prospek_Lama_PP WHERE clientId = '" + data.clientId + "'";
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKAirSanitasi, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKAirSanitasi} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKAirSanitasi} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
                                                     db.transaction(
                                                         tx => {
                                                             tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
@@ -680,6 +690,7 @@ const FormUjiKelayakan = ({route}) => {
                                                     AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);
                                                     AsyncStorage.removeItem(data.tanda_Tangan_Ketua_SubKelompok);
                                                     AsyncStorage.removeItem(data.tanda_Tangan_Ketua_Kelompok);
+                                                    AsyncStorage.removeItem(data.foto_rumah);
                                                     /* ============ FINISH REMOVE STORAGE ============ */
 
                                                     const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
