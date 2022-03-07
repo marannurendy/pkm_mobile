@@ -652,6 +652,7 @@ const ProdukPembiayaan = ({ route }) => {
                     }
 
                     setSubmmitted(false);
+                    AsyncStorage.setItem('NamaProduk', valueNamaProduk)
                     alert('Berhasil');
                     navigation.goBack();
                 }, function(error) {

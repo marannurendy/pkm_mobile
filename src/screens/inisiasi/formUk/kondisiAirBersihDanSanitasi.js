@@ -78,7 +78,6 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     if (__DEV__) console.log('SELECT * FROM Table_UK_AirSanitasi length:', dataLength);
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
-                        console.log('get storeage ====>', data.SaluranPembuanganToiletMilikSendiri)
                         if (__DEV__) console.log('tx.executeSql data Table_UK_AirSanitasi:', data);
                         if (data.kamarMandiDanToiletTerpisah !== null && typeof data.kamarMandiDanToiletTerpisah !== 'undefined') setValueKamarMandiDanToiletTerpisah(data.kamarMandiDanToiletTerpisah);
                         if (data.kepemilikanKamarMandi !== null && typeof data.kepemilikanKamarMandi !== 'undefined') setValueKepemilikanKamarMandi(data.kepemilikanKamarMandi);

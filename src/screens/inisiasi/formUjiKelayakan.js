@@ -33,6 +33,7 @@ const FormUjiKelayakan = ({route}) => {
     const [tempItemsSubGroup, setTempItemsSubGroup] = useState([]);
     const [isFormUKDisiplinNasabahDone, setIsFormUKDisiplinNasabahDone] = useState(null);
     const [isFormUKTandaTanganPermohonanDone, setIsFormUKTandaTanganPermohonanDone] = useState(null);
+    const [idProduk, setIdProduk] = useState(null)
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -93,6 +94,10 @@ const FormUjiKelayakan = ({route}) => {
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
+        const getNamaProduk = await AsyncStorage.getItem('NamaProduk')
+        getNamaProduk == null ? await AsyncStorage.setItem('NamaProduk', '') : getNamaProduk
+        setIdProduk(getNamaProduk)
+        console.log('ini nama produk', getNamaProduk)
         setCurrentDate(tanggal)
     }
 
@@ -877,23 +882,28 @@ const FormUjiKelayakan = ({route}) => {
                             />
                         </View>
                     </TouchableOpacity>
+                    
+                    {
+                        idProduk == 3 ? (
+                            <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiAirBersihDanSanitasi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
+                            <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                <FontAwesome5 name={'product-hunt'} size={25} color={'#FFF'} />
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Kondisi Air Bersih & Sanitasi</Text>
+                            </View>
+                            <View style={{alignItems: 'flex-end'}}>
+                                <BouncyCheckbox 
+                                    size={20}
+                                    isChecked={screenState > 2}
+                                    fillColor={screenState > 2 ? 'green' : 'white'}
+                                    disableBuiltInState
+                                />
+                            </View>
+                        </TouchableOpacity>
+                        ) : null
+                    }
 
-                    <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiAirBersihDanSanitasi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
-                        <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
-                            <FontAwesome5 name={'product-hunt'} size={25} color={'#FFF'} />
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Kondisi Air Bersih & Sanitasi</Text>
-                        </View>
-                        <View style={{alignItems: 'flex-end'}}>
-                            <BouncyCheckbox 
-                                size={20}
-                                isChecked={screenState > 2}
-                                fillColor={screenState > 2 ? 'green' : 'white'}
-                                disableBuiltInState
-                            />
-                        </View>
-                    </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
