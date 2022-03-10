@@ -537,7 +537,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const renderFormRAB = () => (
         <View style={styles.MT8}>
-            <Text>Rencana Anggaran Biaya - Produk Pendamping - HOME (*)</Text>
+            <Text>Rencana Anggaran Biaya (*)</Text>
             <TouchableOpacity onPress={async () => {
                 setCameraShowRAB(1)
             }}>

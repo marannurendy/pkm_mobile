@@ -289,7 +289,7 @@ const FormUjiKelayakan = ({route}) => {
                             namaKelompok = selectedPilihKelompok.label;
                             subKelompok = valuePilihSubKelompok;
                         }
-                        
+
                         const body = {
                             "Sumber": data.sumberId,
                             "Alamat": data.alamat_Identitas,
@@ -399,29 +399,27 @@ const FormUjiKelayakan = ({route}) => {
                             "Siklus": '' + siklus,
                             "IsSesuaiDukcapil": data.is_nik_valid_dukcapil,
                             "kamarMandiDanToiletTerpisah": data.kamarMandiDanToiletTerpisah,
-                            "kepemilikanKamarMandi": data.kepemilikanKamarMandi,
-                            "kepemilikanToilet": data.kepemilikanToilet,
-                            "sumberAirUntukMandiDanCuci": data.sumberAirUntukMandiDanCuci,
-                            "sumberAirUntukMinum": data.sumberAirUntukMinum,
-                            "kuantitasSumberAir": data.kuantitasSumberAir,
-                            "KualitasSumberAir": data.KualitasSumberAir,
-                            "KondisiAtapKamarMandiMilikSendiri": data.KondisiAtapKamarMandiMilikSendiri,
-                            "KondisiLantaiKamarMandiMilikSendiri": data.KondisiLantaiKamarMandiMilikSendiri,
-                            "KondisiDindingKamarMandiMilikSendiri": data.KondisiDindingKamarMandiMilikSendiri,
-                            "KondisiBakAirKamarMandiMilikSendiri": data.KondisiBakAirKamarMandiMilikSendiri,
-                            "KondisiSaluranPembuanganKamarMandiMilikSendiri": data.KondisiSaluranPembuanganKamarMandiMilikSendiri,
-                            "KondisiWCKamarMandiMilikSendiri": data.KondisiWCKamarMandiMilikSendiri,
-                            "KondisiAtapToiletMilikSendiri": data.KondisiAtapToiletMilikSendiri,
-                            "KondisiLantaiToiletMilikSendiri": data.KondisiLantaiToiletMilikSendiri,
-                            "KondisiDindingToiletMilikSendiri": data.KondisiDindingToiletMilikSendiri,
-                            "KondisiBakAirToiletMilikSendiri": data.KondisiBakAirToiletMilikSendiri,
-                            "SaluranPembuanganToiletMilikSendiri": data.SaluranPembuanganToiletMilikSendiri,
-                            "KondisiWCToiletMilikSendiri": data.KondisiWCToiletMilikSendiri
+                            "Is_AdaKMPribadi": data.kepemilikanKamarMandi,
+                            "Is_AdaToiletPribadi": data.kepemilikanToilet,
+                            "Is_MataAir_utkMandi": data.sumberAirUntukMandiDanCuci,
+                            "Is_MAtaAir_utkMinum": data.sumberAirUntukMinum,
+                            "Jenis_Kuantitas_ID": data.kuantitasSumberAir,
+                            "Jenis_Kualitas_ID": "1",
+                            "Jenis_Atap_Kamar_Mandi_ID": data.KondisiAtapKamarMandiMilikSendiri,
+                            "Jenis_Lantai_Kamar_Mandi_ID": data.KondisiLantaiKamarMandiMilikSendiri,
+                            "Jenis_Dinding_Kamar_Mandi_ID": data.KondisiDindingKamarMandiMilikSendiri,
+                            "Jenis_Bak_Air_Kamar_Mandi_ID": data.KondisiBakAirKamarMandiMilikSendiri,
+                            "Jenis_Saluran_Kamar_Mandi_ID": data.KondisiSaluranPembuanganKamarMandiMilikSendiri,
+                            "Jenis_WC_Kamar_Mandi_ID": data.KondisiWCKamarMandiMilikSendiri,
+                            "Jenis_Atap_Toilet_ID": data.KondisiAtapToiletMilikSendiri,
+                            "Jenis_Lantai_Toilet_ID": data.KondisiLantaiToiletMilikSendiri,
+                            "Jenis_Dinding_Toilet": data.KondisiDindingToiletMilikSendiri,
+                            "Jenis_Bak_Air_Toilet_ID": data.KondisiBakAirToiletMilikSendiri,
+                            "Jenis_Saluran_Toilet_ID": data.SaluranPembuanganToiletMilikSendiri,
+                            "Jenis_WC_Toilet_ID": data.KondisiWCToiletMilikSendiri
                         }
                         // alert(`${body.Siklus}`)
                         // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
-                        // return;
-
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
                                 timeout: timeOut, // 6 menit

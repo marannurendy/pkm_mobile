@@ -229,9 +229,25 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
 
     const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
-
+        if (!valueKepemilikanToilet || typeof valueKepemilikanToilet === 'undefined' || valueKepemilikanToilet === '' || valueKepemilikanToilet === 'null') return alert('Kepemilikan Toilet (*) tidak boleh kosong');
         if (!valueKamarMandiDanToiletTerpisah || typeof valueKamarMandiDanToiletTerpisah === 'undefined' || valueKamarMandiDanToiletTerpisah === '' || valueKamarMandiDanToiletTerpisah === 'null') return alert('Kamar Mandi dan Toliet Terpisah (*) tidak boleh kosong');
         if (!valueKepemilikanKamarMandi || typeof valueKepemilikanKamarMandi === 'undefined' || valueKepemilikanKamarMandi ==='' || valueKepemilikanKamarMandi === 'null') return alert('Kepemilikan Kamar Mandi(*) tidak boleh kosong');
+        if (!valueSumberAirUntukMandiDanCuci|| typeof valueSumberAirUntukMandiDanCuci === 'undefined' || valueSumberAirUntukMandiDanCuci ==='' || valueSumberAirUntukMandiDanCuci === 'null') return alert('Sumber Air Untuk Mandi Dan Cuci(*) tidak boleh kosong');
+        if (!valueSumberAirUntukMinum|| typeof valueSumberAirUntukMinum === 'undefined' || valueSumberAirUntukMinum ==='' || valueSumberAirUntukMinum === 'null') return alert('Sumber Air Untuk Minum(*) tidak boleh kosong');
+        if (!valueKuantitasSumberAir|| typeof valueKuantitasSumberAir=== 'undefined' || valueKuantitasSumberAir==='' || valueKuantitasSumberAir=== 'null') return alert('Kuantitas SumberAir(*) tidak boleh kosong');
+        if (!valueKualitasSumberAir|| typeof valueKualitasSumberAir=== 'undefined' || valueKualitasSumberAir==='' || valueKualitasSumberAir=== 'null') return alert('Kualitas Sumber Air(*) tidak boleh kosong');
+        if (!valueKondisiAtapKamarMandiMilikSendiri|| typeof valueKondisiAtapKamarMandiMilikSendiri=== 'undefined' || valueKondisiAtapKamarMandiMilikSendiri==='' || valueKondisiAtapKamarMandiMilikSendiri=== 'null') return alert('Kondisi Atap Kamar Mandi Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiLantaiKamarMandiMilikSendiri|| typeof valueKondisiLantaiKamarMandiMilikSendiri=== 'undefined' || valueKondisiLantaiKamarMandiMilikSendiri==='' || valueKondisiLantaiKamarMandiMilikSendiri=== 'null') return alert('Kondisi Lantai Kamar Mandi Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiDindingKamarMandiMilikSendiri|| typeof valueKondisiDindingKamarMandiMilikSendiri=== 'undefined' || valueKondisiDindingKamarMandiMilikSendiri==='' || valueKondisiDindingKamarMandiMilikSendiri=== 'null') return alert('Kondisi Dinding Kamar Mandi Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiBakAirKamarMandiMilikSendiri|| typeof valueKondisiDindingKamarMandiMilikSendiri=== 'undefined' || valueKondisiDindingKamarMandiMilikSendiri==='' || valueKondisiDindingKamarMandiMilikSendiri=== 'null') return alert('Kondisi Dinding Kamar Mandi Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiSaluranPembuanganKamarMandiMilikSendiri|| typeof valueKondisiSaluranPembuanganKamarMandiMilikSendiri=== 'undefined' || valueKondisiSaluranPembuanganKamarMandiMilikSendiri==='' || valueKondisiSaluranPembuanganKamarMandiMilikSendiri=== 'null') return alert('Kondisi Saluran Pembuangan Kamar Mandi Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiWCKamarMandiMilikSendiri|| typeof valueKondisiWCKamarMandiMilikSendiri=== 'undefined' || valueKondisiWCKamarMandiMilikSendiri==='' || valueKondisiWCKamarMandiMilikSendiri=== 'null') return alert('Kondisi WC Kamar Mandi Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiAtapToiletMilikSendiri|| typeof valueKondisiAtapToiletMilikSendiri=== 'undefined' || valueKondisiAtapToiletMilikSendiri==='' || valueKondisiAtapToiletMilikSendiri=== 'null') return alert('Kondisi Atap Toilet Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiLantaiToiletMilikSendiri|| typeof valueKondisiLantaiToiletMilikSendiri=== 'undefined' || valueKondisiLantaiToiletMilikSendiri==='' || valueKondisiLantaiToiletMilikSendiri=== 'null') return alert('Kondisi Lantai Toilet Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiDindingToiletMilikSendiri|| typeof valueKondisiDindingToiletMilikSendiri=== 'undefined' || valueKondisiDindingToiletMilikSendiri==='' || valueKondisiDindingToiletMilikSendiri=== 'null') return alert('Kondisi Dinding Toilet Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiBakAirToiletMilikSendiri|| typeof valueKondisiBakAirToiletMilikSendiri=== 'undefined' || valueKondisiBakAirToiletMilikSendiri==='' || valueKondisiBakAirToiletMilikSendiri=== 'null') return alert('Kondisi Bak Air Toilet Milik Sendiri(*) tidak boleh kosong');
+        if (!valueSaluranPembuanganToiletMilikSendiri|| typeof valueSaluranPembuanganToiletMilikSendiri=== 'undefined' || valueSaluranPembuanganToiletMilikSendiri==='' || valueSaluranPembuanganToiletMilikSendiri=== 'null') return alert('Saluran Pembuangan Toilet Milik Sendiri(*) tidak boleh kosong');
+        if (!valueKondisiWCToiletMilikSendiri|| typeof valueKondisiWCToiletMilikSendiri=== 'undefined' || valueKondisiWCToiletMilikSendiri==='' || valueKondisiWCToiletMilikSendiri=== 'null') return alert('Kondisi WC Toilet Milik Sendiri(*) tidak boleh kosong');       
 
         if (submmitted) return true;
 
@@ -302,7 +318,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKamarMandiDanToiletTerpisah(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKamarMandiDanToiletTerpisah.map((x, i) => <Picker.Item key={i} label={x.kamarMandiDanToiletTerpisahDetail } value={x.kamarMandiDanToiletTerpisahDetail} />)}
+                    {itemsKamarMandiDanToiletTerpisah.map((x, i) => <Picker.Item key={i} label={x.kamarMandiDanToiletTerpisahDetail } value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -317,7 +333,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKepemilikanKamarMandi(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKepemilikanKamarMandi.map((x, i) => <Picker.Item key={i} label={x.kepemilikanKamarMandiDetail} value={x.kepemilikanKamarMandiDetail} />)}
+                    {itemsKepemilikanKamarMandi.map((x, i) => <Picker.Item key={i} label={x.kepemilikanKamarMandiDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -332,7 +348,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKepemilikanToilet(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKepemilikanToilet.map((x, i) => <Picker.Item key={i} label={x.kepemilikanToiletDetail} value={x.kepemilikanToiletDetail} />)}
+                    {itemsKepemilikanToilet.map((x, i) => <Picker.Item key={i} label={x.kepemilikanToiletDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -347,7 +363,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueSumberAirUntukMandiDanCuci(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsSumberAirUntukMandiDanCuci.map((x, i) => <Picker.Item key={i} label={x.sumberAirUntukMandiDanCuciDetail} value={x.sumberAirUntukMandiDanCuciDetail} />)}
+                    {itemsSumberAirUntukMandiDanCuci.map((x, i) => <Picker.Item key={i} label={x.sumberAirUntukMandiDanCuciDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -362,7 +378,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueSumberAirUntukMinum(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsSumberAirUntukMinum.map((x, i) => <Picker.Item key={i} label={x.sumberAirUntukMinumDetail} value={x.sumberAirUntukMinumDetail} />)}
+                    {itemsSumberAirUntukMinum.map((x, i) => <Picker.Item key={i} label={x.sumberAirUntukMinumDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -377,7 +393,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKuantitasSumberAir(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKuantitasSumberAir.map((x, i) => <Picker.Item key={i} label={x.kuantitasSumberAirDetail} value={x.kuantitasSumberAirDetail} />)}
+                    {itemsKuantitasSumberAir.map((x, i) => <Picker.Item key={i} label={x.kuantitasSumberAirDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -392,7 +408,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKualitasSumberAir(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKualitasSumberAir.map((x, i) => <Picker.Item key={i} label={x.kualitasSumberAirDetail} value={x.kualitasSumberAirDetail} />)}
+                    {itemsKualitasSumberAir.map((x, i) => <Picker.Item key={i} label={x.kualitasSumberAirDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -407,7 +423,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiAtapKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiAtapKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiAtapKamarMandiMilikSendiriDetail} value={x.kondisiAtapKamarMandiMilikSendiriDetail} />)}
+                    {itemsKondisiAtapKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiAtapKamarMandiMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -422,7 +438,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiLantaiKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiLantaiKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiLantaiKamarMandiMilikSendiriDetail} value={x.kondisiLantaiKamarMandiMilikSendiriDetail} />)}
+                    {itemsKondisiLantaiKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiLantaiKamarMandiMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -437,7 +453,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiDindingKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiDindingKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiDindingKamarMandiMilikSendiriDetail} value={x.kondisiDindingKamarMandiMilikSendiriDetail} />)}
+                    {itemsKondisiDindingKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiDindingKamarMandiMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -452,7 +468,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiBakAirKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiBakAirKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiBakAirKamarMandiMilikSendiriDetail} value={x.kondisiBakAirKamarMandiMilikSendiriDetail} />)}
+                    {itemsKondisiBakAirKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiBakAirKamarMandiMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -468,7 +484,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiSaluranPembuanganKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiSaluranPembuanganKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiSaluranPembuanganKamarMandiMilikSendiriDetail} value={x.kondisiSaluranPembuanganKamarMandiMilikSendiriDetail} />)}
+                    {itemsKondisiSaluranPembuanganKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiSaluranPembuanganKamarMandiMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -483,7 +499,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiWCKamarMandiMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiWCKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiWcKamarMandiMilikSendiriDetail} value={x.kondisiWcKamarMandiMilikSendiriDetail} />)}
+                    {itemsKondisiWCKamarMandiMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiWcKamarMandiMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -498,7 +514,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiAtapToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiAtapToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiAtapToiletMilikSendiriDetail} value={x.kondisiAtapToiletMilikSendiriDetail} />)}
+                    {itemsKondisiAtapToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiAtapToiletMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -513,7 +529,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiLantaiToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiLantaiToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiLantaiToiletMilikSendiriDetail} value={x.kondisiLantaiToiletMilikSendiriDetail} />)}
+                    {itemsKondisiLantaiToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiLantaiToiletMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -528,7 +544,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiDindingToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiDindingToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiDindingToiletMilikSendiriDetail} value={x.kondisiDindingToiletMilikSendiriDetail} />)}
+                    {itemsKondisiDindingToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiDindingToiletMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -543,7 +559,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiBakAirToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiBakAirToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiBakAirToiletMilikSendiriDetail} value={x.kondisiBakAirToiletMilikSendiriDetail} />)}
+                    {itemsKondisiBakAirToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiBakAirToiletMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -558,7 +574,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueSaluranPembuanganToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsSaluranPembuanganToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiSaluranPembuanganToiletMilikSendiriDetail} value={x.kondisiSaluranPembuanganToiletMilikSendiriDetail} />)}
+                    {itemsSaluranPembuanganToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiSaluranPembuanganToiletMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>
@@ -573,7 +589,7 @@ const InisiasiFormUKKondisiAirBersihDanSanitasi = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => setValueKondisiWCToiletMilikSendiri(itemValue)}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsKondisiWCToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiWcToiletMilikSendiriDetail} value={x.kondisiWcToiletMilikSendiriDetail} />)}
+                    {itemsKondisiWCToiletMilikSendiri.map((x, i) => <Picker.Item key={i} label={x.kondisiWcToiletMilikSendiriDetail} value={x.id} />)}
                 </Picker>
             </View>
         </View>

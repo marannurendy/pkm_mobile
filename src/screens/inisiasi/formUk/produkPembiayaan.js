@@ -835,7 +835,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const renderFormLuas = () => (
         <View style={styles.MT8}>
-            <Text>Luas (Produk Pendamping - HOME)</Text>
+            <Text>Luas </Text>
             <View style={[styles.FDRow]}>
                 <View style={[styles.textInputContainer, styles.MR8]}>
                     <TextInput 
@@ -859,7 +859,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const renderFormJenisPekerjaan = () => (
         <View style={styles.MT8}>
-            <Text>Jenis Pekerjaan (Produk Pendamping - WASH)</Text>
+            <Text>Jenis Pekerjaan</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
                     selectedValue={valueJenisPekerjaan}
@@ -875,7 +875,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const renderFormJenisPengadaan = () => (
         <View style={styles.MT8}>
-            <Text>Jenis Pengadaan (Produk Pendamping - WASH)</Text>
+            <Text>Jenis Pengadaan</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
                     selectedValue={valueJenisPengadaan}
