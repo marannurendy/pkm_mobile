@@ -290,6 +290,7 @@ const FormUjiKelayakan = ({route}) => {
                             subKelompok = valuePilihSubKelompok;
                         }
 
+                        let KategoriTujuanPembiayaan = await data.kategori_Tujuan_Pembiayaan == 'null' ? 1 : data.kategori_Tujuan_Pembiayaan
                         const body = {
                             "Sumber": data.sumberId,
                             "Alamat": data.alamat_Identitas,
@@ -324,7 +325,7 @@ const FormUjiKelayakan = ({route}) => {
                             "JmlhTanggungan": data.jumlah_tanggungan,
                             "JumlahPinjaman": data.jumlah_Pinjaman,
                             "Kabupaten": data.kabupaten,
-                            "KategoriTujuanPembiayaan": data.kategori_Tujuan_Pembiayaan,
+                            "KategoriTujuanPembiayaan": KategoriTujuanPembiayaan.toString(),
                             "Kecamatan": data.kecamatan,
                             "Kelurahan": data.kelurahan,
                             "Latitude": data.latitude,
@@ -418,6 +419,8 @@ const FormUjiKelayakan = ({route}) => {
                             "Jenis_Saluran_Toilet_ID": data.SaluranPembuanganToiletMilikSendiri,
                             "Jenis_WC_Toilet_ID": data.KondisiWCToiletMilikSendiri
                         }
+
+                        console.log('Is_AdaKMPribadi ======================>',data.kepemilikanKamarMandi)
                         // alert(`${body.Siklus}`)
                         // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
                         try {

@@ -17,7 +17,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
     var postGetSosialisasiMobile = ApiSyncInisiasi + 'GetSosialisasiMobile';
     var getDataPencairan = ApiSyncInisiasi + 'GetPencairanMobile/'+ params.cabangid + '/undefined'; 
     if (__DEV__) console.log('ACTIONS GET SYNC DATA VARIABEL', getListGroup, getListCollection, queryUP, getPAR, getPKMIndividual, getMasterData);
-
+    console.log(postGetSosialisasiMobile)
     const truncat = (reject, source) => {
         if (__DEV__) console.log('ACTIONS GET SYNC DATA TRUNCAT LOADED');
 
@@ -464,7 +464,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
 
         let mappingProspek = [];
-
         if (uk_client_data.length > 0) {
             try {
                 var query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, verifikasiTanggal, verifikasiStatus, verifikasiReason, kelompokID, subKelompok, siklus, id_prospek) values ';
@@ -483,7 +482,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 
                 var queryPPKelompokTahapLanjut = 'INSERT OR IGNORE INTO Table_PP_ListNasabah ( kelompok_Id, kelompok, subKelompok_Id, Nasabah_Id, Nama_Nasabah, is_Ketua_Kelompok, is_KetuaSubKelompok, lokasiSos, branchid, syncBy, jumlah_pembiayaan, jangka_waktu, jasa, Angsuran_per_minggu, status, isTahapLanjut, Nama_TTD_AO ) values ';
                 var queryPPSisipanTahapLanjut = 'INSERT OR IGNORE INTO Table_PP_Kelompok ( kelompok_Id, kelompok, branchid, isTahapLanjut, status ) values ';
-
+                var queryUKAirSanitasi = 'INSERT INTO Table_UK_AirSanitasi (kamarMandiDanToiletTerpisah, kepemilikanKamarMandi, kepemilikanToilet, sumberAirUntukMandiDanCuci, sumberAirUntukMinum, kuantitasSumberAir, KualitasSumberAir, KondisiAtapKamarMandiMilikSendiri, KondisiLantaiKamarMandiMilikSendiri, KondisiDindingKamarMandiMilikSendiri, KondisiBakAirKamarMandiMilikSendiri, KondisiSaluranPembuanganKamarMandiMilikSendiri, KondisiWCKamarMandiMilikSendiri, KondisiAtapToiletMilikSendiri, KondisiLantaiToiletMilikSendiri, KondisiDindingToiletMilikSendiri, KondisiBakAirToiletMilikSendiri, KondisiSaluranPembuanganKamarMandiMilikSendiri, KondisiWCToiletMilikSendiri, idSosialisasiDatabase) values'
                 for (let i = 0; i < uk_client_data.length; i++) {
                     let uniqueNumber = (new Date().getTime()).toString(36);
                     let namaNasabah = uk_client_data[i].Nama_Lengkap || '';
@@ -911,6 +910,48 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     + uniqueNumber
                     + "')";
 
+                    queryUKAirSanitasi = queryUKAirSanitasi + "('"
+                    + uk_client_data[i].Is_KMdanToiletTerpisah
+                    + "','"
+                    + uk_client_data[i].Is_AdaKMPribadi
+                    + "','"
+                    + uk_client_data[i].Is_AdaToiletPribadi
+                    + "','"
+                    + uk_client_data[i].Is_MataAir_utkMandi
+                    + "','"
+                    + uk_client_data[i].Is_MAtaAir_utkMinum
+                    + "','"
+                    + uk_client_data[i].Jenis_Kuantitas_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Kualitas_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Atap_Kamar_Mandi_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Lantai_Kamar_Mandi_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Dinding_Kamar_Mandi_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Bak_Air_Kamar_Mandi_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Saluran_Kamar_Mandi_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_WC_Kamar_Mandi_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Atap_Toilet_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Lantai_Toilet_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Dinding_Toilet
+                    + "','"
+                    + uk_client_data[i].Jenis_Bak_Air_Toilet_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_Saluran_Toilet_ID
+                    + "','"
+                    + uk_client_data[i].Jenis_WC_Toilet_ID
+                    + "','"
+                    + uk_client_data[i].ID_Prospek
+                    + "')";
+
                     queryUKSektorEkonomi = queryUKSektorEkonomi + "('"
                     + uk_client_data[i].Nama_Lengkap
                     + "','"
@@ -1317,6 +1358,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
                 queryPPKelompokTahapLanjut = queryPPKelompokTahapLanjut + ";";
                 queryPPSisipanTahapLanjut = queryPPSisipanTahapLanjut + ";";
+                queryUKAirSanitasi = queryUKAirSanitasi + ";";
 
                 queryPPGroup = queryPPGroup + ";";
 
@@ -1333,6 +1375,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 // if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP KELOMPOK INSERT QUERY:', queryPPSisipan);
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE PP KELOMPOK INSERT QUERY:', queryPPGroup);
 
+                
                 db.transaction(
                     tx => { tx.executeSql(query); }, function(error) {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT TRANSACTION ERROR:', error);
@@ -1347,6 +1390,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 //         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK MASTER INSERT TRANSACTION DONE');
                 //     }
                 // );
+
+                db.transaction(
+                    tx => { tx.executeSql(queryUKAirSanitasi); }, function(error) {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK AIR SANITASI ERROR:', error);
+                    }, function() {
+                        if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK AIR SANITASI DONE');
+                    }
+                );
                 db.transaction(
                     tx => { tx.executeSql(queryUKDataDiri); }, function(error) {
                         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE UK DATA DIRI INSERT TRANSACTION ERROR:', error);
