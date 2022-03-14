@@ -52,7 +52,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const [buttonCam, setButtonCam] = useState(false)
     const camera = useRef(null)
     const [fotoRumah, setFotoRumah] = useState(undefined)
-    const [key_fotoRumah, setKey_fotoRumah] = useState(`formUK_KondisiRAB_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
+    const [key_fotoRumah, setKey_fotoRumah] = useState(`formUK_KondisiRumah_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     const [cameraShow, setCameraShow] = useState(0)
     const [fotoRAB, setFotoRAB] = useState(undefined)
     const [key_fotoRAB, setKey_fotoRAB] = useState(`formUK_KondisiRAB_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
@@ -160,7 +160,21 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                             });
                         }
 
-                        Promise.all([setLuasBangunan(), setKondisiBangunan(), setJenisAtap(), setDinding(), setLantai(), setRumah()]).then((response) => {
+                        const setRumahRAB = () => {
+                            if (__DEV__) console.log('setRumahRAB');
+                            return new Promise((resolve, reject) => {
+                                if (data.foto_rumah_rab !== null && typeof data.foto_rumah_rab !== 'undefined') {
+                                    setTimeout(() => {
+                                        setFotoRAB(data.foto_rumah_rab);
+                                        return resolve('next');
+                                    }, 4000);
+                                }
+                                return resolve('next');
+                            });
+                        }
+
+                        console.log('getdatabase foto runah ===>', data.foto_rumah)
+                        Promise.all([setLuasBangunan(), setKondisiBangunan(), setJenisAtap(), setDinding(), setLantai(), setRumah(), setRumahRAB()]).then((response) => {
                             if (data.sanitasi_Akses_AirBersih !== null && typeof data.sanitasi_Akses_AirBersih !== 'undefined') setValueAksesAirBersih(data.sanitasi_Akses_AirBersih === 'true' ? true : false);
                             if (data.sanitasi_KamarMandi !== null && typeof data.sanitasi_KamarMandi !== 'undefined') setValueKamarMandi(data.sanitasi_KamarMandi === 'true' ? true : false);
                         });
@@ -207,11 +221,12 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
                     const fotoRumahBase64 = await AsyncStorage.getItem(key_fotoRumah)
+                    const fotoRumahRABBase64 = await AsyncStorage.getItem(key_fotoRAB)
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, idSosialisasiDatabase, foto_rumah) values ("' + namaNasabah + '","' + valueLuasBangunan + '","' + valueKondisiBangunan + '","' + valueJenisAtap + '","' + valueDinding + '","' + valueLantai + '","' + valueAksesAirBersih + '","' + valueKamarMandi + '","' + id + '","' + fotoRumahBase64 + '")';
+                        query = 'INSERT INTO Table_UK_KondisiRumah (nama_lengkap, luas_Bangunan, kondisi_Bangunan, jenis_Atap, dinding, lantai, sanitasi_Akses_AirBersih, sanitasi_KamarMandi, idSosialisasiDatabase, foto_rumah, foto_rumah_rab) values ("' + namaNasabah + '","' + valueLuasBangunan + '","' + valueKondisiBangunan + '","' + valueJenisAtap + '","' + valueDinding + '","' + valueLantai + '","' + valueAksesAirBersih + '","' + valueKamarMandi + '","' + id + '","' + fotoRumahBase64 + '","' + fotoRumahRABBase64 + '" )';
                     } else {
-                        query = 'UPDATE Table_UK_KondisiRumah SET luas_Bangunan = "' + valueLuasBangunan + '", kondisi_Bangunan = "' + valueKondisiBangunan + '", jenis_Atap = "' + valueJenisAtap + '", dinding = "' + valueDinding + '", lantai = "' + valueLantai + '", sanitasi_Akses_AirBersih = "' + valueAksesAirBersih + '", sanitasi_KamarMandi = "' + valueKamarMandi + '", foto_rumah = "' + fotoRumahBase64 + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                        query = 'UPDATE Table_UK_KondisiRumah SET luas_Bangunan = "' + valueLuasBangunan + '", kondisi_Bangunan = "' + valueKondisiBangunan + '", jenis_Atap = "' + valueJenisAtap + '", dinding = "' + valueDinding + '", lantai = "' + valueLantai + '", sanitasi_Akses_AirBersih = "' + valueAksesAirBersih + '", sanitasi_KamarMandi = "' + valueKamarMandi + '", foto_rumah = "' + fotoRumahBase64 + '", foto_rumah_rab = "' + fotoRumahRABBase64 + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);

@@ -290,6 +290,7 @@ db.transaction(tx => {
             sanitasi_KamarMandi varchar,
             id_prospek varchar,
             foto_rumah varchar,
+            foto_rumah_rab varchar,
             idSosialisasiDatabase varchar
         );`
     )
