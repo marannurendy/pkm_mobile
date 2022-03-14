@@ -220,7 +220,7 @@ const FormUjiKelayakan = ({route}) => {
                                 return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
                             }
 
-                            siklus = parseInt(data.siklus) ?? 1;
+                            siklus = parseInt(data.siklus) || 1;
                         }
 
                         if (statusSosialisasi === '1') {
@@ -395,303 +395,303 @@ const FormUjiKelayakan = ({route}) => {
                             "Siklus": '' + siklus,
                             "IsSesuaiDukcapil": data.is_nik_valid_dukcapil
                         }
-                        // alert(`${body.Siklus}`)
-                        // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
-                        // return;
+                        alert(`${body.Siklus}`)
+                        if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
+                        return;
 
-                        try {
-                            const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
-                                timeout: timeOut, // 6 menit
-                                method: 'POST',
-                                headers: {
-                                    Authorization: token,
-                                    Accept: 'application/json',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify(body)
-                            });
-                            const responseJSON = await response.json();
-                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
+                        // try {
+                        //     const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
+                        //         timeout: timeOut, // 6 menit
+                        //         method: 'POST',
+                        //         headers: {
+                        //             Authorization: token,
+                        //             Accept: 'application/json',
+                        //             'Content-Type': 'application/json'
+                        //         },
+                        //         body: JSON.stringify(body)
+                        //     });
+                        //     const responseJSON = await response.json();
+                        //     if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk response:', responseJSON);
 
-                            if (responseJSON.responseCode === 200) {
-                                const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
-                                db.transaction(
-                                    tx => {
-                                        tx.executeSql(find, [], (txFind, resultsFind) => {
-                                            let dataLengthFind = resultsFind.rows.length
-                                            if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
+                        //     if (responseJSON.responseCode === 200) {
+                        //         const find = 'SELECT * FROM Table_UK_Master WHERE idSosialisasiDatabase = "'+ id +'"';
+                        //         db.transaction(
+                        //             tx => {
+                        //                 tx.executeSql(find, [], (txFind, resultsFind) => {
+                        //                     let dataLengthFind = resultsFind.rows.length
+                        //                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
-                                            let query = '';
-                                            if (dataLengthFind === 0) {
-                                                alert('UK Master not found');
-                                                navigation.goBack();
-                                                return;
-                                            }
+                        //                     let query = '';
+                        //                     if (dataLengthFind === 0) {
+                        //                         alert('UK Master not found');
+                        //                         navigation.goBack();
+                        //                         return;
+                        //                     }
 
-                                            query = 'UPDATE Table_UK_Master SET status = "7" WHERE idSosialisasiDatabase = "' + id + '"';
+                        //                     query = 'UPDATE Table_UK_Master SET status = "7" WHERE idSosialisasiDatabase = "' + id + '"';
 
-                                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
+                        //                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update query:', query);
 
-                                            db.transaction(
-                                                tx => {
-                                                    tx.executeSql(query);
-                                                }, function(error) {
-                                                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
-                                                    setSubmitted(false);
-                                                },function() {
-                                                    if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
+                        //                     db.transaction(
+                        //                         tx => {
+                        //                             tx.executeSql(query);
+                        //                         }, function(error) {
+                        //                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update error:', error.message);
+                        //                             setSubmitted(false);
+                        //                         },function() {
+                        //                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction insert/update success');
                                                     
-                                                    if (data.clientId === null || data.clientId === 'null') {}
-                                                    else {
-                                                        const findProspekLamaPP = 'SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = "'+ data.clientId +'"';
-                                                        db.transaction(
-                                                            tx => {
-                                                                tx.executeSql(findProspekLamaPP, [], async (txFind, resultsFind) => {
-                                                                    let dataLengthFind = resultsFind.rows.length
-                                                                    if (__DEV__) console.log(`${findProspekLamaPP}`, resultsFind.rows);
+                        //                             if (data.clientId === null || data.clientId === 'null') {}
+                        //                             else {
+                        //                                 const findProspekLamaPP = 'SELECT * FROM Table_Prospek_Lama_PP WHERE clientId = "'+ data.clientId +'"';
+                        //                                 db.transaction(
+                        //                                     tx => {
+                        //                                         tx.executeSql(findProspekLamaPP, [], async (txFind, resultsFind) => {
+                        //                                             let dataLengthFind = resultsFind.rows.length
+                        //                                             if (__DEV__) console.log(`${findProspekLamaPP}`, resultsFind.rows);
 
-                                                                    if (dataLengthFind > 0) {
-                                                                        const row = resultsFind.rows.item(0);
-                                                                        if (__DEV__) console.log(`${findProspekLamaPP}`, row);
+                        //                                             if (dataLengthFind > 0) {
+                        //                                                 const row = resultsFind.rows.item(0);
+                        //                                                 if (__DEV__) console.log(`${findProspekLamaPP}`, row);
 
-                                                                        const tandaTanganAO = await AsyncStorage.getItem(row.inputTandaTanganAO);
-                                                                        const tandaTanganKetuaKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaKelompok);
-                                                                        const tandaTanganKetuaSubKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaSubKelompok);
+                        //                                                 const tandaTanganAO = await AsyncStorage.getItem(row.inputTandaTanganAO);
+                        //                                                 const tandaTanganKetuaKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaKelompok);
+                        //                                                 const tandaTanganKetuaSubKelompok = await AsyncStorage.getItem(row.inputTandaTanganKetuaSubKelompok);
 
-                                                                        const bodyProspekLama = [
-                                                                            {
-                                                                                "ID_Kelompok": row.groupId,
-                                                                                "ID_Prospek": responseJSON.data[0].ID_Prospek,
-                                                                                "Is_Perkawinan_Berubah": row.inputPerubahanStatusPernikahan,
-                                                                                "Is_Tanggungan_Berubah": row.inputPerubahanStatusTanggungan,
-                                                                                "Is_Usaha_Berubah": row.inputPerubahanUsaha,
-                                                                                "Jml_Kehadiran_PKM": row.inputKehadiranPKM,
-                                                                                "Jml_Pembayaran": row.inputPembayaran,
-                                                                                "Keterangan_Tanggungan": row.inputPerubahanStatusTanggunganKeterangan,
-                                                                                "Keterangan_Usaha": row.inputPerubahanUsahaKeterangan,
-                                                                                "Lokasi_Persetujuan": row.inputAddress,
-                                                                                "No_Identitas": row.identityNumber,
-                                                                                "Plafon_Diajukan": row.inputPembiayaanDiajukan,
-                                                                                "Status_Tempat_Tinggal": row.inputTempatTinggalNasabah,
-                                                                                "TTD_AO": tandaTanganAO.split(',')[1] || 'null',
-                                                                                "TTD_KK": tandaTanganKetuaKelompok.split(',')[1] || 'null',
-                                                                                "TTD_KSK": tandaTanganKetuaSubKelompok.split(',')[1] || 'null',
-                                                                                "Tahap_Pembiayaan": row.inputPembiayaanTahap,
-                                                                                "Tanggal_Persetujuan": row.inputDate,
-                                                                                "Tenor": row.inputJangkaWaktuPembiayaanDiajukan
-                                                                            }
-                                                                        ];
-                                                                        if (__DEV__) console.log('doSubmit bodyProspekLama:', bodyProspekLama);
-                                                                        try {
-                                                                            fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
-                                                                                method: 'POST',
-                                                                                headers: {
-                                                                                    Authorization: token,
-                                                                                    Accept: 'application/json',
-                                                                                    'Content-Type': 'application/json'
-                                                                                },
-                                                                                body: JSON.stringify(bodyProspekLama)
-                                                                            })
-                                                                            .then((response) => response.json())
-                                                                            .then((responseJson) => {
-                                                                                if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama success:', responseJson);
-                                                                            })
-                                                                        } catch(error) {
-                                                                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama error:', error);
-                                                                        }
-                                                                    } 
-                                                                }, function(error) {
-                                                                    if (__DEV__) console.log(`${findProspekLamaPP}`, error.message);
-                                                                })
-                                                            }
-                                                        );
-                                                    }
+                        //                                                 const bodyProspekLama = [
+                        //                                                     {
+                        //                                                         "ID_Kelompok": row.groupId,
+                        //                                                         "ID_Prospek": responseJSON.data[0].ID_Prospek,
+                        //                                                         "Is_Perkawinan_Berubah": row.inputPerubahanStatusPernikahan,
+                        //                                                         "Is_Tanggungan_Berubah": row.inputPerubahanStatusTanggungan,
+                        //                                                         "Is_Usaha_Berubah": row.inputPerubahanUsaha,
+                        //                                                         "Jml_Kehadiran_PKM": row.inputKehadiranPKM,
+                        //                                                         "Jml_Pembayaran": row.inputPembayaran,
+                        //                                                         "Keterangan_Tanggungan": row.inputPerubahanStatusTanggunganKeterangan,
+                        //                                                         "Keterangan_Usaha": row.inputPerubahanUsahaKeterangan,
+                        //                                                         "Lokasi_Persetujuan": row.inputAddress,
+                        //                                                         "No_Identitas": row.identityNumber,
+                        //                                                         "Plafon_Diajukan": row.inputPembiayaanDiajukan,
+                        //                                                         "Status_Tempat_Tinggal": row.inputTempatTinggalNasabah,
+                        //                                                         "TTD_AO": tandaTanganAO.split(',')[1] || 'null',
+                        //                                                         "TTD_KK": tandaTanganKetuaKelompok.split(',')[1] || 'null',
+                        //                                                         "TTD_KSK": tandaTanganKetuaSubKelompok.split(',')[1] || 'null',
+                        //                                                         "Tahap_Pembiayaan": row.inputPembiayaanTahap,
+                        //                                                         "Tanggal_Persetujuan": row.inputDate,
+                        //                                                         "Tenor": row.inputJangkaWaktuPembiayaanDiajukan
+                        //                                                     }
+                        //                                                 ];
+                        //                                                 if (__DEV__) console.log('doSubmit bodyProspekLama:', bodyProspekLama);
+                        //                                                 try {
+                        //                                                     fetch(`${ApiSyncPostInisiasi}post_prospek_lama`, {
+                        //                                                         method: 'POST',
+                        //                                                         headers: {
+                        //                                                             Authorization: token,
+                        //                                                             Accept: 'application/json',
+                        //                                                             'Content-Type': 'application/json'
+                        //                                                         },
+                        //                                                         body: JSON.stringify(bodyProspekLama)
+                        //                                                     })
+                        //                                                     .then((response) => response.json())
+                        //                                                     .then((responseJson) => {
+                        //                                                         if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama success:', responseJson);
+                        //                                                     })
+                        //                                                 } catch(error) {
+                        //                                                     if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama error:', error);
+                        //                                                 }
+                        //                                             } 
+                        //                                         }, function(error) {
+                        //                                             if (__DEV__) console.log(`${findProspekLamaPP}`, error.message);
+                        //                                         })
+                        //                                     }
+                        //                                 );
+                        //                             }
 
-                                                    const bodyKetuaSubketua = {
-                                                        "ID_Prospek": responseJSON.data[0].ID_Prospek,
-                                                        "Nama_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
-                                                        "Nama_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok
-                                                    };
-                                                    if (__DEV__) console.log('doSubmit bodyKetuaSubketua:', bodyKetuaSubketua);
-                                                    try {
-                                                        fetch(`${ApiSyncPostInisiasi}post_ketua_subketua`, {
-                                                            method: 'POST',
-                                                            headers: {
-                                                                Authorization: token,
-                                                                Accept: 'application/json',
-                                                                'Content-Type': 'application/json'
-                                                            },
-                                                            body: JSON.stringify(bodyKetuaSubketua)
-                                                        })
-                                                        .then((response) => response.json())
-                                                        .then((responseJson) => {
-                                                            if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua success:', responseJson);
-                                                        })
-                                                    } catch(error) {
-                                                        if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua error:', error);
-                                                    }
+                        //                             const bodyKetuaSubketua = {
+                        //                                 "ID_Prospek": responseJSON.data[0].ID_Prospek,
+                        //                                 "Nama_KK": data.nama_tanda_Tangan_Ketua_Kelompok,
+                        //                                 "Nama_KSK": data.nama_tanda_Tangan_Ketua_SubKelompok
+                        //                             };
+                        //                             if (__DEV__) console.log('doSubmit bodyKetuaSubketua:', bodyKetuaSubketua);
+                        //                             try {
+                        //                                 fetch(`${ApiSyncPostInisiasi}post_ketua_subketua`, {
+                        //                                     method: 'POST',
+                        //                                     headers: {
+                        //                                         Authorization: token,
+                        //                                         Accept: 'application/json',
+                        //                                         'Content-Type': 'application/json'
+                        //                                     },
+                        //                                     body: JSON.stringify(bodyKetuaSubketua)
+                        //                                 })
+                        //                                 .then((response) => response.json())
+                        //                                 .then((responseJson) => {
+                        //                                     if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua success:', responseJson);
+                        //                                 })
+                        //                             } catch(error) {
+                        //                                 if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua error:', error);
+                        //                             }
 
-                                                    if (__DEV__) {
-                                                        db.transaction(
-                                                            tx => {
-                                                                tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
-                                                                    if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
-                                                                })
-                                                            }, function(error) {
-                                                                if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
-                                                            }, function() {}
-                                                        );
-                                                    }
+                        //                             if (__DEV__) {
+                        //                                 db.transaction(
+                        //                                     tx => {
+                        //                                         tx.executeSql("SELECT * FROM Table_UK_Master", [], (tx, results) => {
+                        //                                             if (__DEV__) console.log('SELECT * FROM Table_UK_Master RESPONSE:', results.rows);
+                        //                                         })
+                        //                                     }, function(error) {
+                        //                                         if (__DEV__) console.log('SELECT * FROM Table_UK_Master ERROR:', error);
+                        //                                     }, function() {}
+                        //                                 );
+                        //                             }
 
-                                                    /* ============ START DELETE DATA FROM LOCAL STORAGE ============ */
-                                                    const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id = '" + id + "'";
-                                                    const queryDeleteUKMaster = "DELETE FROM Table_UK_Master WHERE idSosialisasiDatabase = '" + id + "'";
-                                                    const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '" + id + "'";
-                                                    const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
-                                                    const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = '" + id + "'";
-                                                    const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = '" + id + "'";
-                                                    const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
-                                                    const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
-                                                    const queryDeleteUKDisiplinNasabah = "DELETE FROM Table_UK_DisipinNasabah WHERE idSosialisasiDatabase = '" + id + "'";
-                                                    const queryDeleteProspekLamaPP = "DELETE FROM Table_Prospek_Lama_PP WHERE clientId = '" + data.clientId + "'";
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteUKMaster, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteUKMaster} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteUKMaster} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteUKDataDiri} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteUKDataDiri} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteUKProdukPembiayaan, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteUKKondisiRumah, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteUKSektorEkonomi, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteUKPendapatanNasabah, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteUKPermohonanPembiayaan, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteUKDisiplinNasabah, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    db.transaction(
-                                                        tx => {
-                                                            tx.executeSql(queryDeleteProspekLamaPP, [], (tx, results) => {
-                                                                if (__DEV__) console.log(`${queryDeleteProspekLamaPP} RESPONSE:`, results.rows);
-                                                            })
-                                                        }, function(error) {
-                                                            if (__DEV__) console.log(`${queryDeleteProspekLamaPP} ERROR:`, error);
-                                                        }, function() {}
-                                                    );
-                                                    /* ============ FINISH DELETE DATA FROM LOCAL STORAGE ============ */
+                        //                             /* ============ START DELETE DATA FROM LOCAL STORAGE ============ */
+                        //                             const queryDeleteSosialisasiDatabase = "DELETE FROM Sosialisasi_Database WHERE id = '" + id + "'";
+                        //                             const queryDeleteUKMaster = "DELETE FROM Table_UK_Master WHERE idSosialisasiDatabase = '" + id + "'";
+                        //                             const queryDeleteUKDataDiri = "DELETE FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = '" + id + "'";
+                        //                             const queryDeleteUKProdukPembiayaan = "DELETE FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
+                        //                             const queryDeleteUKKondisiRumah = "DELETE FROM Table_UK_KondisiRumah WHERE idSosialisasiDatabase = '" + id + "'";
+                        //                             const queryDeleteUKSektorEkonomi = "DELETE FROM Table_UK_SektorEkonomi WHERE idSosialisasiDatabase = '" + id + "'";
+                        //                             const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
+                        //                             const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
+                        //                             const queryDeleteUKDisiplinNasabah = "DELETE FROM Table_UK_DisipinNasabah WHERE idSosialisasiDatabase = '" + id + "'";
+                        //                             const queryDeleteProspekLamaPP = "DELETE FROM Table_Prospek_Lama_PP WHERE clientId = '" + data.clientId + "'";
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteSosialisasiDatabase} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteUKMaster, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteUKMaster} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteUKMaster} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteUKDataDiri, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteUKDataDiri} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteUKDataDiri} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteUKProdukPembiayaan, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteUKProdukPembiayaan} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteUKKondisiRumah, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteUKKondisiRumah} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteUKSektorEkonomi, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteUKSektorEkonomi} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteUKPendapatanNasabah, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteUKPendapatanNasabah} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteUKPermohonanPembiayaan, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteUKPermohonanPembiayaan} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteUKDisiplinNasabah, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteUKDisiplinNasabah} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             db.transaction(
+                        //                                 tx => {
+                        //                                     tx.executeSql(queryDeleteProspekLamaPP, [], (tx, results) => {
+                        //                                         if (__DEV__) console.log(`${queryDeleteProspekLamaPP} RESPONSE:`, results.rows);
+                        //                                     })
+                        //                                 }, function(error) {
+                        //                                     if (__DEV__) console.log(`${queryDeleteProspekLamaPP} ERROR:`, error);
+                        //                                 }, function() {}
+                        //                             );
+                        //                             /* ============ FINISH DELETE DATA FROM LOCAL STORAGE ============ */
                                                     
-                                                    /* ============ START REMOVE STORAGE ============ */
-                                                    AsyncStorage.removeItem(data.foto_ktp_penjamin);
-                                                    AsyncStorage.removeItem(data.foto_ktp_suami);
-                                                    AsyncStorage.removeItem(data.foto_kk);
-                                                    AsyncStorage.removeItem(data.foto_Surat_Keterangan_Domisili);
-                                                    AsyncStorage.removeItem(data.foto_Kartu_Identitas);
-                                                    AsyncStorage.removeItem(data.tanda_Tangan_AOSAO);
-                                                    AsyncStorage.removeItem(data.tanda_Tangan_Nasabah);
-                                                    AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);
-                                                    AsyncStorage.removeItem(data.tanda_Tangan_Ketua_SubKelompok);
-                                                    AsyncStorage.removeItem(data.tanda_Tangan_Ketua_Kelompok);
-                                                    /* ============ FINISH REMOVE STORAGE ============ */
+                        //                             /* ============ START REMOVE STORAGE ============ */
+                        //                             AsyncStorage.removeItem(data.foto_ktp_penjamin);
+                        //                             AsyncStorage.removeItem(data.foto_ktp_suami);
+                        //                             AsyncStorage.removeItem(data.foto_kk);
+                        //                             AsyncStorage.removeItem(data.foto_Surat_Keterangan_Domisili);
+                        //                             AsyncStorage.removeItem(data.foto_Kartu_Identitas);
+                        //                             AsyncStorage.removeItem(data.tanda_Tangan_AOSAO);
+                        //                             AsyncStorage.removeItem(data.tanda_Tangan_Nasabah);
+                        //                             AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);
+                        //                             AsyncStorage.removeItem(data.tanda_Tangan_Ketua_SubKelompok);
+                        //                             AsyncStorage.removeItem(data.tanda_Tangan_Ketua_Kelompok);
+                        //                             /* ============ FINISH REMOVE STORAGE ============ */
 
-                                                    const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
-                                                    Alert.alert(responseJSON.responseDescription, message);
-                                                    setSubmitted(false);
-                                                    navigation.goBack();
-                                                    // navigation.replace('UjiKelayakan', { groupName: groupName });
-                                                }
-                                            );
-                                        }, function(error) {
-                                            if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
-                                            setSubmitted(false);
-                                        })
-                                    }
-                                );
-                                return true;
-                            }
+                        //                             const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
+                        //                             Alert.alert(responseJSON.responseDescription, message);
+                        //                             setSubmitted(false);
+                        //                             navigation.goBack();
+                        //                             // navigation.replace('UjiKelayakan', { groupName: groupName });
+                        //                         }
+                        //                     );
+                        //                 }, function(error) {
+                        //                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
+                        //                     setSubmitted(false);
+                        //                 })
+                        //             }
+                        //         );
+                        //         return true;
+                        //     }
                             
-                            let message = responseJSON.responseDescription;
-                            if (responseJSON.code === 403) message = responseJSON.message;
+                        //     let message = responseJSON.responseDescription;
+                        //     if (responseJSON.code === 403) message = responseJSON.message;
 
-                            Alert.alert('Error', message);
-                            setSubmitted(false);
-                            return;
-                        } catch (error) {
-                            if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
-                            if (error.name === 'AbortError') {
-                                Alert.alert('Error', 'Request timeout');
-                            } else {
-                                Alert.alert('Error', error.message || 'Something went wrong');
-                            }
+                        //     Alert.alert('Error', message);
+                        //     setSubmitted(false);
+                        //     return;
+                        // } catch (error) {
+                        //     if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
+                        //     if (error.name === 'AbortError') {
+                        //         Alert.alert('Error', 'Request timeout');
+                        //     } else {
+                        //         Alert.alert('Error', error.message || 'Something went wrong');
+                        //     }
 
-                            setSubmitted(false);
-                            return;
-                        }
+                        //     setSubmitted(false);
+                        //     return;
+                        // }
                     }
                     setSubmitted(false);
                     return;
