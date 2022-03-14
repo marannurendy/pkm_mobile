@@ -1642,7 +1642,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
         let checkIdProspek = "0";
         if (["AO", "SAO"].includes(roleUser)) checkIdProspek = "1";
-
         if (![2].includes(params.prospekFilter)) {
             const body = JSON.stringify({
                 "CreatedBy": "",
