@@ -33,7 +33,7 @@ const Sosialisasi = () => {
     let [value, setValue] = useState(null)
     let [nohp, setNohp] = useState()
     let [sisipan, setSisipan] = useState(false)
-    let [baru, setBaru] = useState(true)
+    let [baru, setBaru] = useState(false)
     let [statusNasabah, setStatusNasabah] = useState(2)
     
     let [lokasiSos, setLokasiSos] = useState()
@@ -105,6 +105,8 @@ const Sosialisasi = () => {
             flashNotification("Alert", "Silahkan masukkan nama nasabah", "#ff6347", "#fff")
         }else if(statusNasabah === null || statusNasabah === undefined) {
             flashNotification("Alert", "Silahkan pilih status nasabah", "#ff6347", "#fff")
+        }else if(sisipan === false && baru === false) {
+            flashNotification("Alert", "Tipe nasabah belum dipilih (Sisipan/Baru)", "#ff6347", "#fff")
         }else if(tanggalSos === null || tanggalSos === undefined) {
             flashNotification("Alert", "Silahkan pilih tanggal sosialisasi", "#ff6347", "#fff")
         }else if(lokasiSos === null || lokasiSos === undefined) {
