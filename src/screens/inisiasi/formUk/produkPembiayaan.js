@@ -46,8 +46,14 @@ const ProdukPembiayaan = ({ route }) => {
     const [dataSosialisasiDatabase, setDataSosialisasiDatabase] = useState(false);
     const [nameProdukPembiayaan, setNameProdukPembiayaan] = useState('');
     const [nameFrekuensiPembayaran, setNameFrekuensiPembayaran] = useState('');
+    const [valueLuasA, setValueLuasA] = useState('');
+    const [valueLuasB, setValueLuasB] = useState('');
+    const [valueJenisPekerjaan, setValueJenisPekerjaan] = useState(null);
+    const [itemsJenisPekerjaan, setItemsJenisPekerjaan] = useState([]);
+    const [valueJenisPengadaan, setValueJenisPengadaan] = useState(null);
+    const [itemsJenisPengadaan, setItemsJenisPengadaan] = useState([]);
 
-    useEffect(() => {
+    useEffect( () => {
         setInfo();
         getStorageJenisPembiayaan();
         getStorageTipePencairan();
@@ -56,6 +62,7 @@ const ProdukPembiayaan = ({ route }) => {
         getStorageFrekuensi();
         getSosialisasiDatabase();
         getUKProdukPembiayaan();
+        getStorageWash();
     }, [])
 
     useEffect(() => {
@@ -202,6 +209,10 @@ const ProdukPembiayaan = ({ route }) => {
                             if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
                             if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
                             if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
+                            if (data.luas_a !== null && typeof data.luas_a !== 'undefined') setValueLuasA(data.luas_a);
+                            if (data.luas_b !== null && typeof data.luas_b !== 'undefined') setValueLuasB(data.luas_b);
+                            if (data.jenis_pekerjaan !== null && typeof data.jenis_pekerjaan !== 'undefined') setValueJenisPekerjaan(data.jenis_pekerjaan);
+                            if (data.jenis_pengadaan !== null && typeof data.jenis_pengadaan !== 'undefined') setValueJenisPengadaan(data.jenis_pengadaan);
                         });
                     }
                 }, function(error) {
@@ -257,16 +268,38 @@ const ProdukPembiayaan = ({ route }) => {
                         ).filter(data => data.isReguler === IsReguler && data.IsMP === IsMP).map((data, i) => {
                             return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                         }) ?? [];
-
                         if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
                         setItemsProdukPembiayaan(responseFiltered);
                         return;
                     }
                     if (valueJenisPembiayaan !== '1') {
-                        responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler).map((data, i) => {
-                            return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
-                        }) ?? [];
-                        
+                        switch (IsMP) {
+                            case '3':case 3:
+                                responseFiltered = await  responseJSON.filter(data => 
+                                    data.productName.trim().substring(0, 4) === 'WaMP' ||
+                                    data.productName.trim().substring(0, 4) === 'Wash' ||
+                                    data.productName.trim().substring(0, 4) === 'WaSy'
+                                    ).map((data, i) => {
+                                    return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                                }) ?? [];
+                                break;
+                            case '4':case 4:
+                                responseFiltered = await  responseJSON.filter(data => 
+                                    data.productName.trim().substring(0, 3) === 'HMR' || 
+                                    data.productName.trim().substring(0, 3) === 'HMS' ||
+                                    data.productName.trim().substring(0, 4) === 'HPMP' ||
+                                    data.productName.trim().substring(0, 4) === 'HSMP' 
+                                    ).map((data, i) => {
+                                    return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                                }) ?? [];
+                                break;
+                            default:
+                                responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler).map((data, i) => {
+                                    return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                                }) ?? [];
+                                break;
+                        }
+
                         if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
                         setItemsProdukPembiayaan(responseFiltered);
                         return;
@@ -414,6 +447,25 @@ const ProdukPembiayaan = ({ route }) => {
         }
     }
 
+    const getStorageWash = async () => {
+        if (__DEV__) console.log('getStorageWash loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('MasterProdukPendamping');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                setItemsJenisPekerjaan(responseJSON.jenisPekerjaan)
+                setItemsJenisPengadaan(responseJSON.jenisPengadaan)
+                return;
+            }
+            setItemsJenisPekerjaan([]);
+            setItemsJenisPengadaan([]);
+        } catch (error) {
+            setItemsJenisPekerjaan([])
+            setItemsJenisPengadaan([])
+        }
+    }
+
     const generateJumlahPinjaman = (data) => {
         if (__DEV__) console.log('generateJumlahPinjaman loaded');
         if (__DEV__) console.log('generateJumlahPinjaman data:', data);
@@ -472,12 +524,11 @@ const ProdukPembiayaan = ({ route }) => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
-
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, idSosialisasiDatabase) values ("' + namaNasabah + '","' + valueJenisPembiayaan + '","' + valueNamaProduk + '","' + valueProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + valueKategoriTujuanPembiayaan + '","' + valueTujuanPembiayaan + '","' + valueTypePencairan + '","' + valueFrekuensiPembayaran + '","' + valueRekeningBank + '","' + valueNamaBank + '","' + valueNoRekening + '","' + valuePemilikRekening + '","' + id + '")';
+                        query = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, idSosialisasiDatabase, luas_a, luas_b, jenis_pekerjaan, jenis_pengadaan) values ("' + namaNasabah + '","' + valueJenisPembiayaan + '","' + valueNamaProduk + '","' + valueProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + valueKategoriTujuanPembiayaan + '","' + valueTujuanPembiayaan + '","' + valueTypePencairan + '","' + valueFrekuensiPembayaran + '","' + valueRekeningBank + '","' + valueNamaBank + '","' + valueNoRekening + '","' + valuePemilikRekening + '","' + id + '", "' + valueLuasA + '", "' + valueLuasB + '", "' + valueJenisPekerjaan + '", "' + valueJenisPembiayaan + '")';
                     } else {
-                        query = 'UPDATE Table_UK_ProdukPembiayaan SET jenis_Pembiayaan = "' + valueJenisPembiayaan + '", nama_Produk = "' + valueNamaProduk + '", produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pinjaman = "' + valueJumlahPinjaman + '", term_Pembiayaan = "' + valueTermPembiayaan + '", kategori_Tujuan_Pembiayaan = "' + valueKategoriTujuanPembiayaan + '", tujuan_Pembiayaan = "' + valueTujuanPembiayaan + '", type_Pencairan = "' + valueTypePencairan + '", frekuensi_Pembayaran = "' + valueFrekuensiPembayaran + '", status_Rekening_Bank = "' + valueRekeningBank + '", nama_Bank = "' + valueNamaBank + '", no_Rekening = "' + valueNoRekening + '", pemilik_Rekening = "' + valuePemilikRekening + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                        query = 'UPDATE Table_UK_ProdukPembiayaan SET jenis_Pembiayaan = "' + valueJenisPembiayaan + '", nama_Produk = "' + valueNamaProduk + '", produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pinjaman = "' + valueJumlahPinjaman + '", term_Pembiayaan = "' + valueTermPembiayaan + '", kategori_Tujuan_Pembiayaan = "' + valueKategoriTujuanPembiayaan + '", tujuan_Pembiayaan = "' + valueTujuanPembiayaan + '", type_Pencairan = "' + valueTypePencairan + '", frekuensi_Pembayaran = "' + valueFrekuensiPembayaran + '", status_Rekening_Bank = "' + valueRekeningBank + '", nama_Bank = "' + valueNamaBank + '", no_Rekening = "' + valueNoRekening + '", pemilik_Rekening = "' + valuePemilikRekening + '", luas_a = "' + valueLuasA + '", luas_b = "' + valueLuasB + '", jenis_pekerjaan = "' + valueJenisPekerjaan + '", jenis_pengadaan = "' + valueJenisPengadaan + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -601,9 +652,9 @@ const ProdukPembiayaan = ({ route }) => {
                     }
 
                     setSubmmitted(false);
+                    AsyncStorage.setItem('NamaProduk', valueNamaProduk)
                     alert('Berhasil');
                     navigation.goBack();
-                    
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
                     setSubmmitted(false);
@@ -752,7 +803,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const renderFormKategoriTujuanPembiayaan = () => (
         <View style={styles.MT8}>
-            <Text>Kategori Tujuan Pembiayaan</Text>
+            <Text>Kategori Tujuan Pembiayaan (Produk Utama)</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
                     selectedValue={valueKategoriTujuanPembiayaan}
@@ -777,6 +828,62 @@ const ProdukPembiayaan = ({ route }) => {
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsTujuanPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormLuas = () => (
+        <View style={styles.MT8}>
+            <Text>Luas </Text>
+            <View style={[styles.FDRow]}>
+                <View style={[styles.textInputContainer, styles.MR8]}>
+                    <TextInput 
+                        value={valueLuasA} 
+                        onChangeText={(text) => setValueLuasA(replaceSpecialChar(text))}
+                        placeholder="6x" 
+                        style={styles.F1}
+                    />
+                </View>
+                <View style={[styles.textInputContainer, styles.ML8]}>
+                    <TextInput 
+                        value={valueLuasB} 
+                        onChangeText={(text) => setValueLuasB(replaceSpecialChar(text))}
+                        placeholder="6x" 
+                        style={styles.F1}
+                    />
+                </View>
+            </View>
+        </View>
+    )
+
+    const renderFormJenisPekerjaan = () => (
+        <View style={styles.MT8}>
+            <Text>Jenis Pekerjaan</Text>
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJenisPekerjaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueJenisPekerjaan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsJenisPekerjaan.map((x, i) => <Picker.Item key={i} label={x.jenisPekerjaanDetail} value={x.jenisPekerjaanDetail} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormJenisPengadaan = () => (
+        <View style={styles.MT8}>
+            <Text>Jenis Pengadaan</Text>
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJenisPengadaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueJenisPengadaan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsJenisPengadaan.map((x, i) => <Picker.Item key={i} label={x.jenisPengadaanDetail} value={x.jenisPengadaanDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -900,23 +1007,76 @@ const ProdukPembiayaan = ({ route }) => {
         </View>
     )
 
+    const renderProduk = () => {
+        switch (valueNamaProduk) {
+            case '3':case 3:
+                return (
+                    <View>
+                        {renderFormSiklusPembiayaan()}
+                        {renderFormJenisPembiayaan()}
+                        {renderFormNamaProduk()}
+                        {renderFormProdukPembiayaan()}
+                        {renderFormJumlahPinjaman()}
+                        {renderFormTermPembiayaan()}
+                        {renderFormTujuanPembiayaan()}
+                        {renderFormJenisPekerjaan()}
+                        {renderFormJenisPengadaan()}
+                        {renderFormTypePencairan()}
+                        {renderFormFrekuensiPembayaran()}
+                        {renderFormRekeningBank()}
+                        {renderFormNamaBank()}
+                        {renderFormNoRekening()}
+                        {renderFormPemilikRekening()}
+                        {renderButtonSaveDraft()}
+                    </View>
+                )
+            case '4':case 4:
+                return (
+                    <View>
+                        {renderFormSiklusPembiayaan()}
+                        {renderFormJenisPembiayaan()}
+                        {renderFormNamaProduk()}
+                        {renderFormProdukPembiayaan()}
+                        {renderFormJumlahPinjaman()}
+                        {renderFormTermPembiayaan()}
+                        {renderFormTujuanPembiayaan()}
+                        {renderFormLuas()}
+                        {renderFormTypePencairan()}
+                        {renderFormFrekuensiPembayaran()}
+                        {renderFormRekeningBank()}
+                        {renderFormNamaBank()}
+                        {renderFormNoRekening()}
+                        {renderFormPemilikRekening()}
+                        {renderButtonSaveDraft()}
+                    </View>
+                )
+            default:
+                return (
+                    <View>
+                        {renderFormSiklusPembiayaan()}
+                        {renderFormJenisPembiayaan()}
+                        {renderFormNamaProduk()}
+                        {renderFormProdukPembiayaan()}
+                        {renderFormJumlahPinjaman()}
+                        {renderFormTermPembiayaan()}
+                        {renderFormKategoriTujuanPembiayaan()}
+                        {renderFormTujuanPembiayaan()}
+                        {renderFormLuas()}
+                        {renderFormTypePencairan()}
+                        {renderFormFrekuensiPembayaran()}
+                        {renderFormRekeningBank()}
+                        {renderFormNamaBank()}
+                        {renderFormNoRekening()}
+                        {renderFormPemilikRekening()}
+                        {renderButtonSaveDraft()}
+                    </View>
+                ) 
+        }
+    }
+
     const renderForm = () => (
         <View style={[styles.F1, styles.P16]}>
-            {renderFormSiklusPembiayaan()}
-            {renderFormJenisPembiayaan()}
-            {renderFormNamaProduk()}
-            {renderFormProdukPembiayaan()}
-            {renderFormJumlahPinjaman()}
-            {renderFormTermPembiayaan()}
-            {renderFormKategoriTujuanPembiayaan()}
-            {renderFormTujuanPembiayaan()}
-            {renderFormTypePencairan()}
-            {renderFormFrekuensiPembayaran()}
-            {renderFormRekeningBank()}
-            {renderFormNamaBank()}
-            {renderFormNoRekening()}
-            {renderFormPemilikRekening()}
-            {renderButtonSaveDraft()}
+            {renderProduk()}
         </View>
     )
 

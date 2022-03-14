@@ -269,7 +269,11 @@ db.transaction(tx => {
             no_Rekening varchar,
             pemilik_Rekening varchar,
             id_prospek varchar,
-            idSosialisasiDatabase varchar
+            idSosialisasiDatabase varchar,
+            luas_a varchar,
+            luas_b varchar,
+            jenis_pekerjaan varchar,
+            jenis_pengadaan varchar
         );`
     )
 
@@ -286,6 +290,32 @@ db.transaction(tx => {
             sanitasi_KamarMandi varchar,
             id_prospek varchar,
             foto_rumah varchar,
+            foto_rumah_rab varchar,
+            idSosialisasiDatabase varchar
+        );`
+    )
+
+    tx.executeSql(
+        `create table if not exists Table_UK_AirSanitasi(
+            kamarMandiDanToiletTerpisah varchar,
+            kepemilikanKamarMandi varchar,
+            kepemilikanToilet varchar,
+            sumberAirUntukMandiDanCuci varchar,
+            sumberAirUntukMinum varchar,
+            kuantitasSumberAir varchar,
+            KualitasSumberAir varchar,
+            KondisiAtapKamarMandiMilikSendiri varchar,
+            KondisiLantaiKamarMandiMilikSendiri varchar,
+            KondisiDindingKamarMandiMilikSendiri varchar,
+            KondisiBakAirKamarMandiMilikSendiri varchar,
+            KondisiSaluranPembuanganKamarMandiMilikSendiri varchar,
+            KondisiWCKamarMandiMilikSendiri varchar,
+            KondisiAtapToiletMilikSendiri varchar,
+            KondisiLantaiToiletMilikSendiri varchar,
+            KondisiDindingToiletMilikSendiri varchar,
+            KondisiBakAirToiletMilikSendiri varchar,
+            SaluranPembuanganToiletMilikSendiri varchar,
+            KondisiWCToiletMilikSendiri varchar,
             idSosialisasiDatabase varchar
         );`
     )
@@ -566,6 +596,7 @@ db.transaction(tx => {
     // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Post')
     // tx.executeSql('DROP TABLE IF EXISTS Table_Pencairan_Nasabah')
     // tx.executeSql('DROP TABLE IF EXISTS Table_Prospek_Lama_PP_Nasabah')
+    // tx.executeSql('DROP TABLE IF EXISTS Table_UK_AirSanitasi')
 
 },function(error) {
             console.log('Transaction ERROR: ' + error.message);
