@@ -15,7 +15,7 @@ import TarikUp from '../screens/Tarikup'
 import MeetingPAR from '../screens/Meeting_par'
 import FormPar from '../screens/FormPar'
 import FrontHome from '../screens/Home'
-import handleSurveiClick from '../screens/Survei'
+import HandleSurveiClick from '../screens/Survei'
 import ReportLPM from '../screens/Report'
 import SplashScreen from '../screens/Splashscreen'
 import IndividualMeeting from '../screens/IndividualMeeting'
@@ -417,7 +417,7 @@ export default function AppNavigator() {
                 />
               <Stack.Screen 
                 name="Survei"
-                component={handleSurveiClick} 
+                component={HandleSurveiClick} 
                 options={{ 
                     headerShown: true,
                     headerStyle: {
