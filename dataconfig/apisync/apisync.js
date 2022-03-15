@@ -15,7 +15,7 @@ let MAJOR_VERSION = '0';
 let MINOR_VERSION = '0';
 let PATCH_VERSION = '2';
 let BUILD = '001';
-let TANGGAL = '2022-03-04';
+let TANGGAL = '2022-03-15';
 
 let base_url = 'http://pkmmekaar.kresnasaraswati.id';
 let api_version = 'v1';
@@ -24,7 +24,7 @@ if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
     MINOR_VERSION = '0';
     PATCH_VERSION = '2';
-    BUILD = '014';
+    BUILD = '015';
     
     base_url = 'http://103.105.216.134';
 }
