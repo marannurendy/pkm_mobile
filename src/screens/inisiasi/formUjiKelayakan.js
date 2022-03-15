@@ -402,8 +402,8 @@ const FormUjiKelayakan = ({route}) => {
                             "kamarMandiDanToiletTerpisah": data.kamarMandiDanToiletTerpisah,
                             "Is_AdaKMPribadi": data.kepemilikanKamarMandi,
                             "Is_AdaToiletPribadi": data.kepemilikanToilet,
-                            "Is_MataAir_utkMandi": data.sumberAirUntukMandiDanCuci,
-                            "Is_MAtaAir_utkMinum": data.sumberAirUntukMinum,
+                            "Is_Sumber_Air_Mandi_Cuci": data.sumberAirUntukMandiDanCuci,
+                            "Is_Sumber_Air_Minum": data.sumberAirUntukMinum,
                             "Jenis_Kuantitas_ID": data.kuantitasSumberAir,
                             "Jenis_Kualitas_ID": "1",
                             "Jenis_Atap_Kamar_Mandi_ID": data.KondisiAtapKamarMandiMilikSendiri,
@@ -420,7 +420,7 @@ const FormUjiKelayakan = ({route}) => {
                             "Jenis_WC_Toilet_ID": data.KondisiWCToiletMilikSendiri
                         }
 
-                        console.log('Is_AdaKMPribadi ======================>',data.kepemilikanKamarMandi)
+                        // console.log('Is_AdaKMPribadi ======================>',data.kepemilikanKamarMandi)
                         // alert(`${body.Siklus}`)
                         // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
                         try {
