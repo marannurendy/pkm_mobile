@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync'
+import * as Sentry from "@sentry/browser";
 
 import db from '../../database/Database'
 
@@ -175,6 +176,7 @@ const SyncPencairan = () => {
                                     return true;
                                 }else{
                                     if (__DEV__) console.log('doSubmitPencairan db.transaction insert/update Gagal');
+                                    Sentry.captureMessage(`$post /post_inisiasi/post_pencairan error: ${JSON.stringify(responseJSON)}`, "error");
                                     setLoaded(false)
                                     Alert.alert(  
                                         'Gagal!',  
@@ -188,6 +190,7 @@ const SyncPencairan = () => {
                         }
                         catch(error) {
                             if (__DEV__) console.log('$post /post_inisiasi/post_pencairan error:', error);
+                            Sentry.captureMessage(`$post /post_inisiasi/post_pencairan error: ${JSON.stringify(error)}`, "error");
                             Alert.alert(  
                                 'Gagal!',  
                                 'Sync Data Tidak Berhasil',  

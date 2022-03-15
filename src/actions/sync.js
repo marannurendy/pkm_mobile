@@ -4,6 +4,7 @@ import db from '../database/Database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import { fetchWithTimeout } from '../utils/Functions'
+import * as Sentry from "@sentry/browser";
 
 export const getSyncData = (params) => new Promise((resolve) => {
     if (__DEV__) console.log('ACTIONS GET SYNC DATA PARAMS', params);
@@ -1625,6 +1626,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE DONE', jsonGetSosialisasiMobile);
             } catch (error) {
                 if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
+                Sentry.captureMessage(`$post /post_inisiasi/GetSosialisasiMobile error: ${JSON.stringify(error)}`, "error");
 
                 let message = JSON.stringify(error);
                 if (error.name === 'AbortError') {

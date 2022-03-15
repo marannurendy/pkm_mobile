@@ -11,6 +11,7 @@ import { ApiSyncInisiasi } from '../../../../dataconfig/index';
 import moment from 'moment';
 import 'moment/locale/id';
 import { capitalize, digits_only } from '../../../utils/Functions';
+import * as Sentry from "@sentry/browser";
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -181,6 +182,7 @@ const InisiasiFormProspekLama = ({ route }) => {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $post /inisiasi/GetSiklusNasabahBrnet error:', error);
+            Sentry.captureMessage(`$post /inisiasi/GetSiklusNasabahBrnet error: ${JSON.stringify(error)}`, "error");
             setFetching(false);
         }
     }

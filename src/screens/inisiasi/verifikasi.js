@@ -7,6 +7,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { ApiSyncPostInisiasi } from '../../../dataconfig/apisync/apisync';
 import db from '../../database/Database'
 import { style } from 'styled-system'
+import * as Sentry from "@sentry/browser";
 
 const dimension = Dimensions.get('screen');
 
@@ -198,7 +199,8 @@ const Verifikasi = ({ route }) => {
                                             })
                                             .catch((error) => {
                                                 if (__DEV__) console.log('$post /post_inisiasi/post_verif_status response', error);
-
+                                                Sentry.captureMessage(`$post /post_inisiasi/post_verif_status error: ${JSON.stringify(error)}`, "error");
+                                                
                                                 ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
                                             });
                                         }
