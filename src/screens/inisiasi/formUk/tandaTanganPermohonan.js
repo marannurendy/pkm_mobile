@@ -82,6 +82,7 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
                         setDataSosialisasiDatabase(data);
+                        setValueNamaTandaTanganNasabah(data.namaCalonNasabah)
                     }
                 }, function(error) {
                     if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database error:', error.message);
