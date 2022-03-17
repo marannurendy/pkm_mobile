@@ -180,7 +180,7 @@ const SyncPencairan = () => {
                                     setLoaded(false)
                                     Alert.alert(  
                                         'Gagal!',  
-                                        'Sync Data Tidak Berhasil',  
+                                        responseJSON?.message || 'Sync Data Tidak Berhasil',  
                                         [  
                                             {text: 'OK', onPress: () => buttonExit()},  
                                         ]
