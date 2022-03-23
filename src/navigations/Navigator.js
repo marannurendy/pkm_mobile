@@ -33,6 +33,7 @@ import GroupCollection from '../screens/groupCollection'
 import IndividualCollection from '../screens/individualCollection'
 import FormIndividualCollection from '../screens/formIndividualCollection'
 import PkmBermakna from '../screens/pkmBermakna'
+import NetworkLogging from '../screens/NetworkLogging'
 
 // import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
 import { 
@@ -715,6 +716,8 @@ export default function AppNavigator() {
                 <Stack.Screen name="Preview" component={Preview} options={{ headerShown: false }} />
                 <Stack.Screen name="FormFP4" component={FormFP4} options={{ headerShown: false }} />
                 <Stack.Screen name="UploadBuktiPem" component={UploadBuktiPem} options={{ headerShown: false }} />
+
+                <Stack.Screen name="NetworkLogging" component={NetworkLogging} />
 
           </Stack.Navigator>
       </NavigationContainer>

@@ -317,6 +317,7 @@ export default function FrontHome() {
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
             <Text style={{ textAlign: 'center' }}>{`version pkm_mobile-${VERSION}`}</Text>
+            <Text style={{ textAlign: 'center' }} onPress={() => navigation.navigate('NetworkLogging')}>Network Logger</Text>
         </View>
     )
 
