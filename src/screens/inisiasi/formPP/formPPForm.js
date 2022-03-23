@@ -8,7 +8,6 @@ import { showMessage } from 'react-native-flash-message';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import db from '../../../database/Database';
-import * as Sentry from "@sentry/browser";
 
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 16;
@@ -199,19 +198,16 @@ const InisiasiFormPPForm = ({ route }) => {
 
                 }else{
                     setLoading(false)
-                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
-                    Sentry.captureMessage(`$post /post_inisiasi/persetujuan_pembiayaan error: ${JSON.stringify(responseJson)}`, "error");
+                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff");
                 }
             }).catch((error) => {
                 setLoading(false)
-                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
-                Sentry.captureMessage(`$post /post_inisiasi/persetujuan_pembiayaan error: ${JSON.stringify(error)}`, "error");
+                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff");
             })
         }catch(error){
             console.log("disini")
             setLoading(false)
-            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
-            Sentry.captureMessage(`$post /post_inisiasi/persetujuan_pembiayaan error: ${JSON.stringify(error)}`, "error");
+            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff");
         }
     }
 

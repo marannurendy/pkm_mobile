@@ -10,7 +10,6 @@ import db from '../../database/Database';
 import { ApiSyncPostInisiasi, GET_CUSTOM_MESSAGES } from '../../../dataconfig/apisync/apisync'
 import { fetchWithTimeout } from '../../utils/Functions'
 import { Picker } from '@react-native-picker/picker';
-import * as Sentry from "@sentry/browser";
 
 const FormUjiKelayakan = ({route}) => {
     const { id, groupName, namaNasabah, nomorHandphone, statusSosialisasi } = route.params;
@@ -425,7 +424,7 @@ const FormUjiKelayakan = ({route}) => {
                         // return;
 
                         try {
-                            const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_ukaaaaa', {
+                            const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
                                 timeout: timeOut, // 6 menit
                                 method: 'POST',
                                 headers: {
@@ -523,7 +522,6 @@ const FormUjiKelayakan = ({route}) => {
                                                                             })
                                                                         } catch(error) {
                                                                             if (__DEV__) console.log('$post /post_inisiasi/post_prospek_lama error:', error);
-                                                                            Sentry.captureMessage(`$post /post_inisiasi/post_prospek_lama error: ${JSON.stringify(error)}`, "error");
                                                                         }
                                                                     } 
                                                                 }, function(error) {
@@ -555,7 +553,6 @@ const FormUjiKelayakan = ({route}) => {
                                                         })
                                                     } catch(error) {
                                                         if (__DEV__) console.log('$post /post_inisiasi/post_ketua_subketua error:', error);
-                                                        Sentry.captureMessage(`$post /post_inisiasi/post_ketua_subketua error: ${JSON.stringify(error)}`, "error");
                                                     }
 
                                                     if (__DEV__) {
@@ -706,7 +703,6 @@ const FormUjiKelayakan = ({route}) => {
                                             );
                                         }, function(error) {
                                             if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
-                                            Sentry.captureMessage(`$post /post_inisiasi/post_prospek_uk error: ${JSON.stringify(responseJSON)}`, "error");
                                             setSubmitted(false);
                                         })
                                     }
@@ -717,7 +713,6 @@ const FormUjiKelayakan = ({route}) => {
                             let message = responseJSON.responseDescription;
                             if (responseJSON.code === 403) message = responseJSON.message;
 
-                            Sentry.captureMessage(`$post /post_inisiasi/post_prospek_uk success: ${JSON.stringify(responseJSON)}`, "info");
                             Alert.alert('Error', message);
                             setSubmitted(false);
                             return;
@@ -729,7 +724,6 @@ const FormUjiKelayakan = ({route}) => {
                                 Alert.alert('Error', error.message || 'Something went wrong');
                             }
 
-                            Sentry.captureMessage(`$post /post_inisiasi/post_prospek_uk error: ${JSON.stringify(error)}`, "error");
                             setSubmitted(false);
                             return;
                         }
