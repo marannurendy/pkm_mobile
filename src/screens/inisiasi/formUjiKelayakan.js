@@ -224,7 +224,7 @@ const FormUjiKelayakan = ({route}) => {
                                 return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
                             }
 
-                            siklus = parseInt(data.siklus) ?? 1;
+                            siklus = parseInt(data.siklus) || 1;
                         }
 
                         if (statusSosialisasi === '1') {
@@ -296,7 +296,7 @@ const FormUjiKelayakan = ({route}) => {
                             "Alamat": data.alamat_Identitas,
                             "AlamatDomisili": data.alamat_Domisili,
                             "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
-                            "Berdasarkan_Lembaga_Lain": pembiayaan_Dari_Lembaga, // masih ragu
+                            "Berdasarkan_Lembaga_Lain": data.jumlah_Angsuran,
                             "Berdasarkan_Tingkat_Pendapatan": "1",
                             "CreatedBy": uname,
                             "CreatedNIP": nip,
@@ -321,7 +321,7 @@ const FormUjiKelayakan = ({route}) => {
                             "JmlHariUsaha_perBulan": data.jumlah_Hari_Usaha_Perbulan,
                             "JmlHariUsaha_perBulan_Suami": data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan,
                             "JmlhAnak": data.jumlah_anak,
-                            "PendidikanAnak": data.pendidikan_anak,
+                            "PendidikanAnak": data.pendidikan_anak === null || data.pendidikan_anak === 'null' ? '' : data.pendidikan_anak,
                             "JmlhTanggungan": data.jumlah_tanggungan,
                             "JumlahPinjaman": data.jumlah_Pinjaman,
                             "Kabupaten": data.kabupaten,
@@ -420,9 +420,9 @@ const FormUjiKelayakan = ({route}) => {
                             "Jenis_WC_Toilet_ID": data.KondisiWCToiletMilikSendiri
                         }
 
-                        // console.log('Is_AdaKMPribadi ======================>',data.kepemilikanKamarMandi)
-                        // alert(`${body.Siklus}`)
-                        // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
+                        // alert(body.NoHP);
+                        // return;
+
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
                                 timeout: timeOut, // 6 menit

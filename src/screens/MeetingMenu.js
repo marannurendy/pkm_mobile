@@ -229,6 +229,11 @@ const MeetingMenu = ({route}) => {
         
         var dataSync = { "pkm": CollectDatapkm, "up": CollectDataup, "sign": CollectDatasign }
 
+        // console.log(dataSync)
+
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         const timeOut = (milisecond, promise) => {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
@@ -240,10 +245,11 @@ const MeetingMenu = ({route}) => {
 
         if(CollectDatapkm.length > 0 ) {
             try{
-
+                console.log(ApiSync+PostPKM)
                 timeOut(60000, fetch(ApiSync+PostPKM, {
                     method: 'POST',
                     headers: {
+                        Authorization: token,
                         Accept: 'application/json',
                                 'Content-Type': 'application/json'
                         },
@@ -251,7 +257,7 @@ const MeetingMenu = ({route}) => {
                 }))
                 .then((response) => response.json())
                 .then((responseJson) => {
-                    console.log("second")
+                    console.log(responseJson)
 
                     console.log(responseJson)
                     if(responseJson.ResponseStatus === true) {

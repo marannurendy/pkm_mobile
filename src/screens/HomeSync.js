@@ -221,6 +221,7 @@ export default function FrontHomeSync(props) {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $get /inisiasi/GetListClient error:', error);
+
             setFetching(false);
         }
     }
@@ -259,6 +260,7 @@ export default function FrontHomeSync(props) {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClientBRNET error:', error);
+            
             setFetchingProspekLama(false);
         }
     }
@@ -353,6 +355,20 @@ export default function FrontHomeSync(props) {
 
             setSubmitted(false);
 
+            const jsonGetSosialisasiMobileData = await AsyncStorage.getItem('jsonGetSosialisasiMobileData');
+            var countJsonSosialisasiMobileData = 0;
+            var messageLog = '';
+            if (jsonGetSosialisasiMobileData) {
+                const dtms = JSON.parse(jsonGetSosialisasiMobileData);
+                countJsonSosialisasiMobileData = dtms.length || 0;
+
+                if (countJsonSosialisasiMobileData > 0) {
+                    dtms.map((x, i) => {
+                        messageLog += `${i+1}. IDPROSPEK#${x.ID_Prospek_Terpakai} NASABAH#${x.Nama_Prospek} AO#${x.Terpakai_Oleh}\n`;
+                    })
+                }
+            }
+
             const responseProspekMap = await AsyncStorage.getItem('ProspekMap');
             let totalProspekMap = prospekMap.length ?? 0;
             let totalProspekMapBerhasil = [];
@@ -360,11 +376,11 @@ export default function FrontHomeSync(props) {
             if (__DEV__) console.log('TOTAL PROSPEK MAP:', totalProspekMap);
             if (__DEV__) console.log('TOTAL PROSPEK MAP BERHASIL:', totalProspekMapBerhasil.length, totalProspekMapBerhasil);
 
-            const messageRKH = ![2].includes(selectedIndexFilterProspek) ? `\n\nTotal ${totalProspekMap} Nasabah\nBerhasil ${totalProspekMapBerhasil.length}\nGagal ${totalProspekMap - totalProspekMapBerhasil.length} (Nasabah sudah di prospek user lain)` : '';
+            const messageRKH = ![2].includes(selectedIndexFilterProspek) ? `\n\nTOTAL ${totalProspekMap} NASABAH\nBERHASIL ${parseInt(totalProspekMap) - parseInt(countJsonSosialisasiMobileData)}\nGAGAL ${countJsonSosialisasiMobileData} (NASABAH SUDAH DI PROSPEK USER LAIN)${countJsonSosialisasiMobileData > 0 ?  '\n\n===================================\n' + messageLog : ""}` : '';
 
             Alert.alert(
-                "Sukses",
-                `Sync berhasil dilakukan, Anda akan memasuki menu utama.${messageRKH}`,
+                "SUKSES",
+                `SYNC berhasil dilakukan, Anda akan memasuki menu utama #${totalProspekMapBerhasil.length}.${messageRKH}`,
                 [
                     { 
                         text: "OK", 

@@ -128,7 +128,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         if (data.jumlah_Hari_Usaha_Perbulan !== null && typeof data.jumlah_Hari_Usaha_Perbulan !== 'undefined') setValueJumlahHariUsahPerbulan(data.jumlah_Hari_Usaha_Perbulan);
                         if (data.pendapatan_Bersih_Perbulan !== null && typeof data.pendapatan_Bersih_Perbulan !== 'undefined') setValuePendapatanBersihPerbulan(data.pendapatan_Bersih_Perbulan);
                         if (data.pendapatan_Bersih_Perminggu !== null && typeof data.pendapatan_Bersih_Perminggu !== 'undefined') setValuePendapatanBersihPerminggu(data.pendapatan_Bersih_Perminggu);
-                        // if (data.pembiayaan_Dari_Lembaga !== null && typeof data.pembiayaan_Dari_Lembaga !== 'undefined') setValuePembiayaanDariLembaga(data.pembiayaan_Dari_Lembaga);
+                        if (data.pembiayaan_Dari_Lembaga !== null && typeof data.pembiayaan_Dari_Lembaga !== 'undefined') setValuePembiayaanDariLembaga(data.pembiayaan_Dari_Lembaga);
                         if (data.Pembiayaan_Dari_LembagaLain !== null && typeof data.Pembiayaan_Dari_LembagaLain !== 'undefined') setValuePembiayaanLembagaLain(data.Pembiayaan_Dari_LembagaLain === 'null' ? '1' : data.Pembiayaan_Dari_LembagaLain);
                         if (data.Pembiayaan_Dari_LembagaLainFreetext !== null && typeof data.Pembiayaan_Dari_LembagaLainFreetext !== 'undefined') {
                             if (data.Pembiayaan_Dari_LembagaLain === '3') setIPembiayaanLembagaLainFreetext(data.Pembiayaan_Dari_LembagaLainFreetext);

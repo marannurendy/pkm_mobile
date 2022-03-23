@@ -1,7 +1,7 @@
 import React from 'react';
 import { WebView } from 'react-native-webview';
 
-export default function handleSurveiClick(props) {
+export default function HandleSurveiClick(props) {
 
     const { groupid, nip } = props.route.params;
 

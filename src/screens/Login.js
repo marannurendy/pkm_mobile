@@ -76,18 +76,20 @@ export default function Login() {
               flashNotification("Network Error", "Pastikan anda terhubung dengan internet", "#ff6347", "#fff")
               setLoading(false)
           }else if(netInfo.isConnected === true) {
-            console.log(loginApi + "AuthLogin")
-              fetch(loginApi + "AuthLogin", {
+            console.log(loginApi + "AuthLogin");
+            const uri = loginApi + "AuthLogin";
+            const body = {
+              username: uname,
+              password: passwd,
+              apk_version: VERSION
+            };
+              fetch(uri, {
                   method: 'POST',
                   headers: {
                       'Accept' : 'application/json',
                       'Content-Type' : 'application/json',     
                   },
-                  body: JSON.stringify({
-                    username: uname,
-                    password: passwd,
-                    apk_version: VERSION
-                  })
+                  body: JSON.stringify(body)
               })
               .then((response) => response.json())
               .then((responseJson) => {
@@ -152,7 +154,6 @@ export default function Login() {
                   setLoading(false)
                   return false;
               })
-
           }
       }   
     }

@@ -139,6 +139,9 @@ function IndividualCollection(props) {
         const ListData = await DataGet(queryCek)
         setLoading(false)
 
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         let dataList = ListData.length
         if(dataList > 0) {
             const dataForm = new FormData()
@@ -170,7 +173,8 @@ function IndividualCollection(props) {
                         return fetch(IndividualSync, {
                             method:'POST',
                             headers: {
-                                'Accept': 'application/json',
+                                Authorization: token,
+                                Accept: 'application/json',
                                 'Content-Type': 'multipart/form-data'
                             },
                             body: dataForm,

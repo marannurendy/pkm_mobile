@@ -175,7 +175,7 @@ const DataDiri = ({route}) => {
     const [minTanggalLahir, setMinTanggalLahir] = useState(0);
     const [maxTanggalLahir, setMaxTanggalLahir] = useState(0);
     const [isShowAllProvinsi, setIsShowAllProvinsi] = useState(false);
-    const [valuePendidikanAnak, setValuePendidikanAnak] = useState('0');
+    const [valuePendidikanAnak, setValuePendidikanAnak] = useState(null);
     const [itemsPendidikanAnak, setItemsPendidikanAnak] = useState([]);
     const [username, setUsername] = useState('');
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
@@ -955,7 +955,7 @@ const DataDiri = ({route}) => {
         if (!namaGadisIbu || typeof namaGadisIbu === 'undefined' || namaGadisIbu ==='' || namaGadisIbu === 'null') return alert('Nama Gadis Ibu Kandung (*) tidak boleh kosong');
         if (!noTelfon || typeof noTelfon === 'undefined' || noTelfon ==='' || noTelfon === 'null') return alert('No. Telp/HP Nasabah (*) tidak boleh kosong');
         if (!valueJumlahAnak || typeof valueJumlahAnak === 'undefined' || valueJumlahAnak ==='' || valueJumlahAnak === 'null') return alert('Jumlah Anak (*) tidak boleh kosong');
-        if (!valuePendidikanAnak || typeof valuePendidikanAnak === 'undefined' || valuePendidikanAnak ==='' || valuePendidikanAnak === 'null') return alert('Pendidikan Anak (*) tidak boleh kosong');
+        // if (!valuePendidikanAnak || typeof valuePendidikanAnak === 'undefined' || valuePendidikanAnak ==='' || valuePendidikanAnak === 'null') return alert('Pendidikan Anak (*) tidak boleh kosong');
         if (!valueJumlahTanggungan || typeof valueJumlahTanggungan === 'undefined' || valueJumlahTanggungan ==='' || valueJumlahTanggungan === 'null') return alert('Jumlah Tanggungan (*) tidak boleh kosong');
         if (!valueStatusRumahTinggal || typeof valueStatusRumahTinggal === 'undefined' || valueStatusRumahTinggal ==='' || valueStatusRumahTinggal === 'null') return alert('Status Rumah Tinggal (*) tidak boleh kosong');
         if (!lamaTinggal || typeof lamaTinggal === 'undefined' || lamaTinggal ==='' || lamaTinggal === 'null') return alert('Lama Tinggal (Dalam Tahun) (*) tidak boleh kosong');
@@ -1110,14 +1110,17 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('renderPickerKabupaten loaded');
         if (__DEV__) console.log('renderPickerKabupaten dataProvinsi:', dataProvinsi);
 
-        return [...new Map(dataWilayahMobile.map(item => [item['Nama_KabKot'], item])).values()].filter(data => data.ID_Provinsi === dataProvinsi).map((x, i) => <Picker.Item key={i} label={x.Nama_KabKot} value={x.ID_Kabkot} />);
+        // return [...new Map(dataWilayahMobile.map(item => [item['Nama_KabKot'], item])).values()].filter(data => data.ID_Provinsi === dataProvinsi).map((x, i) => <Picker.Item key={i} label={x.Nama_KabKot} value={x.ID_Kabkot} />);
+        return dataWilayahMobile.filter(data => data.ID_Provinsi === dataProvinsi).filter((s => a => !s.has(a.Nama_KabKot) && s.add(a.Nama_KabKot))(new Set)).map((x, i) => <Picker.Item key={i} label={x.Nama_KabKot} value={x.ID_Kabkot} />)
     }
 
     const renderPickerKecamatan = () => {
         if (__DEV__) console.log('renderPickerKecamatan loaded');
         if (__DEV__) console.log('renderPickerKecamatan dataKabupaten:', dataKabupaten);
+        
 
-        return [...new Map(dataWilayahMobile.map(item => [item['Nama_Kecamatan'], item])).values()].filter(data => data.ID_Kabkot === dataKabupaten).map((x, i) => <Picker.Item key={i} label={x.Nama_Kecamatan} value={x.ID_Kecamatan} />);
+        // return [...new Map(dataWilayahMobile.map(item => [item['Nama_Kecamatan'], item])).values()].filter(data => data.ID_Kabkot === dataKabupaten).map((x, i) => <Picker.Item key={i} label={x.Nama_Kecamatan} value={x.ID_Kecamatan} />);
+        return dataWilayahMobile.filter(data => data.ID_Kabkot === dataKabupaten).filter((s => a => !s.has(a.Nama_Kecamatan) && s.add(a.Nama_Kecamatan))(new Set)).map((x, i) => <Picker.Item key={i} label={x.Nama_Kecamatan} value={x.ID_Kecamatan} />)
     }
 
     const renderPickerKelurahan = () => {
@@ -1988,7 +1991,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{marginHorizontal: 20, marginBottom: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Pendidikan Anak (*)</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Pendidikan Anak</Text>
                             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                                 <Picker
                                     selectedValue={valuePendidikanAnak}
