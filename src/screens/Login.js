@@ -143,6 +143,9 @@ export default function Login() {
                   }else if(responseJson.responseStatus === false) {
                       flashNotification("Alert", 'Gagal Login : '+responseJson.message, "#ff6347", "#fff")
                       setLoading(false)
+                  } else {
+                    flashNotification("Alert", 'Gagal Login : '+responseJson.message, "#ff6347", "#fff")
+                    setLoading(false)
                   }
               })
               .then(() => {

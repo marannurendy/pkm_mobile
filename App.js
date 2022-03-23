@@ -9,9 +9,9 @@ import { ApiSync, Get_notification, IS_DEVELOPMENT } from './dataconfig/index'
 // import SQLite from 'react-native-sqlite-storage';
 import { useKeepAwake } from 'expo-keep-awake';
 
-if(__DEV__) {
-    import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
-}
+// if(__DEV__) {
+//     import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
+// }
 
 export default function App() {
     useKeepAwake();
