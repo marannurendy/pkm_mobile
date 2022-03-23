@@ -422,6 +422,7 @@ export default function FrontHomeSync(props) {
                 <Text style={{color: colors.PUTIH}}>{props.username}</Text>
                 <Text style={{color: colors.PUTIH}}>{props.namacabang}</Text>
                 <Text style={{color: colors.PUTIH}}>{now}</Text>
+                <Text style={{color: colors.PUTIH}}>No. Virtual Account: {props?.noVirtualAccount ?? '-'}</Text>
             </View>
             <View>
                 <Text style={{ color: 'white', fontSize: 18 }} onPress={() => LogOutButton()}>Logout</Text>
