@@ -64,7 +64,8 @@ import {
     InisiasiFormProspekLamaList,
     InisiasiFormProspekLama,
     InisiasiFormPPAbsen,
-    InisiasiFormUKDisiplinNasabah
+    InisiasiFormUKDisiplinNasabah,
+    InisiasiFormUKKondisiAirBersihDanSanitasi
 } from '../screens/inisiasi/index'
 
 import { 
@@ -696,6 +697,7 @@ export default function AppNavigator() {
                 <Stack.Screen name="InisiasiFormProspekLamaList" component={InisiasiFormProspekLamaList} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormProspekLama" component={InisiasiFormProspekLama} options={{ headerShown: false }} />
                 <Stack.Screen name="InisiasiFormUKDisiplinNasabah" component={InisiasiFormUKDisiplinNasabah} options={{ headerShown: false }} />
+                <Stack.Screen name="InisiasiFormUKKondisiAirBersihDanSanitasi" component={InisiasiFormUKKondisiAirBersihDanSanitasi} options={{ headerShown: false }} />
                 
                 <Stack.Screen name="InisiasiFormPPAbsen" component={InisiasiFormPPAbsen} options={{ headerShown: false }} />
 

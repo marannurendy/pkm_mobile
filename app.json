@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "pkm_dev",
+    "name": "Mekaar Digi",
     "slug": "pkm_dev",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {

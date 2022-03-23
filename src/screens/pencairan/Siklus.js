@@ -181,6 +181,30 @@ const Siklus = ({route}) => {
                                 style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold',  borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
                                 returnKeyType="done"
                             />
+
+                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>UP Baru</Text>
+                            <TextInput 
+                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold', borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                editable={false} selectTextOnFocus={false}
+                                value={"Rp. "+currency(parseInt(dataNasabah.UP_Baru))}
+                                returnKeyType="done"
+                            />
+
+                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Up Lama</Text>
+                            <TextInput 
+                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold', borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                editable={false} selectTextOnFocus={false}
+                                value={"Rp. "+currency(parseInt(dataNasabah.UP_Lama))}
+                                returnKeyType="done"
+                            />
+                            
+                            <Text style={{fontSize: 14, fontWeight: 'bold', marginTop:10}}>Sisa OS</Text>
+                            <TextInput 
+                                style={{flex: 1, padding: 5, color:'#333',fontWeight: 'bold', borderRadius:3, borderWidth:1, marginBottom:5, marginTop:5}}
+                                editable={false} selectTextOnFocus={false}
+                                value={"Rp. "+currency(parseInt(dataNasabah.Sisa_OS))}
+                                returnKeyType="done"
+                            />
                             
                             <View style={{alignItems: 'center', marginBottom: 20, marginTop: 20}}>
                                 <Button

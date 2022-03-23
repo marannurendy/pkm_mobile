@@ -108,6 +108,7 @@ export default function Login() {
                           userName: responseJson.data.userName,
                           password: responseJson.data.password,
                           AOname: responseJson.data.nama,
+                          noVirtualAccount: responseJson?.data?.vaNumber ?? null
                       }
 
                       // let dataLogin = {
