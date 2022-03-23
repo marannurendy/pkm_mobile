@@ -8,19 +8,10 @@ import NetInfo, { useNetInfo } from '@react-native-community/netinfo'
 import { ApiSync, Get_notification, IS_DEVELOPMENT } from './dataconfig/index'
 // import SQLite from 'react-native-sqlite-storage';
 import { useKeepAwake } from 'expo-keep-awake';
-import * as Sentry from "@sentry/react-native";
 
 if(__DEV__) {
     import('./ReactotronConfig').then(() => console.log('Reactotron Configured'))
 }
-
-Sentry.init({
-    environment: IS_DEVELOPMENT ? "development" : "production",
-    dsn: "https://4d248d7628f94806a83f6acce43db850@o1054792.ingest.sentry.io/6233405",
-    // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-    // We recommend adjusting this value in production.
-    tracesSampleRate: 1.0
-});
 
 export default function App() {
     useKeepAwake();

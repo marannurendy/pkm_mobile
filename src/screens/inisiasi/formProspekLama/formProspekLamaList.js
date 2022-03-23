@@ -8,7 +8,6 @@ import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import { ApiSyncInisiasi } from '../../../../dataconfig/index';
 import db from '../../../database/Database';
-import * as Sentry from "@sentry/browser";
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -97,7 +96,6 @@ const InisiasiFormProspekLamaList = ({ route }) => {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $get /inisiasi/GetListClientBRNET error:', error);
-            Sentry.captureMessage(`$post /inisiasi/GetListClientBRNET error: ${JSON.stringify(error)}`, "error");
             setFetching(false);
         }
     }

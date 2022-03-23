@@ -13,7 +13,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, Colors } from 'react-native-paper';
 import db from '../database/Database'
 import { RadioButton } from 'react-native-paper';
-import * as Sentry from "@sentry/browser";
 
 const colors = {
     HITAM: '#000',
@@ -222,7 +221,6 @@ export default function FrontHomeSync(props) {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $get /inisiasi/GetListClient error:', error);
-            Sentry.captureMessage(`$post /inisiasi/GetListClient error: ${JSON.stringify(error)}`, "error");
 
             setFetching(false);
         }
@@ -262,7 +260,6 @@ export default function FrontHomeSync(props) {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClientBRNET error:', error);
-            Sentry.captureMessage(`$post /inisiasi/GetListClient error: ${JSON.stringify(error)}`, "error");
             
             setFetchingProspekLama(false);
         }
