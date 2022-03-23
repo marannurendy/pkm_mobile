@@ -271,7 +271,7 @@ export default function FrontHome() {
                     })
                     .then((response) => response.json())
                     .then((responseJSON) => {
-                        if (__DEV__) console.error('$post /other/AuthLogout response', body, responseJSON);
+                        if (__DEV__) console.log('$post /other/AuthLogout response', body, responseJSON);
                     })
                     .catch((error) => {
                         if (__DEV__) console.log('$post /other/AuthLogout response', body, error);

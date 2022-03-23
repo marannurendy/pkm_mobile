@@ -140,7 +140,7 @@ function IndividualCollection(props) {
         setLoading(false)
 
         const token = await AsyncStorage.getItem('token');
-        if (_DEV_) console.log('ACTIONS TOKEN', token);
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
 
         let dataList = ListData.length
         if(dataList > 0) {

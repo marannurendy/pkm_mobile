@@ -103,11 +103,11 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                         let data = results.rows.item(0);
                         if (__DEV__) console.log('tx.executeSql data:', data);
 
-                        setKey_tandaTanganAOSAO(data.tanda_Tangan_AOSAO ?? '');
-                        setKey_tandaTanganNasabah(data.tanda_Tangan_Nasabah ?? '');
-                        setKey_tandaTanganSuamiPenjamin(data.tanda_Tangan_SuamiPenjamin ?? '');
-                        setKey_tandaTanganKetuaSubKemlompok(data.tanda_Tangan_Ketua_SubKelompok ?? '');
-                        setKey_tandaTanganKetuaKelompok(data.tanda_Tangan_Ketua_Kelompok ?? '');
+                        setKey_tandaTanganAOSAO(data.tanda_Tangan_AOSAO || key_tandaTanganAOSAO);
+                        setKey_tandaTanganNasabah(data.tanda_Tangan_Nasabah || key_tandaTanganNasabah);
+                        setKey_tandaTanganSuamiPenjamin(data.tanda_Tangan_SuamiPenjamin || key_tandaTanganSuamiPenjamin);
+                        setKey_tandaTanganKetuaSubKemlompok(data.tanda_Tangan_Ketua_SubKelompok || key_tandaTanganKetuaSubKemlompok);
+                        setKey_tandaTanganKetuaKelompok(data.tanda_Tangan_Ketua_Kelompok || key_tandaTanganKetuaKelompok);
 
                         let tandaTanganAOSAO = null;
                         let tandaTanganNasabah = null;
@@ -228,16 +228,10 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
         if (__DEV__) console.log('doSubmitDraft valueNamaTandaTanganKetuaSubKelompok:', valueNamaTandaTanganKetuaSubKelompok);
         if (__DEV__) console.log('doSubmitDraft valueNamaTandaTanganKetuaKelompok:', valueNamaTandaTanganKetuaKelompok);
 
-        AsyncStorage.setItem(key_tandaTanganAOSAO, valueTandaTanganAOSAO);
-        AsyncStorage.setItem(key_tandaTanganNasabah, valueTandaTanganNasabah);
-        AsyncStorage.setItem(key_tandaTanganSuamiPenjamin, valueTandaTanganSuamiPenjamin);
-        AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, valueTandaTanganKetuaSubKemlompok);
-        AsyncStorage.setItem(key_tandaTanganKetuaKelompok, valueTandaTanganKetuaKelompok);
-
         const find = 'SELECT * FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
-                tx.executeSql(find, [], (txFind, resultsFind) => {
+                tx.executeSql(find, [], async (txFind, resultsFind) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
 
@@ -249,6 +243,12 @@ const InisiasiFormUKTandaTanganPermohonan = ({ route }) => {
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
+
+                    await AsyncStorage.setItem(key_tandaTanganAOSAO, valueTandaTanganAOSAO);
+                    await AsyncStorage.setItem(key_tandaTanganNasabah, valueTandaTanganNasabah);
+                    await AsyncStorage.setItem(key_tandaTanganSuamiPenjamin, valueTandaTanganSuamiPenjamin);
+                    await AsyncStorage.setItem(key_tandaTanganKetuaSubKemlompok, valueTandaTanganKetuaSubKemlompok);
+                    await AsyncStorage.setItem(key_tandaTanganKetuaKelompok, valueTandaTanganKetuaKelompok);
 
                     db.transaction(
                         tx => {

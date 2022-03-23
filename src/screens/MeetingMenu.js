@@ -232,7 +232,7 @@ const MeetingMenu = ({route}) => {
         // console.log(dataSync)
 
         const token = await AsyncStorage.getItem('token');
-        if (_DEV_) console.log('ACTIONS TOKEN', token);
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
 
         const timeOut = (milisecond, promise) => {
             return new Promise((resolve, reject) => {

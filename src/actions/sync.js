@@ -1558,22 +1558,50 @@ export const getSyncData = (params) => new Promise((resolve) => {
         const token = await AsyncStorage.getItem('token');
         if (__DEV__) console.log('ACTIONS TOKEN', token);
 
-        const responseListGroup = await fetch(getListGroup);
+        const responseListGroup = await fetch(getListGroup, {
+            method: 'GET',
+            headers: {
+                Authorization: token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
         const jsonListGroup = await responseListGroup.json(responseListGroup);
         await insertListGroup(jsonListGroup);
         if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP DONE');
 
-        const responseListCollection = await fetch(getListCollection);
+        const responseListCollection = await fetch(getListCollection, {
+            method: 'GET',
+            headers: {
+                Authorization: token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
         const jsonCollection = await responseListCollection.json(responseListCollection);
         await insertListCollection(jsonCollection)
         if (__DEV__) console.log('ACTIONS GET SYNC DATA COLLECTION DONE');
 
-        const responseListUP = await fetch(queryUP);
+        const responseListUP = await fetch(queryUP, {
+            method: 'GET',
+            headers: {
+                Authorization: token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
         const jsonListUP = await responseListUP.json(responseListUP);
         await insertListUP(jsonListUP)
         if (__DEV__) console.log('ACTIONS GET SYNC DATA UP DONE');
 
-        const responseListPAR = await fetch(getPKMIndividual);
+        const responseListPAR = await fetch(getPKMIndividual, {
+            method: 'GET',
+            headers: {
+                Authorization: token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
         const jsongetPAR = await responseListPAR.json(responseListPAR);
         await insertListPAR(jsongetPAR);
         if (__DEV__) console.log('ACTIONS GET SYNC DATA PAR DONE');
@@ -1623,6 +1651,26 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 }
 
                 await insertGetSosialisasiMobile(jsonGetSosialisasiMobile);
+
+                // const mantan = [
+                //     {
+                //       "ID_Prospek_Terpakai": "10294",
+                //       "Terpakai_Oleh": "AO2-90963",
+                //       "Nama_Prospek": "Test1"
+                //     },
+                //     {
+                //       "ID_Prospek_Terpakai": "10295",
+                //       "Terpakai_Oleh": "AO2-90963",
+                //       "Nama_Prospek": "Test3"
+                //     },
+                //     {
+                //       "ID_Prospek_Terpakai": "10297",
+                //       "Terpakai_Oleh": "AO1-90963",
+                //       "Nama_Prospek": "Test4"
+                //     }
+                //   ];
+                await AsyncStorage.setItem('jsonGetSosialisasiMobileData', JSON.stringify(jsonGetSosialisasiMobile.data.Rkh_id_used.filter(data => data.Terpakai_Oleh !== params.username)));
+
                 if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE DONE', jsonGetSosialisasiMobile);
             } catch (error) {
                 if (__DEV__) console.log('$post /post_inisiasi/post_prospek_uk error:', error)
@@ -1638,7 +1686,14 @@ export const getSyncData = (params) => new Promise((resolve) => {
             }
         }
 
-        const getDate = await fetch(ApiSync+Get_Date);
+        const getDate = await fetch(ApiSync+Get_Date, {
+            method: 'GET',
+            headers: {
+                Authorization: token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
         const jsonGetDate = await getDate.json(getDate);
         if (__DEV__) console.log('ACTIONS GET SYNC DATE:', jsonGetDate);
 

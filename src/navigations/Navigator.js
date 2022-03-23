@@ -251,7 +251,7 @@ function CustomDrawerContent(props) {
             })
             .then((response) => response.json())
             .then((responseJSON) => {
-                if (__DEV__) console.error('$post /other/AuthLogout response', body, responseJSON);
+                if (__DEV__) console.log('$post /other/AuthLogout response', body, responseJSON);
             })
             .catch((error) => {
                 if (__DEV__) console.log('$post /other/AuthLogout response', body, error);
@@ -288,7 +288,7 @@ function CustomDrawerContent(props) {
     const ClearDataHandler = async () => {
         Alert.alert(
             "Logout Alert",
-            "Apakah anda yakin ingin Menghapus Semua Data ?",
+            "Clear Data akan menghapus semua data, termasuk data yang sudah diinput. Apakah Anda yakin untuk melanjutkan?",
             [
                 { text: "OK", onPress: () => {
                     db.transaction(

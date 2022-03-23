@@ -106,7 +106,7 @@ const Sosialisasi = () => {
         }else if(statusNasabah === null || statusNasabah === undefined) {
             flashNotification("Alert", "Silahkan pilih status nasabah", "#ff6347", "#fff")
         }else if(sisipan === false && baru === false) {
-            flashNotification("Alert", "Tipe nasabah belum dipilih (Sisipan/Baru)", "#ff6347", "#fff")
+            flashNotification("Alert", "Tipe belum dipilih (Nasabah Sisipan / Kelompok Baru)", "#ff6347", "#fff")
         }else if(tanggalSos === null || tanggalSos === undefined) {
             flashNotification("Alert", "Silahkan pilih tanggal sosialisasi", "#ff6347", "#fff")
         }else if(lokasiSos === null || lokasiSos === undefined) {
@@ -273,7 +273,7 @@ const Sosialisasi = () => {
                                 disableBuiltInState
                                 onPress={() => pickerHandler(2)}
                             />
-                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Nasabah Baru</Text>
+                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Kelompok Baru</Text>
                         </View>
                     </View>
 

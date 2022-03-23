@@ -292,7 +292,7 @@ const FormUjiKelayakan = ({route}) => {
                             "Alamat": data.alamat_Identitas,
                             "AlamatDomisili": data.alamat_Domisili,
                             "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
-                            "Berdasarkan_Lembaga_Lain": pembiayaan_Dari_Lembaga, // masih ragu
+                            "Berdasarkan_Lembaga_Lain": data.jumlah_Angsuran,
                             "Berdasarkan_Tingkat_Pendapatan": "1",
                             "CreatedBy": uname,
                             "CreatedNIP": nip,
@@ -317,7 +317,7 @@ const FormUjiKelayakan = ({route}) => {
                             "JmlHariUsaha_perBulan": data.jumlah_Hari_Usaha_Perbulan,
                             "JmlHariUsaha_perBulan_Suami": data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan,
                             "JmlhAnak": data.jumlah_anak,
-                            "PendidikanAnak": data.pendidikan_anak,
+                            "PendidikanAnak": data.pendidikan_anak === null || data.pendidikan_anak === 'null' ? '' : data.pendidikan_anak,
                             "JmlhTanggungan": data.jumlah_tanggungan,
                             "JumlahPinjaman": data.jumlah_Pinjaman,
                             "Kabupaten": data.kabupaten,
@@ -396,12 +396,12 @@ const FormUjiKelayakan = ({route}) => {
                             "Siklus": '' + siklus,
                             "IsSesuaiDukcapil": data.is_nik_valid_dukcapil
                         }
-                        // alert(`${body.ClientID}`)
-                        // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
+
+                        // alert(body.NoHP);
                         // return;
 
                         try {
-                            const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
+                            const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_ukaaaaa', {
                                 timeout: timeOut, // 6 menit
                                 method: 'POST',
                                 headers: {
