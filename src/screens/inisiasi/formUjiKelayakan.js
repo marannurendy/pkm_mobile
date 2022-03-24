@@ -34,6 +34,7 @@ const FormUjiKelayakan = ({route}) => {
     const [isFormUKDisiplinNasabahDone, setIsFormUKDisiplinNasabahDone] = useState(null);
     const [isFormUKTandaTanganPermohonanDone, setIsFormUKTandaTanganPermohonanDone] = useState(null);
     const [idProduk, setIdProduk] = useState(null)
+    const [checkSanitasi, setCheckSanitasi] = useState(null)
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -44,6 +45,10 @@ const FormUjiKelayakan = ({route}) => {
             getUKMaster();
             getGroupList();
             getSosialisasiDatabase();
+            AsyncStorage.getItem(`isFormUKKondisiAirBersihDanSanitasiDone_${id}`, (error, result) => {
+                let data = JSON.parse(result);
+                setCheckSanitasi(data)
+            });
         });
         return unsubscribe;
     }, [navigation]);
@@ -405,7 +410,7 @@ const FormUjiKelayakan = ({route}) => {
                             "Is_Sumber_Air_Mandi_Cuci": data.sumberAirUntukMandiDanCuci,
                             "Is_Sumber_Air_Minum": data.sumberAirUntukMinum,
                             "Jenis_Kuantitas_ID": data.kuantitasSumberAir,
-                            "Jenis_Kualitas_ID": "1",
+                            "Jenis_Kualitas_ID": data.KualitasSumberAir,
                             "Jenis_Atap_Kamar_Mandi_ID": data.KondisiAtapKamarMandiMilikSendiri,
                             "Jenis_Lantai_Kamar_Mandi_ID": data.KondisiLantaiKamarMandiMilikSendiri,
                             "Jenis_Dinding_Kamar_Mandi_ID": data.KondisiDindingKamarMandiMilikSendiri,
@@ -422,7 +427,6 @@ const FormUjiKelayakan = ({route}) => {
                             "Foto_RAB": data.foto_rumah_rab.split(',')[1]
                         }
 
-                        console.log()
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
                                 timeout: timeOut, // 6 menit
@@ -907,8 +911,8 @@ const FormUjiKelayakan = ({route}) => {
                             <View style={{alignItems: 'flex-end'}}>
                                 <BouncyCheckbox 
                                     size={20}
-                                    isChecked={screenState > 2}
-                                    fillColor={screenState > 2 ? 'green' : 'white'}
+                                    isChecked={checkSanitasi == '1'}
+                                    fillColor={checkSanitasi == '1' ? 'green' : 'white'}
                                     disableBuiltInState
                                 />
                             </View>
