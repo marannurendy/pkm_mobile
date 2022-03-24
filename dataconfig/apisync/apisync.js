@@ -23,8 +23,8 @@ let api_version = 'v1';
 if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
     MINOR_VERSION = '0';
-    PATCH_VERSION = '3';
-    BUILD = '006';
+    PATCH_VERSION = '4';
+    BUILD = '001';
     
     base_url = 'http://103.105.216.134';
 }
