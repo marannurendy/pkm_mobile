@@ -1068,7 +1068,6 @@ const ProdukPembiayaan = ({ route }) => {
                         {renderFormTermPembiayaan()}
                         {renderFormKategoriTujuanPembiayaan()}
                         {renderFormTujuanPembiayaan()}
-                        {renderFormLuas()}
                         {renderFormTypePencairan()}
                         {renderFormFrekuensiPembayaran()}
                         {renderFormRekeningBank()}
