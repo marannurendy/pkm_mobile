@@ -88,24 +88,24 @@ export default function FrontHome() {
     }
 
     const fetchData = () => {
-        setLoading(true)
-        fetch(ApiSync + Get_notification)
-          .then((response) => response.json())
-          .then((json) => {
-            if(json.responseDescription === "success") {
-                // console.log(json)
-              setData(json.data)
-              setModalVisible(!modalVisible)
-              return false
-            }else{
-              setLoading(false)
-            }
-          })
-          .catch((error) => console.error(error))
-          .finally(() => {
-              setLoading(false)
-              return false
-            });
+        // setLoading(true)
+        // fetch(ApiSync + Get_notification)
+        //   .then((response) => response.json())
+        //   .then((json) => {
+        //     if(json.responseDescription === "success") {
+        //         // console.log(json)
+        //       setData(json.data)
+        //       setModalVisible(!modalVisible)
+        //       return false
+        //     }else{
+        //       setLoading(false)
+        //     }
+        //   })
+        //   .catch((error) => console.error(error))
+        //   .finally(() => {
+        //       setLoading(false)
+        //       return false
+        //     });
     }
 
     const checkConnection = () => {

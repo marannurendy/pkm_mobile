@@ -160,8 +160,8 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                         }
 
                         Promise.all([setLuasBangunan(), setKondisiBangunan(), setJenisAtap(), setDinding(), setLantai(), setRumah()]).then((response) => {
-                            if (data.sanitasi_Akses_AirBersih !== null && typeof data.sanitasi_Akses_AirBersih !== 'undefined') setValueAksesAirBersih(data.sanitasi_Akses_AirBersih === 'true' ? true : false);
-                            if (data.sanitasi_KamarMandi !== null && typeof data.sanitasi_KamarMandi !== 'undefined') setValueKamarMandi(data.sanitasi_KamarMandi === 'true' ? true : false);
+                            if (data.sanitasi_Akses_AirBersih !== null && typeof data.sanitasi_Akses_AirBersih !== 'undefined' && data.sanitasi_Akses_AirBersih !== 'null') setValueAksesAirBersih(data.sanitasi_Akses_AirBersih === 'true' ? true : false);
+                            if (data.sanitasi_KamarMandi !== null && typeof data.sanitasi_KamarMandi !== 'undefined' && data.sanitasi_KamarMandi !== 'null') setValueKamarMandi(data.sanitasi_KamarMandi === 'true' ? true : false);
                         });
                     }
                 }, function(error) {

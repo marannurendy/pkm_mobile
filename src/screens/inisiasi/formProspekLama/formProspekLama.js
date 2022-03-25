@@ -41,7 +41,7 @@ const InisiasiFormProspekLama = ({ route }) => {
     const [valueTandaTanganKetuaSubKelompok, setValueTandaTanganKetuaSubKelompok] = useState(null);
     const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKelompok] = useState(null);
     const [valueTandaTanganAO, setValueTandaTanganAO] = useState(null);
-    const [valueAddress, setValueAddress] = useState('Jakarta');
+    const [valueAddress, setValueAddress] = useState('');
     const [dataDetail, setDataDetail] = useState(null);
     const [selectedPembiayaanDiajukan, setSelectedPembiayaanDiajukan] = useState(null);
     const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
@@ -363,7 +363,8 @@ const InisiasiFormProspekLama = ({ route }) => {
     const doSubmit = async () => {
         if (__DEV__) console.log('doSubmit loaded');
         if (__DEV__) console.log('doSubmit dataDetail:', dataDetail);
-
+        
+        if (!valueAddress || typeof valueAddress === 'undefined' || valueAddress === '' || valueAddress === 'null') return alert('Nama Daerah (*) tidak boleh kosong');
         if (!valueTandaTanganAO || typeof valueTandaTanganAO === 'undefined' || valueTandaTanganAO === '' || valueTandaTanganAO === 'null') return alert('Tanda Tangan AO (*) tidak boleh kosong');
         if (!valueNamaTandaTanganAO || typeof valueNamaTandaTanganAO === 'undefined' || valueNamaTandaTanganAO === '' || valueNamaTandaTanganAO === 'null') return alert('Nama Tanda Tangan AO (*) tidak boleh kosong');
         if (!valueTandaTanganKetuaKelompok || typeof valueTandaTanganKetuaKelompok === 'undefined' || valueTandaTanganKetuaKelompok === '' || valueTandaTanganKetuaKelompok === 'null') return alert('Tanda Tangan Kelompok (*) tidak boleh kosong');
@@ -731,9 +732,9 @@ const InisiasiFormProspekLama = ({ route }) => {
     const renderFormDate = () => (
         <View style={[styles.FDRow,  styles.MV16, { alignItems: 'center' }]}>
             <TextInput
-                value={valueAddress} 
+                value={valueAddress}
                 onChangeText={(text) => setValueAddress(text)}
-                placeholder='Jakarta'
+                placeholder='Nama Daerah (*)'
                 style={[styles.F1, styles.MR16, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}
             />
             <Text>, {moment().format('LL')}</Text>
