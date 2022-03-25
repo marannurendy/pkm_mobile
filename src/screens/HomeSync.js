@@ -13,7 +13,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, Colors } from 'react-native-paper';
 import db from '../database/Database'
 import { RadioButton } from 'react-native-paper';
-import * as Sentry from "@sentry/browser";
 
 const colors = {
     HITAM: '#000',
@@ -222,7 +221,6 @@ export default function FrontHomeSync(props) {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $get /inisiasi/GetListClient error:', error);
-            Sentry.captureMessage(`$post /inisiasi/GetListClient error: ${JSON.stringify(error)}`, "error");
 
             setFetching(false);
         }
@@ -262,7 +260,6 @@ export default function FrontHomeSync(props) {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClientBRNET error:', error);
-            Sentry.captureMessage(`$post /inisiasi/GetListClient error: ${JSON.stringify(error)}`, "error");
             
             setFetchingProspekLama(false);
         }
@@ -441,6 +438,7 @@ export default function FrontHomeSync(props) {
                 <Text style={{color: colors.PUTIH}}>{props.username}</Text>
                 <Text style={{color: colors.PUTIH}}>{props.namacabang}</Text>
                 <Text style={{color: colors.PUTIH}}>{now}</Text>
+                <Text style={{color: colors.PUTIH}}>No. Virtual Account: {props?.noVirtualAccount ?? '-'}</Text>
             </View>
             <View>
                 <Text style={{ color: 'white', fontSize: 18 }} onPress={() => LogOutButton()}>Logout</Text>
@@ -906,6 +904,7 @@ export default function FrontHomeSync(props) {
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
             <Text style={{ textAlign: 'center' }}>{`version pkm_mobile-${VERSION}`}</Text>
+            <Text style={{ textAlign: 'center' }} onPress={() => navigation.navigate('NetworkLogging')}>Network Logger</Text>
         </View>
     )
 

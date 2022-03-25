@@ -100,6 +100,19 @@ const ProdukPembiayaan = ({ route }) => {
         getStorageTujuanPembiayaan();
     }, [valueJenisPembiayaan])
 
+    useEffect(() => {
+        if (__DEV__) console.log('useEffect valueTypePencairan:', valueTypePencairan);
+        
+        if (valueTypePencairan === '3') {
+            setValueRekeningBank(true);
+        } else {
+            setValueNamaBank('');
+            setValueNoRekening('');
+            setValuePemilikRekening('');
+            setValueRekeningBank(false);
+        }
+    }, [valueTypePencairan])
+
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         setCurrentDate(tanggal)
@@ -196,10 +209,10 @@ const ProdukPembiayaan = ({ route }) => {
                             if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
                             if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
                             if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
-                            if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' || data.status_Rekening_Bank === '1' || data.status_Rekening_Bank === '0' ? true : false);
-                            if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
-                            if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
-                            if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
+                            // if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' || data.status_Rekening_Bank === '1' || data.status_Rekening_Bank === '0' ? true : false);
+                            if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined' && data.nama_Bank !== 'null') setValueNamaBank(data.nama_Bank);
+                            if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined' && data.no_Rekening !== 'null') setValueNoRekening(data.no_Rekening);
+                            if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined' && data.pemilik_Rekening !== 'null') setValuePemilikRekening(data.pemilik_Rekening);
                         });
                     }
                 }, function(error) {
@@ -254,7 +267,7 @@ const ProdukPembiayaan = ({ route }) => {
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
                 if (responseJSON.length > 0 ?? false) {
-                    var responseFiltered = responseJSON.map((data, i) => {
+                    var responseFiltered = responseJSON.filter(data => data.namajenispembiayaan === 'PRODUK UTAMA').map((data, i) => {
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
                     // if (__DEV__) console.log('getStorageJenisPembiayaan responseFiltered:', responseFiltered);
@@ -761,16 +774,6 @@ const ProdukPembiayaan = ({ route }) => {
                     selectedValue={valueTypePencairan}
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
-                        if (itemValue === '3') {
-                            setValueRekeningBank(true);
-                            setValueTypePencairan(itemValue);
-                            return;
-                        }
-
-                        setValueNamaBank('');
-                        setValueNoRekening('');
-                        setValuePemilikRekening('');
-                        setValueRekeningBank(false);
                         setValueTypePencairan(itemValue);
                     }}
                 >

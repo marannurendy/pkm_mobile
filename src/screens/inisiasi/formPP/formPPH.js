@@ -29,7 +29,6 @@ import { style } from 'styled-system';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import { getSyncData } from '../../../actions/sync';
-import * as Sentry from "@sentry/browser";
 
 const dimension = Dimensions.get('screen');
 
@@ -266,18 +265,15 @@ const InisiasiFormPPH = ({ route }) => {
                                             }else{
                                                 setLoading(false)
                                                 flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
-                                                Sentry.captureMessage(`$post /post_inisiasi/post_pp error: ${JSON.stringify(responseJson)}`, "error");
                                             }
                                         }).catch((error) => {
                                             setLoading(false)
                                             flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
-                                            Sentry.captureMessage(`$post /post_inisiasi/post_pp error: ${JSON.stringify(error)}`, "error");
                                         })
                                     }catch(error){
                                         console.log("disini")
                                         setLoading(false)
                                         flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
-                                        Sentry.captureMessage(`$post /post_inisiasi/post_pp error: ${JSON.stringify(error)}`, "error");
                                     }
     
                                 }
@@ -381,16 +377,13 @@ const InisiasiFormPPH = ({ route }) => {
                                         getData(val)
                                     }else{
                                         // flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
-                                        Sentry.captureMessage(`$post /post_inisiasi/post_data_kelompok error: ${JSON.stringify(responseJson)}`, "error");
                                     }
                                 }).catch((error) => {
                                     flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
-                                    Sentry.captureMessage(`$post /post_inisiasi/post_data_kelompok error: ${JSON.stringify(error)}`, "error");
                                 })
                             }catch(error){
                                 console.log("disini")
                                 flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
-                                Sentry.captureMessage(`$post /post_inisiasi/post_data_kelompok error: ${JSON.stringify(error)}`, "error");
                             }
                         }
                     }

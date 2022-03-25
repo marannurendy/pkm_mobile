@@ -26,6 +26,7 @@ export default function FrontHome() {
     const [namacabang, setNamacabang] = useState("")
     const [username, setUsername] = useState("")
     const [aoname, setAoname] = useState("")
+    const [noVirtualAccount, setNoVirtualAccount] = useState("")
     const [loading, setLoading] = useState(false)
     const [buttonstat, setButtonstat] = useState(true)
     const [buttonDis, setButtonDis] = useState(false)
@@ -87,24 +88,24 @@ export default function FrontHome() {
     }
 
     const fetchData = () => {
-        setLoading(true)
-        fetch(ApiSync + Get_notification)
-          .then((response) => response.json())
-          .then((json) => {
-            if(json.responseDescription === "success") {
-                // console.log(json)
-              setData(json.data)
-              setModalVisible(!modalVisible)
-              return false
-            }else{
-              setLoading(false)
-            }
-          })
-          .catch((error) => console.error(error))
-          .finally(() => {
-              setLoading(false)
-              return false
-            });
+        // setLoading(true)
+        // fetch(ApiSync + Get_notification)
+        //   .then((response) => response.json())
+        //   .then((json) => {
+        //     if(json.responseDescription === "success") {
+        //         // console.log(json)
+        //       setData(json.data)
+        //       setModalVisible(!modalVisible)
+        //       return false
+        //     }else{
+        //       setLoading(false)
+        //     }
+        //   })
+        //   .catch((error) => console.error(error))
+        //   .finally(() => {
+        //       setLoading(false)
+        //       return false
+        //     });
     }
 
     const checkConnection = () => {
@@ -145,6 +146,7 @@ export default function FrontHome() {
             setNamacabang(DetailData.namaCabang)
             setUsername(DetailData.userName)
             setAoname(DetailData.AOname)
+            setNoVirtualAccount(DetailData.noVirtualAccount)
 
             itemReadyHandler(DetailData.kodeCabang, DetailData.userName)
 
@@ -290,6 +292,7 @@ export default function FrontHome() {
             <FrontHomeSync 
                 username={username}
                 cabangid={cabangid}
+                noVirtualAccount={noVirtualAccount}
                 // username={'AO12-90091'} /* DATA DUMMY */
                 // cabangid={90091} /* DATA DUMMY */
                 aoname={aoname}
@@ -314,6 +317,7 @@ export default function FrontHome() {
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
             <Text style={{ textAlign: 'center' }}>{`version pkm_mobile-${VERSION}`}</Text>
+            <Text style={{ textAlign: 'center' }} onPress={() => navigation.navigate('NetworkLogging')}>Network Logger</Text>
         </View>
     )
 
@@ -355,6 +359,7 @@ export default function FrontHome() {
                     <Text style={{fontSize: 30, fontWeight: 'bold', color: '#fff'}}>Hi, {aoname}</Text>
                     <Text style={{color: '#fff'}}>{username}</Text>
                     <Text style={{color: '#fff'}}>{namacabang}</Text>
+                    <Text style={{color: '#fff'}}>No. Virtual Account: {noVirtualAccount ?? '-'}</Text>
                 </View>
 
                 <View style={{flexDirection: 'row', marginHorizontal: scale(15)}}>

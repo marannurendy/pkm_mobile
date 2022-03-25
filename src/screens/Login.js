@@ -8,7 +8,6 @@ import { useNavigation } from '@react-navigation/native';
 import {ApiSync, VERSION} from "../../dataconfig/index";
 import NetInfo, { useNetInfo } from '@react-native-community/netinfo'
 import { showMessage } from "react-native-flash-message"
-import * as Sentry from "@sentry/browser";
 
 const window = Dimensions.get('window')
 
@@ -77,7 +76,6 @@ export default function Login() {
               flashNotification("Network Error", "Pastikan anda terhubung dengan internet", "#ff6347", "#fff")
               setLoading(false)
           }else if(netInfo.isConnected === true) {
-            Sentry.setUser({ username: uname });
             console.log(loginApi + "AuthLogin");
             const uri = loginApi + "AuthLogin";
             const body = {
@@ -108,6 +106,7 @@ export default function Login() {
                           userName: responseJson.data.userName,
                           password: responseJson.data.password,
                           AOname: responseJson.data.nama,
+                          noVirtualAccount: responseJson?.data?.vaNumber ?? null
                       }
 
                       // let dataLogin = {
@@ -143,8 +142,10 @@ export default function Login() {
             
                   }else if(responseJson.responseStatus === false) {
                       flashNotification("Alert", 'Gagal Login : '+responseJson.message, "#ff6347", "#fff")
-                      Sentry.captureMessage(`AuthLogin uri: ${uri} body: ${body} error: ${JSON.stringify(responseJson)}`, "error");
                       setLoading(false)
+                  } else {
+                    flashNotification("Alert", 'Gagal Login : '+responseJson.message, "#ff6347", "#fff")
+                    setLoading(false)
                   }
               })
               .then(() => {
@@ -152,7 +153,6 @@ export default function Login() {
               })
               .catch((error) => {
                   flashNotification("Alert", 'Error : '+error, "#ff6347", "#fff")
-                  Sentry.captureMessage(`AuthLogin uri: ${uri} body: ${body} error: ${JSON.stringify(error)}`, "error");
                   console.log(error)
                   setLoading(false)
                   return false;
