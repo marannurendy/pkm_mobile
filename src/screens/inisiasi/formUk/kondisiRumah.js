@@ -66,6 +66,9 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     }, []);
 
     const setInfo = async () => {
+        const getNamaProduk = await AsyncStorage.getItem('NamaProduk')
+        console.log('getNamaProduk ==========>',getNamaProduk)
+        alert('getNamaProduk ==========>',getNamaProduk)
         const tanggal = await AsyncStorage.getItem('TransactionDate')
         setCurrentDate(tanggal)
     }
@@ -173,7 +176,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
                             });
                         }
 
-                        console.log('getdatabase foto runah ===>', data.foto_rumah)
+
                         Promise.all([setLuasBangunan(), setKondisiBangunan(), setJenisAtap(), setDinding(), setLantai(), setRumah(), setRumahRAB()]).then((response) => {
                             if (data.sanitasi_Akses_AirBersih !== null && typeof data.sanitasi_Akses_AirBersih !== 'undefined') setValueAksesAirBersih(data.sanitasi_Akses_AirBersih === 'true' ? true : false);
                             if (data.sanitasi_KamarMandi !== null && typeof data.sanitasi_KamarMandi !== 'undefined') setValueKamarMandi(data.sanitasi_KamarMandi === 'true' ? true : false);
