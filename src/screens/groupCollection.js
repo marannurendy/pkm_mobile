@@ -226,7 +226,7 @@ const GroupCollection = ({route}) => {
                             savings = '` + memberList[a].titipan + `',
                             withDraw = '` + memberList[a].tarikan + `',
                             totalSetor = '` + memberList[a].totalSetor + `' 
-                            WHERE ClientID = '` + memberList[a].ClientID + `';`
+                            WHERE AccountID = '` + memberList[a].AccountID + `';`
 
                         db.transaction(
                             tx => {
