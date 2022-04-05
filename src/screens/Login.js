@@ -162,6 +162,13 @@ export default function Login() {
     }
   }
 
+  const renderVersion = () => (
+      <View style={{ marginVertical: 32 }}>
+          <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>{`version pkm_mobile-${VERSION}`}</Text>
+          <Text style={{ textAlign: 'center', fontWeight: 'bold' }} onPress={() => navigation.navigate('NetworkLogging')}>Network Logger</Text>
+      </View>
+  )
+
       return (
         <ImageBackground
           source={require("../images/LoginUtama.png")}
@@ -219,6 +226,8 @@ export default function Login() {
                       LOGIN
                   </Text>
               </TouchableOpacity>
+
+              {renderVersion()}
             </View>
           </View>
 
