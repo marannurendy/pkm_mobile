@@ -293,7 +293,7 @@ export default function FrontHomeSync(props) {
                 + "','"
                 + data.ClientID
                 + "','"
-                + data.Name
+                + data.Name.replace(/["']/g, "")
                 + "')";
 
                 if (i != selectedItemsProspekLama.length - 1) {

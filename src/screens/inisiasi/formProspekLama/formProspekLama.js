@@ -398,7 +398,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama subGroup:', subGroup);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama identityNumber:', identityNumber);
 
-        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok, siklus) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "3", "' + moment().format('YYYY-MM-DD') + '", "' + groupName + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '", "' + inputPembiayaanTahap + '")';
+        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok, siklus) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name.replace(/["']/g, "") + '","", "3", "' + moment().format('YYYY-MM-DD') + '", "' + groupName + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '", "' + inputPembiayaanTahap + '")';
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama query:', query);
         db.transaction(
             tx => {
@@ -408,9 +408,9 @@ const InisiasiFormProspekLama = ({ route }) => {
                 Alert.alert('Error', JSON.stringify(error));
             }, function() {
 
-                let queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, nama_ayah, status_rumah_tinggal, idSosialisasiDatabase) values ("1","' + identityNumber + '","' + namaLengkap + '","' + namaOrangtua + '","' + valueTempatTinggalNasabah + '", "' + uniqueNumber + '")';
-                let queryUKProdukPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, idSosialisasiDatabase) values ("' + namaLengkap + '","1","1","' + valuePembiayaanDiajukan + '","' + maxPlafond + '","' + inputJangkaWaktuPembiayaanDiajukan + '","' + uniqueNumber + '")';
-                let queryUKDisiplinNasabah = 'INSERT INTO Table_UK_DisipinNasabah (nama_lengkap, kehadiran_pkm, angsuran_pada_saat_pkm, idSosialisasiDatabase) values ("' + namaLengkap + '","' + valueKehadiranPKM + '","", "' + uniqueNumber + '")';
+                let queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, nama_ayah, status_rumah_tinggal, idSosialisasiDatabase) values ("1","' + identityNumber + '","' + namaLengkap.replace(/["']/g, "") + '","' + namaOrangtua.replace(/["']/g, "") + '","' + valueTempatTinggalNasabah + '", "' + uniqueNumber + '")';
+                let queryUKProdukPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, idSosialisasiDatabase) values ("' + namaLengkap.replace(/["']/g, "") + '","1","1","' + valuePembiayaanDiajukan + '","' + maxPlafond + '","' + inputJangkaWaktuPembiayaanDiajukan + '","' + uniqueNumber + '")';
+                let queryUKDisiplinNasabah = 'INSERT INTO Table_UK_DisipinNasabah (nama_lengkap, kehadiran_pkm, angsuran_pada_saat_pkm, idSosialisasiDatabase) values ("' + namaLengkap.replace(/["']/g, "") + '","' + valueKehadiranPKM + '","", "' + uniqueNumber + '")';
 
                 if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama queryUKDataDiri:', queryUKDataDiri);
                 if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama queryUKProdukPembiayaan:', queryUKProdukPembiayaan);
