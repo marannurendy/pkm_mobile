@@ -647,15 +647,17 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const takePicture = async (type) => {
         try {
-            setLoading(true)
-            setButtonCam(true)
+            setLoading(true);
+            // setButtonCam(true);
+
             const options = { quality: 0.3, base64: true };
-            let getPicture = await camera.current.takePictureAsync(options)
+            let getPicture = await camera.current.takePictureAsync(options);
+
             await savePictureBase64(key_fotoRumah, 'data:image/jpeg;base64,' + getPicture.base64)
             setFotoRumah(getPicture.uri);
             setLoading(false);
             setButtonCam(false);
-            setCameraShow(0)
+            setCameraShow(0);
         } catch (error) {console.log(error)}
     };
 

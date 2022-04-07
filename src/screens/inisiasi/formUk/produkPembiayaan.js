@@ -614,7 +614,7 @@ const ProdukPembiayaan = ({ route }) => {
             </View>
             <View style={styles.headerBoxImageBackground}>
                 <ImageBackground source={images.banner} style={styles.headerImageBackground} imageStyle={{ borderRadius: 20 }}>
-                    <Text style={[styles.headerText, { fontSize: 30 }]}>Form Uji Kelayakan {valueProdukPembiayaan}</Text>
+                    <Text style={[styles.headerText, { fontSize: 30 }]}>Form Uji Kelayakan</Text>
                     <Text style={[styles.headerText, { fontSize: 20 }]}>{groupName}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{namaNasabah}</Text>
                     <Text style={[styles.headerText, { fontSize: 15 }]}>{currentDate}</Text>

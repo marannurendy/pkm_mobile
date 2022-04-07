@@ -398,7 +398,7 @@ const FormUjiKelayakan = ({route}) => {
                             "FotoRumah1": foto_rumah === null || foto_rumah === 'null' ? '' : foto_rumah.split(',')[1]
                         }
 
-                        // alert(body.FotoRumah1);
+                        // alert(body.ClientID);
                         // return;
 
                         try {
