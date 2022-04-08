@@ -303,8 +303,8 @@ const FormUjiKelayakan = ({route}) => {
                             "FotoKartuIdentitas": fotoKartuIdentitas === null || fotoKartuIdentitas === 'null' ? '' : fotoKartuIdentitas.split(',')[1],
                             "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
                             "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
-                            "ID_SektorEkonomi": data.sektor_Ekonomi,
-                            "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi,
+                            "ID_SektorEkonomi": data.sektor_Ekonomi === null || data.sektor_Ekonomi === 'null' ? '' : data.sektor_Ekonomi,
+                            "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi === null || data.sub_Sektor_Ekonomi === 'null' ? '' : data.sub_Sektor_Ekonomi,
                             "IsAdaRekening": data.status_Rekening_Bank === 'true' ? '1' : '0',
                             "IsSuamiDitempat": data.suami_diluar_kota === 'true' ? '1' : '0',
                             "Is_AdaAdaToiletPribadi": data.sanitasi_KamarMandi === 'true' ? '1' : '0',
@@ -313,7 +313,7 @@ const FormUjiKelayakan = ({route}) => {
                             "JenisAtap": data.jenis_Atap,
                             "JenisIdentitas": data.jenis_Kartu_Identitas,
                             "JenisPembiayaan": data.jenis_Pembiayaan,
-                            "Jenis_Usaha": data.jenis_Usaha,
+                            "Jenis_Usaha": data.jenis_Usaha === null || data.jenis_Usaha === 'null' ? '' : data.jenis_Usaha,
                             "JmlHariUsaha_perBulan": data.jumlah_Hari_Usaha_Perbulan,
                             "JmlHariUsaha_perBulan_Suami": data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan,
                             "JmlhAnak": data.jumlah_anak,
@@ -398,7 +398,7 @@ const FormUjiKelayakan = ({route}) => {
                             "FotoRumah1": foto_rumah === null || foto_rumah === 'null' ? '' : foto_rumah.split(',')[1]
                         }
 
-                        // alert(body.ClientID);
+                        // alert(`${body.ID_SektorEkonomi} - ${body.ID_SubSektorEkonomi} - ${body.Jenis_Usaha}`);
                         // return;
 
                         try {
@@ -732,7 +732,7 @@ const FormUjiKelayakan = ({route}) => {
 
             <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>
                 <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover", justifyContent: 'center'}} imageStyle={{borderRadius: 20}}>
-                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Form Uji Kelayakan</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Form Uji Kelayakan {statusSosialisasi}</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 20, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{groupName}</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{namaNasabah}</Text>
                     {/* <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{id}</Text> */}
