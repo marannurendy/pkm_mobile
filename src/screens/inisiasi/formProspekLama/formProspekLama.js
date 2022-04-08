@@ -181,7 +181,9 @@ const InisiasiFormProspekLama = ({ route }) => {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $post /inisiasi/GetSiklusNasabahBrnet error:', error);
+            Alert.alert('Error', error.responseDescription || 'Timeout');
             setFetching(false);
+            navigation.goBack();
         }
     }
 
