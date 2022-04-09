@@ -57,6 +57,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
     const [fotoRAB, setFotoRAB] = useState(undefined)
     const [key_fotoRAB, setKey_fotoRAB] = useState(`formUK_KondisiRAB_${uniqueNumber}_${namaNasabah.replace(/\s+/g, '')}`);
     const [cameraShowRAB, setCameraShowRAB] = useState(0)
+    const [idProduk, setIdProduk] = useState(null)
     
 
     useEffect(() => {
@@ -67,6 +68,9 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
+        const getNamaProduk = await AsyncStorage.getItem('NamaProduk')
+        getNamaProduk == null ? await AsyncStorage.setItem('NamaProduk', '') : getNamaProduk
+        setIdProduk(getNamaProduk)
         setCurrentDate(tanggal)
     }
 
@@ -507,7 +511,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const renderForm = () => (
         <View style={[styles.F1, styles.P16]}>
-            {renderFormRAB()}
+            {idProduk < 3 ? null : renderFormRAB()}
             {renderFormRumah()}
             {renderFormLuasBangunan()}
             {renderFormKondisiBangunan()}
@@ -533,7 +537,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const renderFormRumah = () => (
         <View style={styles.MT8}>
-            <Text>{statusSosialisasi === '3' ? 'Kondisi Sebelum Renovasi (*)' : 'Foto Rumah (Tampak Depan) (*)'}</Text>
+            <Text>{statusSosialisasi === '3' ? 'Kondisi Sebelum Renovasi (*)' : 'Foto Rumah (Tampak Luar) (*)'}</Text>
             <TouchableOpacity onPress={async () => {
                 setCameraShow(1)
             }}>

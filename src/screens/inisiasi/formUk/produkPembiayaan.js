@@ -64,15 +64,15 @@ const ProdukPembiayaan = ({ route }) => {
     }, [])
 
     useEffect(() => {
-        if (__DEV__) console.log('useEffect valueProdukPembiayaan:', valueProdukPembiayaan);
+        // if (__DEV__) console.log('useEffect valueProdukPembiayaan:', valueProdukPembiayaan);
         (async () => {
             const response = await AsyncStorage.getItem('Product');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
-                if (__DEV__) console.log('useEffect valueProdukPembiayaan AsyncStorage:', responseJSON);
+                // if (__DEV__) console.log('useEffect valueProdukPembiayaan AsyncStorage:', responseJSON);
                 if (responseJSON.length > 0 ?? false) {
                     const findData = responseJSON.filter(data => data.id === valueProdukPembiayaan)[0];
-                    if (__DEV__) console.log('useEffect valueProdukPembiayaan filter:', findData);
+                    // if (__DEV__) console.log('useEffect valueProdukPembiayaan filter:', findData);
                     if (findData) {
                         setNameProdukPembiayaan(findData?.productName.trim() ?? '');
                         setSelectedProdukPembiayaan(findData ?? null);
@@ -84,15 +84,15 @@ const ProdukPembiayaan = ({ route }) => {
     }, [valueProdukPembiayaan]);
 
     useEffect(() => {
-        if (__DEV__) console.log('useEffect valueFrekuensiPembayaran:', valueFrekuensiPembayaran);
+        // if (__DEV__) console.log('useEffect valueFrekuensiPembayaran:', valueFrekuensiPembayaran);
         (async () => {
             const response = await AsyncStorage.getItem('Frekuensi');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
-                if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage:', responseJSON.length, responseJSON);
+                // if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage:', responseJSON.length, responseJSON);
                 if (responseJSON.length > 0 ?? false) {
                     const findData = responseJSON.filter(data => data.id === valueFrekuensiPembayaran)[0];
-                    if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage filter:', findData);
+                    // if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage filter:', findData);
                     if (findData) {
                         setNameFrekuensiPembayaran(findData?.namafrekuensi ?? '');
                     }
@@ -102,7 +102,17 @@ const ProdukPembiayaan = ({ route }) => {
     }, [valueFrekuensiPembayaran]);
 
     useEffect(() => {
+<<<<<<< HEAD
         if (__DEV__) console.log('useEffect valueNamaProduk:', valueNamaProduk);
+=======
+        // if (__DEV__) console.log('useEffect valueJenisPembiayaan:', valueJenisPembiayaan);
+        getStorageKategoriTujuanPembiayaan();
+        getStorageTujuanPembiayaan();
+    }, [valueJenisPembiayaan]);
+
+    useEffect(() => {
+        // if (__DEV__) console.log('useEffect valueNamaProduk:', valueNamaProduk);
+>>>>>>> f28fa942831f838783ba9ee7f2e6eedb63235c18
 
         getStorageProduk(valueNamaProduk, valueJenisPembiayaan);
     }, [valueNamaProduk]);
@@ -118,8 +128,8 @@ const ProdukPembiayaan = ({ route }) => {
             tx => {
                 tx.executeSql(queryUKDataDiri, [], (tx, results) => {
                     let dataLength = results.rows.length;
-                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database length:', dataLength);
-                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database:', results.rows);
+                    // if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database length:', dataLength);
+                    // if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database:', results.rows);
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
                         setDataSosialisasiDatabase(data);
@@ -133,18 +143,18 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getUKProdukPembiayaan = () => {
         if (__DEV__) console.log('getUKProdukPembiayaan loaded');
-        if (__DEV__) console.log('getUKProdukPembiayaan id:', id);
+        // if (__DEV__) console.log('getUKProdukPembiayaan id:', id);
 
         let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
                     let dataLength = results.rows.length;
-                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
-                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan:', results.rows);
+                    // if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
+                    // if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan:', results.rows);
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
-                        if (__DEV__) console.log('tx.executeSql data:', data);
+                        // if (__DEV__) console.log('tx.executeSql data:', data);
 
                         const getJenisPembiayaan = () => {
                             if (__DEV__) console.log('getJenisPembiayaan loaded');
@@ -318,12 +328,25 @@ const ProdukPembiayaan = ({ route }) => {
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
                 if (responseJSON.length > 0 ?? false) {
+<<<<<<< HEAD
                     var responseFiltered = responseJSON.filter(data => data.namajenispembiayaan === 'PRODUK UTAMA').map((data, i) => {
+=======
+                    if (__DEV__) console.log('getStorageJenisPembiayaan responseJSON:', responseJSON);
+                    if (['1', '2'].includes(statusSosialisasi)) {
+                        var responseFiltered = responseJSON.filter(data => data.namajenispembiayaan === 'PRODUK UTAMA').map((data, i) => {
+                            return { label: data.namajenispembiayaan, value: data.id };
+                        }) ?? [];
+                        setItemsJenisPembiayaan(responseFiltered);
+                        return;
+                    }
+
+                    var responseFiltered = responseJSON.map((data, i) => {
+>>>>>>> f28fa942831f838783ba9ee7f2e6eedb63235c18
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
-                    // if (__DEV__) console.log('getStorageJenisPembiayaan responseFiltered:', responseFiltered);
                     setItemsJenisPembiayaan(responseFiltered);
                     return;
+                    
                 }
             }
             setItemsJenisPembiayaan([]);
@@ -356,7 +379,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getStorageNamaProduk = async (rw) => {
         if (__DEV__) console.log('getStorageNamaProduk loaded');
-        // if (__DEV__) console.log('getStorageNamaProduk rw:', rw);
+        // if (__DEV__) console.log('getStorageNamaProduk statusSosialisasi, rw:', statusSosialisasi, rw);
 
         try {
             const response = await AsyncStorage.getItem('SubjenisPembiayaan');
@@ -364,10 +387,11 @@ const ProdukPembiayaan = ({ route }) => {
                 const responseJSON = JSON.parse(response);
                 // if (__DEV__) console.log('getStorageNamaProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0 ?? false) {
-                    if (__DEV__) console.log('getStorageNamaProduk responseJSON:', responseJSON);
-                    var responseFiltered = responseJSON.filter(data => data.idjenispembiayaan === rw).map((data, i) => {
+                    // if (__DEV__) console.log('getStorageNamaProduk responseJSON:', responseJSON);
+                    var responseFiltered = await responseJSON.filter(data => data.idjenispembiayaan === rw).map((data, i) => {
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
+
                     // if (__DEV__) console.log('getStorageNamaProduk responseFiltered:', responseFiltered);
                     setItemsNamaProduk(responseFiltered);
                     return;
@@ -381,7 +405,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getStorageTujuanPembiayaan = async () => {
         if (__DEV__) console.log('getStorageTujuanPembiayaan loaded');
-        if (__DEV__) console.log('getStorageTujuanPembiayaan valueJenisPembiayaan:', valueJenisPembiayaan);
+        // if (__DEV__) console.log('getStorageTujuanPembiayaan valueJenisPembiayaan:', valueJenisPembiayaan);
 
         try {
             const response = await AsyncStorage.getItem('TujuanPembiayaan');
@@ -393,7 +417,7 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.filter(data => data.Is_Produk_Utama === isProdukUtama).map((data, i) => {
                         return { label: data.namatujuanpembiayaan, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageTujuanPembiayaan responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageTujuanPembiayaan responseFiltered:', responseFiltered);
                     setItemsTujuanPembiayaan(responseFiltered);
                     return;
                 }
@@ -415,7 +439,7 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.namakategoritujuanpembiayaan, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageKategoriTujuanPembiayaan responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageKategoriTujuanPembiayaan responseFiltered:', responseFiltered);
                     setItemsKategoriTujuanPembiayaan(responseFiltered);
                     return;
                 }
@@ -437,7 +461,7 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.namafrekuensi, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageFrekuensi responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageFrekuensi responseFiltered:', responseFiltered);
                     setItemsFrekuensiPembayaran(responseFiltered);
                     return;
                 }
@@ -469,7 +493,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const generateJumlahPinjaman = (data) => {
         if (__DEV__) console.log('generateJumlahPinjaman loaded');
-        if (__DEV__) console.log('generateJumlahPinjaman data:', data);
+        // if (__DEV__) console.log('generateJumlahPinjaman data:', data);
 
         if (data === null) return null;
 
@@ -804,7 +828,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const renderFormKategoriTujuanPembiayaan = () => (
         <View style={styles.MT8}>
-            <Text>Kategori Tujuan Pembiayaan (Produk Utama)</Text>
+            <Text>Kategori Tujuan Pembiayaan</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
                     selectedValue={valueKategoriTujuanPembiayaan}
@@ -1052,7 +1076,6 @@ const ProdukPembiayaan = ({ route }) => {
                         {renderFormTermPembiayaan()}
                         {renderFormKategoriTujuanPembiayaan()}
                         {renderFormTujuanPembiayaan()}
-                        {renderFormLuas()}
                         {renderFormTypePencairan()}
                         {renderFormFrekuensiPembayaran()}
                         {renderFormRekeningBank()}
@@ -1098,7 +1121,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const renderBody = () => (
         <View style={styles.bodyContainer}>
-            <Text style={styles.bodyTitle}>Produk Pembiayaan</Text>
+            <Text style={styles.bodyTitle}>Produk Pembiayaan {statusSosialisasi}</Text>
             <ScrollView scrollEnabled={scrollEnabled}>
                 {renderForm()}
                 {renderButtonSimpan()}
