@@ -234,6 +234,8 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 query = query + ";";
 
 //Rendy                // if (__DEV__) console.log('ACTIONS GET SYNC DATA GROUP INSERT QUERY:', query);
+
+                console.log(query)
     
                 db.transaction(
                     tx => {
@@ -1616,7 +1618,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                 Authorization: token,
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
-            }
+                }
         });
         const jsonListGroup = await responseListGroup.json(responseListGroup);
         await insertListGroup(jsonListGroup);

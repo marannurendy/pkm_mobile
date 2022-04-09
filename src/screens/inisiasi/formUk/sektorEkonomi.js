@@ -350,7 +350,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
 
     const renderBody = () => (
         <View style={styles.bodyContainer}>
-            <Text style={styles.bodyTitle}>Sektor Ekonomi {statusSosialisasi}</Text>
+            <Text style={styles.bodyTitle}>Sektor Ekonomi</Text>
             <ScrollView>
                 {renderForm()}
                 {renderButtonSimpan()}
