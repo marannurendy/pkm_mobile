@@ -1,3 +1,3 @@
-import {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther, VERSION, GET_CUSTOM_MESSAGES} from "./apisync/apisync"
+import {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther, VERSION, GET_CUSTOM_MESSAGES, Get_UmiList, BRI_webAuth, PostIndividualPKM, NotificationCheck} from "./apisync/apisync"
 
-export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther, VERSION, GET_CUSTOM_MESSAGES}
+export {ApiSync, Get_notification, PostPKM, Get_Date, ApiSyncInisiasi, ApiPkmb, ApiDukcapil, IS_DEVELOPMENT, ApiSyncOther, VERSION, GET_CUSTOM_MESSAGES, Get_UmiList, BRI_webAuth, PostIndividualPKM, NotificationCheck}

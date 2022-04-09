@@ -92,8 +92,8 @@ export default function Login() {
               .then((response) => response.json())
               .then((responseJson) => {
 
-                console.log(responseJson.responseStatus)
-                  if(responseJson.responseStatus === true) {
+                console.log(responseJson)
+                  if(responseJson.status === "200") {
                     console.log("disini")
                     console.log(responseJson.data.jabatan)
                     flashNotification("Sukses!", 'Pesan : '+responseJson.message, "#1F8327", "#fff")
@@ -105,10 +105,6 @@ export default function Login() {
                           password: responseJson.data.password,
                           AOname: responseJson.data.nama,
                       }
-
-                      // let dataLogin = {
-                      //     userName: responseJson.data.userName
-                      // }
 
                       AsyncStorage.setItem('token', responseJson.token).then((response) => {
                         console.log('AsyncStorage.setItem.token success:', responseJson.token)
@@ -137,7 +133,7 @@ export default function Login() {
                         setLoading(false) 
                       }
             
-                  }else if(responseJson.responseStatus === false) {
+                  }else{
                       flashNotification("Alert", 'Gagal Login : '+responseJson.message, "#ff6347", "#fff")
                       setLoading(false)
                   }
@@ -158,6 +154,7 @@ export default function Login() {
   }
 
       return (
+        <View>
         <ImageBackground
           source={require("../images/LoginUtama.png")}
           style={styles.background}
@@ -223,6 +220,7 @@ export default function Login() {
             </View>
           } 
         </ImageBackground>
+        </View>
       );
   }
   

@@ -10,7 +10,7 @@ import moment from 'moment'
 import BottomSheet from 'reanimated-bottom-sheet'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { set } from 'react-native-reanimated'
-import {ApiSync} from '../../dataconfig/index';
+import { PostIndividualPKM } from '../../dataconfig'
 import { showMessage } from "react-native-flash-message"
 
 
@@ -109,7 +109,15 @@ function IndividualCollection(props) {
     const SubmitHandler = async () => {
 
         setLoading(true)
-        let queryCek = `SELECT * FROM PAR_AccountList WHERE OurBranchID = ` + branchID + ` AND status = '` + 1 + `'`
+        let queryCek = `    SELECT  OurBranchID as cabangid,
+                                    ClientID as clientid,
+                                    AccountID as accountid,
+                                    GroupID as groupid,
+                                    jumlahbayar as jumlahpar,
+                                    syncby as createdby,
+                                    AoSign as AOSign,
+                                    NasabahSign as clientSign
+                                    FROM PAR_AccountList WHERE OurBranchID = ` + branchID + ` AND status = '` + 1 + `'`
         const DataGet = (queryCek) => (new Promise((resolve, reject) => {
             try{
                 db.transaction(
@@ -120,6 +128,7 @@ function IndividualCollection(props) {
 
                             for(let a = 0; a < dataLength; a++) {
                                 let data = results.rows.item(a)
+                                data['createdDate'] = currentDate
                                 listData.push(data)
                             }
 
@@ -137,22 +146,17 @@ function IndividualCollection(props) {
         }))
 
         const ListData = await DataGet(queryCek)
+        const DetailData = {
+            "cabangid" : branchID,
+            "createdDate" : currentDate,
+            "createdby" : Username
+        }
         setLoading(false)
-
         let dataList = ListData.length
+
         if(dataList > 0) {
-            const dataForm = new FormData()
-            for(let a = 0; a < dataList; a++) {
-                dataForm.append('AOSign',ListData[a].AoSign)
-                dataForm.append('accountid',ListData[a].AccountID)
-                dataForm.append('cabangid',branchID)
-                dataForm.append('clientSign',ListData[a].NasabahSign)
-                dataForm.append('clientid',ListData[a].ClientID)
-                dataForm.append('createdby',ListData[a].syncby)
-                dataForm.append('groupid',ListData[a].GroupID)
-                dataForm.append('jumlahpar',ListData[a].jumlahbayar)
-                dataForm.append('CreatedDate',currentDate)
-            }
+            let dataSync = { "data": ListData, "detailTransaction": DetailData}
+            const token = await AsyncStorage.getItem('token');
 
             Alert.alert(
                 "Alert",
@@ -166,44 +170,68 @@ function IndividualCollection(props) {
                     },
                     { text: "SETUJU", onPress: () => {
                         setLoading(true)
-                        let IndividualSync = ApiSync + 'PostPKMIndividual'
-                        return fetch(IndividualSync, {
+
+                        return fetch(PostIndividualPKM, {
                             method:'POST',
                             headers: {
+                                Authorization : token,
                                 'Accept': 'application/json',
-                                'Content-Type': 'multipart/form-data'
+                                'Content-Type': 'application/json',
                             },
-                            body: dataForm,
+                            body: JSON.stringify(dataSync),
                         })
-                        .then((response) => response.text())
+                        .then((response) => response.json())
                         .then((responseText) => {
                             setLoading(false)
-                            // setLoading(false)
-                            Alert.alert(
-                                "Sukses",
-                                "Data Berhasil Dikirim",
-                                [
-                                  { text: "OK", onPress: () => {
-                                        setLoading(true)
-                                      db.transaction(
-                                          tx => {
-                                            for(let p = 0; p < dataList; p++) {
-                                                tx.executeSql("DELETE FROM PAR_AccountList WHERE ClientID = '" + ListData[p].ClientID + "'")
-                                                tx.executeSql("DELETE FROM DetailPAR WHERE clientid = '"+ ListData[p].ClientID +"'")
-                                            }
-                                          },function(error) {
-                                                setLoading(false)
-                                                console.log('Transaction ERROR: ' + error.message);
-                                            }, function() {
-                                                setLoading(false)
-                                                flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
-                                                FetchdataPKMIndividual(branchID, Username)
+
+                            if(responseText.Status === "200") {
+                                let notifMessage = "Data berhasil dikirim"
+
+                                if(responseText.failedTransaction !== null) {
+                                    console.log(responseText.failedTransaction.length)
+                                    let failedData = responseText.failedTransaction
+
+                                    notifMessage = notifMessage + ", berikut data nasabah yang tidak berhasil di kirim karena telah menghadiri PKM kelompok : "
+                                    for(let i = 0 ; i < failedData.length ; i++) {
+                                        notifMessage = notifMessage + failedData[i].clientName
+
+                                        if(i !== failedData.length - 1) {
+                                            notifMessage = notifMessage + ', '
                                         }
-                                      )
-                                  } }
-                                ],
-                                { cancelable: false }
-                            );
+                                    }
+                                }
+
+                                Alert.alert(
+                                    "Sukses",
+                                    notifMessage,
+                                    [
+                                      { text: "OK", onPress: () => {
+                                            setLoading(true)
+                                          db.transaction(
+                                              tx => {
+                                                for(let p = 0; p < dataList; p++) {
+                                                    tx.executeSql("DELETE FROM PAR_AccountList WHERE ClientID = '" + ListData[p].ClientID + "'")
+                                                    tx.executeSql("DELETE FROM DetailPAR WHERE clientid = '"+ ListData[p].ClientID +"'")
+                                                }
+                                              },function(error) {
+                                                    setLoading(false)
+                                                    console.log('Transaction ERROR: ' + error.message);
+                                                }, function() {
+                                                    setLoading(false)
+                                                    flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                                                    FetchdataPKMIndividual(branchID, Username)
+                                            }
+                                          )
+                                      } }
+                                    ],
+                                    { cancelable: false }
+                                );
+
+                            }else{
+                                setLoading(false)
+                                flashNotification("Failed", "Failed to input data --> " + responseText.Message, "#ff6347", "#fff")
+                            }
+                            setLoading(false)
                         })
                         .catch((error) => {
                             setLoading(false)

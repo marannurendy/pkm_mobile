@@ -162,7 +162,7 @@ function MenuPKM() {
 function UmiCorner() {
     return(
         <View>
-            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>UMi CORNER</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>SenyuM Mobile</Text>
         </View>
     )
 }
@@ -197,7 +197,7 @@ function Report() {
 function UMiCornerHeader() {
     return(
         <View>
-            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>UMi CORNER Input Referal</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>SenyuM Mobile Input Referal</Text>
         </View>
     )
 }
@@ -205,7 +205,7 @@ function UMiCornerHeader() {
 function UmiListHeader() {
     return(
         <View>
-            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>Daftar Nasabah UMi Corner</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 18, color: 'black' }}>Daftar Nasabah SenyuM Mobile</Text>
         </View>
     )
 }

@@ -132,13 +132,13 @@ const MeetingMenu = ({route}) => {
             });
         }
         
-        var queryjoin = `SELECT 
+        var queryjoin = `SELECT
                             AccountList.GroupID,
-                            AccountList.AccountID, 
-                            AccountList.InstallmentAmount, 
-                            AccountList.attendStatus, 
-                            AccountList.ClientID, 
-                            AccountList.withDraw, 
+                            AccountList.AccountID,
+                            AccountList.InstallmentAmount,
+                            AccountList.attendStatus,
+                            AccountList.ClientID,
+                            AccountList.withDraw,
                             AccountList.savings,
                             Totalpkm.userName,
                             Totalpkm.trxdate
@@ -238,14 +238,18 @@ const MeetingMenu = ({route}) => {
             })
         }
 
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         if(CollectDatapkm.length > 0 ) {
             try{
 
                 timeOut(60000, fetch(ApiSync+PostPKM, {
                     method: 'POST',
                     headers: {
+                        Authorization: token,
                         Accept: 'application/json',
-                                'Content-Type': 'application/json'
+                        'Content-Type': 'application/json'
                         },
                     body: JSON.stringify(dataSync)
                 }))

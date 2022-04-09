@@ -24,7 +24,8 @@
         "NSLocationAlwaysAndWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location",
         "NSLocationAlwaysUsageDescription": "Allow $(PRODUCT_NAME) to access your location",
         "NSLocationWhenInUseUsageDescription": "Allow $(PRODUCT_NAME) to access your location"
-      }
+      },
+      "bundleIdentifier": "y"
     },
     "android": {
       "permissions": [

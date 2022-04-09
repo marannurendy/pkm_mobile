@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, Alert, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, Alert, SafeAreaView, Modal, Pressable, Dimensions, Image, ImageBackground } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { scale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
-import { ApiSyncInisiasi, VERSION } from '../../dataconfig/index'
+import { ApiSyncInisiasi, VERSION, NotificationCheck } from '../../dataconfig/index'
 import { getSyncData } from './../actions/sync';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import 'moment/locale/id';
@@ -13,12 +13,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator, Colors } from 'react-native-paper';
 import db from '../database/Database'
 import { RadioButton } from 'react-native-paper';
+import { showMessage } from "react-native-flash-message"
 
 const colors = {
     HITAM: '#000',
     PUTIH: '#FFF',
     DEFAULT: '#0D67B2'
 }
+
+const window = Dimensions.get('window');
 
 export default function FrontHomeSync(props) {
     const navigation = useNavigation();
@@ -75,10 +78,57 @@ export default function FrontHomeSync(props) {
     const [masterAvailableSubGroupMaster, setMasterAvailableSubGroupMaster] = useState(null);
     const [masterGroupProduct, setMasterGroupProduct] = useState(null);
 
+    const [modalNotif, setModalNotif] = useState(false)
+    const [notifUri, setNotifUri] = useState()
+
     useEffect(() => {
         syncData();
         getMasterAsyncStorage();
+        notificationCheck();
     }, []);
+
+    const notificationCheck = async () => {
+        const token = await AsyncStorage.getItem('token');
+
+        return fetch(NotificationCheck, {
+            method:'POST',
+            headers: {
+                Authorization : token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then((response) => response.json())
+        .then((responseText) => {
+            console.log(responseText.responseCode)
+            if(responseText.responseCode === 200) {
+                if(responseText.data !== null) {
+                    setModalNotif(true)
+                    
+                    let ImageUri = responseText.data[0].file
+                    setNotifUri(ImageUri)
+                }
+            }else{
+                setModalNotif(false)
+            }
+        })
+        .catch((error) => {
+            flashNotification("Alert", "Notification failed. error : " + error.message, "#ff6347", "#fff")
+        });
+    }
+
+    const flashNotification = (title, message, backgroundColor, color) => {
+        showMessage({
+            message: title,
+            description: message,
+            type: "info",
+            duration: 3500,
+            statusBarHeight: 20,
+            backgroundColor: backgroundColor,
+            color: color,
+            titleStyle: {fontWeight: 'bold', fontSize: 20}
+        });
+    }
 
     async function getMasterAsyncStorage() {
         if (__DEV__) console.log('getMasterAsyncStorage loaded');
@@ -893,10 +943,40 @@ export default function FrontHomeSync(props) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" hidden={false} backgroundColor="transparent" translucent={true} />
+            <View style={{flex: 1}}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalNotif}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalNotif(!modalNotif);
+                }}
+            >
+                <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    
+                    <Image
+                        style={{width: '100%', height: '100%', resizeMode: 'contain', alignSelf: 'center'}}
+                        source={{uri: notifUri}}
+                    >
+                        {/* <MaterialCommunityIcons name="close-thick" color={'black'} size={30} style={{position: 'absolute'}} /> */}
+                    </Image>
+                    <Pressable
+                        style={styles.buttonClose}
+                        onPress={() => setModalNotif(!modalNotif)}
+                    >
+                        <MaterialCommunityIcons name="close-thick" color={'white'} size={20} />
+                    </Pressable>
+                </View>
+                </View>
+            </Modal>
             {renderHeader()}
             {renderBody()}
             {renderModalSearchListView()}
             {renderModalProspekLamaSearchListView()}
+            </View>
+            
         </SafeAreaView>
     )
 }
@@ -923,5 +1003,38 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.HITAM,
         borderRadius: 4
-    }
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22,
+        // height: window.height
+    },
+    modalView: {
+        // backgroundColor: "white",
+        borderRadius: 5,
+        // borderWidth: 2,
+        // alignItems: "center",
+        // shadowColor: "#000",
+        height: window.height/1.5,
+        width: window.width/1.1,
+        // shadowOffset: {
+        //   width: 0,
+        //   height: 2
+        // },
+        // shadowOpacity: 0.25,
+        // shadowRadius: 4,
+        // elevation: 5
+    },
+    buttonClose: {
+        position: 'absolute',
+        // borderWidth: 2,
+        borderRadius: 50,
+        padding: 3,
+        backgroundColor: '#FF6347',
+        alignItems: 'flex-end',
+        marginTop: 20,
+        marginLeft: 10
+    },
 });
