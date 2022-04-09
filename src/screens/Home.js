@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Image, StatusBar, ToastAndroid, Dimensions, Modal, useWindowDimensions, LogBox, TextPropTypes } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator, Image, StatusBar, ToastAndroid, Dimensions, Modal, useWindowDimensions, LogBox, TextPropTypes, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import NetInfo, { useNetInfo } from '@react-native-community/netinfo'
@@ -31,7 +31,7 @@ export default function FrontHome() {
     const [buttonstat, setButtonstat] = useState(true)
     const [buttonDis, setButtonDis] = useState(false)
     const [data, setData] = useState([])
-    const [modalVisible, setModalVisible] = useState(false)
+    const [modalVisible, setModalVisible] = useState(true)
 
     let [isKc, setIsKc] = useState(false)
     let [isAo, setIsAo] = useState(false)

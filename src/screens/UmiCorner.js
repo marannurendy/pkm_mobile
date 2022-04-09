@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Header } from 'react-native-elements'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {BRI_webAuth} from '../../dataconfig'
 
 export default function UmiCornerLanding() {
 
@@ -24,6 +25,9 @@ export default function UmiCornerLanding() {
     }, [])
     
     async function cekUrl() {
+
+        console.log("this " + BRI_webAuth)
+
         setLoading(true)
         // const TOKENKEY = await AsyncStorage.getItem('webView')
         const datauser = await AsyncStorage.getItem('userData', (error, result) => {
@@ -32,7 +36,7 @@ export default function UmiCornerLanding() {
 
         const dt = await JSON.parse(datauser)
             try{
-                await fetch(`https://UmiCornerPNM.pnm.co.id/webAuth`, {
+                await fetch(BRI_webAuth, {
                     // await fetch(`http://api-uat-pnm-bri.pnm.co.id/BRI.php?nama=${encodeURIComponent(dt.AOname)}&nip=${encodeURIComponent(dt.nip)}&cabang_nama=${encodeURIComponent(dt.businessUnit)}&cabang_id=${encodeURIComponent(dt.kodeCabang)}&posisi=AOM`, {
                 // await fetch(getAuthAPI, {
                     method: 'POST',
@@ -66,14 +70,15 @@ export default function UmiCornerLanding() {
       <View style={{width: dimension.width, height: dimension.height, flex: 1}}>
         <ImageBackground source={require("../images/backtestMenu.png")} style={styles.image}>
 
-        <View>
-            <Image source={require('../images/Umi.png')} style={{width:dimension.width/3, height:dimension.height/14}} />
+        <View style={{ margin: 10 }}>
+            {/* <Image source={require('../images/Umi.png')} style={{width:dimension.width/3, height:dimension.height/14}} /> */}
+            <Image source={require('../images/SenyuM-2.png')} style={{width:dimension.width/2, height:dimension.height/14}} resizeMode= 'contain' />
         </View>
             <View style={{justifyContent: 'center', flex: 1}}>
                 <View style={{ flexDirection:'column', justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => navigation.navigate('UMiCornerPage', {UrlLink : url})}>
                         <View style={{width: dimension.width/1.5, height: dimension.height/10, backgroundColor: '#5D92E1', justifyContent: 'center', alignItems: 'center', margin: 10, borderRadius: 15}}>
-                            <Text style={{fontSize: 25, textAlign:'center', margin: 10, color: '#fff'}}>Input Referal</Text>
+                            <Text style={{fontSize: 25, textAlign:'center', margin: 10, color: '#fff'}}>SenyuM Mobile</Text>
                         </View>
                     </TouchableOpacity>
                     

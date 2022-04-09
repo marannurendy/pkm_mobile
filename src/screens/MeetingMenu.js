@@ -132,13 +132,13 @@ const MeetingMenu = ({route}) => {
             });
         }
         
-        var queryjoin = `SELECT 
+        var queryjoin = `SELECT
                             AccountList.GroupID,
-                            AccountList.AccountID, 
-                            AccountList.InstallmentAmount, 
-                            AccountList.attendStatus, 
-                            AccountList.ClientID, 
-                            AccountList.withDraw, 
+                            AccountList.AccountID,
+                            AccountList.InstallmentAmount,
+                            AccountList.attendStatus,
+                            AccountList.ClientID,
+                            AccountList.withDraw,
                             AccountList.savings,
                             Totalpkm.userName,
                             Totalpkm.trxdate
@@ -229,11 +229,6 @@ const MeetingMenu = ({route}) => {
         
         var dataSync = { "pkm": CollectDatapkm, "up": CollectDataup, "sign": CollectDatasign }
 
-        // console.log(dataSync)
-
-        const token = await AsyncStorage.getItem('token');
-        if (__DEV__) console.log('ACTIONS TOKEN', token);
-
         const timeOut = (milisecond, promise) => {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
@@ -243,6 +238,9 @@ const MeetingMenu = ({route}) => {
             })
         }
 
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
+
         if(CollectDatapkm.length > 0 ) {
             try{
                 console.log(ApiSync+PostPKM)
@@ -251,7 +249,7 @@ const MeetingMenu = ({route}) => {
                     headers: {
                         Authorization: token,
                         Accept: 'application/json',
-                                'Content-Type': 'application/json'
+                        'Content-Type': 'application/json'
                         },
                     body: JSON.stringify(dataSync)
                 }))

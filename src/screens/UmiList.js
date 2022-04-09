@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, ScrollView, ActivityIndicator, FlatList, TouchableOpacity, Image, ImageBackground, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Dimensions, ScrollView, ActivityIndicator, FlatList, TouchableOpacity, Image, ImageBackground, SafeAreaView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Card } from 'react-native-elements';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Divider } from 'react-native-paper'
-// import { ScrollView } from 'react-native-gesture-handler';
+import { Get_UmiList } from '../../dataconfig'
 
 export default function UmiList() {
 
@@ -13,13 +13,10 @@ export default function UmiList() {
     const dimension = Dimensions.get('screen')
     const navigation = useNavigation()
 
-    // const [loading, setLoading] = useState(false)
     const [url, setUrl] = useState()
     const [data, setData] = useState([])
     const [refreshing, setRefreshVal] = useState(false);
     const [isLoading, setLoading] = useState(true);
-
-    const link = "http://devumicornerpnm.pnm.co.id/listUmi"
 
     useEffect(() => {
         fetchData()
@@ -33,7 +30,7 @@ export default function UmiList() {
         const dt = JSON.parse(datauser)
 
         try{
-            await fetch(link, {
+            await fetch(Get_UmiList, {
                 method: 'POST',
                 headers: {
                     Accept:
@@ -47,8 +44,26 @@ export default function UmiList() {
             })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson.data)
-                setData(responseJson)
+                console.log(responseJson.responseCode)
+
+                if(responseJson.responseCode === '0200') {
+                    if(responseJson.data > 0) {
+                        setData(responseJson)
+                    }else{
+                        Alert.alert(
+                            "Caution",
+                            "Daftar nasabah kosong"
+                        )
+                    }
+                }else{
+                    Alert.alert(
+                        "Error",
+                        "Error get data",
+                        [
+                            { text: "OK", onPress: () => {navigation.goBack()} }
+                        ],
+                    )
+                }
                 // setUrl(responseJson.data.webviewUrl)
                 setLoading(false)
             })
@@ -109,7 +124,7 @@ export default function UmiList() {
         <ImageBackground source={require("../images/backtestMenu.png")} style={styles.image}>
 
         <View>
-            <Image source={require('../images/Umi.png')} style={{width:dimension.width/3, height:dimension.height/14}} />
+            <Image source={require('../images/SenyuM-2.png')} style={{width:dimension.width/3, height:dimension.height/14, margin: 10}} resizeMode= 'contain' />
         </View>
 
         <View style={{alignItems: 'center', marginTop: 5}}>

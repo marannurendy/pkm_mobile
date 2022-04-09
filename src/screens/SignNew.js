@@ -210,61 +210,70 @@ export default function SignNew({route}) {
                 </TouchableOpacity>
             </View>
 
-            <View style={{marginTop: 50 }}>
-                <Text style={{color: '#51534E', fontSize: 15, marginBottom: 10, fontWeight: 'bold'}}>Ringkasan Transaksi</Text>
-                <View style={{borderWidth: 1.5, borderColor: '#fff', borderRadius: 10}}>
-                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
-                        <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Setoran :</Text>
-                        <CurrencyInput
-                            value={totalSetoran}
-                            prefix="Rp "
-                            delimiter=","
-                            separator="."
-                            precision={0}
-                            editable= {false}
-                            style={{
-                                color: 'black',
-                                fontSize: 16,
-                                flex: 4
-                            }}
-                        />
-                    </View>
+            { isLoaded ? 
+                (
+                    <View style={{marginTop: 50 }}>
+                        <Text style={{color: '#51534E', fontSize: 15, marginBottom: 10, fontWeight: 'bold'}}>Ringkasan Transaksi</Text>
+                        <View style={{borderWidth: 1.5, borderColor: '#fff', borderRadius: 10}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
+                                <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Setoran :</Text>
+                                <CurrencyInput
+                                    value={totalSetoran}
+                                    prefix="Rp "
+                                    delimiter=","
+                                    separator="."
+                                    precision={0}
+                                    editable= {false}
+                                    style={{
+                                        color: 'black',
+                                        fontSize: 16,
+                                        flex: 4
+                                    }}
+                                />
+                            </View>
 
-                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
-                        <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Angsuran :</Text>
-                        <CurrencyInput
-                            value={totalAngsuran}
-                            prefix="Rp "
-                            delimiter=","
-                            separator="."
-                            precision={0}
-                            editable= {false}
-                            style={{
-                                color: 'black',
-                                fontSize: 16,
-                                flex: 4
-                            }}
-                        />
-                    </View>
+                            <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
+                                <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Angsuran :</Text>
+                                <CurrencyInput
+                                    value={totalAngsuran}
+                                    prefix="Rp "
+                                    delimiter=","
+                                    separator="."
+                                    precision={0}
+                                    editable= {false}
+                                    style={{
+                                        color: 'black',
+                                        fontSize: 16,
+                                        flex: 4
+                                    }}
+                                />
+                            </View>
 
-                    <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
-                        <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Titipan :</Text>
-                        <CurrencyInput
-                            value={totalTitipan}
-                            prefix="Rp "
-                            delimiter=","
-                            separator="."
-                            precision={0}
-                            editable= {false}
-                            style={{
-                                color: 'black',
-                                fontSize: 16,
-                                flex: 4
-                            }}
-                        />
+                            <View style={{flexDirection: 'row', alignItems: 'center', margin: 10, backgroundColor: '#fff', paddingLeft: 10, borderRadius: 10}}>
+                                <Text style={{ color: 'black', fontSize: 16, padding: 5, flex: 2, fontWeight: 'bold' }}>Total Titipan :</Text>
+                                <CurrencyInput
+                                    value={totalTitipan}
+                                    prefix="Rp "
+                                    delimiter=","
+                                    separator="."
+                                    precision={0}
+                                    editable= {false}
+                                    style={{
+                                        color: 'black',
+                                        fontSize: 16,
+                                        flex: 4
+                                    }}
+                                />
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </View>
+                ) : (
+                    <View style={{alignItems: 'center', marginTop: 50}}>
+                        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#FFF'}}>Mohon Tunggu...</Text>
+                    </View>
+                )
+            }
+            
             
         </View>
       );
