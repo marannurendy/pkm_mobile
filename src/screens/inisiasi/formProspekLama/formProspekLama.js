@@ -41,7 +41,7 @@ const InisiasiFormProspekLama = ({ route }) => {
     const [valueTandaTanganKetuaSubKelompok, setValueTandaTanganKetuaSubKelompok] = useState(null);
     const [valueTandaTanganKetuaKelompok, setValueTandaTanganKetuaKelompok] = useState(null);
     const [valueTandaTanganAO, setValueTandaTanganAO] = useState(null);
-    const [valueAddress, setValueAddress] = useState('Jakarta');
+    const [valueAddress, setValueAddress] = useState('');
     const [dataDetail, setDataDetail] = useState(null);
     const [selectedPembiayaanDiajukan, setSelectedPembiayaanDiajukan] = useState(null);
     const [valueNamaTandaTanganKetuaSubKelompok, setValueNamaTandaTanganKetuaSubKelompok] = useState('');
@@ -181,7 +181,9 @@ const InisiasiFormProspekLama = ({ route }) => {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $post /inisiasi/GetSiklusNasabahBrnet error:', error);
+            Alert.alert('Error', error.responseDescription || 'Timeout');
             setFetching(false);
+            navigation.goBack();
         }
     }
 
@@ -363,7 +365,8 @@ const InisiasiFormProspekLama = ({ route }) => {
     const doSubmit = async () => {
         if (__DEV__) console.log('doSubmit loaded');
         if (__DEV__) console.log('doSubmit dataDetail:', dataDetail);
-
+        
+        if (!valueAddress || typeof valueAddress === 'undefined' || valueAddress === '' || valueAddress === 'null') return alert('Nama Daerah (*) tidak boleh kosong');
         if (!valueTandaTanganAO || typeof valueTandaTanganAO === 'undefined' || valueTandaTanganAO === '' || valueTandaTanganAO === 'null') return alert('Tanda Tangan AO (*) tidak boleh kosong');
         if (!valueNamaTandaTanganAO || typeof valueNamaTandaTanganAO === 'undefined' || valueNamaTandaTanganAO === '' || valueNamaTandaTanganAO === 'null') return alert('Nama Tanda Tangan AO (*) tidak boleh kosong');
         if (!valueTandaTanganKetuaKelompok || typeof valueTandaTanganKetuaKelompok === 'undefined' || valueTandaTanganKetuaKelompok === '' || valueTandaTanganKetuaKelompok === 'null') return alert('Tanda Tangan Kelompok (*) tidak boleh kosong');
@@ -397,7 +400,7 @@ const InisiasiFormProspekLama = ({ route }) => {
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama subGroup:', subGroup);
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama identityNumber:', identityNumber);
 
-        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok, siklus) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name + '","", "3", "' + moment().format('YYYY-MM-DD') + '", "' + groupName + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '", "' + inputPembiayaanTahap + '")';
+        let query = 'INSERT INTO Sosialisasi_Database (id, tanggalInput, sumberId, namaCalonNasabah, nomorHandphone, status, tanggalSosialisas, lokasiSosialisasi, type, clientId, kelompokID, namaKelompok, subKelompok, siklus) values ("' + uniqueNumber + '","' + moment().format('YYYY-MM-DD') + '", "4", "' + name.replace(/["']/g, "") + '","", "3", "' + moment().format('YYYY-MM-DD') + '", "' + groupName + '", "1", "' + clientId + '", "' + groupId + '", "' + groupName + '", "' + subGroup + '", "' + inputPembiayaanTahap + '")';
         if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama query:', query);
         db.transaction(
             tx => {
@@ -407,9 +410,9 @@ const InisiasiFormProspekLama = ({ route }) => {
                 Alert.alert('Error', JSON.stringify(error));
             }, function() {
 
-                let queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, nama_ayah, status_rumah_tinggal, idSosialisasiDatabase) values ("1","' + identityNumber + '","' + namaLengkap + '","' + namaOrangtua + '","' + valueTempatTinggalNasabah + '", "' + uniqueNumber + '")';
-                let queryUKProdukPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, idSosialisasiDatabase) values ("' + namaLengkap + '","1","1","' + valuePembiayaanDiajukan + '","' + maxPlafond + '","' + inputJangkaWaktuPembiayaanDiajukan + '","' + uniqueNumber + '")';
-                let queryUKDisiplinNasabah = 'INSERT INTO Table_UK_DisipinNasabah (nama_lengkap, kehadiran_pkm, angsuran_pada_saat_pkm, idSosialisasiDatabase) values ("' + namaLengkap + '","' + valueKehadiranPKM + '","", "' + uniqueNumber + '")';
+                let queryUKDataDiri = 'INSERT INTO Table_UK_DataDiri (jenis_Kartu_Identitas, nomor_Identitas, nama_lengkap, nama_ayah, status_rumah_tinggal, idSosialisasiDatabase) values ("1","' + identityNumber + '","' + namaLengkap.replace(/["']/g, "") + '","' + namaOrangtua.replace(/["']/g, "") + '","' + valueTempatTinggalNasabah + '", "' + uniqueNumber + '")';
+                let queryUKProdukPembiayaan = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, idSosialisasiDatabase) values ("' + namaLengkap.replace(/["']/g, "") + '","1","1","' + valuePembiayaanDiajukan + '","' + maxPlafond + '","' + inputJangkaWaktuPembiayaanDiajukan + '","' + uniqueNumber + '")';
+                let queryUKDisiplinNasabah = 'INSERT INTO Table_UK_DisipinNasabah (nama_lengkap, kehadiran_pkm, angsuran_pada_saat_pkm, idSosialisasiDatabase) values ("' + namaLengkap.replace(/["']/g, "") + '","' + valueKehadiranPKM + '","", "' + uniqueNumber + '")';
 
                 if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama queryUKDataDiri:', queryUKDataDiri);
                 if (__DEV__) console.error('$post /post_inisiasi/post_prospek_lama queryUKProdukPembiayaan:', queryUKProdukPembiayaan);
@@ -731,9 +734,9 @@ const InisiasiFormProspekLama = ({ route }) => {
     const renderFormDate = () => (
         <View style={[styles.FDRow,  styles.MV16, { alignItems: 'center' }]}>
             <TextInput
-                value={valueAddress} 
+                value={valueAddress}
                 onChangeText={(text) => setValueAddress(text)}
-                placeholder='Jakarta'
+                placeholder='Nama Daerah (*)'
                 style={[styles.F1, styles.MR16, styles.P8, { borderWidth: 1, borderRadius: 6, borderColor: 'gray' }]}
             />
             <Text>, {moment().format('LL')}</Text>

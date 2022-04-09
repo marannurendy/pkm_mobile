@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import Meetingnew from './src/screens/MeetingNew'
 import FlashMessage from "react-native-flash-message";
 import NetInfo, { useNetInfo } from '@react-native-community/netinfo'
-import { ApiSync, Get_notification } from './dataconfig/index'
+import { ApiSync, Get_notification, IS_DEVELOPMENT } from './dataconfig/index'
 // import SQLite from 'react-native-sqlite-storage';
 import { useKeepAwake } from 'expo-keep-awake';
 

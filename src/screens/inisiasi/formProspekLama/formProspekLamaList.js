@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import { ApiSyncInisiasi } from '../../../../dataconfig/index';
-import db from '../../../database/Database'
+import db from '../../../database/Database';
 
 const dimension = Dimensions.get('screen');
 const images = {

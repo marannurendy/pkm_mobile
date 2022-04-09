@@ -15,7 +15,7 @@ import TarikUp from '../screens/Tarikup'
 import MeetingPAR from '../screens/Meeting_par'
 import FormPar from '../screens/FormPar'
 import FrontHome from '../screens/Home'
-import handleSurveiClick from '../screens/Survei'
+import HandleSurveiClick from '../screens/Survei'
 import ReportLPM from '../screens/Report'
 import SplashScreen from '../screens/Splashscreen'
 import IndividualMeeting from '../screens/IndividualMeeting'
@@ -33,6 +33,7 @@ import GroupCollection from '../screens/groupCollection'
 import IndividualCollection from '../screens/individualCollection'
 import FormIndividualCollection from '../screens/formIndividualCollection'
 import PkmBermakna from '../screens/pkmBermakna'
+import NetworkLogging from '../screens/NetworkLogging'
 
 // import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
 import { 
@@ -252,7 +253,7 @@ function CustomDrawerContent(props) {
             })
             .then((response) => response.json())
             .then((responseJSON) => {
-                if (__DEV__) console.error('$post /other/AuthLogout response', body, responseJSON);
+                if (__DEV__) console.log('$post /other/AuthLogout response', body, responseJSON);
             })
             .catch((error) => {
                 if (__DEV__) console.log('$post /other/AuthLogout response', body, error);
@@ -289,7 +290,7 @@ function CustomDrawerContent(props) {
     const ClearDataHandler = async () => {
         Alert.alert(
             "Logout Alert",
-            "Apakah anda yakin ingin Menghapus Semua Data ?",
+            "Clear Data akan menghapus semua data, termasuk data yang sudah diinput. Apakah Anda yakin untuk melanjutkan?",
             [
                 { text: "OK", onPress: () => {
                     db.transaction(
@@ -418,7 +419,7 @@ export default function AppNavigator() {
                 />
               <Stack.Screen 
                 name="Survei"
-                component={handleSurveiClick} 
+                component={HandleSurveiClick} 
                 options={{ 
                     headerShown: true,
                     headerStyle: {
@@ -715,6 +716,8 @@ export default function AppNavigator() {
                 <Stack.Screen name="Preview" component={Preview} options={{ headerShown: false }} />
                 <Stack.Screen name="FormFP4" component={FormFP4} options={{ headerShown: false }} />
                 <Stack.Screen name="UploadBuktiPem" component={UploadBuktiPem} options={{ headerShown: false }} />
+
+                <Stack.Screen name="NetworkLogging" component={NetworkLogging} />
 
           </Stack.Navigator>
       </NavigationContainer>

@@ -14,7 +14,7 @@ const images = {
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKSektorEkonomi = ({ route }) => {
-    const { id, groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState, statusSosialisasi } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueSektorEkonomi, setValueSektorEkonomi] = useState(null);
@@ -158,9 +158,9 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
     const doSubmitSave = async () => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
-        if (!valueSektorEkonomi || typeof valueSektorEkonomi === 'undefined' || valueSektorEkonomi === '' || valueSektorEkonomi === 'null') return alert('Sektor Ekonomi (*) tidak boleh kosong');
-        if (!valueSubSektorEkonomi || typeof valueSubSektorEkonomi === 'undefined' || valueSubSektorEkonomi ==='' || valueSubSektorEkonomi === 'null') return alert('Sub Sektor Ekonomi (*) tidak boleh kosong');
-        if (!valueJenisUsaha || typeof valueJenisUsaha === 'undefined' || valueJenisUsaha ==='' || valueJenisUsaha === 'null') return alert('Jenis Usaha (*) tidak boleh kosong');
+        if (statusSosialisasi === '3' && (!valueSektorEkonomi || typeof valueSektorEkonomi === 'undefined' || valueSektorEkonomi === '' || valueSektorEkonomi === 'null')) return alert('Sektor Ekonomi (*) tidak boleh kosong');
+        if (statusSosialisasi === '3' && (!valueSubSektorEkonomi || typeof valueSubSektorEkonomi === 'undefined' || valueSubSektorEkonomi ==='' || valueSubSektorEkonomi === 'null')) return alert('Sub Sektor Ekonomi (*) tidak boleh kosong');
+        if (statusSosialisasi === '3' && (!valueJenisUsaha || typeof valueJenisUsaha === 'undefined' || valueJenisUsaha ==='' || valueJenisUsaha === 'null')) return alert('Jenis Usaha (*) tidak boleh kosong');
 
         if (submmitted) return true;
 
@@ -264,7 +264,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
 
     const renderFormSektorEkonomi = () => (
         <View style={styles.MT8}>
-            <Text>Sektor Ekonomi (*)</Text>
+            <Text>Sektor Ekonomi {statusSosialisasi === '3' && '(*)'}</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
                     selectedValue={valueSektorEkonomi}
@@ -283,7 +283,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
 
     const renderFormSubSektorEkonomi = () => (
         <View style={styles.MT8}>
-            <Text>Sub Sektor Ekonomi (*)</Text>
+            <Text>Sub Sektor Ekonomi {statusSosialisasi === '3' && '(*)'}</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
                     selectedValue={valueSubSektorEkonomi}
@@ -299,7 +299,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
 
     const renderFormJenisUsaha = () => (
         <View style={styles.MT8}>
-            <Text>Jenis Usaha (*)</Text>
+            <Text>Jenis Usaha {statusSosialisasi === '3' && '(*)'}</Text>
             <View style={[styles.textInputContainer, { width: withTextInput }]}>
                 <View style={styles.F1}>
                     <TextInput 
@@ -350,8 +350,7 @@ const InisiasiFormUKSektorEkonomi = ({ route }) => {
 
     const renderBody = () => (
         <View style={styles.bodyContainer}>
-            <Text style={styles.bodyTitle}>Sektor Ekonomi</Text>
-            {/* <Text>{JSON.stringify(dataEconomicSector)}</Text> */}
+            <Text style={styles.bodyTitle}>Sektor Ekonomi {statusSosialisasi}</Text>
             <ScrollView>
                 {renderForm()}
                 {renderButtonSimpan()}

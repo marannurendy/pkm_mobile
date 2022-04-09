@@ -224,7 +224,7 @@ const FormUjiKelayakan = ({route}) => {
                                 return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
                             }
 
-                            siklus = parseInt(data.siklus) ?? 1;
+                            siklus = parseInt(data.siklus) || 1;
                         }
 
                         if (statusSosialisasi === '1') {
@@ -243,6 +243,7 @@ const FormUjiKelayakan = ({route}) => {
                         let fotoKartuKeluarga = data.foto_kk ? await AsyncStorage.getItem(data.foto_kk) : 'data:image/jpeg;base64,';
                         let fotoKeteranganDomisili = data.foto_Surat_Keterangan_Domisili ? await AsyncStorage.getItem(data.foto_Surat_Keterangan_Domisili) : 'data:image/jpeg;base64,';
                         let fotoKartuIdentitas = data.foto_Kartu_Identitas ? await AsyncStorage.getItem(data.foto_Kartu_Identitas) : 'data:image/jpeg;base64,';
+                        let foto_rumah = data.foto_rumah ? await AsyncStorage.getItem(data.foto_rumah) : 'data:image/jpeg;base64,';
 
                         const tandaTanganAOSAO = await AsyncStorage.getItem(data.tanda_Tangan_AOSAO);
                         const tandaTanganNasabah = await AsyncStorage.getItem(data.tanda_Tangan_Nasabah);
@@ -296,7 +297,7 @@ const FormUjiKelayakan = ({route}) => {
                             "Alamat": data.alamat_Identitas,
                             "AlamatDomisili": data.alamat_Domisili,
                             "Berdasarkan_Kemampuan_Angsuran": data.frekuensi_Pembayaran,
-                            "Berdasarkan_Lembaga_Lain": pembiayaan_Dari_Lembaga, // masih ragu
+                            "Berdasarkan_Lembaga_Lain": data.jumlah_Angsuran,
                             "Berdasarkan_Tingkat_Pendapatan": "1",
                             "CreatedBy": uname,
                             "CreatedNIP": nip,
@@ -307,8 +308,8 @@ const FormUjiKelayakan = ({route}) => {
                             "FotoKartuIdentitas": fotoKartuIdentitas === null || fotoKartuIdentitas === 'null' ? '' : fotoKartuIdentitas.split(',')[1],
                             "FotoSuketDomisili": fotoKeteranganDomisili === null || fotoKeteranganDomisili === 'null' ? '' : fotoKeteranganDomisili.split(',')[1],
                             "FrekuensiPembiayaan": data.frekuensi_Pembayaran,
-                            "ID_SektorEkonomi": data.sektor_Ekonomi,
-                            "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi,
+                            "ID_SektorEkonomi": data.sektor_Ekonomi === null || data.sektor_Ekonomi === 'null' ? '' : data.sektor_Ekonomi,
+                            "ID_SubSektorEkonomi": data.sub_Sektor_Ekonomi === null || data.sub_Sektor_Ekonomi === 'null' ? '' : data.sub_Sektor_Ekonomi,
                             "IsAdaRekening": data.status_Rekening_Bank === 'true' ? '1' : '0',
                             "IsSuamiDitempat": data.suami_diluar_kota === 'true' ? '1' : '0',
                             "Is_AdaAdaToiletPribadi": data.sanitasi_KamarMandi === 'true' ? '1' : '0',
@@ -317,11 +318,11 @@ const FormUjiKelayakan = ({route}) => {
                             "JenisAtap": data.jenis_Atap,
                             "JenisIdentitas": data.jenis_Kartu_Identitas,
                             "JenisPembiayaan": data.jenis_Pembiayaan,
-                            "Jenis_Usaha": data.jenis_Usaha,
+                            "Jenis_Usaha": data.jenis_Usaha === null || data.jenis_Usaha === 'null' ? '' : data.jenis_Usaha,
                             "JmlHariUsaha_perBulan": data.jumlah_Hari_Usaha_Perbulan,
                             "JmlHariUsaha_perBulan_Suami": data.pendapatanSuami_jumlah_Hari_Usaha_Perbulan,
                             "JmlhAnak": data.jumlah_anak,
-                            "PendidikanAnak": data.pendidikan_anak,
+                            "PendidikanAnak": data.pendidikan_anak === null || data.pendidikan_anak === 'null' ? '' : data.pendidikan_anak,
                             "JmlhTanggungan": data.jumlah_tanggungan,
                             "JumlahPinjaman": data.jumlah_Pinjaman,
                             "Kabupaten": data.kabupaten,
@@ -765,7 +766,7 @@ const FormUjiKelayakan = ({route}) => {
 
             <View style={{height: dimension.height/5, marginHorizontal: 30, borderRadius: 20, marginTop: 30}}>
                 <ImageBackground source={require("../../../assets/Image/Banner.png")} style={{flex: 1, resizeMode: "cover", justifyContent: 'center'}} imageStyle={{borderRadius: 20}}>
-                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Form Uji Kelayakan</Text>
+                    <Text style={{marginHorizontal: 35, fontSize: 30, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>Form Uji Kelayakan {statusSosialisasi}</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 20, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{groupName}</Text>
                     <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{namaNasabah}</Text>
                     {/* <Text style={{marginHorizontal: 35, fontSize: 15, fontWeight: 'bold', color: '#FFF', marginBottom: 5}}>{id}</Text> */}

@@ -7,7 +7,7 @@ import { ApiSyncPostInisiasi } from '../../../../dataconfig/apisync/apisync';
 import { showMessage } from 'react-native-flash-message';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
-import db from '../../../database/Database'
+import db from '../../../database/Database';
 
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 16;
@@ -198,16 +198,16 @@ const InisiasiFormPPForm = ({ route }) => {
 
                 }else{
                     setLoading(false)
-                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
+                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff");
                 }
             }).catch((error) => {
                 setLoading(false)
-                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
+                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff");
             })
         }catch(error){
             console.log("disini")
             setLoading(false)
-            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff");
         }
     }
 

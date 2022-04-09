@@ -44,6 +44,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
     const [valuePendapatanBersihPermingguSuami, setValuePendapatanBersihPermingguSuami] = useState('0');
     const [valuePembiayaanDariLembaga, setValuePembiayaanDariLembaga] = useState('1');
     const [submmitted, setSubmmitted] = useState(false);
+    const [showPendapatanSuami, setShowPendapatanSuami] = useState(true);
     const [valueJumlahTanggungan, setValueJumlahTanggungan] = useState(0);
     const [dataPembiayaanLain, setDataPembiayaanLain] = useState([]);
     const [dataProdukPembiayaan, setDataProdukPembiayaan] = useState({
@@ -100,6 +101,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         
                         let data = results.rows.item(0);
                         let jumlah_tanggungan = data.jumlah_tanggungan;
+                        if (data.status_Perkawinan !== "1") setShowPendapatanSuami(false);
                         if (data.jumlah_tanggungan === "0" || data.jumlah_tanggungan === "null") jumlah_tanggungan = "1";
                         setValueJumlahTanggungan(parseInt(jumlah_tanggungan))
                         if (__DEV__) console.log('tx.executeSql data:', data);
@@ -128,9 +130,9 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
                         if (data.jumlah_Hari_Usaha_Perbulan !== null && typeof data.jumlah_Hari_Usaha_Perbulan !== 'undefined') setValueJumlahHariUsahPerbulan(data.jumlah_Hari_Usaha_Perbulan);
                         if (data.pendapatan_Bersih_Perbulan !== null && typeof data.pendapatan_Bersih_Perbulan !== 'undefined') setValuePendapatanBersihPerbulan(data.pendapatan_Bersih_Perbulan);
                         if (data.pendapatan_Bersih_Perminggu !== null && typeof data.pendapatan_Bersih_Perminggu !== 'undefined') setValuePendapatanBersihPerminggu(data.pendapatan_Bersih_Perminggu);
-                        // if (data.pembiayaan_Dari_Lembaga !== null && typeof data.pembiayaan_Dari_Lembaga !== 'undefined') setValuePembiayaanDariLembaga(data.pembiayaan_Dari_Lembaga);
-                        if (data.Pembiayaan_Dari_LembagaLain !== null && typeof data.Pembiayaan_Dari_LembagaLain !== 'undefined') setValuePembiayaanLembagaLain(data.Pembiayaan_Dari_LembagaLain === 'null' ? '1' : data.Pembiayaan_Dari_LembagaLain);
-                        if (data.Pembiayaan_Dari_LembagaLainFreetext !== null && typeof data.Pembiayaan_Dari_LembagaLainFreetext !== 'undefined') {
+                        if (data.pembiayaan_Dari_Lembaga !== null && typeof data.pembiayaan_Dari_Lembaga !== 'undefined' && data.pembiayaan_Dari_Lembaga !== 'null') setValuePembiayaanDariLembaga(data.pembiayaan_Dari_Lembaga === '0' ? '1' : data.pembiayaan_Dari_Lembaga);
+                        if (data.Pembiayaan_Dari_LembagaLain !== null && typeof data.Pembiayaan_Dari_LembagaLain !== 'undefined' && data.Pembiayaan_Dari_LembagaLain !== 'null') setValuePembiayaanLembagaLain(data.Pembiayaan_Dari_LembagaLain === 'null' ? '1' : data.Pembiayaan_Dari_LembagaLain);
+                        if (data.Pembiayaan_Dari_LembagaLainFreetext !== null && typeof data.Pembiayaan_Dari_LembagaLainFreetext !== 'undefined' && data.Pembiayaan_Dari_LembagaLainFreetext !== 'null') {
                             if (data.Pembiayaan_Dari_LembagaLain === '3') setIPembiayaanLembagaLainFreetext(data.Pembiayaan_Dari_LembagaLainFreetext);
                         }
                         if (data.jumlah_Angsuran !== null && typeof data.jumlah_Angsuran !== 'undefined') setValueJumlahAngsuran(data.jumlah_Angsuran);
@@ -416,7 +418,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
 
     const renderPembiayaanDariLembaga = () => (
         <View style={styles.MT8}>
-            <Text>Pembiayaan dari Lembaga Lain</Text>
+            <Text>Pembiayaan dari Lembaga Lain {valuePembiayaanDariLembaga}</Text>
             <RadioButton.Group onValueChange={newValue => setValuePembiayaanDariLembaga(newValue)} value={valuePembiayaanDariLembaga}>
                 <View>
                     <View style={[styles.F1, styles.FDRow, { alignItems: 'center' }]}>
@@ -578,7 +580,7 @@ const InisiasiFormUKTingkatPendapatan = ({ route }) => {
         </View>
     )
 
-    const renderFormPendapatanSuami = () => (
+    const renderFormPendapatanSuami = () => showPendapatanSuami && (
         <View style={styles.MT8}>
             <Text style={[styles.FS18, styles.MB16]}>PENDAPATAN SUAMI</Text>
             {renderFormPendapatanKotorPerhariSuami()}

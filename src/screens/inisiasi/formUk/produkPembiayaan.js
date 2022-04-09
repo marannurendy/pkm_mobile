@@ -57,8 +57,6 @@ const ProdukPembiayaan = ({ route }) => {
         setInfo();
         getStorageJenisPembiayaan();
         getStorageTipePencairan();
-        getStorageTujuanPembiayaan();
-        getStorageKategoriTujuanPembiayaan();
         getStorageFrekuensi();
         getSosialisasiDatabase();
         getUKProdukPembiayaan();
@@ -224,19 +222,19 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getStorageProduk = async (rw, rs) => {
         if (__DEV__) console.log('getStorageProduk loaded');
-        if (__DEV__) console.log('getStorageProduk rw:', rw);
-        if (__DEV__) console.log('getStorageProduk rs:', rs);
+        // if (__DEV__) console.log('getStorageProduk rw:', rw);
+        // if (__DEV__) console.log('getStorageProduk rs:', rs);
 
         try {
             const response = await AsyncStorage.getItem('Product');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
-                if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
+                // if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0) {
                     let IsMP = rw;
                     let IsReguler = rs;
-                    if (__DEV__) console.log('getStorageProduk IsMP:', IsMP);
-                    if (__DEV__) console.log('getStorageProduk IsIsRegulerMP:', IsReguler);
+                    // if (__DEV__) console.log('getStorageProduk IsMP:', IsMP);
+                    // if (__DEV__) console.log('getStorageProduk IsIsRegulerMP:', IsReguler);
                     var responseFiltered = [];
                     if (valueJenisPembiayaan === '1' && statusSosialisasi !== '3') {
                         responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler && data.IsMP === IsMP).map((data, i) => {
@@ -320,10 +318,10 @@ const ProdukPembiayaan = ({ route }) => {
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
                 if (responseJSON.length > 0 ?? false) {
-                    var responseFiltered = responseJSON.map((data, i) => {
+                    var responseFiltered = responseJSON.filter(data => data.namajenispembiayaan === 'PRODUK UTAMA').map((data, i) => {
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageJenisPembiayaan responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageJenisPembiayaan responseFiltered:', responseFiltered);
                     setItemsJenisPembiayaan(responseFiltered);
                     return;
                 }
@@ -345,7 +343,7 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.transfundDetail, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageTipePencairan responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageTipePencairan responseFiltered:', responseFiltered);
                     setItemsTypePencairan(responseFiltered);
                     return;
                 }
@@ -358,19 +356,19 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getStorageNamaProduk = async (rw) => {
         if (__DEV__) console.log('getStorageNamaProduk loaded');
-        if (__DEV__) console.log('getStorageNamaProduk rw:', rw);
+        // if (__DEV__) console.log('getStorageNamaProduk rw:', rw);
 
         try {
             const response = await AsyncStorage.getItem('SubjenisPembiayaan');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
-                if (__DEV__) console.log('getStorageNamaProduk responseJSON.length:', responseJSON.length);
+                // if (__DEV__) console.log('getStorageNamaProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0 ?? false) {
                     if (__DEV__) console.log('getStorageNamaProduk responseJSON:', responseJSON);
                     var responseFiltered = responseJSON.filter(data => data.idjenispembiayaan === rw).map((data, i) => {
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageNamaProduk responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageNamaProduk responseFiltered:', responseFiltered);
                     setItemsNamaProduk(responseFiltered);
                     return;
                 }
@@ -383,13 +381,16 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getStorageTujuanPembiayaan = async () => {
         if (__DEV__) console.log('getStorageTujuanPembiayaan loaded');
+        if (__DEV__) console.log('getStorageTujuanPembiayaan valueJenisPembiayaan:', valueJenisPembiayaan);
 
         try {
             const response = await AsyncStorage.getItem('TujuanPembiayaan');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
                 if (responseJSON.length > 0 ?? false) {
-                    var responseFiltered = responseJSON.map((data, i) => {
+                    let isProdukUtama = '0';
+                    if (valueJenisPembiayaan === '1') isProdukUtama = '1';
+                    var responseFiltered = responseJSON.filter(data => data.Is_Produk_Utama === isProdukUtama).map((data, i) => {
                         return { label: data.namatujuanpembiayaan, value: data.id };
                     }) ?? [];
                     if (__DEV__) console.log('getStorageTujuanPembiayaan responseFiltered:', responseFiltered);
@@ -897,16 +898,6 @@ const ProdukPembiayaan = ({ route }) => {
                     selectedValue={valueTypePencairan}
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {
-                        if (itemValue === '3') {
-                            setValueRekeningBank(true);
-                            setValueTypePencairan(itemValue);
-                            return;
-                        }
-
-                        setValueNamaBank('');
-                        setValueNoRekening('');
-                        setValuePemilikRekening('');
-                        setValueRekeningBank(false);
                         setValueTypePencairan(itemValue);
                     }}
                 >

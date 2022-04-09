@@ -271,6 +271,7 @@ export default function FrontHomeSync(props) {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchData $get /inisiasi/GetListClient error:', error);
+
             setFetching(false);
         }
     }
@@ -309,6 +310,7 @@ export default function FrontHomeSync(props) {
             })
         } catch(error) {
             if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClientBRNET error:', error);
+            
             setFetchingProspekLama(false);
         }
     }
@@ -341,7 +343,7 @@ export default function FrontHomeSync(props) {
                 + "','"
                 + data.ClientID
                 + "','"
-                + data.Name
+                + data.Name.replace(/["']/g, "")
                 + "')";
 
                 if (i != selectedItemsProspekLama.length - 1) {
@@ -403,6 +405,20 @@ export default function FrontHomeSync(props) {
 
             setSubmitted(false);
 
+            const jsonGetSosialisasiMobileData = await AsyncStorage.getItem('jsonGetSosialisasiMobileData');
+            var countJsonSosialisasiMobileData = 0;
+            var messageLog = '';
+            if (jsonGetSosialisasiMobileData) {
+                const dtms = JSON.parse(jsonGetSosialisasiMobileData);
+                countJsonSosialisasiMobileData = dtms.length || 0;
+
+                if (countJsonSosialisasiMobileData > 0) {
+                    dtms.map((x, i) => {
+                        messageLog += `${i+1}. IDPROSPEK#${x.ID_Prospek_Terpakai} NASABAH#${x.Nama_Prospek} AO#${x.Terpakai_Oleh}\n`;
+                    })
+                }
+            }
+
             const responseProspekMap = await AsyncStorage.getItem('ProspekMap');
             let totalProspekMap = prospekMap.length ?? 0;
             let totalProspekMapBerhasil = [];
@@ -410,11 +426,11 @@ export default function FrontHomeSync(props) {
             if (__DEV__) console.log('TOTAL PROSPEK MAP:', totalProspekMap);
             if (__DEV__) console.log('TOTAL PROSPEK MAP BERHASIL:', totalProspekMapBerhasil.length, totalProspekMapBerhasil);
 
-            const messageRKH = ![2].includes(selectedIndexFilterProspek) ? `\n\nTotal ${totalProspekMap} Nasabah\nBerhasil ${totalProspekMapBerhasil.length}\nGagal ${totalProspekMap - totalProspekMapBerhasil.length} (Nasabah sudah di prospek user lain)` : '';
+            const messageRKH = ![2].includes(selectedIndexFilterProspek) ? `\n\nTOTAL ${totalProspekMap} NASABAH\nBERHASIL ${parseInt(totalProspekMap) - parseInt(countJsonSosialisasiMobileData)}\nGAGAL ${countJsonSosialisasiMobileData} (NASABAH SUDAH DI PROSPEK USER LAIN)${countJsonSosialisasiMobileData > 0 ?  '\n\n===================================\n' + messageLog : ""}` : '';
 
             Alert.alert(
-                "Sukses",
-                `Sync berhasil dilakukan, Anda akan memasuki menu utama.${messageRKH}`,
+                "SUKSES",
+                `SYNC berhasil dilakukan, Anda akan memasuki menu utama #${totalProspekMapBerhasil.length}.${messageRKH}`,
                 [
                     { 
                         text: "OK", 
@@ -472,6 +488,7 @@ export default function FrontHomeSync(props) {
                 <Text style={{color: colors.PUTIH}}>{props.username}</Text>
                 <Text style={{color: colors.PUTIH}}>{props.namacabang}</Text>
                 <Text style={{color: colors.PUTIH}}>{now}</Text>
+                <Text style={{color: colors.PUTIH}}>No. Virtual Account: {props?.noVirtualAccount ?? '-'}</Text>
             </View>
             <View>
                 <Text style={{ color: 'white', fontSize: 18 }} onPress={() => LogOutButton()}>Logout</Text>
@@ -937,6 +954,7 @@ export default function FrontHomeSync(props) {
     const renderVersion = () => (
         <View style={{ marginVertical: 8 }}>
             <Text style={{ textAlign: 'center' }}>{`version pkm_mobile-${VERSION}`}</Text>
+            <Text style={{ textAlign: 'center' }} onPress={() => navigation.navigate('NetworkLogging')}>Network Logger</Text>
         </View>
     )
 
