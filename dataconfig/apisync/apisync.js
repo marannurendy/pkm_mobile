@@ -13,9 +13,9 @@ const IS_DEVELOPMENT = true;
 
 let MAJOR_VERSION = '0';
 let MINOR_VERSION = '0';
-let PATCH_VERSION = '5';
+let PATCH_VERSION = '7';
 let BUILD = '001';
-let TANGGAL = '2022-04-08';
+let TANGGAL = '2022-03-26';
 
 // let base_url = 'http://192.168.121.80:9006';
 let base_url = 'http://pkmmekaar.kresnasaraswati.id';
@@ -28,6 +28,7 @@ if (IS_DEVELOPMENT) {
     MINOR_VERSION = '0';
     PATCH_VERSION = '8';
     BUILD = '003';
+    TANGGAL = '2022-04-08';
     
     base_url = 'http://103.105.216.134';
 
