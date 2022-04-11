@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, Alert, SafeAreaView, Modal, Pressable, Dimensions, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, ToastAndroid, Alert, SafeAreaView, Modal, Pressable, Dimensions, Image, ImageBackground, useWindowDimensions } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { scale } from 'react-native-size-matters'
 import { useNavigation } from '@react-navigation/native';
@@ -14,6 +14,8 @@ import { ActivityIndicator, Colors } from 'react-native-paper';
 import db from '../database/Database'
 import { RadioButton } from 'react-native-paper';
 import { showMessage } from "react-native-flash-message"
+import RenderHtml from 'react-native-render-html'
+import { width } from 'styled-system';
 
 const colors = {
     HITAM: '#000',
@@ -80,6 +82,11 @@ export default function FrontHomeSync(props) {
 
     const [modalNotif, setModalNotif] = useState(false)
     const [notifUri, setNotifUri] = useState()
+    const [notifTitle, setNotifTitle] = useState()
+    const [notifContent, setNotifContent] = useState()
+
+    const [contentStat, setContentStat] = useState(false)
+    const [imageStat, setImageStat] = useState(false)
 
     useEffect(() => {
         syncData();
@@ -106,7 +113,21 @@ export default function FrontHomeSync(props) {
                     setModalNotif(true)
                     
                     let ImageUri = responseText.data[0].file
+                    let NotifTitle = responseText.data[0].type
+                    let NotifContent = responseText.data[0].message
+
                     setNotifUri(ImageUri)
+                    setNotifTitle(NotifTitle)
+                    setNotifContent(NotifContent)
+
+                    if(responseText.data[0].message !== '') {
+                        setContentStat(true)
+                    }
+
+                    if(responseText.data[0].file !== '') {
+                        setImageStat(true)
+                    }
+
                 }
             }else{
                 setModalNotif(false)
@@ -958,6 +979,10 @@ export default function FrontHomeSync(props) {
         </View>
     )
 
+    const source = {
+        html: notifContent
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" hidden={false} backgroundColor="transparent" translucent={true} />
@@ -972,20 +997,37 @@ export default function FrontHomeSync(props) {
                 }}
             >
                 <View style={styles.centeredView}>
-                <View style={styles.modalView}>
+                <View style={[styles.modalView, { flexDirection: 'column' }]}>
+                    <TouchableOpacity 
+                        style={{ alignItems: 'flex-start' }}
+                        onPress={() => {
+                            setModalNotif(!modalNotif);
+                        }}>
+                        <MaterialCommunityIcons name="close-thick" color={'white'} size={20} style={{ borderRadius: 50, backgroundColor: '#FF6347', padding: 3, marginTop: 5, marginLeft: 5 }}/>
+                    </TouchableOpacity>
+                    <View style={{alignSelf: 'center', marginBottom: 5, paddingHorizontal: 20, backgroundColor: '#4199FD', borderRadius: 15}}>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>{notifTitle}</Text>
+                    </View>
+
+                    {imageStat ? (
+                        <Image
+                            style={{flex: 4, resizeMode: 'contain', marginHorizontal: 10}}
+                            source={{uri: notifUri}}
+                        >
+                        </Image>
+                    ) : 
+                    (<></>)}
                     
-                    <Image
-                        style={{width: '100%', height: '100%', resizeMode: 'contain', alignSelf: 'center'}}
-                        source={{uri: notifUri}}
-                    >
-                        {/* <MaterialCommunityIcons name="close-thick" color={'black'} size={30} style={{position: 'absolute'}} /> */}
-                    </Image>
-                    <Pressable
-                        style={styles.buttonClose}
-                        onPress={() => setModalNotif(!modalNotif)}
-                    >
-                        <MaterialCommunityIcons name="close-thick" color={'white'} size={20} />
-                    </Pressable>
+
+                    {contentStat ? (
+                        <ScrollView style={{ flex: 2, margin: 10 }}>
+                            <RenderHtml contentWidth={10} source={source} />
+                        </ScrollView>
+                    ) : (
+                        <></>
+                    )}
+
+                    
                 </View>
                 </View>
             </Modal>
@@ -1023,36 +1065,38 @@ const styles = StyleSheet.create({
         borderRadius: 4
     },
     centeredView: {
-        flex: 1,
+        // flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 22,
+        height: '100%',
+        padding: 120
         // height: window.height
     },
     modalView: {
-        // backgroundColor: "white",
+        backgroundColor: "white",
         borderRadius: 5,
         // borderWidth: 2,
         // alignItems: "center",
-        // shadowColor: "#000",
-        height: window.height/1.5,
+        shadowColor: "#000",
+        height: window.height/1.3,
         width: window.width/1.1,
-        // shadowOffset: {
-        //   width: 0,
-        //   height: 2
-        // },
-        // shadowOpacity: 0.25,
-        // shadowRadius: 4,
-        // elevation: 5
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
     },
     buttonClose: {
-        position: 'absolute',
+        // position: 'absolute',
+        margin: 10,
         // borderWidth: 2,
         borderRadius: 50,
         padding: 3,
         backgroundColor: '#FF6347',
-        alignItems: 'flex-end',
-        marginTop: 20,
-        marginLeft: 10
+        // alignItems: 'flex-end',
+        // marginTop: 20,
+        // marginLeft: 10
     },
 });

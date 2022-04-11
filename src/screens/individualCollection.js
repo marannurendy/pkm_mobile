@@ -188,7 +188,7 @@ function IndividualCollection(props) {
                                 let notifMessage = "Data berhasil dikirim"
 
                                 if(responseText.failedTransaction !== null) {
-                                    console.log(responseText.failedTransaction.length)
+                                    // console.log(responseText.failedTransaction.length)
                                     let failedData = responseText.failedTransaction
 
                                     notifMessage = notifMessage + ", berikut data nasabah yang tidak berhasil di kirim karena telah menghadiri PKM kelompok : "
@@ -207,16 +207,17 @@ function IndividualCollection(props) {
                                     [
                                       { text: "OK", onPress: () => {
                                             setLoading(true)
-                                          db.transaction(
-                                              tx => {
-                                                for(let p = 0; p < dataList; p++) {
-                                                    tx.executeSql("DELETE FROM PAR_AccountList WHERE ClientID = '" + ListData[p].ClientID + "'")
-                                                    tx.executeSql("DELETE FROM DetailPAR WHERE clientid = '"+ ListData[p].ClientID +"'")
-                                                }
-                                              },function(error) {
+                                            db.transaction(
+                                                tx => {
+                                                    for(let p = 0; p < dataList; p++) {
+                                                        tx.executeSql("DELETE FROM PAR_AccountList WHERE AccountID = '" + ListData[p].accountid + "'")
+                                                        tx.executeSql("DELETE FROM DetailPAR WHERE AccountID = '"+ ListData[p].clientid +"'")
+                                                    }
+                                                },function(error) {
                                                     setLoading(false)
-                                                    console.log('Transaction ERROR: ' + error.message);
-                                                }, function() {
+                                                    // console.log('Transaction ERROR: ' + error.message);
+                                                    flashNotification("Failed", "Failed to reload data", "#ff6347", "#fff")
+                                                },function() {
                                                     setLoading(false)
                                                     flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
                                                     FetchdataPKMIndividual(branchID, Username)

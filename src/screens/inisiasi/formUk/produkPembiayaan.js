@@ -102,17 +102,7 @@ const ProdukPembiayaan = ({ route }) => {
     }, [valueFrekuensiPembayaran]);
 
     useEffect(() => {
-<<<<<<< HEAD
         if (__DEV__) console.log('useEffect valueNamaProduk:', valueNamaProduk);
-=======
-        // if (__DEV__) console.log('useEffect valueJenisPembiayaan:', valueJenisPembiayaan);
-        getStorageKategoriTujuanPembiayaan();
-        getStorageTujuanPembiayaan();
-    }, [valueJenisPembiayaan]);
-
-    useEffect(() => {
-        // if (__DEV__) console.log('useEffect valueNamaProduk:', valueNamaProduk);
->>>>>>> f28fa942831f838783ba9ee7f2e6eedb63235c18
 
         getStorageProduk(valueNamaProduk, valueJenisPembiayaan);
     }, [valueNamaProduk]);
@@ -328,20 +318,7 @@ const ProdukPembiayaan = ({ route }) => {
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
                 if (responseJSON.length > 0 ?? false) {
-<<<<<<< HEAD
                     var responseFiltered = responseJSON.filter(data => data.namajenispembiayaan === 'PRODUK UTAMA').map((data, i) => {
-=======
-                    if (__DEV__) console.log('getStorageJenisPembiayaan responseJSON:', responseJSON);
-                    if (['1', '2'].includes(statusSosialisasi)) {
-                        var responseFiltered = responseJSON.filter(data => data.namajenispembiayaan === 'PRODUK UTAMA').map((data, i) => {
-                            return { label: data.namajenispembiayaan, value: data.id };
-                        }) ?? [];
-                        setItemsJenisPembiayaan(responseFiltered);
-                        return;
-                    }
-
-                    var responseFiltered = responseJSON.map((data, i) => {
->>>>>>> f28fa942831f838783ba9ee7f2e6eedb63235c18
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
                     setItemsJenisPembiayaan(responseFiltered);

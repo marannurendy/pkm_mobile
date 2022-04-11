@@ -15,7 +15,7 @@ const MeetingMenu = ({route}) => {
     const navigation = useNavigation()
     const dimension = Dimensions.get('screen')
 
-    const { groupid } = route.params
+    const { groupid, aoNip } = route.params
 
     let [userName, setUserName] = useState()
     let [currentDate, setCurrentDate] = useState()
@@ -243,9 +243,6 @@ const MeetingMenu = ({route}) => {
             })
         }
 
-        const token = await AsyncStorage.getItem('token');
-        if (__DEV__) console.log('ACTIONS TOKEN', token);
-
         if(CollectDatapkm.length > 0 ) {
             try{
                 console.log(ApiSync+PostPKM)
@@ -403,7 +400,7 @@ const MeetingMenu = ({route}) => {
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => navigation.navigate('PkmBermakna')} disabled={buttonPkmb} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonPkmb === true ? '#CCCCC4' : '#F4A634'}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('Survei', {groupid: groupid, nip: aoNip})} disabled={buttonPkmb} style={{width: dimension.width/4, height: dimension.height/7, borderRadius: 20, padding: 10, backgroundColor: buttonPkmb === true ? '#CCCCC4' : '#F4A634'}}>
                             <FontAwesome5 name="clipboard-list" size={25} color="#FAFAF8" style={{marginRight: 5}} />
                             <View style={{margin: 10}}>
                                 <Text style={{fontWeight: 'bold', fontSize: scale(17), color: '#FAFAF8'}}>PKMB</Text> 
