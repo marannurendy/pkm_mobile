@@ -11,8 +11,7 @@ import SignatureCapture from 'react-native-signature-capture';
 import { Picker } from '@react-native-picker/picker'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
-import 'moment/locale/id';
-// import Geolocation from '@react-native-community/geolocation';
+import Geolocation from '@react-native-community/geolocation';
 import BottomSheet from 'reanimated-bottom-sheet';
 import db from '../database/Database';
 import { Button } from 'react-native-elements';
@@ -283,69 +282,70 @@ export default function SignNew({route}) {
 
         setLoading(true)
 
-        var a = ''
-        var b = ''
+        // var a = ''
+        // var b = ''
+        
         // SubmitData(a, b)
 
-        // const requestLocationPermission = async () => {
-        //     const granted = await PermissionsAndroid.request(
-        //         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        //         {
-        //           title: 'Location Access Required',
-        //           message: 'PKM Mobile membutuhkan izin untuk mengakses lokasi anda',
-        //         },
-        //     );
+        const requestLocationPermission = async () => {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                {
+                  title: 'Location Access Required',
+                  message: 'PKM Mobile membutuhkan izin untuk mengakses lokasi anda',
+                },
+            );
               
-        //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        //         getOneTimeLocation();
-        //       }else{
-        //         var a = ''
-        //         var b = ''
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                getOneTimeLocation();
+              }else{
+                var a = ''
+                var b = ''
                 
-        //         submitData(a, b)
-        //       }
-        // }
+                submitData(a, b)
+              }
+        }
 
-        // const getOneTimeLocation = () => {
-        //     // setLoading(true)
-        //     // console.log("this up")
-        //     Geolocation.getCurrentPosition(info => {
-        //         var a = info.coords.longitude
-        //         var b = info.coords.latitude
+        const getOneTimeLocation = () => {
+            // setLoading(true)
+            // console.log("this up")
+            Geolocation.getCurrentPosition(info => {
+                var a = info.coords.longitude
+                var b = info.coords.latitude
 
-        //         // var a = ''
-        //         // var b = ''
+                // var a = ''
+                // var b = ''
 
-        //         setLoading(false)
-        //         submitData(a, b)
-        //     }, (error) => {
-        //         // console.log("itu")
-        //         setLoading(false)
-        //         // alert(error.message)
-        //         Alert.alert(
-        //             error.message,
-        //             "Lokasi anda tidak di temukan, lokasi akan di kosongkan ?",
-        //             [
-        //                 {
-        //                     text: "Batal",
-        //                     style: "cancel"
-        //                 },
-        //                 {
-        //                     text: "Ok",
-        //                     onPress: () => {
-        //                         var a = ''
-        //                         var b = ''
+                setLoading(false)
+                submitData(a, b)
+            }, (error) => {
+                // console.log("itu")
+                setLoading(false)
+                // alert(error.message)
+                Alert.alert(
+                    error.message,
+                    "Lokasi anda tidak di temukan, lokasi akan di kosongkan ?",
+                    [
+                        {
+                            text: "Batal",
+                            style: "cancel"
+                        },
+                        {
+                            text: "Ok",
+                            onPress: () => {
+                                var a = ''
+                                var b = ''
 
-        //                         submitData(a, b)
-        //                     }
-        //                 }
-        //             ]
-        //         )
-        //     }, { enableHighAccuracy: true, timeout: 10000}) 
-        //     setLoading(false)
-        // }
+                                submitData(a, b)
+                            }
+                        }
+                    ]
+                )
+            }, { enableHighAccuracy: true, timeout: 10000}) 
+            setLoading(false)
+        }
 
-        // const SubmitData = (a, b) => {
+        const submitData = (a, b) => {
             setLoading(false)
             // console.log(a)
             if((ketuaKelompok === undefined || ketuaKelompok === '') || (signatureKetua === undefined || signatureKetua === '') || (signatureAO === undefined || signatureAO === '')){
@@ -415,22 +415,22 @@ export default function SignNew({route}) {
                     ]
                   );
             }
-        // }
+        }
 
-        // if(netInfo.isConnected === false) {
-        //     var a = ''
-        //     var b = ''
-        //     submitData(a, b)
-        //     console.log("hey")
-        // }else if(netInfo.isConnected === true){
-        //     setLoading(true)
-        //     requestLocationPermission()
-        //     // submitData()
+        if(netInfo.isConnected === false) {
+            var a = ''
+            var b = ''
+            submitData(a, b)
+            console.log("hey")
+        }else if(netInfo.isConnected === true){
+            setLoading(true)
+            requestLocationPermission()
+            // submitData()
 
-        //     // var a = ''
-        //     // var b = ''
-        //     // submitData(a, b)
-        // }
+            // var a = ''
+            // var b = ''
+            // submitData(a, b)
+        }
     }
     
     function ModalSign(text, onOK){

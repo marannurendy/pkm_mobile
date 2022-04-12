@@ -14,6 +14,7 @@ const MeetingDay = () => {
     const navigation = useNavigation()
     let [aoName, setAoName] = useState()
     let [aoUname, setAoUname] = useState()
+    let [aoNip, setAoNip] = useState()
     let [branchid, setBranchid] = useState()
     let [branchName, setBranchName] = useState()
     let [data, setData] = useState([])
@@ -42,6 +43,7 @@ const MeetingDay = () => {
             setBranchName(dt.namaCabang)
             setAoUname(dt.userName)
             setAoName(dt.AOname)
+            setAoNip(dt.nip)
         })
     }
     
@@ -79,14 +81,14 @@ const MeetingDay = () => {
     )
 
     const pressHandler = (groupid, groupName, branchId, Username) => {
-        navigation.navigate("MeetingMenu", {groupid: groupid, groupName: groupName})
+        navigation.navigate("MeetingMenu", {groupid: groupid, groupName: groupName, aoNip: aoNip})
     }
 
     const Item = ({ data }) => (
         <TouchableOpacity 
             style={{margin: 5, borderRadius: 20, backgroundColor: '#FFF'}} 
             // onPress={() => navigation.navigate("Menu", {groupid: data.groupid, groupname: data.groupname, branchid: data.branchID, username: data.username})}>
-            onPress={() => pressHandler(data.GroupID, data.GroupName, branchid, aoUname)}>
+            onPress={() => pressHandler(data.GroupID, data.GroupName, branchid, aoUname, aoNip)}>
             <View style={{alignItems: 'flex-start'}}>
                 <ListMessage groupid={data.GroupID} groupName={data.GroupName} />
             </View>
