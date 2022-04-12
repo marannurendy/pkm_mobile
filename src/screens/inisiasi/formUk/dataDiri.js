@@ -1063,49 +1063,6 @@ const DataDiri = ({route}) => {
         );
     }
 
-    const takePicture = async (type) => {
-        try {
-            setLoading(true)
-            SetButtonCam(true)
-            const options = { quality: 0.3, base64: true };
-            const data = await camera.current.takePictureAsync(options)
-
-            if (type === "dataPenjamin") {
-                AsyncStorage.setItem(key_dataPenjamin, 'data:image/jpeg;base64,' + data.base64);
-                setFotoDataPenjamin(data.uri);
-                setLoading(false);
-                SetButtonCam(false);
-            }else if (type === "dataSuami") {
-                if (!statusSuami) {
-                    AsyncStorage.setItem(key_dataPenjamin, 'data:image/jpeg;base64,' + data.base64);
-                    setFotoDataPenjamin(data.uri);
-                }
-
-                AsyncStorage.setItem(key_dataSuami, 'data:image/jpeg;base64,' + data.base64);
-                setFotoKartuIdentitasSuami(data.uri);
-                setLoading(false);
-                SetButtonCam(false);
-            }else if (type === "kartuKeluarga") {
-                AsyncStorage.setItem(key_kartuKeluarga, 'data:image/jpeg;base64,' + data.base64);
-                setFotoKartuKeluarga(data.uri);
-                setLoading(false);
-                SetButtonCam(false);
-            }else if (type === "keteranganDomisili") {
-                AsyncStorage.setItem(key_keteranganDomisili, 'data:image/jpeg;base64,' + data.base64);
-                setFotoSuratKeteranganDomisili(data.uri);
-                setLoading(false);
-                SetButtonCam(false);
-            }else if (type === "kartuIdentitas") {
-                AsyncStorage.setItem(key_kartuIdentitas, 'data:image/jpeg;base64,' + data.base64);
-                setFotoKartuIdentitas(data.uri);
-                setLoading(false);
-                SetButtonCam(false);
-            }
-        } catch (error) {}
-    };
-
-    const submitHandler = () => null;
-
     const renderPickerKabupaten = () => {
         if (__DEV__) console.log('renderPickerKabupaten loaded');
         if (__DEV__) console.log('renderPickerKabupaten dataProvinsi:', dataProvinsi);
