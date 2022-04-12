@@ -8,10 +8,10 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
 import { Camera } from 'expo-camera'
 import { Button } from 'react-native-elements'
-import { showMessage } from "react-native-flash-message"
 import { Checkbox } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import Geolocation from 'react-native-geolocation-service';
+import * as ImagePicker from "react-native-image-picker"
 import wilayahMobile from '../../../local/wilayahMobile.json';
 
 import db from '../../../database/Database'
@@ -19,8 +19,6 @@ import { replaceSpecialChar } from '../../../utils/Functions'
 import { ApiDukcapil } from '../../../../dataconfig'
 import { ApiSyncInisiasi } from '../../../../dataconfig/apisync/apisync'
 
-const MIN_TANGGAL_LAHIR = 15;
-const MAX_TANGGAL_LAHIR = 64;
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 8;
 
@@ -34,22 +32,18 @@ const MIN_NOMOR_IDENTITAS_INPUT = 16;
 const DataDiri = ({route}) => {
     const uniqueNumber = (new Date().getTime()).toString(36);
     const { id, groupName, namaNasabah, nomorHandphone, screenState, statusSosialisasi } = route.params
-
     const navigation = useNavigation()
     const phoneRef = useRef(undefined)
     const camera = useRef(null)
+
     const [loading, setLoading] = useState(false)
     let [date, setDate] = useState(new Date())
-
     //STATE DATA DIRI
     let [fotokartuIdentitas, setFotoKartuIdentitas] = useState()
-    let [jenisKartuIdentitas, setJenisKartuIdentitas] = useState()
     let [nomorIdentitas, setNomorIdentitas] = useState()
-    let [namaNasabahSosialisasi, setNamaNasabahSosialisasi] = useState(namaNasabah)
     let [namaCalonNasabah, setNamaCalonNasabah] = useState(namaNasabah)
     let [tempatLahir, setTempatLahir] = useState()
     let [tanggalLahir, setTanggalLahir] = useState()
-    let [statusPerkawinan, setStatusPerkawinan] = useState()
     let [alamatIdentitas, setAlamatIdentitas] = useState()
     let [alamatDomisili, setAlamatDomisili] = useState()
     let [fotoSuratKeteranganDomisili, setFotoSuratKeteranganDomisili] = useState()
@@ -57,52 +51,25 @@ const DataDiri = ({route}) => {
     let [dataKabupaten, setDataKabupaten] = useState(null)
     let [dataKecamatan, setDataKecamatan] = useState(null)
     let [dataKelurahan, setDataKelurahan] = useState(null)
-
     //STATE DATA KARTU KELUARGA
     let [fotoKartuKeluarga, setFotoKartuKeluarga] = useState()
     let [nomorKartuKeluarga, setNomorKartuKeluarga] = useState()
-
     //STATE DATA DIRI PRIBADI
     let [fullName, setFullName] = useState(namaNasabah)
     let [namaAyah, setNamaAyah] = useState()
     let [noTelfon, setNoTelfon] = useState(nomorHandphone !== 'undefined' ? nomorHandphone : '')
-    let [jumlahAnak, setJuma] = useState()
-    let [jumlahTanggungan, setJumlahTanggungnan] = useState()
-    let [statusRumahTinggal, setStatusRumahTinggal] = useState()
     let [lamaTinggal, setLamaTinggal] = useState()
-
     //STATE DATA SUAMI
     let [namaSuami, setNamaSuami] = useState()
     let [fotoKartuIdentitasSuami, setFotoKartuIdentitasSuami] = useState()
     let [statusSuami, setStatusSuami] = useState(false)
-
     //STATE DATA PENJAMIN
-    let [statusHubunganKeluarga, setStatusHubunganKeluarga] = useState()
     let [namaPenjamin, setNamaPenjamin] = useState()
     let [fotoDataPenjamin, setFotoDataPenjamin] = useState()
-
-    let [showSos, setShowSos] = useState(false)
-    let [tanggalSos, setTanggalSos] = useState()
-    let [open, setOpen] = useState(false)
-    let [value, setValue] = useState(null)
-    let [nohp, setNohp] = useState()
-    let [sisipan, setSisipan] = useState(false)
-    let [baru, setBaru] = useState(false)
-    let [statusNasabah, setStatusNasabah] = useState()
-
     let [showCalendar, setShowCalendar] = useState(false)
-    
     let [currentDate, setCurrentDate] = useState()
-    let [sumberDana, setSumberDana] = useState()
-
-    let [cameraShow, setCameraShow] = useState()
     let [buttonCam, SetButtonCam] = useState(false)
-
-    let [testData, setTestData] = useState([])
-
     const [hasPermission, setHasPermission] = useState(null);
-    const [type, setType] = useState(Camera.Constants.Type.back);
-
     const [items, setItems] = useState([])
     const [itemsMarrige, setItemsMarriege] = useState([])
     
@@ -132,19 +99,14 @@ const DataDiri = ({route}) => {
         {label: '9', value: '9'},
         {label: '10', value: '10'}
     ];
-    const [openJenisKartuIdentitas, setOpenJenisKartuIdentitas] = useState(false);
     const [valueJenisKartuIdentitas, setValueJenisKartuIdentitas] = useState(null);
     const [itemsJenisKartuIdentitas, setItemsJenisKartuIdentitas] = useState([]);
-    const [openStatusPerkawinan, setOpenStatusPerkawinan] = useState(false);
     const [valueStatusPerkawinan, setValueStatusPerkawinan] = useState(null);
     const [itemsStatusPerkawinan, setItemsStatusPerkawinan] = useState([]);
-    const [openJumlahAnak, setOpenJumlahAnak] = useState(false);
     const [valueJumlahAnak, setValueJumlahAnak] = useState('0');
     const [itemsJumlahAnak, setItemsJumlahAnak] = useState(dataPilihanAnak);
-    const [openJumlahTanggungan, setOpenJumlahTanggungan] = useState(false);
     const [valueJumlahTanggungan, setValueJumlahTanggungan] = useState(null);
     const [itemsJumlahTanggungan, setItemsJumlahTanggungan] = useState(dataPilihanTanggungan);
-    const [openStatusRumahTinggal, setOpenStatusRumahTinggal] = useState(false);
     const [valueStatusRumahTinggal, setValueStatusRumahTinggal] = useState(null);
     const [itemsStatusRumahTinggal, setItemsStatusRumahTinggal] = useState([
         {
@@ -152,7 +114,6 @@ const DataDiri = ({route}) => {
             value: '1'
         }
     ]);
-    const [openStatusHubunganKeluarga, setOpenStatusHubunganKeluarga] = useState(false);
     const [valueStatusHubunganKeluarga, setValueStatusHubunganKeluarga] = useState('1');
     const [itemsStatusHubunganKeluarga, setItemsStatusHubunganKeluarga] = useState([]);
     const [submmitted, setSubmmitted] = useState(false);
@@ -177,7 +138,7 @@ const DataDiri = ({route}) => {
     const [isShowAllProvinsi, setIsShowAllProvinsi] = useState(false);
     const [valuePendidikanAnak, setValuePendidikanAnak] = useState(null);
     const [itemsPendidikanAnak, setItemsPendidikanAnak] = useState([]);
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(''); 
     /* END DEFINE BY MUHAMAD YUSUP HAMDANI (YPH) */
 
     useEffect(() => {
@@ -481,6 +442,69 @@ const DataDiri = ({route}) => {
         else getStorageWilayahMobile();
     }, [isShowAllProvinsi]);
 
+    const launchImagePicker = (type) => {
+        if (__DEV__) console.log('launchImagePicker loaded');
+        if (__DEV__) console.log('launchImagePicker type:', type);
+
+        let options = {
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+            mediaType: 'photo',
+            cameraType: 'back',
+            quality: 0.3,
+            includeBase64: true
+        };
+
+        ImagePicker.launchCamera(options, (res) => {
+            if (__DEV__) console.log('Response = ', res);
+            if (res.didCancel) {
+                if (__DEV__) console.log('User cancelled image picker');
+            } else if (res.error) {
+                if (__DEV__) console.log('ImagePicker Error: ', res.error);
+            } else if (res.customButton) {
+                if (__DEV__) console.log('User tapped custom button: ', res.customButton);
+                alert(res.customButton);
+            } else {
+                const img = `data:image/jpeg;base64,${res.assets[0].base64}`;
+
+                let keyImg = '';
+                switch (type) {
+                    case "dataPenjamin":
+                        keyImg = key_dataPenjamin;
+                        setFotoDataPenjamin(img);
+                        break;
+                    case "dataSuami":
+                        if (!statusSuami) {
+                            AsyncStorage.setItem(key_dataPenjamin, img);
+                            setFotoDataPenjamin(img);
+                        }
+
+                        keyImg = key_dataSuami;
+                        setFotoKartuIdentitasSuami(img);
+                        break;
+                    case "kartuKeluarga":
+                        keyImg = key_kartuKeluarga;
+                        setFotoKartuKeluarga(img);
+                        break;
+                    case "keteranganDomisili":
+                        keyImg = key_keteranganDomisili;
+                        setFotoSuratKeteranganDomisili(img);
+                        break;
+                    case "kartuIdentitas":
+                        keyImg = key_kartuIdentitas;
+                        setFotoKartuIdentitas(img);
+                        break;
+                    default:
+                        Alert.alert('launchImagePicker error: ' + type);
+                }
+
+                AsyncStorage.setItem(keyImg, img);
+            }
+        });
+    }
+
     const getStorageWilayahMobile = async () => {
         try {
             const response = await AsyncStorage.getItem('WilayahMobile');
@@ -536,7 +560,7 @@ const DataDiri = ({route}) => {
                     headers: { 
                         "Content-Type": "application/json",
                         "Authorization": tokenUser
-                   }
+                    }
                 })
                 .then((response) => response.json())
                 .then((responseJson) => {
@@ -562,20 +586,9 @@ const DataDiri = ({route}) => {
     if (hasPermission === null) {
         return <View />
     }
+
     if (hasPermission === false) {
         return <Text>No access to camera</Text>
-    }
-
-    const flashNotification = (title, message, backgroundColor, color) => {
-        showMessage({
-            message: title,
-            description: message,
-            type: "info",
-            duration: 3500,
-            statusBarHeight: 20,
-            backgroundColor: backgroundColor,
-            color: color
-        });
     }
 
     const onRefreshLocation = () => {
@@ -612,19 +625,6 @@ const DataDiri = ({route}) => {
 
         ToastAndroid.show(`${rangeDateValue} tahun, Usia tidak valid`, ToastAndroid.SHORT);
         setShowCalendar(false);
-    }
-
-    const JenisKartuIdentitas = (value) => {
-        // console.log(value)
-        setJenisKartuIdentitas(value)
-    }
-
-    const MarriageStatus = (value) => {
-        setStatusPerkawinan(value)
-    }
-
-    const sumberDataHandler = (text) => {
-        setSumberDana(text)
     }
 
     const doSubmitDataPenjamin = (source = 'draft') => new Promise((resolve) => {
@@ -1163,435 +1163,192 @@ const DataDiri = ({route}) => {
                 </ImageBackground>
             </View>
 
-            {cameraShow === 1 ? (
-                <View style={{flex: 1, marginTop: 20, borderRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF', marginBottom: 20}}>
-                    {fotokartuIdentitas === undefined ? (
-                        <Camera 
-                            ref={camera}
-                            style={styles.preview}
-                            type={Camera.Constants.Type.back}
-                            // flashMode={Camera.Constants.FlashMode.on}
-                            androidCameraPermissionOptions={{
-                                title: 'Permission to use camera',
-                                message: 'We need your permission to use your camera',
-                                buttonPositive: 'Ok',
-                                buttonNegative: 'Cancel'
-                            }}
-                        >
-                            {loading &&
-                                <View style={styles.loading}>
-                                    <ActivityIndicator size="large" color="#737A82" />
-                                </View>
-                            }
-                            <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
-                                <TouchableOpacity 
-                                    style={{
-                                        flex: 0,
-                                        backgroundColor: '#EB3C27',
-                                        borderRadius: 5,
-                                        padding: 5,
-                                        paddingHorizontal: 5,
-                                        alignSelf: 'center',
-                                        margin: 20,
-                                    }} 
-                                    onPress={() => setCameraShow(0)
-                                }>
-                                    <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
-                                </TouchableOpacity>
-                            </View>
+            <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
+                <Text style={{fontSize: 25, fontWeight: 'bold', margin: 20}}>Form Data Diri Pribadi</Text>
+                <ScrollView style={{borderTopRightRadius: 20, borderTopLeftRadius: 20}}>
 
-                            <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
-                                <TouchableOpacity 
-                                    disabled={ buttonCam }
-                                    style={{
-                                        flex: 0,
-                                        backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
-                                        borderRadius: 5,
-                                        padding: 15,
-                                        paddingHorizontal: 20,
-                                        alignSelf: 'center',
-                                        margin: 20,
-                                    }} 
-                                    onPress={() => takePicture("kartuIdentitas")
-                                }>
-                                    <Text style={{ fontSize: 14 }}> Ambil Foto Kartu Identitas </Text>
-                                </TouchableOpacity>
+                <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Identitas Diri</Text>
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas (*)</Text>
+                        
+                        <TouchableOpacity onPress={() => launchImagePicker('kartuIdentitas')}>
+                            <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
+                                {fotokartuIdentitas === undefined ? (
+                                    <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                        <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                    </View>
+                                ) : (
+                                    <Image source={{ uri: fotokartuIdentitas }} style={styles.thumbnailPhoto}/>
+                                )}
                             </View>
-                        </Camera>
-                    ) : (
-                        <View style={{ flex: 1 }}>
-                            <Image source={{ uri: fotokartuIdentitas }} style={styles.previewPhoto}/>
-                            <View style={{ 
-                                position: 'absolute', 
-                                bottom: 35, 
-                                left: 30, 
-                                backgroundColor: 'white',
-                                borderRadius: 10
-                            }}>
-                                <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoKartuIdentitas(undefined)} >Batal</Text>
+                        </TouchableOpacity>
+
+                        <View style={{marginLeft: 20}}>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
+                        </View>
+                    </View>
+
+                    <View style={{marginHorizontal: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={valueJenisKartuIdentitas}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => setValueJenisKartuIdentitas(itemValue)}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {itemsJenisKartuIdentitas.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Identitas (*)</Text>
+                        <View style={{flexDirection: 'row'}}>
+                            <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                                <View style={{flex: 1}}>
+                                    <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }} maxLength={16} />
+                                </View>
+                                <View>
+                                    <FontAwesome5 name={'id-badge'} size={18} />
+                                </View>
                             </View>
-                            <View style={{ 
-                                position: 'absolute', 
-                                bottom: 35, 
-                                right: 30, 
-                                backgroundColor: 'white',
-                                borderRadius: 10
-                            }}>
-                                <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
+                            {valueJenisKartuIdentitas === '1' && (
+                                <View>
+                                    <TouchableOpacity
+                                        onPress={() => fetchCheckNIK ? null : checkNIK()}
+                                        style={{ backgroundColor: fetchCheckNIK ? 'gray' : '#003049', borderRadius: 10, borderWidth: 1, padding: 8, alignContent: 'center', marginLeft: 8 }}
+                                    >
+                                        <Text style={{ color: 'white' }}>{fetchCheckNIK ? 'Loading...' : 'Cek Data'}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        </View>
+                        {valueJenisKartuIdentitas === '1' && valueNomorIdentitas === '1' && <Text style={{ color: '#3CB371', fontWeight: 'bold', marginTop: 6 }}>* Nomor Identitas KTP Terdaftar di dukcapil</Text>}
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput 
+                                    value={namaCalonNasabah} 
+                                    onChangeText={(text) => {
+                                        setFullName(replaceSpecialChar(text));
+                                        setNamaCalonNasabah(replaceSpecialChar(text));
+                                    }}
+                                    placeholder="Masukkan Nama Lengkap" 
+                                    style={{ fontSize: 15, color: "#545454", height: 38 }} 
+                                />
                             </View>
-                            {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
-                            {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
+                            <View>
+                                <FontAwesome5 name={'id-badge'} size={18} />
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tempat Lahir (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={tempatLahir} onChangeText={(text) => setTempatLahir(text)} placeholder="Masukkan Tempat Lahir" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'id-badge'} size={18} />
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tanggal Lahir (*)</Text>
+                        <TouchableOpacity onPress={() => setShowCalendar(true)} style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={tanggalLahir} placeholder="Pilih tanggal lahir" editable={false} style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={{ marginHorizontal: 8 }}>{moment().diff(moment(moment(tanggalLahir).format("DD-MM-YYYY"), "DD-MM-YYYY"), 'years') || '0'} tahun</Text>
+                                <FontAwesome5 name={'id-badge'} size={18} />
+                            </View>
+                        </TouchableOpacity>
+                        <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {minTanggalLahir}-{maxTanggalLahir} tahun ({maxTanggalLahir + 1} saat lunas)</Text>
+                        {showCalendar && (
+                            <DateTimePicker
+                                value={date}
+                                mode={'date'}
+                                is24Hour={true}
+                                display="default"
+                                onChange={dateLahirHandler}
+                                maximumDate={new Date()}
+                            />
+                        )}
+                    </View>
+
+                    <View style={{marginHorizontal: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Perkawinan (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={valueStatusPerkawinan}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    setValueStatusPerkawinan(itemValue);
+                                }}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {itemsStatusPerkawinan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20, marginBottom: 4}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Identitas (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={alamatIdentitas} onChangeText={(text) => setAlamatIdentitas(text)} placeholder="Masukkan Alamat Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'address-card'} size={18} />
+                            </View>
+                        </View>
+                        <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat identitas wajib menyertakan RT dan RW</Text>
+                    </View>
+
+                    <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18}}>
+                        <Checkbox
+                            status={addressDomisiliLikeIdentitas ? 'checked' : 'unchecked'}
+                            onPress={() => {
+                                setAddressDomisiliLikeIdentitas(!addressDomisiliLikeIdentitas);
+                            }}
+                        />
+                        <Text style={{flex: 1, fontSize: 15, fontWeight: 'bold'}}>Apakah alamat domisili sesuai dengan KTP</Text>
+                    </View>
+                    
+                    {!addressDomisiliLikeIdentitas && (
+                        <View style={{margin: 20}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Domisili (*)</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                                <View style={{flex: 1}}>
+                                    <TextInput value={alamatDomisili} onChangeText={(text) => setAlamatDomisili(text)} placeholder="Masukkan Alamat Domisili" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                </View>
+                                <View>
+                                    <FontAwesome5 name={'address-card'} size={18} />
+                                </View>
+                            </View>
+                            <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat domisili wajib menyertakan RT dan RW</Text>
                         </View>
                     )}
-                </View>
-            ) : cameraShow === 2 ? (
-                    <View style={{flex: 1, marginTop: 20, borderRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF', marginBottom: 20}}>
-                        {fotoSuratKeteranganDomisili === undefined ? (
-                            <Camera 
-                                ref={camera}
-                                style={styles.preview}
-                                type={Camera.Constants.Type.back}
-                                // flashMode={Camera.Constants.FlashMode.on}
-                                androidCameraPermissionOptions={{
-                                    title: 'Permission to use camera',
-                                    message: 'We need your permission to use your camera',
-                                    buttonPositive: 'Ok',
-                                    buttonNegative: 'Cancel'
-                                }}
-                            >
-                                {loading &&
-                                    <View style={styles.loading}>
-                                        <ActivityIndicator size="large" color="#737A82" />
-                                    </View>
-                                }
 
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
-                                    <TouchableOpacity 
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: '#EB3C27',
-                                            borderRadius: 5,
-                                            padding: 5,
-                                            paddingHorizontal: 5,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }} 
-                                        onPress={() => setCameraShow(0)
-                                    }>
-                                        <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
-                                    </TouchableOpacity>
-                                </View>
-
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
-                                    <TouchableOpacity
-                                        disabled={ buttonCam }
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
-                                            borderRadius: 5,
-                                            padding: 15,
-                                            paddingHorizontal: 20,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }} 
-                                        onPress={() => takePicture("keteranganDomisili")}
-                                    >
-                                        <Text style={{ fontSize: 14 }}> Ambil Foto Surat Keterangan Domisili </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </Camera>
-                        ) : (
-                            <View style={{ flex: 1 }}>
-                                <Image source={{ uri: fotoSuratKeteranganDomisili }} style={styles.previewPhoto}/>
-                                <View style={{ 
-                                    position: 'absolute', 
-                                    bottom: 35, 
-                                    left: 30, 
-                                    backgroundColor: 'white',
-                                    borderRadius: 10
-                                }}>
-                                    <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoSuratKeteranganDomisili(undefined)} >Batal</Text>
-                                </View>
-                                <View style={{ 
-                                    position: 'absolute', 
-                                    bottom: 35, 
-                                    right: 30, 
-                                    backgroundColor: 'white',
-                                    borderRadius: 10
-                                }}>
-                                    <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
-                                </View>
-                                {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
-                                {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
-                            </View>
-                        )}
-                    </View>
-            ) : cameraShow === 3 ? (
-                    <View style={{flex: 1, marginTop: 20, borderRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF', marginBottom: 20}}>
-                        {fotoKartuKeluarga === undefined ? (
-                            <Camera 
-                                ref={camera}
-                                style={styles.preview}
-                                type={Camera.Constants.Type.back}
-                                // flashMode={Camera.Constants.FlashMode.on}
-                                androidCameraPermissionOptions={{
-                                    title: 'Permission to use camera',
-                                    message: 'We need your permission to use your camera',
-                                    buttonPositive: 'Ok',
-                                    buttonNegative: 'Cancel'
-                                }}
-                            >
-
-                                {loading &&
-                                    <View style={styles.loading}>
-                                        <ActivityIndicator size="large" color="#737A82" />
-                                    </View>
-                                }
-
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
-                                    <TouchableOpacity 
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: '#EB3C27',
-                                            borderRadius: 5,
-                                            padding: 5,
-                                            paddingHorizontal: 5,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }} 
-                                        onPress={() => setCameraShow(0)
-                                    }>
-                                        <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
-                                    <TouchableOpacity 
-                                        disabled={ buttonCam }
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
-                                            borderRadius: 5,
-                                            padding: 15,
-                                            paddingHorizontal: 20,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }} 
-                                        onPress={() => takePicture("kartuKeluarga")}
-                                    >
-                                        <Text style={{ fontSize: 14 }}> Ambil Foto Kartu Keluarga </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </Camera>
-                        ) : (
-                            <View style={{ flex: 1 }}>
-                                <Image source={{ uri: fotoKartuKeluarga }} style={styles.previewPhoto}/>
-                                <View style={{ 
-                                    position: 'absolute', 
-                                    bottom: 35, 
-                                    left: 30, 
-                                    backgroundColor: 'white',
-                                    borderRadius: 10
-                                }}>
-                                    <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoKartuKeluarga(undefined)} >Batal</Text>
-                                </View>
-                                <View style={{ 
-                                    position: 'absolute', 
-                                    bottom: 35, 
-                                    right: 30, 
-                                    backgroundColor: 'white',
-                                    borderRadius: 10
-                                }}>
-                                    <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
-                                </View>
-                                {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
-                                {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
-                            </View>
-                        )}
-                    </View>
-            ) : cameraShow === 4 ? (
-                    <View style={{flex: 1, marginTop: 20, borderRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF', marginBottom: 20}}>
-                        {fotoKartuIdentitasSuami === undefined ? (
-                            <Camera 
-                                ref={camera}
-                                style={styles.preview}
-                                type={Camera.Constants.Type.back}
-                                // flashMode={Camera.Constants.FlashMode.on}
-                                androidCameraPermissionOptions={{
-                                    title: 'Permission to use camera',
-                                    message: 'We need your permission to use your camera',
-                                    buttonPositive: 'Ok',
-                                    buttonNegative: 'Cancel'
-                                }}
-                            >
-
-                                {loading &&
-                                    <View style={styles.loading}>
-                                        <ActivityIndicator size="large" color="#737A82" />
-                                    </View>
-                                }
-
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
-                                    <TouchableOpacity 
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: '#EB3C27',
-                                            borderRadius: 5,
-                                            padding: 5,
-                                            paddingHorizontal: 5,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }} 
-                                        onPress={() => setCameraShow(0)
-                                    }>
-                                        <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
-                                    </TouchableOpacity>
-                                </View>
-
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
-                                    <TouchableOpacity
-                                        disabled={ buttonCam }
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
-                                            borderRadius: 5,
-                                            padding: 15,
-                                            paddingHorizontal: 20,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }}
-                                        onPress={() => takePicture("dataSuami")}
-                                    >
-                                        <Text style={{ fontSize: 14 }}> Ambil Foto Kartu Identitas Suami </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </Camera>
-                        ) : (
-                            <View style={{ flex: 1 }}>
-                                <Image source={{ uri: fotoKartuIdentitasSuami }} style={styles.previewPhoto}/>
-                                <View style={{ 
-                                    position: 'absolute', 
-                                    bottom: 35, 
-                                    left: 30, 
-                                    backgroundColor: 'white',
-                                    borderRadius: 10
-                                }}>
-                                    <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoKartuIdentitasSuami(undefined)} >Batal</Text>
-                                </View>
-                                <View style={{ 
-                                    position: 'absolute', 
-                                    bottom: 35, 
-                                    right: 30, 
-                                    backgroundColor: 'white',
-                                    borderRadius: 10
-                                }}>
-                                    <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
-                                </View>
-                                {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
-                                {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
-                            </View>
-                        )}
-                    </View>
-            ) : cameraShow === 5 ? (
-                    <View style={{flex: 1, marginTop: 20, borderRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF', marginBottom: 20}}>
-                        {fotoDataPenjamin === undefined ? (
-                            <Camera 
-                                ref={camera}
-                                style={styles.preview} 
-                                type={Camera.Constants.Type.back}
-                                // flashMode={Camera.Constants.FlashMode.on}
-                                androidCameraPermissionOptions={{
-                                    title: 'Permission to use camera',
-                                    message: 'We need your permission to use your camera',
-                                    buttonPositive: 'Ok',
-                                    buttonNegative: 'Cancel'
-                                }}
-                            >
-
-                                {loading &&
-                                    <View style={styles.loading}>
-                                        <ActivityIndicator size="large" color="#737A82" />
-                                    </View>
-                                }
-
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'flex-end', position: 'absolute', top: 0 }}>
-                                    <TouchableOpacity 
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: '#EB3C27',
-                                            borderRadius: 5,
-                                            padding: 5,
-                                            paddingHorizontal: 5,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }} 
-                                        onPress={() => setCameraShow(0)
-                                    }>
-                                        <Text style={{ fontSize: 14, color: '#FFF' }}> Batal </Text>
-                                    </TouchableOpacity>
-                                </View>
-
-                                <View style={{ flex: 1, width: '100%', flexDirection: 'row', justifyContent: 'center', position: 'absolute', bottom: 0 }}>
-                                    <TouchableOpacity
-                                        disabled={ buttonCam }
-                                        style={{
-                                            flex: 0,
-                                            backgroundColor: buttonCam === true ? '#737A82' : '#FFF',
-                                            borderRadius: 5,
-                                            padding: 15,
-                                            paddingHorizontal: 20,
-                                            alignSelf: 'center',
-                                            margin: 20,
-                                        }}
-                                        onPress={() => takePicture("dataPenjamin")}
-                                    >
-                                        <Text style={{ fontSize: 14 }}> Ambil Foto Data Penjamin </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </Camera>
-                        ) : (
-                            <View style={{ flex: 1 }}>
-                                <Image source={{ uri: fotoDataPenjamin }} style={styles.previewPhoto}/>
-                                <View style={{ 
-                                    position: 'absolute', 
-                                    bottom: 35, 
-                                    left: 30, 
-                                    backgroundColor: 'white',
-                                    borderRadius: 10
-                                }}>
-                                    <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setFotoDataPenjamin(undefined)} >Batal</Text>
-                                </View>
-                                <View style={{ 
-                                    position: 'absolute', 
-                                    bottom: 35, 
-                                    right: 30, 
-                                    backgroundColor: 'white',
-                                    borderRadius: 10
-                                }}>
-                                    <Text style={{ marginHorizontal: 30, marginVertical: 5, fontSize: 18, fontWeight: 'bold' }} onPress={() => setCameraShow(0)} >Simpan</Text>
-                                </View>
-                                {/* <Text style={styles.cancel} onPress={() => setFotoDataPenjamin(null)} >Cancel</Text> */}
-                                {/* <Text style={styles.next} >Simpan Foto KTP</Text> */}
-                            </View>
-                        )}
-                    </View>
-            ) : (
-                <View style={{flex: 1, marginTop: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, marginHorizontal: 20, backgroundColor: '#FFF'}}>
-                    <Text style={{fontSize: 25, fontWeight: 'bold', margin: 20}}>Form Data Diri Pribadi</Text>
-                    <ScrollView style={{borderTopRightRadius: 20, borderTopLeftRadius: 20}}>
-
-                    <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Identitas Diri</Text>
+                    {!addressDomisiliLikeIdentitas && (
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas (*)</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Surat Keterangan Domisili (*)</Text>
                             
-                            <TouchableOpacity onPress={() => setCameraShow(1)}>
+                            <TouchableOpacity onPress={() => launchImagePicker('keteranganDomisili')}>
                                 <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
-                                    {fotokartuIdentitas === undefined ? (
+                                    {fotoSuratKeteranganDomisili === undefined ? (
                                         <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
                                             <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
                                         </View>
                                     ) : (
-                                        <Image source={{ uri: fotokartuIdentitas }} style={styles.thumbnailPhoto}/>
+                                        <Image source={{ uri: fotoSuratKeteranganDomisili }} style={styles.thumbnailPhoto}/>
                                     )}
                                 </View>
                             </TouchableOpacity>
@@ -1600,261 +1357,360 @@ const DataDiri = ({route}) => {
                                 <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
                             </View>
                         </View>
+                    )}
 
-                        <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={valueJenisKartuIdentitas}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setValueJenisKartuIdentitas(itemValue)}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {itemsJenisKartuIdentitas.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                </Picker>
-                            </View>
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Provinsi (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={dataProvinsi}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    setDataProvinsi(itemValue);
+                                    setDataKabupaten(null);
+                                    setDataKecamatan(null);
+                                    setDataKelurahan(null);
+                                }}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {[...new Map(dataWilayahMobile.map(item => [item['Nama_Provinsi'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.Nama_Provinsi} value={x.ID_Provinsi} />)}
+                            </Picker>
                         </View>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <Checkbox
+                                status={isShowAllProvinsi ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setIsShowAllProvinsi(!isShowAllProvinsi);
+                                }}
+                            />
+                            <Text style={{flex: 1, fontSize: 15, fontWeight: 'bold'}}>Tampilkan semua provinsi</Text>
+                        </View>
+                    </View>
 
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Identitas (*)</Text>
-                            <View style={{flexDirection: 'row'}}>
-                                <View style={{flex:1, flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                    <View style={{flex: 1}}>
-                                        <TextInput value={nomorIdentitas} keyboardType='numeric' onChangeText={(text) => setNomorIdentitas(text)} placeholder="Masukkan Nomor Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }} maxLength={16} />
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kabupaten (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={dataKabupaten}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    setDataKabupaten(itemValue);
+                                    setDataKecamatan(null);
+                                    setDataKelurahan(null);
+                                }}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {renderPickerKabupaten()}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kecamatan (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={dataKecamatan}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => {
+                                    setDataKecamatan(itemValue);
+                                    setDataKelurahan(null);
+                                }}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {renderPickerKecamatan()}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kelurahan (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={dataKelurahan}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => setDataKelurahan(itemValue)}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {renderPickerKelurahan()}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Long, Lat (*)</Text>
+                        <View style={{ flexDirection: 'row', borderWidth: 1, borderRadius: 6, padding: 12 }}>
+                            <Text style={{ flex: 1 }}>{location?.coords?.longitude ?? '0'}, {location?.coords?.latitude ?? '0'}</Text>
+                            <FontAwesome5 name={'sync'} size={18} onPress={() => onRefreshLocation()} />
+                        </View>
+                    </View>
+
+                    <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
+                        <Button
+                            title="Save Draft"
+                            buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
+                            titleStyle={{fontSize: 10, fontWeight: 'bold'}}
+                            onPress={() => doSubmitDataIdentitasDiri()}
+                        />
+                    </View>
+
+                <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Kartu Keluarga</Text>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Keluarga (*)</Text>
+                        
+                        <TouchableOpacity onPress={() => launchImagePicker('kartuKeluarga')}>
+                            <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
+                                {fotoKartuKeluarga === undefined ? (
+                                    <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                        <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
                                     </View>
-                                    <View>
-                                        <FontAwesome5 name={'id-badge'} size={18} />
-                                    </View>
-                                </View>
-                                {valueJenisKartuIdentitas === '1' && (
-                                    <View>
-                                        <TouchableOpacity
-                                            onPress={() => fetchCheckNIK ? null : checkNIK()}
-                                            style={{ backgroundColor: fetchCheckNIK ? 'gray' : '#003049', borderRadius: 10, borderWidth: 1, padding: 8, alignContent: 'center', marginLeft: 8 }}
-                                        >
-                                            <Text style={{ color: 'white' }}>{fetchCheckNIK ? 'Loading...' : 'Cek Data'}</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                ) : (
+                                    <Image source={{ uri: fotoKartuKeluarga }} style={styles.thumbnailPhoto}/>
                                 )}
                             </View>
-                            {valueJenisKartuIdentitas === '1' && valueNomorIdentitas === '1' && <Text style={{ color: '#3CB371', fontWeight: 'bold', marginTop: 6 }}>* Nomor Identitas KTP Terdaftar di dukcapil</Text>}
-                        </View>
+                        </TouchableOpacity>
 
+                        <View style={{marginLeft: 20}}>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Kartu Keluarga (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={nomorKartuKeluarga} keyboardType='numeric' onChangeText={(text) => setNomorKartuKeluarga(text)} placeholder="Masukkan Nomor KK" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'id-card'} size={18} />
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
+                        <Button
+                            title="Save Draft"
+                            buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
+                            titleStyle={{fontSize: 10, fontWeight: 'bold'}}
+                            onPress={() => doSubmitKK()}
+                        />
+                    </View>
+
+
+                <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Diri Pribadi</Text>
+                    
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput
+                                    value={fullName}
+                                    onChangeText={(text) => {
+                                        setFullName(replaceSpecialChar(text));
+                                        setNamaCalonNasabah(replaceSpecialChar(text));
+                                    }}
+                                    placeholder="Masukkan Nama Lengkap" 
+                                    style={{ fontSize: 15, color: "#545454", height: 38 }} 
+                                />
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'address-card'} size={18} />
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Ayah (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(replaceSpecialChar(text))} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'address-card'} size={18} />
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Gadis Ibu Kandung (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(replaceSpecialChar(text))} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'address-card'} size={18} />
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Nasabah (*)</Text>
+                        <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 2}}>
+                            <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Agama (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={valueReligion}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => setValueReligion(itemValue)}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {itemsReligion.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{marginHorizontal: 20, marginBottom: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Anak (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={valueJumlahAnak}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => setValueJumlahAnak(itemValue)}
+                            >
+                                {itemsJumlahAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{marginHorizontal: 20, marginBottom: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Pendidikan Anak</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={valuePendidikanAnak}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => setValuePendidikanAnak(itemValue)}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {itemsPendidikanAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{marginHorizontal: 20, marginBottom: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tanggungan (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={valueJumlahTanggungan}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => setValueJumlahTanggungan(itemValue)}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {itemsJumlahTanggungan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{marginHorizontal: 20, marginBottom: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Rumah Tinggal (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            <Picker
+                                selectedValue={valueStatusRumahTinggal}
+                                style={{ height: 50, width: withTextInput }}
+                                onValueChange={(itemValue, itemIndex) => setValueStatusRumahTinggal(itemValue)}
+                            >
+                                <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                {itemsStatusRumahTinggal.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }} maxLength={2} />
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'chart-pie'} size={18} />
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
+                        <Button
+                            title="Save Draft"
+                            buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
+                            titleStyle={{fontSize: 10, fontWeight: 'bold'}}
+                            onPress={() => doSubmitDataDiriPribadi()}
+                        />
+                    </View>
+
+                {["1"].includes(valueStatusPerkawinan) && (
+                    <>
+                        <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Suami</Text>
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Suami (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
                                     <TextInput 
-                                        value={namaCalonNasabah} 
+                                        value={namaSuami} 
                                         onChangeText={(text) => {
-                                            setFullName(replaceSpecialChar(text));
-                                            setNamaCalonNasabah(replaceSpecialChar(text));
-                                        }}
-                                        placeholder="Masukkan Nama Lengkap" 
-                                        style={{ fontSize: 15, color: "#545454", height: 38 }} 
+                                            if (!statusSuami) setNamaPenjamin(replaceSpecialChar(text));
+                                            setNamaSuami(replaceSpecialChar(text));
+                                        }} 
+                                        placeholder="Masukkan Nama Suami" 
+                                        style={{ fontSize: 15, color: "#545454", height: 38 }}
                                     />
                                 </View>
                                 <View>
-                                    <FontAwesome5 name={'id-badge'} size={18} />
+                                    <FontAwesome5 name={'address-card'} size={18} />
                                 </View>
                             </View>
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tempat Lahir (*)</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Usaha/Pekerjaan Suami (*)</Text>
                             <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={tempatLahir} onChangeText={(text) => setTempatLahir(text)} placeholder="Masukkan Tempat Lahir" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={usahaPekerjaanSuami} onChangeText={(text) => setUsahaPekerjaanSuami(text)} placeholder="" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
-                                <View>
-                                    <FontAwesome5 name={'id-badge'} size={18} />
-                                </View>
+                                <View />
                             </View>
                         </View>
 
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Tanggal Lahir (*)</Text>
-                            <TouchableOpacity onPress={() => setShowCalendar(true)} style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja</Text>
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
                                 <View style={{flex: 1}}>
-                                    <TextInput value={tanggalLahir} placeholder="Pilih tanggal lahir" editable={false} style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                                    <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
                                 </View>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={{ marginHorizontal: 8 }}>{moment().diff(moment(moment(tanggalLahir).format("DD-MM-YYYY"), "DD-MM-YYYY"), 'years') || '0'} tahun</Text>
-                                    <FontAwesome5 name={'id-badge'} size={18} />
-                                </View>
-                            </TouchableOpacity>
-                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>* Usia maximum {minTanggalLahir}-{maxTanggalLahir} tahun ({maxTanggalLahir + 1} saat lunas)</Text>
-                            {showCalendar && (
-                                <DateTimePicker
-                                    value={date}
-                                    mode={'date'}
-                                    is24Hour={true}
-                                    display="default"
-                                    onChange={dateLahirHandler}
-                                    maximumDate={new Date()}
-                                />
-                            )}
-                        </View>
-
-                        <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Perkawinan (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={valueStatusPerkawinan}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        setValueStatusPerkawinan(itemValue);
-                                    }}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {itemsStatusPerkawinan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                </Picker>
+                                <View />
                             </View>
                         </View>
 
                         <View style={{margin: 20, marginBottom: 4}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Identitas (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={alamatIdentitas} onChangeText={(text) => setAlamatIdentitas(text)} placeholder="Masukkan Alamat Identitas" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami (*)</Text>
+                            
+                            <TouchableOpacity onPress={() => launchImagePicker('dataSuami')}>
+                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
+                                    {fotoKartuIdentitasSuami === undefined ? (
+                                        <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                            <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                        </View>
+                                    ) : (
+                                        <Image source={{ uri: fotoKartuIdentitasSuami }} style={styles.thumbnailPhoto}/>
+                                    )}
                                 </View>
-                                <View>
-                                    <FontAwesome5 name={'address-card'} size={18} />
-                                </View>
+                            </TouchableOpacity>
+
+                            <View style={{marginLeft: 20}}>
+                                <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
                             </View>
-                            <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat identitas wajib menyertakan RT dan RW</Text>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18, marginBottom: 20}}>
                             <Checkbox
-                                status={addressDomisiliLikeIdentitas ? 'checked' : 'unchecked'}
+                                status={statusSuami ? 'checked' : 'unchecked'}
                                 onPress={() => {
-                                    setAddressDomisiliLikeIdentitas(!addressDomisiliLikeIdentitas);
+                                    setStatusSuami(!statusSuami);
                                 }}
                             />
-                            <Text style={{flex: 1, fontSize: 15, fontWeight: 'bold'}}>Apakah alamat domisili sesuai dengan KTP</Text>
-                        </View>
-                        
-                        {!addressDomisiliLikeIdentitas && (
-                            <View style={{margin: 20}}>
-                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Alamat Domisili (*)</Text>
-                                <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                    <View style={{flex: 1}}>
-                                        <TextInput value={alamatDomisili} onChangeText={(text) => setAlamatDomisili(text)} placeholder="Masukkan Alamat Domisili" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                                    </View>
-                                    <View>
-                                        <FontAwesome5 name={'address-card'} size={18} />
-                                    </View>
-                                </View>
-                                <Text style={{ color: 'red', fontSize: 12 }}>* Isi alamat domisili wajib menyertakan RT dan RW</Text>
-                            </View>
-                        )}
-
-                        {!addressDomisiliLikeIdentitas && (
-                            <View style={{margin: 20}}>
-                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Surat Keterangan Domisili (*)</Text>
-                                
-                                <TouchableOpacity onPress={() => setCameraShow(2)}>
-                                    <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
-                                        {fotoSuratKeteranganDomisili === undefined ? (
-                                            <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
-                                                <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
-                                            </View>
-                                        ) : (
-                                            <Image source={{ uri: fotoSuratKeteranganDomisili }} style={styles.thumbnailPhoto}/>
-                                        )}
-                                    </View>
-                                </TouchableOpacity>
-
-                                <View style={{marginLeft: 20}}>
-                                    <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
-                                </View>
-                            </View>
-                        )}
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Provinsi (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={dataProvinsi}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        setDataProvinsi(itemValue);
-                                        setDataKabupaten(null);
-                                        setDataKecamatan(null);
-                                        setDataKelurahan(null);
-                                    }}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {[...new Map(dataWilayahMobile.map(item => [item['Nama_Provinsi'], item])).values()].map((x, i) => <Picker.Item key={i} label={x.Nama_Provinsi} value={x.ID_Provinsi} />)}
-                                </Picker>
-                            </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                                <Checkbox
-                                    status={isShowAllProvinsi ? 'checked' : 'unchecked'}
-                                    onPress={() => {
-                                        setIsShowAllProvinsi(!isShowAllProvinsi);
-                                    }}
-                                />
-                                <Text style={{flex: 1, fontSize: 15, fontWeight: 'bold'}}>Tampilkan semua provinsi</Text>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kabupaten (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={dataKabupaten}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        setDataKabupaten(itemValue);
-                                        setDataKecamatan(null);
-                                        setDataKelurahan(null);
-                                    }}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {renderPickerKabupaten()}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kecamatan (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={dataKecamatan}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => {
-                                        setDataKecamatan(itemValue);
-                                        setDataKelurahan(null);
-                                    }}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {renderPickerKecamatan()}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Kelurahan (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={dataKelurahan}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setDataKelurahan(itemValue)}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {renderPickerKelurahan()}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Long, Lat (*)</Text>
-                            <View style={{ flexDirection: 'row', borderWidth: 1, borderRadius: 6, padding: 12 }}>
-                                <Text style={{ flex: 1 }}>{location?.coords?.longitude ?? '0'}, {location?.coords?.latitude ?? '0'}</Text>
-                                <FontAwesome5 name={'sync'} size={18} onPress={() => onRefreshLocation()} />
-                            </View>
+                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Suami di luar kota / tidak di tempat</Text>
                         </View>
 
                         <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
@@ -1862,396 +1718,126 @@ const DataDiri = ({route}) => {
                                 title="Save Draft"
                                 buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
                                 titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => doSubmitDataIdentitasDiri()}
+                                onPress={() => doSubmitDataSuami()}
                             />
                         </View>
+                    </>
+                )}
 
-                    <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Kartu Keluarga</Text>
+                <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1, marginBottom: 20}}>Data Penjamin (1)</Text>
 
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Keluarga (*)</Text>
-                            
-                            <TouchableOpacity onPress={() => setCameraShow(3)}>
-                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
-                                    {fotoKartuKeluarga === undefined ? (
-                                        <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
-                                            <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
-                                        </View>
-                                    ) : (
-                                        <Image source={{ uri: fotoKartuKeluarga }} style={styles.thumbnailPhoto}/>
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-
-                            <View style={{marginLeft: 20}}>
-                                <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nomor Kartu Keluarga (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={nomorKartuKeluarga} keyboardType='numeric' onChangeText={(text) => setNomorKartuKeluarga(text)} placeholder="Masukkan Nomor KK" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'id-card'} size={18} />
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
-                            <Button
-                                title="Save Draft"
-                                buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
-                                titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => doSubmitKK()}
-                            />
-                        </View>
-
-
-                    <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Diri Pribadi</Text>
-                        
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Lengkap (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput
-                                        value={fullName}
-                                        onChangeText={(text) => {
-                                            setFullName(replaceSpecialChar(text));
-                                            setNamaCalonNasabah(replaceSpecialChar(text));
-                                        }}
-                                        placeholder="Masukkan Nama Lengkap" 
-                                        style={{ fontSize: 15, color: "#545454", height: 38 }} 
-                                    />
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'address-card'} size={18} />
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Ayah (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={namaAyah} onChangeText={(text) => setNamaAyah(replaceSpecialChar(text))} placeholder="Masukkan Nama Lengkap Ayah" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'address-card'} size={18} />
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Gadis Ibu Kandung (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={namaGadisIbu} onChangeText={(text) => setNamaGadisIbu(replaceSpecialChar(text))} placeholder="Masukkan Nama Lengkap Gadis Ibu Kandung" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'address-card'} size={18} />
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Nasabah (*)</Text>
-                            <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 2}}>
-                                <TextInput value={noTelfon} onChangeText={(text) => setNoTelfon(text)} placeholder="08xxxxxxxxxx" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Agama (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                    <View style={{marginHorizontal: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Hubungan Keluarga (*)</Text>
+                        <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                            {valueStatusHubunganKeluarga === '1' && !statusSuami ? (
+                                <Text style={{ padding: 16 }}>SUAMI</Text>
+                            ) : (
                                 <Picker
-                                    selectedValue={valueReligion}
+                                    selectedValue={valueStatusHubunganKeluarga}
                                     style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setValueReligion(itemValue)}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {itemsReligion.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                </Picker>
-                            </View>
-                        </View>
+                                    onValueChange={(itemValue, itemIndex) => {
+                                        if (__DEV__) console.log('Status Hubungan Keluarga:', itemValue);
 
-                        <View style={{marginHorizontal: 20, marginBottom: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Anak (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={valueJumlahAnak}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setValueJumlahAnak(itemValue)}
-                                >
-                                    {itemsJumlahAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={{marginHorizontal: 20, marginBottom: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Pendidikan Anak</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={valuePendidikanAnak}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setValuePendidikanAnak(itemValue)}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {itemsPendidikanAnak.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={{marginHorizontal: 20, marginBottom: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tanggungan (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={valueJumlahTanggungan}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setValueJumlahTanggungan(itemValue)}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {itemsJumlahTanggungan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={{marginHorizontal: 20, marginBottom: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Rumah Tinggal (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                <Picker
-                                    selectedValue={valueStatusRumahTinggal}
-                                    style={{ height: 50, width: withTextInput }}
-                                    onValueChange={(itemValue, itemIndex) => setValueStatusRumahTinggal(itemValue)}
-                                >
-                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                    {itemsStatusRumahTinggal.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                </Picker>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Lama Tinggal (Dalam Tahun) (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={lamaTinggal} onChangeText={(text) => setLamaTinggal(text)}  placeholder="Masukkan Periode Tinggal" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }} maxLength={2} />
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'chart-pie'} size={18} />
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
-                            <Button
-                                title="Save Draft"
-                                buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
-                                titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => doSubmitDataDiriPribadi()}
-                            />
-                        </View>
-
-                    {["1"].includes(valueStatusPerkawinan) && (
-                        <>
-                            <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Suami</Text>
-                            <View style={{margin: 20}}>
-                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Suami (*)</Text>
-                                <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                    <View style={{flex: 1}}>
-                                        <TextInput 
-                                            value={namaSuami} 
-                                            onChangeText={(text) => {
-                                                if (!statusSuami) setNamaPenjamin(replaceSpecialChar(text));
-                                                setNamaSuami(replaceSpecialChar(text));
-                                            }} 
-                                            placeholder="Masukkan Nama Suami" 
-                                            style={{ fontSize: 15, color: "#545454", height: 38 }}
-                                        />
-                                    </View>
-                                    <View>
-                                        <FontAwesome5 name={'address-card'} size={18} />
-                                    </View>
-                                </View>
-                            </View>
-
-                            <View style={{margin: 20}}>
-                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Usaha/Pekerjaan Suami (*)</Text>
-                                <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                    <View style={{flex: 1}}>
-                                        <TextInput value={usahaPekerjaanSuami} onChangeText={(text) => setUsahaPekerjaanSuami(text)} placeholder="" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                                    </View>
-                                    <View />
-                                </View>
-                            </View>
-
-                            <View style={{margin: 20}}>
-                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jumlah Tenaga Kerja</Text>
-                                <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                    <View style={{flex: 1}}>
-                                        <TextInput value={jumlahTenagaKerjaSuami} onChangeText={(text) => setJumlahTenagaKerjaSuami(text)} placeholder="1" keyboardType = "number-pad" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                                    </View>
-                                    <View />
-                                </View>
-                            </View>
-
-                            <View style={{margin: 20, marginBottom: 4}}>
-                                <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami (*)</Text>
-                                
-                                <TouchableOpacity onPress={() => setCameraShow(4)}>
-                                    <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
-                                        {fotoKartuIdentitasSuami === undefined ? (
-                                            <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
-                                                <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
-                                            </View>
-                                        ) : (
-                                            <Image source={{ uri: fotoKartuIdentitasSuami }} style={styles.thumbnailPhoto}/>
-                                        )}
-                                    </View>
-                                </TouchableOpacity>
-
-                                <View style={{marginLeft: 20}}>
-                                    <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
-                                </View>
-                            </View>
-
-                            <View style={{flexDirection: 'row', alignItems: 'center', marginHorizontal: 18, marginBottom: 20}}>
-                                <Checkbox
-                                    status={statusSuami ? 'checked' : 'unchecked'}
-                                    onPress={() => {
-                                        setStatusSuami(!statusSuami);
-                                    }}
-                                />
-                                <Text style={{fontSize: 15, fontWeight: 'bold'}}>Suami di luar kota / tidak di tempat</Text>
-                            </View>
-
-                            <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
-                                <Button
-                                    title="Save Draft"
-                                    buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
-                                    titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                    onPress={() => doSubmitDataSuami()}
-                                />
-                            </View>
-                        </>
-                    )}
-
-                    <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1, marginBottom: 20}}>Data Penjamin (1)</Text>
-
-                        <View style={{marginHorizontal: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Status Hubungan Keluarga (*)</Text>
-                            <View style={{ borderWidth: 1, borderRadius: 6 }}>
-                                {valueStatusHubunganKeluarga === '1' && !statusSuami ? (
-                                    <Text style={{ padding: 16 }}>SUAMI</Text>
-                                ) : (
-                                    <Picker
-                                        selectedValue={valueStatusHubunganKeluarga}
-                                        style={{ height: 50, width: withTextInput }}
-                                        onValueChange={(itemValue, itemIndex) => {
-                                            if (__DEV__) console.log('Status Hubungan Keluarga:', itemValue);
-
-                                            if (itemValue === '2') {
-                                                setNamaPenjamin(namaAyah);
-                                                setValueStatusHubunganKeluarga(itemValue);
-                                                return;
-                                            }
-                                            if (itemValue === '3') {
-                                                setNamaPenjamin(namaGadisIbu);
-                                                setValueStatusHubunganKeluarga(itemValue);
-                                                return;
-                                            }
-                                            
-                                            setNamaPenjamin('');
+                                        if (itemValue === '2') {
+                                            setNamaPenjamin(namaAyah);
                                             setValueStatusHubunganKeluarga(itemValue);
-                                        }}
-                                    >
-                                        <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                                        {itemsStatusHubunganKeluarga.filter((x) => x.value !== '1').map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
-                                    </Picker>
+                                            return;
+                                        }
+                                        if (itemValue === '3') {
+                                            setNamaPenjamin(namaGadisIbu);
+                                            setValueStatusHubunganKeluarga(itemValue);
+                                            return;
+                                        }
+                                        
+                                        setNamaPenjamin('');
+                                        setValueStatusHubunganKeluarga(itemValue);
+                                    }}
+                                >
+                                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                                    {itemsStatusHubunganKeluarga.filter((x) => x.value !== '1').map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                                </Picker>
+                            )}
+                        </View>
+
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Penjamin (*)</Text>
+                        <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(replaceSpecialChar(text))} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'address-card'} size={18} />
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Penjamin (*)</Text>
+
+                        <TouchableOpacity onPress={() => launchImagePicker('dataPenjamin')}>
+                            <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
+                                {fotoDataPenjamin === undefined ? (
+                                    <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
+                                        <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
+                                    </View>
+                                ) : (
+                                    <Image source={{ uri: fotoDataPenjamin }} style={styles.thumbnailPhoto}/>
                                 )}
                             </View>
-
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Nama Penjamin (*)</Text>
-                            <View style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 2, borderRadius: 10}}>
-                                <View style={{flex: 1}}>
-                                    <TextInput value={namaPenjamin} onChangeText={(text) => setNamaPenjamin(replaceSpecialChar(text))} placeholder="Masukkan Nama Penjamin" style={{ fontSize: 15, color: "#545454", height: 38 }}/>
-                                </View>
-                                <View>
-                                    <FontAwesome5 name={'address-card'} size={18} />
-                                </View>
-                            </View>
-                        </View>
-
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Penjamin (*)</Text>
-
-                            <TouchableOpacity onPress={() => setCameraShow(5)}>
-                                <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
-                                    {fotoDataPenjamin === undefined ? (
-                                        <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
-                                            <FontAwesome5 name={'camera-retro'} size={80} color='#737A82' />
-                                        </View>
-                                    ) : (
-                                        <Image source={{ uri: fotoDataPenjamin }} style={styles.thumbnailPhoto}/>
-                                    )}
-                                </View>
-                            </TouchableOpacity>
-                            
-                            <View style={{marginLeft: 20}}>
-                                <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
-                            </View>
-                        </View>
-
-                        <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
-                            <Button
-                                title="Save Draft"
-                                buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
-                                titleStyle={{fontSize: 10, fontWeight: 'bold'}}
-                                onPress={() => doSubmitDataPenjamin()}
-                            />
-                        </View>
+                        </TouchableOpacity>
                         
-                        <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Pernyataan Calon Nasabah</Text>
-                            <View style={
-                                {
-                                    flex: 1,
-                                    flexDirection: 'row',
-                                    marginBottom: 20,
-                                    width: dimension.width - (32 * 3),
-                                    borderWidth: 1, 
-                                    borderRadius: 10,
-                                    paddingHorizontal: 4,
-                                    paddingVertical: 12
-                                }
-                            }>
-                                <Checkbox
-                                    status={statusAgreement ? 'checked' : 'unchecked'}
-                                    onPress={() => {
-                                        setStatusAgreement(!statusAgreement);
-                                    }}
-                                />
-                                <Text style={{flex: 1, fontSize: 12}}>Informasi data pribadi yang saya kemukakan disini adalah benar adanya dan telah sesuai, selanjutnya saya memberikan persetujuan bagi PNM untuk menggunakan dan memberikan data tersebut untuk keperluan apapun bagi pihak manapun yang berdasarkan pertimbangan PNM perlu dan penting untuk dilakukan sesuai dengan ketentuan hukum yang berlaku.</Text>
-                            </View>
+                        <View style={{marginLeft: 20}}>
+                            <Text style={{fontSize: 12, color: '#EB3C27', fontStyle: 'italic'}}>*Gunakan latar belakang Polos</Text>
                         </View>
+                    </View>
 
-                        <View style={{alignItems: 'center', marginVertical: 20}}>
-                            <Button
-                                title="SUBMIT"
-                                onPress={() => doSubmitSave()}
-                                buttonStyle={{backgroundColor: statusAgreement ? '#EB3C27' : 'gray', width: dimension.width/2}}
-                                titleStyle={{fontSize: 20, fontWeight: 'bold'}}
+                    <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
+                        <Button
+                            title="Save Draft"
+                            buttonStyle={{backgroundColor: '#003049', width: dimension.width/3}}
+                            titleStyle={{fontSize: 10, fontWeight: 'bold'}}
+                            onPress={() => doSubmitDataPenjamin()}
+                        />
+                    </View>
+                    
+                    <View style={{margin: 20}}>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Pernyataan Calon Nasabah</Text>
+                        <View style={
+                            {
+                                flex: 1,
+                                flexDirection: 'row',
+                                marginBottom: 20,
+                                width: dimension.width - (32 * 3),
+                                borderWidth: 1, 
+                                borderRadius: 10,
+                                paddingHorizontal: 4,
+                                paddingVertical: 12
+                            }
+                        }>
+                            <Checkbox
+                                status={statusAgreement ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setStatusAgreement(!statusAgreement);
+                                }}
                             />
+                            <Text style={{flex: 1, fontSize: 12}}>Informasi data pribadi yang saya kemukakan disini adalah benar adanya dan telah sesuai, selanjutnya saya memberikan persetujuan bagi PNM untuk menggunakan dan memberikan data tersebut untuk keperluan apapun bagi pihak manapun yang berdasarkan pertimbangan PNM perlu dan penting untuk dilakukan sesuai dengan ketentuan hukum yang berlaku.</Text>
                         </View>
+                    </View>
 
-                    </ScrollView>
+                    <View style={{alignItems: 'center', marginVertical: 20}}>
+                        <Button
+                            title="SUBMIT"
+                            onPress={() => doSubmitSave()}
+                            buttonStyle={{backgroundColor: statusAgreement ? '#EB3C27' : 'gray', width: dimension.width/2}}
+                            titleStyle={{fontSize: 20, fontWeight: 'bold'}}
+                        />
+                    </View>
 
-                </View>
-            )}
+                </ScrollView>
+
+            </View>
         </View>
     )
 }
