@@ -65,9 +65,10 @@
     "styled-system": "^5.1.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0"
+    "@babel/core": "^7.9.0",
+    "reactotron-react-native": "^5.0.1"
   },
   "private": true,
   "name": "pkm_mobile",
-  "version": "1.0.0"
+  "version": "0.0.1"
 }

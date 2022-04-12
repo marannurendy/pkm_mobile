@@ -17,7 +17,7 @@ const images = {
 const withTextInput = dimension.width - (20 * 4) + 8;
 
 const ProdukPembiayaan = ({ route }) => {
-    const { id, groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState, statusSosialisasi } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [valueJenisPembiayaan, setValueJenisPembiayaan] = useState(null);
@@ -46,26 +46,33 @@ const ProdukPembiayaan = ({ route }) => {
     const [dataSosialisasiDatabase, setDataSosialisasiDatabase] = useState(false);
     const [nameProdukPembiayaan, setNameProdukPembiayaan] = useState('');
     const [nameFrekuensiPembayaran, setNameFrekuensiPembayaran] = useState('');
+    const [valueLuasA, setValueLuasA] = useState('');
+    const [valueLuasB, setValueLuasB] = useState('');
+    const [valueJenisPekerjaan, setValueJenisPekerjaan] = useState(null);
+    const [itemsJenisPekerjaan, setItemsJenisPekerjaan] = useState([]);
+    const [valueJenisPengadaan, setValueJenisPengadaan] = useState(null);
+    const [itemsJenisPengadaan, setItemsJenisPengadaan] = useState([]);
 
-    useEffect(() => {
+    useEffect( () => {
         setInfo();
         getStorageJenisPembiayaan();
         getStorageTipePencairan();
         getStorageFrekuensi();
         getSosialisasiDatabase();
         getUKProdukPembiayaan();
+        getStorageWash();
     }, [])
 
     useEffect(() => {
-        if (__DEV__) console.log('useEffect valueProdukPembiayaan:', valueProdukPembiayaan);
+        // if (__DEV__) console.log('useEffect valueProdukPembiayaan:', valueProdukPembiayaan);
         (async () => {
             const response = await AsyncStorage.getItem('Product');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
-                if (__DEV__) console.log('useEffect valueProdukPembiayaan AsyncStorage:', responseJSON);
+                // if (__DEV__) console.log('useEffect valueProdukPembiayaan AsyncStorage:', responseJSON);
                 if (responseJSON.length > 0 ?? false) {
                     const findData = responseJSON.filter(data => data.id === valueProdukPembiayaan)[0];
-                    if (__DEV__) console.log('useEffect valueProdukPembiayaan filter:', findData);
+                    // if (__DEV__) console.log('useEffect valueProdukPembiayaan filter:', findData);
                     if (findData) {
                         setNameProdukPembiayaan(findData?.productName.trim() ?? '');
                         setSelectedProdukPembiayaan(findData ?? null);
@@ -77,15 +84,15 @@ const ProdukPembiayaan = ({ route }) => {
     }, [valueProdukPembiayaan]);
 
     useEffect(() => {
-        if (__DEV__) console.log('useEffect valueFrekuensiPembayaran:', valueFrekuensiPembayaran);
+        // if (__DEV__) console.log('useEffect valueFrekuensiPembayaran:', valueFrekuensiPembayaran);
         (async () => {
             const response = await AsyncStorage.getItem('Frekuensi');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
-                if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage:', responseJSON.length, responseJSON);
+                // if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage:', responseJSON.length, responseJSON);
                 if (responseJSON.length > 0 ?? false) {
                     const findData = responseJSON.filter(data => data.id === valueFrekuensiPembayaran)[0];
-                    if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage filter:', findData);
+                    // if (__DEV__) console.log('useEffect valueFrekuensiPembayaran AsyncStorage filter:', findData);
                     if (findData) {
                         setNameFrekuensiPembayaran(findData?.namafrekuensi ?? '');
                     }
@@ -95,23 +102,10 @@ const ProdukPembiayaan = ({ route }) => {
     }, [valueFrekuensiPembayaran]);
 
     useEffect(() => {
-        if (__DEV__) console.log('useEffect valueJenisPembiayaan:', valueJenisPembiayaan);
-        getStorageKategoriTujuanPembiayaan();
-        getStorageTujuanPembiayaan();
-    }, [valueJenisPembiayaan])
+        if (__DEV__) console.log('useEffect valueNamaProduk:', valueNamaProduk);
 
-    useEffect(() => {
-        if (__DEV__) console.log('useEffect valueTypePencairan:', valueTypePencairan);
-        
-        if (valueTypePencairan === '3') {
-            setValueRekeningBank(true);
-        } else {
-            setValueNamaBank('');
-            setValueNoRekening('');
-            setValuePemilikRekening('');
-            setValueRekeningBank(false);
-        }
-    }, [valueTypePencairan])
+        getStorageProduk(valueNamaProduk, valueJenisPembiayaan);
+    }, [valueNamaProduk]);
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
@@ -124,8 +118,8 @@ const ProdukPembiayaan = ({ route }) => {
             tx => {
                 tx.executeSql(queryUKDataDiri, [], (tx, results) => {
                     let dataLength = results.rows.length;
-                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database length:', dataLength);
-                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database:', results.rows);
+                    // if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database length:', dataLength);
+                    // if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database:', results.rows);
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
                         setDataSosialisasiDatabase(data);
@@ -139,18 +133,18 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getUKProdukPembiayaan = () => {
         if (__DEV__) console.log('getUKProdukPembiayaan loaded');
-        if (__DEV__) console.log('getUKProdukPembiayaan id:', id);
+        // if (__DEV__) console.log('getUKProdukPembiayaan id:', id);
 
         let queryUKDataDiri = `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` + id + `';`
         db.transaction(
             tx => {
                 tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
                     let dataLength = results.rows.length;
-                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
-                    if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan:', results.rows);
+                    // if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan length:', dataLength);
+                    // if (__DEV__) console.log('SELECT * FROM Table_UK_ProdukPembiayaan:', results.rows);
                     if (dataLength > 0) {
                         let data = results.rows.item(0);
-                        if (__DEV__) console.log('tx.executeSql data:', data);
+                        // if (__DEV__) console.log('tx.executeSql data:', data);
 
                         const getJenisPembiayaan = () => {
                             if (__DEV__) console.log('getJenisPembiayaan loaded');
@@ -209,10 +203,14 @@ const ProdukPembiayaan = ({ route }) => {
                             if (data.tujuan_Pembiayaan !== null && typeof data.tujuan_Pembiayaan !== 'undefined') setValueTujuanPembiayaan(data.tujuan_Pembiayaan);
                             if (data.type_Pencairan !== null && typeof data.type_Pencairan !== 'undefined') setValueTypePencairan(data.type_Pencairan);
                             if (data.frekuensi_Pembayaran !== null && typeof data.frekuensi_Pembayaran !== 'undefined') setValueFrekuensiPembayaran(data.frekuensi_Pembayaran);
-                            // if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' || data.status_Rekening_Bank === '1' || data.status_Rekening_Bank === '0' ? true : false);
-                            if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined' && data.nama_Bank !== 'null') setValueNamaBank(data.nama_Bank);
-                            if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined' && data.no_Rekening !== 'null') setValueNoRekening(data.no_Rekening);
-                            if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined' && data.pemilik_Rekening !== 'null') setValuePemilikRekening(data.pemilik_Rekening);
+                            if (data.status_Rekening_Bank !== null && typeof data.status_Rekening_Bank !== 'undefined') setValueRekeningBank(data.status_Rekening_Bank === 'true' || data.status_Rekening_Bank === '1' || data.status_Rekening_Bank === '0' ? true : false);
+                            if (data.nama_Bank !== null && typeof data.nama_Bank !== 'undefined') setValueNamaBank(data.nama_Bank);
+                            if (data.no_Rekening !== null && typeof data.no_Rekening !== 'undefined') setValueNoRekening(data.no_Rekening);
+                            if (data.pemilik_Rekening !== null && typeof data.pemilik_Rekening !== 'undefined') setValuePemilikRekening(data.pemilik_Rekening);
+                            if (data.luas_a !== null && typeof data.luas_a !== 'undefined') setValueLuasA(data.luas_a);
+                            if (data.luas_b !== null && typeof data.luas_b !== 'undefined') setValueLuasB(data.luas_b);
+                            if (data.jenis_pekerjaan !== null && typeof data.jenis_pekerjaan !== 'undefined') setValueJenisPekerjaan(data.jenis_pekerjaan);
+                            if (data.jenis_pengadaan !== null && typeof data.jenis_pengadaan !== 'undefined') setValueJenisPengadaan(data.jenis_pengadaan);
                         });
                     }
                 }, function(error) {
@@ -238,19 +236,72 @@ const ProdukPembiayaan = ({ route }) => {
                     // if (__DEV__) console.log('getStorageProduk IsMP:', IsMP);
                     // if (__DEV__) console.log('getStorageProduk IsIsRegulerMP:', IsReguler);
                     var responseFiltered = [];
-                    if (valueJenisPembiayaan === '1') {
+                    if (valueJenisPembiayaan === '1' && statusSosialisasi !== '3') {
                         responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler && data.IsMP === IsMP).map((data, i) => {
                             return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                         }) ?? [];
-                    } else {
-                        responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler).map((data, i) => {
+
+                        if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
+                        setItemsProdukPembiayaan(responseFiltered);
+                        return;
+                    }
+                    if (valueJenisPembiayaan === '1' && statusSosialisasi === '3') {
+                        const siklus = dataSosialisasiDatabase?.siklus ?? '1';
+                        responseFiltered = await responseJSON.filter((x) =>
+                            x.productName.trim().substring(0, 2) === `${siklus}M` || 
+                            x.productName.trim().substring(0, 2) === `${siklus}S` || 
+                            x.productName.trim().substring(0, 2) === `${siklus}Y` || 
+                            x.productName.trim().substring(0, 3) === 'HMR' || 
+                            x.productName.trim().substring(0, 3) === 'HMS' ||
+                            x.productName.trim().substring(0, 4) === 'HPMP' ||
+                            x.productName.trim().substring(0, 4) === 'HSMP' ||
+                            x.productName.trim().substring(0, 2) === 'MK' ||
+                            x.productName.trim().substring(0, 2) === 'MP' ||
+                            x.productName.trim().substring(0, 2) === 'MS' ||
+                            x.productName.trim().substring(0, 3) === 'REK' ||
+                            x.productName.trim().substring(0, 2) === 'RP' ||
+                            x.productName.trim().substring(0, 4) === 'WaMP' ||
+                            x.productName.trim().substring(0, 4) === 'Wash' ||
+                            x.productName.trim().substring(0, 4) === 'WaSy'
+                        ).filter(data => data.isReguler === IsReguler && data.IsMP === IsMP).map((data, i) => {
                             return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
                         }) ?? [];
+                        if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
+                        setItemsProdukPembiayaan(responseFiltered);
+                        return;
                     }
-                    
-                    // if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
-                    setItemsProdukPembiayaan(responseFiltered);
-                    return;
+                    if (valueJenisPembiayaan !== '1') {
+                        switch (IsMP) {
+                            case '3':case 3:
+                                responseFiltered = await  responseJSON.filter(data => 
+                                    data.productName.trim().substring(0, 4) === 'WaMP' ||
+                                    data.productName.trim().substring(0, 4) === 'Wash' ||
+                                    data.productName.trim().substring(0, 4) === 'WaSy'
+                                    ).map((data, i) => {
+                                    return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                                }) ?? [];
+                                break;
+                            case '4':case 4:
+                                responseFiltered = await  responseJSON.filter(data => 
+                                    data.productName.trim().substring(0, 3) === 'HMR' || 
+                                    data.productName.trim().substring(0, 3) === 'HMS' ||
+                                    data.productName.trim().substring(0, 4) === 'HPMP' ||
+                                    data.productName.trim().substring(0, 4) === 'HSMP' 
+                                    ).map((data, i) => {
+                                    return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                                }) ?? [];
+                                break;
+                            default:
+                                responseFiltered = await responseJSON.filter(data => data.isReguler === IsReguler).map((data, i) => {
+                                    return { label: data.productName.trim(), value: data.id, interest: data.interest, isReguler: data.isReguler, isSyariah: data.isSyariah, maxPlafond: data.maxPlafond, minPlafond: data.minPlafond, paymentTerm: data.paymentTerm };
+                                }) ?? [];
+                                break;
+                        }
+
+                        if (__DEV__) console.log('getStorageProduk responseFiltered:', responseFiltered);
+                        setItemsProdukPembiayaan(responseFiltered);
+                        return;
+                    }
                 }
             }
             setItemsProdukPembiayaan([]);
@@ -270,9 +321,9 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.filter(data => data.namajenispembiayaan === 'PRODUK UTAMA').map((data, i) => {
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
-                    // if (__DEV__) console.log('getStorageJenisPembiayaan responseFiltered:', responseFiltered);
                     setItemsJenisPembiayaan(responseFiltered);
                     return;
+                    
                 }
             }
             setItemsJenisPembiayaan([]);
@@ -305,7 +356,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getStorageNamaProduk = async (rw) => {
         if (__DEV__) console.log('getStorageNamaProduk loaded');
-        // if (__DEV__) console.log('getStorageNamaProduk rw:', rw);
+        // if (__DEV__) console.log('getStorageNamaProduk statusSosialisasi, rw:', statusSosialisasi, rw);
 
         try {
             const response = await AsyncStorage.getItem('SubjenisPembiayaan');
@@ -313,10 +364,11 @@ const ProdukPembiayaan = ({ route }) => {
                 const responseJSON = JSON.parse(response);
                 // if (__DEV__) console.log('getStorageNamaProduk responseJSON.length:', responseJSON.length);
                 if (responseJSON.length > 0 ?? false) {
-                    if (__DEV__) console.log('getStorageNamaProduk responseJSON:', responseJSON);
-                    var responseFiltered = responseJSON.filter(data => data.idjenispembiayaan === rw).map((data, i) => {
+                    // if (__DEV__) console.log('getStorageNamaProduk responseJSON:', responseJSON);
+                    var responseFiltered = await responseJSON.filter(data => data.idjenispembiayaan === rw).map((data, i) => {
                         return { label: data.namajenispembiayaan, value: data.id };
                     }) ?? [];
+
                     // if (__DEV__) console.log('getStorageNamaProduk responseFiltered:', responseFiltered);
                     setItemsNamaProduk(responseFiltered);
                     return;
@@ -330,7 +382,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const getStorageTujuanPembiayaan = async () => {
         if (__DEV__) console.log('getStorageTujuanPembiayaan loaded');
-        if (__DEV__) console.log('getStorageTujuanPembiayaan valueJenisPembiayaan:', valueJenisPembiayaan);
+        // if (__DEV__) console.log('getStorageTujuanPembiayaan valueJenisPembiayaan:', valueJenisPembiayaan);
 
         try {
             const response = await AsyncStorage.getItem('TujuanPembiayaan');
@@ -342,7 +394,7 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.filter(data => data.Is_Produk_Utama === isProdukUtama).map((data, i) => {
                         return { label: data.namatujuanpembiayaan, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageTujuanPembiayaan responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageTujuanPembiayaan responseFiltered:', responseFiltered);
                     setItemsTujuanPembiayaan(responseFiltered);
                     return;
                 }
@@ -364,7 +416,7 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.namakategoritujuanpembiayaan, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageKategoriTujuanPembiayaan responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageKategoriTujuanPembiayaan responseFiltered:', responseFiltered);
                     setItemsKategoriTujuanPembiayaan(responseFiltered);
                     return;
                 }
@@ -386,7 +438,7 @@ const ProdukPembiayaan = ({ route }) => {
                     var responseFiltered = responseJSON.map((data, i) => {
                         return { label: data.namafrekuensi, value: data.id };
                     }) ?? [];
-                    if (__DEV__) console.log('getStorageFrekuensi responseFiltered:', responseFiltered);
+                    // if (__DEV__) console.log('getStorageFrekuensi responseFiltered:', responseFiltered);
                     setItemsFrekuensiPembayaran(responseFiltered);
                     return;
                 }
@@ -397,9 +449,28 @@ const ProdukPembiayaan = ({ route }) => {
         }
     }
 
+    const getStorageWash = async () => {
+        if (__DEV__) console.log('getStorageWash loaded');
+
+        try {
+            const response = await AsyncStorage.getItem('MasterProdukPendamping');
+            if (response !== null) {
+                const responseJSON = JSON.parse(response);
+                setItemsJenisPekerjaan(responseJSON.jenisPekerjaan)
+                setItemsJenisPengadaan(responseJSON.jenisPengadaan)
+                return;
+            }
+            setItemsJenisPekerjaan([]);
+            setItemsJenisPengadaan([]);
+        } catch (error) {
+            setItemsJenisPekerjaan([])
+            setItemsJenisPengadaan([])
+        }
+    }
+
     const generateJumlahPinjaman = (data) => {
         if (__DEV__) console.log('generateJumlahPinjaman loaded');
-        if (__DEV__) console.log('generateJumlahPinjaman data:', data);
+        // if (__DEV__) console.log('generateJumlahPinjaman data:', data);
 
         if (data === null) return null;
 
@@ -455,12 +526,11 @@ const ProdukPembiayaan = ({ route }) => {
                 tx.executeSql(find, [], (txFind, resultsFind) => {
                     let dataLengthFind = resultsFind.rows.length
                     if (__DEV__) console.log('db.transaction resultsFind:', resultsFind.rows);
-
                     let query = '';
                     if (dataLengthFind === 0) {
-                        query = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, idSosialisasiDatabase) values ("' + namaNasabah + '","' + valueJenisPembiayaan + '","' + valueNamaProduk + '","' + valueProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + valueKategoriTujuanPembiayaan + '","' + valueTujuanPembiayaan + '","' + valueTypePencairan + '","' + valueFrekuensiPembayaran + '","' + valueRekeningBank + '","' + valueNamaBank + '","' + valueNoRekening + '","' + valuePemilikRekening + '","' + id + '")';
+                        query = 'INSERT INTO Table_UK_ProdukPembiayaan (nama_lengkap, jenis_Pembiayaan, nama_Produk, produk_Pembiayaan, jumlah_Pinjaman, term_Pembiayaan, kategori_Tujuan_Pembiayaan, tujuan_Pembiayaan, type_Pencairan, frekuensi_Pembayaran, status_Rekening_Bank, nama_Bank, no_Rekening, pemilik_Rekening, idSosialisasiDatabase, luas_a, luas_b, jenis_pekerjaan, jenis_pengadaan) values ("' + namaNasabah + '","' + valueJenisPembiayaan + '","' + valueNamaProduk + '","' + valueProdukPembiayaan + '","' + valueJumlahPinjaman + '","' + valueTermPembiayaan + '","' + valueKategoriTujuanPembiayaan + '","' + valueTujuanPembiayaan + '","' + valueTypePencairan + '","' + valueFrekuensiPembayaran + '","' + valueRekeningBank + '","' + valueNamaBank + '","' + valueNoRekening + '","' + valuePemilikRekening + '","' + id + '", "' + valueLuasA + '", "' + valueLuasB + '", "' + valueJenisPekerjaan + '", "' + valueJenisPembiayaan + '")';
                     } else {
-                        query = 'UPDATE Table_UK_ProdukPembiayaan SET jenis_Pembiayaan = "' + valueJenisPembiayaan + '", nama_Produk = "' + valueNamaProduk + '", produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pinjaman = "' + valueJumlahPinjaman + '", term_Pembiayaan = "' + valueTermPembiayaan + '", kategori_Tujuan_Pembiayaan = "' + valueKategoriTujuanPembiayaan + '", tujuan_Pembiayaan = "' + valueTujuanPembiayaan + '", type_Pencairan = "' + valueTypePencairan + '", frekuensi_Pembayaran = "' + valueFrekuensiPembayaran + '", status_Rekening_Bank = "' + valueRekeningBank + '", nama_Bank = "' + valueNamaBank + '", no_Rekening = "' + valueNoRekening + '", pemilik_Rekening = "' + valuePemilikRekening + '" WHERE idSosialisasiDatabase = "' + id + '"';
+                        query = 'UPDATE Table_UK_ProdukPembiayaan SET jenis_Pembiayaan = "' + valueJenisPembiayaan + '", nama_Produk = "' + valueNamaProduk + '", produk_Pembiayaan = "' + valueProdukPembiayaan + '", jumlah_Pinjaman = "' + valueJumlahPinjaman + '", term_Pembiayaan = "' + valueTermPembiayaan + '", kategori_Tujuan_Pembiayaan = "' + valueKategoriTujuanPembiayaan + '", tujuan_Pembiayaan = "' + valueTujuanPembiayaan + '", type_Pencairan = "' + valueTypePencairan + '", frekuensi_Pembayaran = "' + valueFrekuensiPembayaran + '", status_Rekening_Bank = "' + valueRekeningBank + '", nama_Bank = "' + valueNamaBank + '", no_Rekening = "' + valueNoRekening + '", pemilik_Rekening = "' + valuePemilikRekening + '", luas_a = "' + valueLuasA + '", luas_b = "' + valueLuasB + '", jenis_pekerjaan = "' + valueJenisPekerjaan + '", jenis_pengadaan = "' + valueJenisPengadaan + '" WHERE idSosialisasiDatabase = "' + id + '"';
                     }
 
                     if (__DEV__) console.log('doSubmitDraft db.transaction insert/update query:', query);
@@ -584,9 +654,9 @@ const ProdukPembiayaan = ({ route }) => {
                     }
 
                     setSubmmitted(false);
+                    AsyncStorage.setItem('NamaProduk', valueNamaProduk)
                     alert('Berhasil');
                     navigation.goBack();
-                    
                 }, function(error) {
                     if (__DEV__) console.log('doSubmitDataIdentitasDiri db.transaction find error:', error.message);
                     setSubmmitted(false);
@@ -663,7 +733,6 @@ const ProdukPembiayaan = ({ route }) => {
                         setValueNamaProduk(itemValue);
                         setValueProdukPembiayaan(null);
                         setValueJumlahPinjaman(null);
-                        getStorageProduk(itemValue, valueJenisPembiayaan);
                     }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
@@ -761,6 +830,62 @@ const ProdukPembiayaan = ({ route }) => {
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
                     {itemsTujuanPembiayaan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormLuas = () => (
+        <View style={styles.MT8}>
+            <Text>Luas </Text>
+            <View style={[styles.FDRow]}>
+                <View style={[styles.textInputContainer, styles.MR8]}>
+                    <TextInput 
+                        value={valueLuasA} 
+                        onChangeText={(text) => setValueLuasA(replaceSpecialChar(text))}
+                        placeholder="6x" 
+                        style={styles.F1}
+                    />
+                </View>
+                <View style={[styles.textInputContainer, styles.ML8]}>
+                    <TextInput 
+                        value={valueLuasB} 
+                        onChangeText={(text) => setValueLuasB(replaceSpecialChar(text))}
+                        placeholder="6x" 
+                        style={styles.F1}
+                    />
+                </View>
+            </View>
+        </View>
+    )
+
+    const renderFormJenisPekerjaan = () => (
+        <View style={styles.MT8}>
+            <Text>Jenis Pekerjaan</Text>
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJenisPekerjaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueJenisPekerjaan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsJenisPekerjaan.map((x, i) => <Picker.Item key={i} label={x.jenisPekerjaanDetail} value={x.jenisPekerjaanDetail} />)}
+                </Picker>
+            </View>
+        </View>
+    )
+
+    const renderFormJenisPengadaan = () => (
+        <View style={styles.MT8}>
+            <Text>Jenis Pengadaan</Text>
+            <View style={{ borderWidth: 1, borderRadius: 6 }}>
+                <Picker
+                    selectedValue={valueJenisPengadaan}
+                    style={{ height: 50, width: withTextInput }}
+                    onValueChange={(itemValue, itemIndex) => setValueJenisPengadaan(itemValue)}
+                >
+                    <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
+                    {itemsJenisPengadaan.map((x, i) => <Picker.Item key={i} label={x.jenisPengadaanDetail} value={x.jenisPengadaanDetail} />)}
                 </Picker>
             </View>
         </View>
@@ -874,23 +999,75 @@ const ProdukPembiayaan = ({ route }) => {
         </View>
     )
 
+    const renderProduk = () => {
+        switch (valueNamaProduk) {
+            case '3':case 3:
+                return (
+                    <View>
+                        {renderFormSiklusPembiayaan()}
+                        {renderFormJenisPembiayaan()}
+                        {renderFormNamaProduk()}
+                        {renderFormProdukPembiayaan()}
+                        {renderFormJumlahPinjaman()}
+                        {renderFormTermPembiayaan()}
+                        {renderFormTujuanPembiayaan()}
+                        {renderFormJenisPekerjaan()}
+                        {renderFormJenisPengadaan()}
+                        {renderFormTypePencairan()}
+                        {renderFormFrekuensiPembayaran()}
+                        {renderFormRekeningBank()}
+                        {renderFormNamaBank()}
+                        {renderFormNoRekening()}
+                        {renderFormPemilikRekening()}
+                        {renderButtonSaveDraft()}
+                    </View>
+                )
+            case '4':case 4:
+                return (
+                    <View>
+                        {renderFormSiklusPembiayaan()}
+                        {renderFormJenisPembiayaan()}
+                        {renderFormNamaProduk()}
+                        {renderFormProdukPembiayaan()}
+                        {renderFormJumlahPinjaman()}
+                        {renderFormTermPembiayaan()}
+                        {renderFormTujuanPembiayaan()}
+                        {renderFormLuas()}
+                        {renderFormTypePencairan()}
+                        {renderFormFrekuensiPembayaran()}
+                        {renderFormRekeningBank()}
+                        {renderFormNamaBank()}
+                        {renderFormNoRekening()}
+                        {renderFormPemilikRekening()}
+                        {renderButtonSaveDraft()}
+                    </View>
+                )
+            default:
+                return (
+                    <View>
+                        {renderFormSiklusPembiayaan()}
+                        {renderFormJenisPembiayaan()}
+                        {renderFormNamaProduk()}
+                        {renderFormProdukPembiayaan()}
+                        {renderFormJumlahPinjaman()}
+                        {renderFormTermPembiayaan()}
+                        {renderFormKategoriTujuanPembiayaan()}
+                        {renderFormTujuanPembiayaan()}
+                        {renderFormTypePencairan()}
+                        {renderFormFrekuensiPembayaran()}
+                        {renderFormRekeningBank()}
+                        {renderFormNamaBank()}
+                        {renderFormNoRekening()}
+                        {renderFormPemilikRekening()}
+                        {renderButtonSaveDraft()}
+                    </View>
+                ) 
+        }
+    }
+
     const renderForm = () => (
         <View style={[styles.F1, styles.P16]}>
-            {renderFormSiklusPembiayaan()}
-            {renderFormJenisPembiayaan()}
-            {renderFormNamaProduk()}
-            {renderFormProdukPembiayaan()}
-            {renderFormJumlahPinjaman()}
-            {renderFormTermPembiayaan()}
-            {renderFormKategoriTujuanPembiayaan()}
-            {renderFormTujuanPembiayaan()}
-            {renderFormTypePencairan()}
-            {renderFormFrekuensiPembayaran()}
-            {renderFormRekeningBank()}
-            {renderFormNamaBank()}
-            {renderFormNoRekening()}
-            {renderFormPemilikRekening()}
-            {renderButtonSaveDraft()}
+            {renderProduk()}
         </View>
     )
 
@@ -921,7 +1098,7 @@ const ProdukPembiayaan = ({ route }) => {
 
     const renderBody = () => (
         <View style={styles.bodyContainer}>
-            <Text style={styles.bodyTitle}>Produk Pembiayaan</Text>
+            <Text style={styles.bodyTitle}>Produk Pembiayaan {statusSosialisasi}</Text>
             <ScrollView scrollEnabled={scrollEnabled}>
                 {renderForm()}
                 {renderButtonSimpan()}

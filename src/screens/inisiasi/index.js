@@ -4,7 +4,7 @@ import Floating from "./floating";
 import UjiKelayakan from "./ujiKelayakan";
 import FormUjiKelayakan from "./formUjiKelayakan";
 import Verifikasi from "./verifikasi";
-import { DataDiri, ProdukPembiayaan, InisiasiFormUKKondisiRumah, InisiasiFormUKSektorEkonomi, InisiasiFormUKTingkatPendapatan, InisiasiFormUKTandaTanganPermohonan, InisiasiFormUKSignatureScreen, InisiasiFormUKDisiplinNasabah } from "./formUk";
+import { DataDiri, ProdukPembiayaan, InisiasiFormUKKondisiRumah, InisiasiFormUKSektorEkonomi, InisiasiFormUKTingkatPendapatan, InisiasiFormUKTandaTanganPermohonan, InisiasiFormUKSignatureScreen, InisiasiFormUKDisiplinNasabah, InisiasiFormUKKondisiAirBersihDanSanitasi } from "./formUk";
 import { VerifikasiFormReview } from "./formVerifikasi";
 import { InisiasiFormPPKelompok, InisiasiFormPPKelompokIntro, InisiasiFormPPKelompokList, InisiasiFormPPKelompokSub, InisiasiFormPPKelompokDetail, InisiasiFormPPKelompokSubForm, InisiasiFormPPKelompokSubMemberVerifikasi, InisiasiFormPPH, InisiasiFormPP, InisiasiFormPPList, InisiasiFormPPForm, InisiasiFormPPAbsen } from "./formPP";
 import { InisiasiFormProspekLamaList, InisiasiFormProspekLama } from "./formProspekLama";
@@ -38,5 +38,6 @@ export {
     InisiasiFormProspekLamaList,
     InisiasiFormProspekLama,
     InisiasiFormPPAbsen,
-    InisiasiFormUKDisiplinNasabah
+    InisiasiFormUKDisiplinNasabah,
+    InisiasiFormUKKondisiAirBersihDanSanitasi
 };

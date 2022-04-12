@@ -33,6 +33,7 @@ const FormUjiKelayakan = ({route}) => {
     const [tempItemsSubGroup, setTempItemsSubGroup] = useState([]);
     const [isFormUKDisiplinNasabahDone, setIsFormUKDisiplinNasabahDone] = useState(null);
     const [isFormUKTandaTanganPermohonanDone, setIsFormUKTandaTanganPermohonanDone] = useState(null);
+    const [idProduk, setIdProduk] = useState(null)
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -93,6 +94,10 @@ const FormUjiKelayakan = ({route}) => {
 
     const setInfo = async () => {
         const tanggal = await AsyncStorage.getItem('TransactionDate')
+        const getNamaProduk = await AsyncStorage.getItem('NamaProduk')
+        getNamaProduk == null ? await AsyncStorage.setItem('NamaProduk', '') : getNamaProduk
+        setIdProduk(getNamaProduk)
+        console.log('ini nama produk', getNamaProduk)
         setCurrentDate(tanggal)
     }
 
@@ -193,14 +198,13 @@ const FormUjiKelayakan = ({route}) => {
         console.log('doSubmit next');
 
         setSubmitted(true);
-        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, c.foto_rumah, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok, g.siklus, h.kehadiran_pkm, h.angsuran_pada_saat_pkm FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id LEFT JOIN Table_UK_DisipinNasabah h ON a.idSosialisasiDatabase = h.idSosialisasiDatabase WHERE a.idSosialisasiDatabase = "' + id + '"';
+        let query = 'SELECT a.*, b.jenis_Pembiayaan, b.nama_Produk, b.produk_Pembiayaan as value_produk_Pembiayaan, b.jumlah_Pinjaman, b.term_Pembiayaan, b.kategori_Tujuan_Pembiayaan, b.tujuan_Pembiayaan, b.type_Pencairan, b.frekuensi_Pembayaran, b.status_Rekening_Bank, b.nama_Bank, b.no_Rekening, b.pemilik_Rekening, c.luas_Bangunan, c.kondisi_Bangunan, c.jenis_Atap, c.dinding, c.lantai, c.sanitasi_Akses_AirBersih, c.sanitasi_KamarMandi, c.foto_rumah, c.foto_rumah_rab, d.sektor_Ekonomi, d.sub_Sektor_Ekonomi, d.jenis_Usaha, e.pendapatan_Kotor_perhari, e.pengeluaran_Keluarga_Perhari, e.pendapatan_Bersih_Perhari, e.jumlah_Hari_Usaha_Perbulan, e.pendapatan_Bersih_Perbulan, e.pendapatan_Bersih_Perminggu, e.pembiayaan_Dari_Lembaga, e.Pembiayaan_Dari_LembagaLain, e.Pembiayaan_Dari_LembagaLainFreetext, e.jumlah_Angsuran, e.pendapatanSuami_Kotor_Perhari, e.pendapatanSuami_Pengeluaran_Keluarga_Perhari, e.pendapatanSuami_Pendapatan_Bersih_Perhari, e.pendapatanSuami_jumlah_Hari_Usaha_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perbulan, e.pendapatanSuami_pendapatan_Bersih_Perminggu, f.produk_Pembiayaan, f.jumlah_Pembiayaan_Diajukan, f.jangka_Waktu, f.frekuensi_Pembiayaan, f.tanda_Tangan_AOSAO, f.tanda_Tangan_Nasabah, f.tanda_Tangan_SuamiPenjamin, f.tanda_Tangan_Ketua_SubKelompok, f.tanda_Tangan_Ketua_Kelompok, f.nama_tanda_Tangan_Nasabah, f.nama_tanda_Tangan_SuamiPenjamin, f.nama_tanda_Tangan_Ketua_SubKelompok, f.nama_tanda_Tangan_Ketua_Kelompok, g.sumberId, g.clientId, g.kelompokID, g.namaKelompok, g.subKelompok, g.siklus, h.kehadiran_pkm, h.angsuran_pada_saat_pkm, i.kamarMandiDanToiletTerpisah ,i.kepemilikanKamarMandi ,i.kepemilikanToilet ,i.sumberAirUntukMandiDanCuci ,i.sumberAirUntukMinum ,i.kuantitasSumberAir ,i.KualitasSumberAir ,i.KondisiAtapKamarMandiMilikSendiri ,i.KondisiLantaiKamarMandiMilikSendiri ,i.KondisiDindingKamarMandiMilikSendiri ,i.KondisiBakAirKamarMandiMilikSendiri ,i.KondisiSaluranPembuanganKamarMandiMilikSendiri ,i.KondisiWCKamarMandiMilikSendiri ,i.KondisiAtapToiletMilikSendiri ,i.KondisiLantaiToiletMilikSendiri ,i.KondisiDindingToiletMilikSendiri ,i.KondisiBakAirToiletMilikSendiri ,i.SaluranPembuanganToiletMilikSendiri ,i.KondisiWCToiletMilikSendiri FROM Table_UK_DataDiri a LEFT JOIN Table_UK_ProdukPembiayaan b ON a.idSosialisasiDatabase = b.idSosialisasiDatabase LEFT JOIN Table_UK_KondisiRumah c ON a.idSosialisasiDatabase = c.idSosialisasiDatabase LEFT JOIN Table_UK_SektorEkonomi d ON a.idSosialisasiDatabase = d.idSosialisasiDatabase LEFT JOIN Table_UK_PendapatanNasabah e ON a.idSosialisasiDatabase = e.idSosialisasiDatabase LEFT JOIN Table_UK_PermohonanPembiayaan f ON a.idSosialisasiDatabase = f.idSosialisasiDatabase LEFT JOIN Sosialisasi_Database g ON a.idSosialisasiDatabase = g.id LEFT JOIN Table_UK_DisipinNasabah h ON a.idSosialisasiDatabase = h.idSosialisasiDatabase LEFT JOIN Table_UK_AirSanitasi i ON a.idSosialisasiDatabase = i.idSosialisasiDatabase WHERE a.idSosialisasiDatabase = "' + id + '"';
         // let query = 'SELECT a.* FROM Table_UK_DataDiri a WHERE a.idSosialisasiDatabase = "' + id + '"';
         db.transaction(
             tx => {
                 tx.executeSql(query, [], async (tx, results) => {
                     let dataLength = results.rows.length;
                     if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
-
                     const token = await AsyncStorage.getItem('token');
                     if (__DEV__) console.log('ACTIONS TOKEN', token);
 
@@ -286,7 +290,8 @@ const FormUjiKelayakan = ({route}) => {
                             namaKelompok = selectedPilihKelompok.label;
                             subKelompok = valuePilihSubKelompok;
                         }
-                        
+
+                        let KategoriTujuanPembiayaan = await data.kategori_Tujuan_Pembiayaan == 'null' ? 1 : data.kategori_Tujuan_Pembiayaan
                         const body = {
                             "Sumber": data.sumberId,
                             "Alamat": data.alamat_Identitas,
@@ -321,7 +326,7 @@ const FormUjiKelayakan = ({route}) => {
                             "JmlhTanggungan": data.jumlah_tanggungan,
                             "JumlahPinjaman": data.jumlah_Pinjaman,
                             "Kabupaten": data.kabupaten,
-                            "KategoriTujuanPembiayaan": data.kategori_Tujuan_Pembiayaan,
+                            "KategoriTujuanPembiayaan": KategoriTujuanPembiayaan.toString(),
                             "Kecamatan": data.kecamatan,
                             "Kelurahan": data.kelurahan,
                             "Latitude": data.latitude,
@@ -395,12 +400,32 @@ const FormUjiKelayakan = ({route}) => {
                             "Sisipan": isSisipan,
                             "Siklus": '' + siklus,
                             "IsSesuaiDukcapil": data.is_nik_valid_dukcapil,
-                            "FotoRumah1": foto_rumah === null || foto_rumah === 'null' ? '' : foto_rumah.split(',')[1]
+                            "kamarMandiDanToiletTerpisah": data.kamarMandiDanToiletTerpisah,
+                            "Is_AdaKMPribadi": data.kepemilikanKamarMandi,
+                            "Is_AdaToiletPribadi": data.kepemilikanToilet,
+                            "Is_Sumber_Air_Mandi_Cuci": data.sumberAirUntukMandiDanCuci,
+                            "Is_Sumber_Air_Minum": data.sumberAirUntukMinum,
+                            "Jenis_Kuantitas_ID": data.kuantitasSumberAir,
+                            "Jenis_Kualitas_ID": "1",
+                            "Jenis_Atap_Kamar_Mandi_ID": data.KondisiAtapKamarMandiMilikSendiri,
+                            "Jenis_Lantai_Kamar_Mandi_ID": data.KondisiLantaiKamarMandiMilikSendiri,
+                            "Jenis_Dinding_Kamar_Mandi_ID": data.KondisiDindingKamarMandiMilikSendiri,
+                            "Jenis_Bak_Air_Kamar_Mandi_ID": data.KondisiBakAirKamarMandiMilikSendiri,
+                            "Jenis_Saluran_Kamar_Mandi_ID": data.KondisiSaluranPembuanganKamarMandiMilikSendiri,
+                            "Jenis_WC_Kamar_Mandi_ID": data.KondisiWCKamarMandiMilikSendiri,
+                            "Jenis_Atap_Toilet_ID": data.KondisiAtapToiletMilikSendiri,
+                            "Jenis_Lantai_Toilet_ID": data.KondisiLantaiToiletMilikSendiri,
+                            "Jenis_Dinding_Toilet": data.KondisiDindingToiletMilikSendiri,
+                            "Jenis_Bak_Air_Toilet_ID": data.KondisiBakAirToiletMilikSendiri,
+                            "Jenis_Saluran_Toilet_ID": data.SaluranPembuanganToiletMilikSendiri,
+                            "Jenis_WC_Toilet_ID": data.KondisiWCToiletMilikSendiri,
+                            "FotoRumah1": data.foto_rumah.split(',')[1],
+                            "Foto_RAB": data.foto_rumah_rab.split(',')[1]
                         }
 
-                        // alert(`${body.ID_SektorEkonomi} - ${body.ID_SubSektorEkonomi} - ${body.Jenis_Usaha}`);
-                        // return;
-
+                        // console.log('Is_AdaKMPribadi ======================>',data.kepemilikanKamarMandi)
+                        // alert(`${body.Siklus}`)
+                        // if (__DEV__) console.log('doSubmit body:', JSON.stringify(body));
                         try {
                             const response = await fetchWithTimeout(ApiSyncPostInisiasi + 'post_prospek_uk', {
                                 timeout: timeOut, // 6 menit
@@ -555,7 +580,17 @@ const FormUjiKelayakan = ({route}) => {
                                                     const queryDeleteUKPendapatanNasabah = "DELETE FROM Table_UK_PendapatanNasabah WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKPermohonanPembiayaan = "DELETE FROM Table_UK_PermohonanPembiayaan WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteUKDisiplinNasabah = "DELETE FROM Table_UK_DisipinNasabah WHERE idSosialisasiDatabase = '" + id + "'";
+                                                    const queryDeleteUKAirSanitasi = "DELETE FROM Table_UK_AirSanitasi WHERE idSosialisasiDatabase = '" + id + "'";
                                                     const queryDeleteProspekLamaPP = "DELETE FROM Table_Prospek_Lama_PP WHERE clientId = '" + data.clientId + "'";
+                                                    db.transaction(
+                                                        tx => {
+                                                            tx.executeSql(queryDeleteUKAirSanitasi, [], (tx, results) => {
+                                                                if (__DEV__) console.log(`${queryDeleteUKAirSanitasi} RESPONSE:`, results.rows);
+                                                            })
+                                                        }, function(error) {
+                                                            if (__DEV__) console.log(`${queryDeleteUKAirSanitasi} ERROR:`, error);
+                                                        }, function() {}
+                                                    );
                                                     db.transaction(
                                                         tx => {
                                                             tx.executeSql(queryDeleteSosialisasiDatabase, [], (tx, results) => {
@@ -659,6 +694,7 @@ const FormUjiKelayakan = ({route}) => {
                                                     AsyncStorage.removeItem(data.tanda_Tangan_SuamiPenjamin);
                                                     AsyncStorage.removeItem(data.tanda_Tangan_Ketua_SubKelompok);
                                                     AsyncStorage.removeItem(data.tanda_Tangan_Ketua_Kelompok);
+                                                    AsyncStorage.removeItem(data.foto_rumah);
                                                     /* ============ FINISH REMOVE STORAGE ============ */
 
                                                     const message = responseJSON.data[0].Status_Kelayakan || 'Berhasil';
@@ -698,7 +734,7 @@ const FormUjiKelayakan = ({route}) => {
                     setSubmitted(false);
                     return;
                 }, function(error) {
-                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error.message);
+                    if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri error:', error);
                     ToastAndroid.show(error.message || 'Something went wrong', ToastAndroid.SHORT);
                     setSubmitted(false);
                     return;
@@ -861,6 +897,28 @@ const FormUjiKelayakan = ({route}) => {
                             />
                         </View>
                     </TouchableOpacity>
+                    
+                    {
+                        idProduk == 3 ? (
+                            <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiAirBersihDanSanitasi', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
+                            <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
+                                <FontAwesome5 name={'product-hunt'} size={25} color={'#FFF'} />
+                            </View>
+                            <View style={{flex: 1}}>
+                                <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 18, color: '#FFF'}}>Kondisi Air Bersih & Sanitasi</Text>
+                            </View>
+                            <View style={{alignItems: 'flex-end'}}>
+                                <BouncyCheckbox 
+                                    size={20}
+                                    isChecked={screenState > 2}
+                                    fillColor={screenState > 2 ? 'green' : 'white'}
+                                    disableBuiltInState
+                                />
+                            </View>
+                        </TouchableOpacity>
+                        ) : null
+                    }
+
 
                     <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>

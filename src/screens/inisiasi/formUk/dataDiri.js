@@ -536,7 +536,7 @@ const DataDiri = ({route}) => {
                     headers: { 
                         "Content-Type": "application/json",
                         "Authorization": tokenUser
-                   }
+                    }
                 })
                 .then((response) => response.json())
                 .then((responseJson) => {
