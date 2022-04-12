@@ -27,8 +27,8 @@ if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
     MINOR_VERSION = '0';
     PATCH_VERSION = '8';
-    BUILD = '003';
-    TANGGAL = '2022-04-08';
+    BUILD = '005';
+    TANGGAL = '2022-04-13';
     
     base_url = 'http://103.105.216.134';
 
