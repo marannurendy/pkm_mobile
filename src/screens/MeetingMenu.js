@@ -229,6 +229,8 @@ const MeetingMenu = ({route}) => {
         
         var dataSync = { "pkm": CollectDatapkm, "up": CollectDataup, "sign": CollectDatasign }
 
+        // console.log(dataSync)
+
         const timeOut = (milisecond, promise) => {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
@@ -237,6 +239,9 @@ const MeetingMenu = ({route}) => {
                 promise.then(resolve, reject)
             })
         }
+
+        const token = await AsyncStorage.getItem('token');
+        if (__DEV__) console.log('ACTIONS TOKEN', token);
 
         if(CollectDatapkm.length > 0 ) {
             try{
