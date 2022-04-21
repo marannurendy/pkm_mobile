@@ -47,7 +47,8 @@ export default function UmiList() {
                 console.log(responseJson.responseCode)
 
                 if(responseJson.responseCode === '0200') {
-                    if(responseJson.data > 0) {
+                    console.log("disini")
+                    if(responseJson.data.length > 0) {
                         setData(responseJson)
                     }else{
                         Alert.alert(

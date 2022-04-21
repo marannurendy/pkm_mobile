@@ -9,13 +9,13 @@ import {View, Texr} from "react-native"
 //let ApiSync = 'http://10.50.0.34:9005/' //development
 // let ApiSync = 'http://192.168.233.159:9005/'
 
-const IS_DEVELOPMENT = true;
+const IS_DEVELOPMENT = false;
 
 let MAJOR_VERSION = '0';
 let MINOR_VERSION = '0';
-let PATCH_VERSION = '7';
+let PATCH_VERSION = '10';
 let BUILD = '001';
-let TANGGAL = '2022-03-26';
+let TANGGAL = '2022-04-16';
 
 // let base_url = 'http://192.168.121.80:9006';
 let base_url = 'http://pkmmekaar.kresnasaraswati.id';
@@ -26,9 +26,9 @@ let BRI_base_url = 'https://UmiCornerPNM.pnm.co.id';
 if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
     MINOR_VERSION = '0';
-    PATCH_VERSION = '8';
-    BUILD = '009';
-    TANGGAL = '2022-04-14';
+    PATCH_VERSION = '10';
+    BUILD = '001';
+    TANGGAL = '2022-04-16';
     
     base_url = 'http://103.105.216.134';
 
