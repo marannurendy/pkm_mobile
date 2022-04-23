@@ -21,7 +21,9 @@ let TANGGAL = '2022-04-16';
 let base_url = 'http://pkmmekaar.kresnasaraswati.id';
 let api_version = 'v1';
 
-let BRI_base_url = 'https://UmiCornerPNM.pnm.co.id';
+// let BRI_base_url = 'https://UmiCornerPNM.pnm.co.id';
+let BRI_base_url = 'http://devumicornerpnm.pnm.co.id';
+
 
 if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
