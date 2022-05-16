@@ -13,9 +13,9 @@ const IS_DEVELOPMENT = false;
 
 let MAJOR_VERSION = '0';
 let MINOR_VERSION = '0';
-let PATCH_VERSION = '11';
+let PATCH_VERSION = '12';
 let BUILD = '001';
-let TANGGAL = '2022-04-23';
+let TANGGAL = '2022-04-28';
 
 // let base_url = 'http://192.168.121.80:9006';
 let base_url = 'http://pkmmekaar.kresnasaraswati.id';
@@ -28,7 +28,7 @@ let BRI_base_url = 'http://devumicornerpnm.pnm.co.id';
 if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
     MINOR_VERSION = '0';
-    PATCH_VERSION = '11';
+    PATCH_VERSION = '12';
     BUILD = '001';
     TANGGAL = '2022-04-21';
     

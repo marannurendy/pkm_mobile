@@ -239,6 +239,7 @@ const InisiasiFormProspekLama = ({ route }) => {
                         x.productName.trim().substring(0, 2) === 'RP' ||
                         x.productName.trim().substring(0, 4) === 'WaMP' ||
                         x.productName.trim().substring(0, 4) === 'Wash' ||
+                        x.productName.trim().substring(0, 2) === 'MM' ||
                         x.productName.trim().substring(0, 4) === 'WaSy'
                     ).map((data, i) => {
                         return { 
