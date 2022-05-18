@@ -8,6 +8,7 @@ import { showMessage } from 'react-native-flash-message';
 import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import db from '../../../database/Database';
+import { currency } from '../../../utils/Functions';
 
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 16;
@@ -80,7 +81,7 @@ const InisiasiFormPPForm = ({ route }) => {
         <View style={[styles.FDRow, styles.MT8]}>
             <Text style={styles.F1}>JASA</Text>
             <Text style={styles.MH8}>:</Text>
-            <Text style={{ width: 100 }}>{jasa}</Text>
+            <Text style={{ width: 100 }}>{currency(parseInt(jasa))}</Text>
         </View>
     )
 
