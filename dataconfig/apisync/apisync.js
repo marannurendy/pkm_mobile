@@ -9,7 +9,7 @@ import {View, Texr} from "react-native"
 //let ApiSync = 'http://10.50.0.34:9005/' //development
 // let ApiSync = 'http://192.168.233.159:9005/'
 
-const IS_DEVELOPMENT = false;
+const IS_DEVELOPMENT = true;
 
 let MAJOR_VERSION = '0';
 let MINOR_VERSION = '0';
@@ -28,9 +28,9 @@ let BRI_base_url = 'http://devumicornerpnm.pnm.co.id';
 if (IS_DEVELOPMENT) {
     MAJOR_VERSION = '0';
     MINOR_VERSION = '0';
-    PATCH_VERSION = '12';
-    BUILD = '001';
-    TANGGAL = '2022-05-22';
+    PATCH_VERSION = '13';
+    BUILD = '003';
+    TANGGAL = '2022-05-17';
     
     base_url = 'http://103.105.216.134';
 
