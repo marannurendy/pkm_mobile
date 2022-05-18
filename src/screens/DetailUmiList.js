@@ -28,6 +28,7 @@ export default function DetailUmiList({route}) {
 
     useEffect(() => {
         FetchDatabyid()
+        FetchLoginData()
     }, [])
 
     const flashNotification = (title, message, backgroundColor, color) => {
@@ -41,6 +42,17 @@ export default function DetailUmiList({route}) {
             color: color
         });
       }
+
+    async function FetchLoginData() {
+        AsyncStorage.getItem('userData', (error, result) => {
+            const dt = JSON.parse(result);
+
+            setExecutorId(dt.nip)
+            setExecutorName(dt.AOname)
+            setExecutionBusinessUnitId(dt.kodeCabang)
+            setExecutionBusinessUnitName(dt.namaCabang)
+        })
+    }
 
     async function FetchDatabyid() {
         const getid = await route.params
@@ -59,11 +71,11 @@ export default function DetailUmiList({route}) {
                 console.log(responseJson)
                 setData(responseJson.data)
                 setTransactionId(responseJson.data.transactionID)
-                setExecutorId(responseJson.data.PickByNIP)
-                setExecutorName(responseJson.data.PickByNama)
+                // setExecutorId(responseJson.data.PickByNIP)
+                // setExecutorName(responseJson.data.PickByNama)
                 setExecutorPhoneNumber(responseJson.data.PickByHP)
-                setExecutionBusinessUnitId(responseJson.data.PickByBranchID)
-                setExecutionBusinessUnitName(responseJson.data.PickByBranchName)
+                // setExecutionBusinessUnitId(responseJson.data.PickByBranchID)
+                // setExecutionBusinessUnitName(responseJson.data.PickByBranchName)
                 setLoading(false)
                 // setUrl(responseJson.data.webviewUrl)
             })
