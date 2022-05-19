@@ -1038,7 +1038,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
 
                     
 
-                    if(uk_client_data[i].Is_UKPass === '1' && uk_client_data[i].Is_VerifPass === '1' && uk_client_data[i].Siklus_Pembiayaan !== 'Tahap Lanjut' ) {
+                    if(uk_client_data[i].Is_UKPass === '1' && uk_client_data[i].Is_VerifPass === '1' && uk_client_data[i].Is_PPPass === '0' && uk_client_data[i].Siklus_Pembiayaan !== 'Tahap Lanjut') {
                         let statusKelompok = 0
 
                         if(uk_client_data[i].Is_Sisipan === 1 || uk_client_data[i].Is_Sisipan === '1') {
@@ -1212,7 +1212,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     //     + "')";
                     // }
 
-                    if(uk_client_data[i].Is_UKPass === '1' && uk_client_data[i].Is_VerifPass === '1' && uk_client_data[i].Siklus_Pembiayaan === 'Tahap Lanjut') {
+                    if(uk_client_data[i].Is_UKPass === '1' && uk_client_data[i].Is_VerifPass === '1' && uk_client_data[i].Is_PPPass === '0' && uk_client_data[i].Siklus_Pembiayaan === 'Tahap Lanjut') {
                         queryPPKelompokTahapLanjut = queryPPKelompokTahapLanjut + "('"
                             + uk_client_data[i].Kelompok_ID
                             + "','"
