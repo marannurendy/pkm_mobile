@@ -221,6 +221,16 @@ export default function Login() {
                   </Text>
               </TouchableOpacity>
 
+              <TouchableOpacity
+              style={styles.loginButtonContainer} 
+              // onPress={() => this.props.navigation.navigate('Home')}
+              onPress={() => navigation.navigate('Direction')}
+              >
+                  <Text style={styles.loginButtonText}>
+                      Direction
+                  </Text>
+              </TouchableOpacity>
+
               {renderVersion()}
             </View>
           </View>

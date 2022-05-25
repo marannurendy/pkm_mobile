@@ -464,7 +464,6 @@ export const getSyncData = (params) => new Promise((resolve) => {
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_kelompok:', persetujuan_pembiayaan_kelompok.length);
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
         if (__DEV__) console.log('ACTIONS POST SYNC GET SOSIALISASI MOBILE INSERT persetujuan_pembiayaan_client_kelompok:', persetujuan_pembiayaan_client_kelompok.length);
-
         let mappingProspek = [];
 
         if (uk_client_data.length > 0) {

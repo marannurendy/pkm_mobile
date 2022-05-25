@@ -34,6 +34,7 @@ import IndividualCollection from '../screens/individualCollection'
 import FormIndividualCollection from '../screens/formIndividualCollection'
 import PkmBermakna from '../screens/pkmBermakna'
 import NetworkLogging from '../screens/NetworkLogging'
+import Direction from '../screens/Direction'
 
 // import { Inisasi, Sosialisasi, Floating, UjiKelayakan, FormUjiKelayakan, DataDiri, ProdukPembiayaan } from '../screens/inisiasi/index'
 import { 
@@ -362,6 +363,13 @@ export default function AppNavigator() {
           <Stack.Navigator>
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+              <Stack.Screen name="Direction" component={Direction} options={{
+                    headerLeft: null,
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerTitle: props => <LogoTitle />
+                }} />
               <Stack.Screen name="FrontHome" component={HalamanDepan} options={{ headerShown: false }} />
               <Stack.Screen name="MeetingMenu" component={MeetingMenu} options={{ headerShown: false }} />
               <Stack.Screen name="GroupCollection" component={GroupCollection} options={{ headerShown: false }} />
