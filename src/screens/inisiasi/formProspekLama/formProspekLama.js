@@ -11,6 +11,7 @@ import { ApiSyncInisiasi } from '../../../../dataconfig/index';
 import moment from 'moment';
 import 'moment/locale/id';
 import { capitalize, digits_only } from '../../../utils/Functions';
+import { currency } from '../../../utils/Functions';
 
 const dimension = Dimensions.get('screen');
 const images = {
@@ -534,6 +535,14 @@ const InisiasiFormProspekLama = ({ route }) => {
         </View>
     )
 
+    const renderInformasiPlafon = () => (
+        <View style={[styles.FDRow, styles.MV4]}>
+            <Text style={{ width: 100 }}>Plafon Pembiayaan Sebelumnya</Text>
+            <Text style={styles.MH8}>:</Text>
+            <Text style={styles.F1}>{currency(dataDetail?.LastLoanAmount) ?? ''}</Text>
+        </View>
+    )
+
     const renderFormPembiayaanTahap = () => (
         <View style={[styles.MV4]}>
             <Text style={styles.MB8}>Pembiayaan Tahap</Text>
@@ -908,6 +917,7 @@ const InisiasiFormProspekLama = ({ route }) => {
                 {renderInformasiNama()}
                 {renderInformasiIdentitas()}
                 {renderInformasiKelompok()}
+                {renderInformasiPlafon()}
                 {renderFormOne()}
                 {renderSpace()}
                 {renderFormTwo()}
