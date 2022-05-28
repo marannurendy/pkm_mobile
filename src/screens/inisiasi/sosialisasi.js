@@ -34,6 +34,8 @@ const Sosialisasi = () => {
     let [nohp, setNohp] = useState()
     let [sisipan, setSisipan] = useState(false)
     let [baru, setBaru] = useState(false)
+    let [adaHP, setAdaHP] = useState(true)
+    let [tidakHP, setTidakHP] = useState(false)
     let [statusNasabah, setStatusNasabah] = useState(2)
     
     let [lokasiSos, setLokasiSos] = useState()
@@ -78,6 +80,16 @@ const Sosialisasi = () => {
         setStatusNasabah(type)
     }
 
+    const pickerHandlerPhone = (type) => {
+        if(type === 1) {
+            setAdaHP(true)
+            setTidakHP(false)
+        }else if (type === 2) {
+            setAdaHP(false)
+            setTidakHP(true)
+        }
+    }
+
     const sumberDataHandler = (text) => {
         setSumberDana(text)
     }
@@ -96,7 +108,6 @@ const Sosialisasi = () => {
 
     const submitHandler = () => {
         let uniqueNumber = (new Date().getTime()).toString(36);
-
         if(tanggalInput === null || tanggalInput === undefined) {
             flashNotification("Alert", "Silahkan pilih tanggal input", "#ff6347", "#fff")
         }else if(sumberDana === null || sumberDana === undefined) {
@@ -112,6 +123,9 @@ const Sosialisasi = () => {
         }else if(lokasiSos === null || lokasiSos === undefined) {
             flashNotification("Alert", "Silahkan masukkan lokasi sosialisasi", "#ff6347", "#fff")
         }else{
+            if(nohp === null || nohp === undefined) {
+                setNohp('0')
+            }
             Alert.alert(
                 "Input Data Sukses",
                 "Apakah anda ingin menyimpan data sosialisasi ?",
@@ -121,6 +135,7 @@ const Sosialisasi = () => {
                         try{
                             db.transaction(
                                 tx => {
+                                    console.log('ini no hp0', nohp)
                                     tx.executeSql(`INSERT INTO Sosialisasi_Database (
                                         id,
                                         tanggalInput, 
@@ -238,8 +253,34 @@ const Sosialisasi = () => {
                             </View>
                         </View>
                     </View>
-
                     <View style={{margin: 20}}>
+                    <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Handphone</Text>       
+                    <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <BouncyCheckbox 
+                                size={30}
+                                isChecked={adaHP}
+                                fillColor={'#003049'}
+                                disableBuiltInState
+                                onPress={() => pickerHandlerPhone(1)}
+                            />
+                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Ada</Text>
+                        </View>
+
+                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <BouncyCheckbox 
+                                size={30}
+                                isChecked={tidakHP}
+                                fillColor={'#003049'}
+                                disableBuiltInState
+                                onPress={() => pickerHandlerPhone(2)}
+                            />
+                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Tidak</Text>
+                        </View>
+                    </View>
+                    </View>
+
+                    {adaHP == true ? <View style={{margin: 20}}>
                         <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>No. Telp/HP Calon Nasabah</Text>
                         <View style={{borderWidth: 1, padding: 5, borderRadius: 10, marginLeft: 10}}>
                             <PhoneInput
@@ -251,7 +292,8 @@ const Sosialisasi = () => {
                                 allowZeroAfterCountryCode={false}
                             />
                         </View>
-                    </View>
+                    </View> : <View/>}
+                    
 
                     <View style={{flexDirection: 'row', justifyContent: 'space-around', margin: 20}}>
                         <View style={{flexDirection: 'row', alignItems: 'center'}}>
