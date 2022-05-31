@@ -57,7 +57,7 @@ const DataDiri = ({route}) => {
     //STATE DATA DIRI PRIBADI
     let [fullName, setFullName] = useState(namaNasabah)
     let [namaAyah, setNamaAyah] = useState()
-    let [noTelfon, setNoTelfon] = useState(nomorHandphone !== 'undefined' ? nomorHandphone : '')
+    let [noTelfon, setNoTelfon] = useState(nomorHandphone !== 'undefined' ? nomorHandphone : '62')
     let [lamaTinggal, setLamaTinggal] = useState()
     //STATE DATA SUAMI
     let [namaSuami, setNamaSuami] = useState()
@@ -151,11 +151,10 @@ const DataDiri = ({route}) => {
                         tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
                             let dataLength = results.rows.length;
                             if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
+                            console.log('=======================>', route.params)
                             if (dataLength > 0) {
-                                
                                 let data = results.rows.item(0);
                                 if (__DEV__) console.log('tx.executeSql data:', data);
-
                                 if (data.foto_ktp_penjamin) setKey_dataPenjamin(data.foto_ktp_penjamin);
                                 if (data.foto_ktp_suami) setKey_dataSuami(data.foto_ktp_suami);
                                 if (data.foto_kk) setKey_kartuKeluarga(data.foto_kk);

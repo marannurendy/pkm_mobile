@@ -123,19 +123,14 @@ const Sosialisasi = () => {
         }else if(lokasiSos === null || lokasiSos === undefined) {
             flashNotification("Alert", "Silahkan masukkan lokasi sosialisasi", "#ff6347", "#fff")
         }else{
-            if(nohp === null || nohp === undefined) {
-                setNohp('0')
-            }
             Alert.alert(
                 "Input Data Sukses",
                 "Apakah anda ingin menyimpan data sosialisasi ?",
                 [
                     { text: "YA", onPress: () => {
-
                         try{
                             db.transaction(
                                 tx => {
-                                    console.log('ini no hp0', nohp)
                                     tx.executeSql(`INSERT INTO Sosialisasi_Database (
                                         id,
                                         tanggalInput, 
