@@ -43,6 +43,7 @@ const FormUjiKelayakan = ({route}) => {
             getUKMaster();
             getGroupList();
             getSosialisasiDatabase();
+            getUKProdukPembiayaan();
         });
         return unsubscribe;
     }, [navigation]);
@@ -54,6 +55,25 @@ const FormUjiKelayakan = ({route}) => {
         setSelectedPilihKelompok(selectedPilihKelompok);
         getStorageSubGroup(valuePilihKelompok);
     }, [valuePilihKelompok]);
+
+
+    const getUKProdukPembiayaan = () => {
+      if (__DEV__) console.log("getUKProdukPembiayaan loaded");
+      if (__DEV__) console.log("getUKProdukPembiayaan id:", id);
+
+      let queryUKDataDiri =
+        `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` +
+        id +
+        `';`;
+    let queryUKDataTest =
+        `SELECT * FROM Sosialisasi_Database`
+      db.transaction((tx) => {
+        tx.executeSql(queryUKDataTest, [], async (tx, results) => {
+            console.log('ini get TX ==================> id' , id)
+            console.log('ini get TX ==================> results1' , results)
+        });
+      });
+    };
 
     const getSosialisasiDatabase = () => {
         let queryUKDataDiri = `SELECT * FROM Sosialisasi_Database WHERE id = '` + id + `';`
@@ -344,7 +364,7 @@ const FormUjiKelayakan = ({route}) => {
                             "PekerjaanSuami": data.usaha_pekerjaan_suami,
                             "JmlTenagaKerja": data.jumlah_tenaga_kerja_suami,
                             "Nama_Pembiayaan_Lembaga_Lain": Pembiayaan_Dari_LembagaLain,
-                            "NoHP": data.no_tlp_nasabah,
+                            "NoHP": data.no_tlp_nasabah ? data.no_Rekening : '62',
                             "IDAgama": data.agama,
                             "NoKK": data.no_kk,
                             "NoRekening": noRekening, // double

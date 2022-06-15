@@ -151,7 +151,6 @@ const DataDiri = ({route}) => {
                         tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
                             let dataLength = results.rows.length;
                             if (__DEV__) console.log('SELECT * FROM Table_UK_DataDiri length:', dataLength);
-                            console.log('=======================>', route.params)
                             if (dataLength > 0) {
                                 let data = results.rows.item(0);
                                 if (__DEV__) console.log('tx.executeSql data:', data);
@@ -746,7 +745,6 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitDataDiriPribadi lamaTinggal:', lamaTinggal);
         if (__DEV__) console.log('doSubmitDataDiriPribadi agama:', valueReligion);
         if (__DEV__) console.log('doSubmitDataDiriPribadi pendidikanAnak:', valuePendidikanAnak);
-
         const find = 'SELECT * FROM Table_UK_DataDiri WHERE idSosialisasiDatabase = "'+ id +'"';
         db.transaction(
             tx => {
@@ -952,7 +950,7 @@ const DataDiri = ({route}) => {
         if (!fullName || typeof fullName === 'undefined' || fullName === '' || fullName === 'null') return alert('Nama Lengkap (*) tidak boleh kosong');
         if (!namaAyah || typeof namaAyah === 'undefined' || namaAyah ==='' || namaAyah === 'null') return alert('Nama Ayah (*) tidak boleh kosong');
         if (!namaGadisIbu || typeof namaGadisIbu === 'undefined' || namaGadisIbu ==='' || namaGadisIbu === 'null') return alert('Nama Gadis Ibu Kandung (*) tidak boleh kosong');
-        if (!noTelfon || typeof noTelfon === 'undefined' || noTelfon ==='' || noTelfon === 'null') return alert('No. Telp/HP Nasabah (*) tidak boleh kosong');
+        if (!noTelfon || typeof noTelfon === 'undefined' || noTelfon ==='' || noTelfon === 'null') setNoTelfon('62');
         if (!valueJumlahAnak || typeof valueJumlahAnak === 'undefined' || valueJumlahAnak ==='' || valueJumlahAnak === 'null') return alert('Jumlah Anak (*) tidak boleh kosong');
         // if (!valuePendidikanAnak || typeof valuePendidikanAnak === 'undefined' || valuePendidikanAnak ==='' || valuePendidikanAnak === 'null') return alert('Pendidikan Anak (*) tidak boleh kosong');
         if (!valueJumlahTanggungan || typeof valueJumlahTanggungan === 'undefined' || valueJumlahTanggungan ==='' || valueJumlahTanggungan === 'null') return alert('Jumlah Tanggungan (*) tidak boleh kosong');

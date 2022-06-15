@@ -52,7 +52,7 @@ export const getSyncData = (params) => new Promise((resolve) => {
     });
 
     const insertKelompokPencairan = (responseJson) => new Promise((resolve, reject) => {
-        if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT', responseJson.data);
+        if (__DEV__) console.log('ACTIONS GET SYNC DATA PENCAIRAN INSERT ====================>', responseJson.data);
         const groupPencairan = responseJson.data?.pencairan || [];
         const ListPencairan = responseJson.data?.pencairan_nasabah || [];
 
