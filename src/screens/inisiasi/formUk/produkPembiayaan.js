@@ -36,7 +36,7 @@ const ProdukPembiayaan = ({ route }) => {
     const [valueFrekuensiPembayaran, setValueFrekuensiPembayaran] = useState(null);
     const [itemsFrekuensiPembayaran, setItemsFrekuensiPembayaran] = useState([]);
     const [valueTermPembiayaan, setValueTermPembiayaan] = useState(null);
-    const [valueNamaBank, setValueNamaBank] = useState('');
+    const [valueNamaBank, setValueNamaBank] = useState('BRI');
     const [valueNoRekening, setValueNoRekening] = useState('');
     const [valuePemilikRekening, setValuePemilikRekening] = useState('');
     const [valueRekeningBank, setValueRekeningBank] = useState(false);
@@ -105,6 +105,7 @@ const ProdukPembiayaan = ({ route }) => {
         
         if (valueTypePencairan === '3') {
             setValueRekeningBank(true);
+            setValueNamaBank('BRI');
         } else {
             setValueNamaBank('');
             setValueNoRekening('');
@@ -231,7 +232,9 @@ const ProdukPembiayaan = ({ route }) => {
             const response = await AsyncStorage.getItem('Product');
             if (response !== null) {
                 const responseJSON = JSON.parse(response);
+                // console.log('XXXXXXXXXXXXXXXXX ====================================>',responseJSON)
                 // if (__DEV__) console.log('getStorageProduk responseJSON.length:', responseJSON.length);
+                // if (__DEV__) console.log('getStorageProduk valueJenisPembiayaan:', valueJenisPembiayaan);
                 if (responseJSON.length > 0) {
                     let IsMP = rw;
                     let IsReguler = rs;
@@ -500,13 +503,12 @@ const ProdukPembiayaan = ({ route }) => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (submmitted) return true;
-
+        
         if (valueTypePencairan === '3' && valueRekeningBank) {
             if (!valueNamaBank || typeof valueNamaBank === 'undefined' || valueNamaBank === '' || valueNamaBank === 'null') return alert('Nama Bank (*) tidak boleh kosong');
             if (!valueNoRekening || typeof valueNoRekening === 'undefined' || valueNoRekening === '' || valueNoRekening === 'null') return alert('No. Rekening (*) tidak boleh kosong');
             if (!valuePemilikRekening || typeof valuePemilikRekening === 'undefined' || valuePemilikRekening === '' || valuePemilikRekening === 'null') return alert('Pemilik Rekening (*) tidak boleh kosong');
         }
-
         setSubmmitted(true);
 
         await doSubmitDraft('submit');
@@ -837,10 +839,11 @@ const ProdukPembiayaan = ({ route }) => {
             <Text style={{ width: 100 }}>Nama Bank</Text>
             <View style={[styles.textInputContainer, styles.ML8]}>
                 <TextInput 
-                    value={valueNamaBank} 
-                    onChangeText={(text) => setValueNamaBank(replaceSpecialChar(text))}
+                    value={'BRI'} 
                     placeholder="" 
                     style={styles.F1}
+                    editable={false} 
+                    defaultValue={'BRI'}
                 />
             </View>
         </View>
@@ -851,6 +854,7 @@ const ProdukPembiayaan = ({ route }) => {
             <Text style={{ width: 100 }}>No. Rekening</Text>
             <View style={[styles.textInputContainer, styles.ML8]}>
                 <TextInput 
+                    keyboardType='numeric'
                     value={valueNoRekening} 
                     onChangeText={(text) => setValueNoRekening(replaceSpecialChar(text))}
                     placeholder="" 

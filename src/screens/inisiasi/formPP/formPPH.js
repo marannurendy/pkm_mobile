@@ -450,7 +450,12 @@ const InisiasiFormPPH = ({ route }) => {
                         const dataGroupTotal = await getDataJumlahPP(queryGetGroup)
 
                         let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok : "", ID_DK_Mobile: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
-
+                        for (var key in dataSend) {
+                            if (report[key] == null) {
+                                flashNotification("Alert", "Data gagal di proses")
+                                return false;
+                            }
+                        }                      
                         try{
                             fetch(ApiSyncPostInisiasi + "post_data_kelompok", {
                                     method: 'POST',

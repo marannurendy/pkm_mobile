@@ -25,7 +25,7 @@ const InisiasiFormProspekLama = ({ route }) => {
     const { name, clientId } = route.params
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
-    const [valuePembiayaanDiajukan, setValuePembiayaanDiajukan] = useState(null);
+    const [valuePembiayaanDiajukan, setValuePembiayaanDiajukan] = useState('');
     const [itemsPembiayaanDiajukan, setItemsPembiayaanDiajukan] = useState([]);
     const [valueTempatTinggalNasabah, setValueTempatTinggalNasabah] = useState(null);
     const [itemsTempatTinggalNasabah, setItemsTempatTinggalNasabah] = useState([]);
@@ -56,6 +56,8 @@ const InisiasiFormProspekLama = ({ route }) => {
     const [key_tandaTanganAO, setKey_tandaTanganAO] = useState(`formProspekLama_tandaTanganAO_${clientId}`);
     const [aoName, setAoName] = useState('');
     const [fetching, setFetching] = useState(false);
+    const [showFormKehadiran, setShowFormKehadiran] = useState(true)
+    const [showFormPembayaran, setShowFormPembayaran] = useState(true)
 
     useEffect(() => {
         setInfo();
@@ -241,6 +243,7 @@ const InisiasiFormProspekLama = ({ route }) => {
                         x.productName.trim().substring(0, 4) === 'WaMP' ||
                         x.productName.trim().substring(0, 4) === 'Wash' ||
                         x.productName.trim().substring(0, 2) === 'MM' ||
+                        x.productName.trim().substring(0, 2) === 'M1' ||
                         x.productName.trim().substring(0, 4) === 'WaSy'
                     ).map((data, i) => {
                         return { 
@@ -559,6 +562,11 @@ const InisiasiFormProspekLama = ({ route }) => {
                 <Picker
                     selectedValue={valuePembiayaanDiajukan}
                     onValueChange={(itemValue, itemIndex) => {
+                        console.log(itemsPembiayaanDiajukan[itemIndex - 1]["label"].trim().substring(0, 2))
+                        if (itemsPembiayaanDiajukan[itemIndex - 1]["label"].trim().substring(0, 2) == 'MM' || itemsPembiayaanDiajukan[itemIndex - 1]["label"].trim().substring(0, 2) == 'M1') {
+                            setShowFormKehadiran(false)
+                            setShowFormPembayaran(false)
+                        } 
                         setSelectedPembiayaanDiajukan(itemsPembiayaanDiajukan[itemIndex - 1]);
                         setValuePembiayaanDiajukan(itemValue);
                     }}
@@ -845,26 +853,26 @@ const InisiasiFormProspekLama = ({ route }) => {
             {renderFormTandaTanganAO()}
         </View>
     )
-
+        console.log(selectedPembiayaanDiajukan)
     const renderFormOne = () => (
-        <View style={[styles.MV16]}>
-            {/* <Text>{JSON.stringify(dataDetail)}</Text> */}
-            {renderFormPembiayaanTahap()}
-            {renderFormPembiayaanDiajukan()}
-            {renderFormJangkaWaktuPembiayaanDiajukan()}
-            {renderFormTempatTinggalNasabah()}
-            {renderFormPerubahanStatusPernikahan()}
-            {renderFormPerubahanStatusPernikahanKeterangan()}
-            {renderFormPerubahanStatusTanggungan()}
-            {renderFormPerubahanStatusTanggunganKeterangan()}
-            {renderFormKehadiranPKM()}
-            {renderButtonSaveDraft()}
-        </View>
-    )
+      <View style={[styles.MV16]}>
+        {/* <Text>{JSON.stringify(dataDetail)}</Text> */}
+        {renderFormPembiayaanTahap()}
+        {renderFormPembiayaanDiajukan()}
+        {renderFormJangkaWaktuPembiayaanDiajukan()}
+        {renderFormTempatTinggalNasabah()}
+        {renderFormPerubahanStatusPernikahan()}
+        {renderFormPerubahanStatusPernikahanKeterangan()}
+        {renderFormPerubahanStatusTanggungan()}
+        {renderFormPerubahanStatusTanggunganKeterangan()}
+        {showFormKehadiran ? renderFormKehadiranPKM() : null}
+        {renderButtonSaveDraft()}
+      </View>
+    );
 
     const renderFormTwo = () => (
         <View style={[styles.MV16]}>
-            {renderFormPembayaran()}
+            {showFormPembayaran? renderFormPembayaran() : null}
             {renderFormPerubahanUsaha()}
             {renderFormPerubahanUsahaKeterangan()}
             {renderButtonSaveDraft()}

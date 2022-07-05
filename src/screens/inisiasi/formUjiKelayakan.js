@@ -10,9 +10,10 @@ import db from '../../database/Database';
 import { ApiSyncPostInisiasi, GET_CUSTOM_MESSAGES } from '../../../dataconfig/apisync/apisync'
 import { fetchWithTimeout } from '../../utils/Functions'
 import { Picker } from '@react-native-picker/picker';
+import { createIconSetFromFontello } from 'react-native-vector-icons'
 
 const FormUjiKelayakan = ({route}) => {
-    const { id, groupName, namaNasabah, nomorHandphone, statusSosialisasi } = route.params;
+    const { id, groupName, namaNasabah, nomorHandphone, statusSosialisasi, status } = route.params;
     const dimension = Dimensions.get('screen');
     const navigation = useNavigation();
 
@@ -36,6 +37,7 @@ const FormUjiKelayakan = ({route}) => {
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
+            getUKProdukPembiayaan();
             setInfo();
             getStorageIsFormUKDisiplinNasabahDone();
             getStorageIsFormUKTandaTanganPermohonanDone();
@@ -43,7 +45,6 @@ const FormUjiKelayakan = ({route}) => {
             getUKMaster();
             getGroupList();
             getSosialisasiDatabase();
-            getUKProdukPembiayaan();
         });
         return unsubscribe;
     }, [navigation]);
@@ -65,12 +66,18 @@ const FormUjiKelayakan = ({route}) => {
         `SELECT * FROM Table_UK_ProdukPembiayaan WHERE idSosialisasiDatabase = '` +
         id +
         `';`;
-    let queryUKDataTest =
-        `SELECT * FROM Sosialisasi_Database`
       db.transaction((tx) => {
-        tx.executeSql(queryUKDataTest, [], async (tx, results) => {
-            console.log('ini get TX ==================> id' , id)
-            console.log('ini get TX ==================> results1' , results)
+        tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
+            const responseProduct = await AsyncStorage.getItem('Product');
+            const jsonProduct = JSON.parse(responseProduct);
+            const filterProduct = jsonProduct.filter(word => word['id'] == results.rows.item(0).produk_Pembiayaan)
+            if (filterProduct.length > 0 && filterProduct[0]['productName'].substring(0, 2) == 'MM') {
+                AsyncStorage.setItem(`isFormUKDisiplinNasabahDone_${id}`, '1');
+                setIsFormUKDisiplinNasabahDone('1')
+            } else {
+                AsyncStorage.setItem(`isFormUKDisiplinNasabahDone_${id}`, '1');
+                setIsFormUKDisiplinNasabahDone('1')
+            }
         });
       });
     };
@@ -235,10 +242,10 @@ const FormUjiKelayakan = ({route}) => {
                                 setSubmitted(false);
                                 return alert('Disiplin Nasabah - Kehadiran PKM (*) tidak boleh kosong');
                             }
-                            if (!data.angsuran_pada_saat_pkm || typeof data.angsuran_pada_saat_pkm === 'undefined' || data.angsuran_pada_saat_pkm === '' || data.angsuran_pada_saat_pkm === 'null') {
-                                setSubmitted(false);
-                                return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
-                            }
+                            // if (!data.angsuran_pada_saat_pkm || typeof data.angsuran_pada_saat_pkm === 'undefined' || data.angsuran_pada_saat_pkm === '' || data.angsuran_pada_saat_pkm === 'null') {
+                            //     setSubmitted(false);
+                            //     return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
+                            // }
 
                             siklus = parseInt(data.siklus) || 1;
                         }
@@ -364,7 +371,7 @@ const FormUjiKelayakan = ({route}) => {
                             "PekerjaanSuami": data.usaha_pekerjaan_suami,
                             "JmlTenagaKerja": data.jumlah_tenaga_kerja_suami,
                             "Nama_Pembiayaan_Lembaga_Lain": Pembiayaan_Dari_LembagaLain,
-                            "NoHP": data.no_tlp_nasabah ? data.no_Rekening : '62',
+                            "NoHP": data.no_tlp_nasabah ? data.no_tlp_nasabah : '62',
                             "IDAgama": data.agama,
                             "NoKK": data.no_kk,
                             "NoRekening": noRekening, // double
@@ -418,7 +425,8 @@ const FormUjiKelayakan = ({route}) => {
                             "FotoRumah1": foto_rumah === null || foto_rumah === 'null' ? '' : foto_rumah.split(',')[1]
                         }
 
-                        // alert(`${body.ID_SektorEkonomi} - ${body.ID_SubSektorEkonomi} - ${body.Jenis_Usaha}`);
+                        // alert(`${body['NoHP']}`);
+                        // console.log('ini bodyyyy ===============>', body['NoHP'])
                         // return;
 
                         try {
@@ -810,7 +818,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     )}
 
-                    {statusSosialisasi === '3' && (
+                    {/* {statusSosialisasi === '3' && (
                         <TouchableOpacity onPress={() => navigation.navigate('InisiasiFormUKDisiplinNasabah', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                             <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                                 <FontAwesome5 name={'sign-in-alt'} size={25} color={'#FFF'} />
@@ -827,10 +835,10 @@ const FormUjiKelayakan = ({route}) => {
                                 />
                             </View>
                         </TouchableOpacity>
-                    )}
+                    )} */}
 
                     {statusSosialisasi === '3' ? (
-                        <TouchableOpacity onPress={() => isFormUKDisiplinNasabahDone === '1' ? navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: isFormUKDisiplinNasabahDone === '1' ? '#0c5da0' : 'gray'}}>
+                        <TouchableOpacity onPress={() => isFormUKDisiplinNasabahDone === '1' ? navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi, status}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: isFormUKDisiplinNasabahDone === '1' ? '#0c5da0' : 'gray'}}>
                             <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                                 <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
                             </View>
@@ -847,7 +855,7 @@ const FormUjiKelayakan = ({route}) => {
                             </View>
                         </TouchableOpacity>
                     ) : (
-                        <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('DataDiri', {id: id, groupName: groupName, namaNasabah: namaNasabah, nomorHandphone: nomorHandphone, screenState: screenState, statusSosialisasi: statusSosialisasi, status})} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: '#0c5da0'}}>
                             <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                                 <FontAwesome5 name={'id-card'} size={25} color={'#FFF'} />
                             </View>

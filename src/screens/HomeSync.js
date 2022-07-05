@@ -325,13 +325,23 @@ export default function FrontHomeSync(props) {
             .then((response) => response.json())
             .then((responseJson) => {
                 if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClientBRNET success:', responseJson);
-                setDataProspekLamaResponse(responseJson);
+                if (responseJson["responseCode"] == 500) {
+                    flashNotification("Gagal!", 'Pesan : '+responseJson["responseDescription"], "#1F8327", "#fff")
+                    setFetchingProspekLama(false);
+                } else {
+                    setDataProspekLamaResponse(responseJson);
+                    setFetchingProspekLama(false);
+                    if (!isVisibleModalProspekLamaSearchListView) setIsVisibleModalProspekLamaSearchListView(true);
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+                flashNotification("Gagal!", 'Pesan : '+err.message, "#1F8327", "#fff")
                 setFetchingProspekLama(false);
-                if (!isVisibleModalProspekLamaSearchListView) setIsVisibleModalProspekLamaSearchListView(true);
             })
         } catch(error) {
             if (__DEV__) console.log('fetchProspekLamaData $get /inisiasi/GetListClientBRNET error:', error);
-            
+            ToastAndroid.show(JSON.stringify(error), ToastAndroid.SHORT);
             setFetchingProspekLama(false);
         }
     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, Dimensions, Image, ScrollView, StyleSheet, Button, ActivityIndicator } from 'react-native';
+import { View, Text, ImageBackground, TouchableOpacity, Dimensions, Image, ScrollView, StyleSheet, Button, ActivityIndicator, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,6 +9,9 @@ import { styles } from '../formUk/styles';
 import { colors } from '../formUk/colors';
 import db from '../../../database/Database';
 import { currency } from '../../../utils/Functions';
+import DateTimePicker from '@react-native-community/datetimepicker'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import moment from 'moment'
 
 const dimension = Dimensions.get('screen');
 const withTextInput = dimension.width - (20 * 4) + 16;
@@ -19,6 +22,8 @@ const InisiasiFormPPForm = ({ route }) => {
     const [date, setDate] = useState(new Date());
     const [valueTandaTanganKetuaAO, setValueTandaTanganKetuaAO] = useState(null);
     const [valueTandaTanganKCSAO, setValueTandaTanganKCSAO] = useState(null);
+    const [showPicker, setShowPicker] = useState(false)
+    const [tanggalInputPicker, setTanggalInputPicker] = useState('')
 
     let [cabangid, setCabangid] = useState()
     let [namaCabang, setNamacabang] = useState()
@@ -41,6 +46,13 @@ const InisiasiFormPPForm = ({ route }) => {
 
         return unsubscribe
     })
+
+    const dateHandler = (event, date) => {
+        let dateValue = moment(date).format('YYYY-MM-DD')
+        console.log("ini biasa" + dateValue)
+        setShowPicker(false)
+        setTanggalInputPicker(dateValue)
+    }
 
     const onSelectSign = (key, data) => {
         if (__DEV__) console.log('onSelectSign loaded');
@@ -86,10 +98,38 @@ const InisiasiFormPPForm = ({ route }) => {
     )
 
     const renderFormAngsuranPerminggu = () => (
-        <View style={[styles.FDRow, styles.MT8, styles.MB32]}>
+        <View style={[styles.FDRow, styles.MT8]}>
             <Text style={styles.F1}>Angsuran Per Minggu</Text>
             <Text style={styles.MH8}>:</Text>
             <Text style={{ width: 100 }}>{Angsuran_per_minggu}</Text>
+
+        </View>
+    )
+
+    const renderFormTanggalRencanaCair = () => (
+        <View style={[styles.FDRow, styles.MT8, styles.MB32]}>
+            <Text>Tanggal Rencana Cair</Text>
+            <Text style={styles.MH8}>:</Text>
+            <Text style={styles.MH8}>{tanggalInputPicker}</Text>
+            <TouchableOpacity onPress={() => setShowPicker(true)} style={{flexDirection: 'row', alignItems: 'center', borderWidth: 1, padding: 5, paddingHorizontal: 10, marginLeft: 10, borderRadius: 10}}>
+                            <View style={{flex: 1}}>
+                                <TextInput value={'tanggalInput'} placeholder="Silahkan masukkan tanggal input" editable={false} style={{ fontSize: 15, color: "#545454" }}/>
+                            </View>
+                            <View>
+                                <FontAwesome5 name={'calendar-alt'} size={18} />
+                            </View>
+                        </TouchableOpacity>
+                        {showPicker && (
+                            <DateTimePicker
+                                value={date}
+                                mode={'date'}
+                                is24Hour={true}
+                                display="default"
+                                minimumDate={new Date()}
+                                maximumDate={new Date(Date.now() + 12096e5)}
+                                onChange={dateHandler}
+                            />
+                        )}
         </View>
     )
 
@@ -137,6 +177,7 @@ const InisiasiFormPPForm = ({ route }) => {
                 {renderFormJangkaWaktu()}
                 {renderFormJasa()}
                 {renderFormAngsuranPerminggu()}
+                {renderFormTanggalRencanaCair()}
                 {renderFormTandaTanganKetuaKelompok()}
                 {renderFormTandaTanganKCSAO()}
             </ScrollView>
@@ -168,12 +209,13 @@ const InisiasiFormPPForm = ({ route }) => {
 
         if(valueTandaTanganKetuaAO === null || valueTandaTanganKetuaAO === undefined || valueTandaTanganKetuaAO === "null" || valueTandaTanganKetuaAO === "undefined") return flashNotification("Caution!", "Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
         if(valueTandaTanganKCSAO === null || valueTandaTanganKCSAO === undefined || valueTandaTanganKCSAO === "null" || valueTandaTanganKCSAO === "undefined") return flashNotification("Caution!", "Kepala Cabang / Senior Account Officer belum melakukan tanda tangan", "#FF7900", "#fff")
+        if(tanggalInputPicker === null || tanggalInputPicker === undefined || tanggalInputPicker === "null" || tanggalInputPicker === "") return flashNotification("Caution!", "Tanggal Rencana Cair Belum Dilakukan", "#FF7900", "#fff")
 
         setLoading(true)
 
         let ttd_ao = valueTandaTanganKetuaAO.split("data:image/png;base64,")
         let ttd_kc = valueTandaTanganKCSAO.split("data:image/png;base64,")
-        let dataSend = {ID_Prospek: Nasabah_Id, Keterangan_Pembelian: "", TTD_AO: ttd_ao[1], TTD_KC: ttd_kc[1], TTD_KK: "", TTD_KSK: ""}
+        let dataSend = {ID_Prospek: Nasabah_Id, Keterangan_Pembelian: "", TTD_AO: ttd_ao[1], TTD_KC: ttd_kc[1], TTD_KK: "", TTD_KSK: "", Rencana_Tanggal_Pencairan: tanggalInputPicker}
 
         const token = await AsyncStorage.getItem('token');
         if (__DEV__) console.log('ACTIONS TOKEN', token);

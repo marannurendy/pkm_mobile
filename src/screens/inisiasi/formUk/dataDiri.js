@@ -31,7 +31,7 @@ const MIN_NOMOR_IDENTITAS_INPUT = 16;
 
 const DataDiri = ({route}) => {
     const uniqueNumber = (new Date().getTime()).toString(36);
-    const { id, groupName, namaNasabah, nomorHandphone, screenState, statusSosialisasi } = route.params
+    const { id, groupName, namaNasabah, nomorHandphone, screenState, statusSosialisasi, status } = route.params
     const navigation = useNavigation()
     const phoneRef = useRef(undefined)
     const camera = useRef(null)
@@ -925,8 +925,11 @@ const DataDiri = ({route}) => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (!statusAgreement) return true;
-
-        if (!fotokartuIdentitas || typeof fotokartuIdentitas === 'undefined' || fotokartuIdentitas === '' || fotokartuIdentitas === 'null') return alert('Foto Kartu Identitas (*) tidak boleh kosong');
+        if (status !== '3') {
+            if (!fotokartuIdentitas || typeof fotokartuIdentitas === 'undefined' || fotokartuIdentitas === '' || fotokartuIdentitas === 'null') return alert('Foto Kartu Identitas (*) tidak boleh kosong');
+            if (!fotoKartuKeluarga || typeof fotoKartuKeluarga === 'undefined' || fotoKartuKeluarga === '' || fotoKartuKeluarga === 'null') return alert('Foto Kartu Keluarga (*) tidak boleh kosong'); 
+            if (!fotoDataPenjamin || typeof fotoDataPenjamin === 'undefined' || fotoDataPenjamin === '' || fotoDataPenjamin === 'null') return alert('Foto Kartu Identitas Penjamin (*) tidak boleh kosong');   
+        }
         if (!valueJenisKartuIdentitas || typeof valueJenisKartuIdentitas === 'undefined' || valueJenisKartuIdentitas ==='' || valueJenisKartuIdentitas === 'null') return alert('Jenis Kartu Identitas (*) tidak boleh kosong');
         if (!nomorIdentitas || typeof nomorIdentitas === 'undefined' || nomorIdentitas === '' || nomorIdentitas === 'null') return alert('Nomor Identitas (*) tidak boleh kosong');
         if (nomorIdentitas.length < MIN_NOMOR_IDENTITAS_INPUT) return alert('Nomor Identitas (*) belum lengkap. Mohon isi 16 angka.');
@@ -943,8 +946,6 @@ const DataDiri = ({route}) => {
         if (!dataKabupaten || typeof dataKabupaten === 'undefined' || dataKabupaten === '' || dataKabupaten === 'null') return alert('Kabupaten (*) tidak boleh kosong');
         if (!dataKecamatan || typeof dataKecamatan === 'undefined' || dataKecamatan === '' || dataKecamatan === 'null') return alert('Kecamatan (*) tidak boleh kosong');
         if (!dataKelurahan || typeof dataKelurahan === 'undefined' || dataKelurahan === '' || dataKelurahan === 'null') return alert('Kelurahan (*) tidak boleh kosong');
-
-        if (!fotoKartuKeluarga || typeof fotoKartuKeluarga === 'undefined' || fotoKartuKeluarga === '' || fotoKartuKeluarga === 'null') return alert('Foto Kartu Keluarga (*) tidak boleh kosong');
         if (!nomorKartuKeluarga || typeof nomorKartuKeluarga === 'undefined' || nomorKartuKeluarga ==='' || nomorKartuKeluarga ==='null') return alert('Nomor Kartu Keluarga (*) tidak boleh kosong');
 
         if (!fullName || typeof fullName === 'undefined' || fullName === '' || fullName === 'null') return alert('Nama Lengkap (*) tidak boleh kosong');
@@ -961,12 +962,13 @@ const DataDiri = ({route}) => {
         if (valueStatusPerkawinan === "1") {
             if (!namaSuami || typeof namaSuami === 'undefined' || namaSuami === '' || namaSuami === 'null') return alert('Nama Suami (*) tidak boleh kosong');
             if (!usahaPekerjaanSuami || typeof usahaPekerjaanSuami === 'undefined' || usahaPekerjaanSuami === '' || usahaPekerjaanSuami === 'null') return alert('Usaha/Pekerjaan Suami (*) tidak boleh kosong');
-            if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === 'null' || fotoKartuIdentitasSuami === 'null') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
+            if (status !== '3') {
+                if (!fotoKartuIdentitasSuami || typeof fotoKartuIdentitasSuami === 'undefined' || fotoKartuIdentitasSuami === 'null' || fotoKartuIdentitasSuami === 'null') return alert('Foto Kartu Identitas Suami (*) tidak boleh kosong');
+            }      
         }
 
         if (!valueStatusHubunganKeluarga || typeof valueStatusHubunganKeluarga === 'undefined' || valueStatusHubunganKeluarga === '' || valueStatusHubunganKeluarga === 'null') return alert('Status Hubungan Keluarga (*) tidak boleh kosong');
         if (!namaPenjamin || typeof namaPenjamin === 'undefined' || namaPenjamin === '' || namaPenjamin === 'null') return alert('Nama Penjamin (*) tidak boleh kosong');
-        if (!fotoDataPenjamin || typeof fotoDataPenjamin === 'undefined' || fotoDataPenjamin === '' || fotoDataPenjamin === 'null') return alert('Foto Kartu Identitas Penjamin (*) tidak boleh kosong');
 
         if (submmitted) return true;
 
@@ -1083,7 +1085,7 @@ const DataDiri = ({route}) => {
 
         return dataWilayahMobile.filter(data => data.ID_Kecamatan === dataKecamatan).map((x, i) => <Picker.Item key={i} label={x.Nama_KelurahanDesa} value={x.ID_KelDes} />);
     }
-
+    console.log('route params ================================>', status)
     return(
         <View style={{backgroundColor: "#ECE9E4", width: dimension.width, height: dimension.height, flex: 1}}>
             <View style={{
@@ -1123,7 +1125,7 @@ const DataDiri = ({route}) => {
 
                 <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Data Identitas Diri</Text>
                     <View style={{margin: 20}}>
-                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas (*)</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas ({status == '3' ? <Text>Sudah Upload</Text> : <Text>*</Text>})</Text>
                         
                         <TouchableOpacity onPress={() => launchImagePicker('kartuIdentitas')}>
                             <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
@@ -1143,7 +1145,7 @@ const DataDiri = ({route}) => {
                     </View>
 
                     <View style={{marginHorizontal: 20}}>
-                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas (*)</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Jenis Kartu Identitas (*) </Text>
                         <View style={{ borderWidth: 1, borderRadius: 6 }}>
                             <Picker
                                 selectedValue={valueJenisKartuIdentitas}
@@ -1293,7 +1295,7 @@ const DataDiri = ({route}) => {
 
                     {!addressDomisiliLikeIdentitas && (
                         <View style={{margin: 20}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Surat Keterangan Domisili (*)</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Surat Keterangan Domisili ({status == '3' ? <Text>Sudah Upload</Text> : <Text>*</Text>})</Text>
                             
                             <TouchableOpacity onPress={() => launchImagePicker('keteranganDomisili')}>
                                 <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
@@ -1410,7 +1412,7 @@ const DataDiri = ({route}) => {
                 <Text style={{fontSize: 23, fontWeight: 'bold', marginHorizontal: 20, marginTop: 20, borderBottomWidth: 1}}>Kartu Keluarga</Text>
 
                     <View style={{margin: 20}}>
-                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Keluarga (*)</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Keluarga ({status == '3' ? <Text>Sudah Upload</Text> : <Text>*</Text>})</Text>
                         
                         <TouchableOpacity onPress={() => launchImagePicker('kartuKeluarga')}>
                             <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
@@ -1638,7 +1640,7 @@ const DataDiri = ({route}) => {
                         </View>
 
                         <View style={{margin: 20, marginBottom: 4}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami (*)</Text>
+                            <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Suami ({status == '3' ? <Text>Sudah Upload</Text> : <Text>*</Text>})</Text>
                             
                             <TouchableOpacity onPress={() => launchImagePicker('dataSuami')}>
                                 <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
@@ -1728,7 +1730,7 @@ const DataDiri = ({route}) => {
                     </View>
 
                     <View style={{margin: 20}}>
-                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Penjamin (*)</Text>
+                        <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas Penjamin ({status == '3' ? <Text>Sudah Upload</Text> : <Text>*</Text>})</Text>
 
                         <TouchableOpacity onPress={() => launchImagePicker('dataPenjamin')}>
                             <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
