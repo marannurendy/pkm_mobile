@@ -239,13 +239,15 @@ const FormUjiKelayakan = ({route}) => {
                         let siklus = 1;
                         if (statusSosialisasi === '3') {
                             if (!data.kehadiran_pkm || typeof data.kehadiran_pkm === 'undefined' || data.kehadiran_pkm === '' || data.kehadiran_pkm === 'null') {
-                                setSubmitted(false);
-                                return alert('Disiplin Nasabah - Kehadiran PKM (*) tidak boleh kosong');
+                                data.kehadiran_pkm = '0'
+                                // setSubmitted(false);
+                                // return alert('Disiplin Nasabah - Kehadiran PKM (*) tidak boleh kosong');
                             }
-                            // if (!data.angsuran_pada_saat_pkm || typeof data.angsuran_pada_saat_pkm === 'undefined' || data.angsuran_pada_saat_pkm === '' || data.angsuran_pada_saat_pkm === 'null') {
-                            //     setSubmitted(false);
-                            //     return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
-                            // }
+                            if (!data.angsuran_pada_saat_pkm || typeof data.angsuran_pada_saat_pkm === 'undefined' || data.angsuran_pada_saat_pkm === '' || data.angsuran_pada_saat_pkm === 'null') {
+                                data.angsuran_pada_saat_pkm = '0'
+                                // setSubmitted(false);
+                                // return alert('Disiplin Nasabah - Angsuran Pada Saat PKM (*) tidak boleh kosong');
+                            }
 
                             siklus = parseInt(data.siklus) || 1;
                         }
@@ -426,7 +428,7 @@ const FormUjiKelayakan = ({route}) => {
                         }
 
                         // alert(`${body['NoHP']}`);
-                        // console.log('ini bodyyyy ===============>', body['NoHP'])
+                        // console.log('ini bodyyyy ===============>', body['Kehadiran_PKM'])
                         // return;
 
                         try {
@@ -890,7 +892,7 @@ const FormUjiKelayakan = ({route}) => {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
+                    <TouchableOpacity onPress={() => screenState > 1 ? navigation.navigate('InisiasiFormUKKondisiRumah', {id: id, groupName: groupName, namaNasabah: namaNasabah, screenState:screenState, statusSosialisasi: statusSosialisasi, status}) : null} style={{flexDirection: 'row', alignItems: 'center', borderRadius: 20, marginBottom: 20, backgroundColor: screenState > 1 ? '#0c5da0' : 'gray'}}>
                         <View style={{margin: 10, padding: 10, borderRadius: 15, backgroundColor: '#D62828'}}>
                             <FontAwesome5 name={'home'} size={25} color={'#FFF'} />
                         </View>

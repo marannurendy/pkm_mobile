@@ -26,7 +26,7 @@ const withTextInput = dimension.width - (20 * 4) + 8;
 
 const InisiasiFormUKKondisiRumah = ({ route }) => {
     const uniqueNumber = (new Date().getTime()).toString(36);
-    const { id, groupName, namaNasabah, screenState } = route.params;
+    const { id, groupName, namaNasabah, screenState, status } = route.params;
     const navigation = useNavigation();
     const [currentDate, setCurrentDate] = useState();
     const [openLuasBangunan, setOpenLuasBangunan] = useState(false);
@@ -515,7 +515,7 @@ const InisiasiFormUKKondisiRumah = ({ route }) => {
 
     const renderFormRumah = () => (
         <View style={styles.MT8}>
-            <Text>Foto Rumah (*)</Text>
+            <Text>Foto Rumah ({status == '3' ? <Text>Sudah Upload</Text> : <Text>*</Text>})</Text>
             <TouchableOpacity onPress={async () => {
                 setCameraShow(1)
             }}>

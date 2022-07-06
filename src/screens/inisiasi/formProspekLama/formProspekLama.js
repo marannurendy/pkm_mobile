@@ -566,7 +566,10 @@ const InisiasiFormProspekLama = ({ route }) => {
                         if (itemsPembiayaanDiajukan[itemIndex - 1]["label"].trim().substring(0, 2) == 'MM' || itemsPembiayaanDiajukan[itemIndex - 1]["label"].trim().substring(0, 2) == 'M1') {
                             setShowFormKehadiran(false)
                             setShowFormPembayaran(false)
-                        } 
+                        } else {
+                            setShowFormKehadiran(true)
+                            setShowFormPembayaran(true)
+                        }
                         setSelectedPembiayaanDiajukan(itemsPembiayaanDiajukan[itemIndex - 1]);
                         setValuePembiayaanDiajukan(itemValue);
                     }}
