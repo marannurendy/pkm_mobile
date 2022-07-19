@@ -227,13 +227,11 @@ const InisiasiFormPPH = ({ route }) => {
                                                 body: JSON.stringify(dataSend)
                                             })
                                         .then((response) => response.json())
-                                        .then((responseJson) => {
+                                        .then(async (responseJson) => {
                                             console.log("second")
                         
                                             console.log(responseJson)
                                             if(responseJson.code === 200) {
-                                                setLoading(false)
-                                                flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
                                                 if(val === '1' || val === 1) {
                                                     var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 2, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
                                                 }else if(val === '2' || val === 2) {
@@ -244,6 +242,105 @@ const InisiasiFormPPH = ({ route }) => {
                                                     }
                                                 }else if(val === '3' || val === 3) {
                                                     var queryUpdate = `UPDATE Table_PP_ListNasabah SET status = 4, AbsPP = '0' WHERE Nasabah_Id = '` + data.Nasabah_Id + `'`
+                                                }
+
+                                                if(val === 3 || val === '3') {
+                                                    const dataGroup = await getDataKelompok(queryGetGroupPP)
+                                                    let dataLength = dataGroup.length
+                                    
+                                                    const getDataKelompokPP = (query) => (new Promise((resolve, reject) => {
+                                                        try{
+                                                            db.transaction(
+                                                                tx => {
+                                                                    tx.executeSql(query, [], (tx, results) => {
+                                                                        let length = results.rows.length
+                                                                        for(let a = 0; a < length; a++) {
+                                                                            let b = results.rows.item(a)
+                                    
+                                                                            resolve(b)
+                                                                        }
+                                                                    })
+                                                                }, function(error){
+                                                                    alert(error)
+                                                                }
+                                                            )
+                                                        }catch(error){
+                                                            alert(error)
+                                                        }
+                                                    }))
+                                    
+                                                    const getDataJumlahPP = (query) => (new Promise((resolve, reject) => {
+                                                        try{
+                                                            db.transaction(
+                                                                tx => {
+                                                                    tx.executeSql(query, [], (tx, results) => {
+                                                                        let length = results.rows.length
+                                                                        for(let a = 0; a < length; a++) {
+                                                                            let b = results.rows.item(a)
+                                    
+                                                                            resolve(b)
+                                                                        }
+                                                                    })
+                                                                }, function(error){
+                                                                    alert(error)
+                                                                }
+                                                            )
+                                                        }catch(error){
+                                                            alert(error)
+                                                        }
+                                                    }))
+                                    
+                                                    try{
+                                                        for(let a = 0; a < dataLength; a++) {
+                                                            let groupName = dataGroup[a].groupName
+                                                            let queryGetGroupDetail = "SELECT * FROM Table_PP_Kelompok WHERE kelompok = '" + groupName + "'"
+                                                            let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.kelompok = '" + groupName + "' GROUP BY a.kelompok "
+                                    
+                                                            console.log(queryGetGroup)
+                                                            const dataGroupCollect = await getDataKelompokPP(queryGetGroupDetail)
+                                                            const dataGroupTotal = await getDataJumlahPP(queryGetGroup)
+                                    
+                                                            let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok : "", ID_DK_Mobile: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
+                                                            for (var key in dataSend) {
+                                                                if (dataSend[key] == null) {
+                                                                    flashNotification("Alert", "Data gagal di proses")
+                                                                    return false;
+                                                                }
+                                                            }                      
+                                                            try{
+                                                                fetch(ApiSyncPostInisiasi + "post_data_kelompok", {
+                                                                        method: 'POST',
+                                                                        headers: {
+                                                                            Authorization: token,
+                                                                            Accept: 'application/json',
+                                                                            'Content-Type': 'application/json'
+                                                                        },
+                                                                        body: JSON.stringify(dataSend)
+                                                                    })
+                                                                .then((response) => response.json())
+                                                                .then((responseJson) => {
+                                                                    console.log("second")
+                                                
+                                                                    console.log(responseJson)
+                                                                    if(responseJson.code === 200) {
+                                                                        setLoading(false)
+                                                                        // flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                                                                        flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
+                                                                        getData(val)
+                                                                    }else{
+                                                                        // flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
+                                                                    }
+                                                                }).catch((error) => {
+                                                                    flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
+                                                                })
+                                                            }catch(error){
+                                                                console.log("disini")
+                                                                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
+                                                            }
+                                                        }
+                                                    }catch(error){
+                                                        alert(error)
+                                                    }
                                                 }
     
                                                 // console.log(queryUpdate)
@@ -391,104 +488,6 @@ const InisiasiFormPPH = ({ route }) => {
             //         alert(error)
             //     }
             // }
-
-
-            if(val === 3 || val === '3') {
-                const dataGroup = await getDataKelompok(queryGetGroupPP)
-                let dataLength = dataGroup.length
-
-                const getDataKelompokPP = (query) => (new Promise((resolve, reject) => {
-                    try{
-                        db.transaction(
-                            tx => {
-                                tx.executeSql(query, [], (tx, results) => {
-                                    let length = results.rows.length
-                                    for(let a = 0; a < length; a++) {
-                                        let b = results.rows.item(a)
-
-                                        resolve(b)
-                                    }
-                                })
-                            }, function(error){
-                                alert(error)
-                            }
-                        )
-                    }catch(error){
-                        alert(error)
-                    }
-                }))
-
-                const getDataJumlahPP = (query) => (new Promise((resolve, reject) => {
-                    try{
-                        db.transaction(
-                            tx => {
-                                tx.executeSql(query, [], (tx, results) => {
-                                    let length = results.rows.length
-                                    for(let a = 0; a < length; a++) {
-                                        let b = results.rows.item(a)
-
-                                        resolve(b)
-                                    }
-                                })
-                            }, function(error){
-                                alert(error)
-                            }
-                        )
-                    }catch(error){
-                        alert(error)
-                    }
-                }))
-
-                try{
-                    for(let a = 0; a < dataLength; a++) {
-                        let groupName = dataGroup[a].groupName
-                        let queryGetGroupDetail = "SELECT * FROM Table_PP_Kelompok WHERE kelompok = '" + groupName + "'"
-                        let queryGetGroup = "SELECT a.kelompok as groupName, COUNT(b.Nama_Nasabah) as jumlahNasabah FROM Table_PP_Kelompok a LEFT JOIN Table_PP_ListNasabah b ON a.kelompok = b.kelompok WHERE b.kelompok = '" + groupName + "' GROUP BY a.kelompok "
-
-                        console.log(queryGetGroup)
-                        const dataGroupCollect = await getDataKelompokPP(queryGetGroupDetail)
-                        const dataGroupTotal = await getDataJumlahPP(queryGetGroup)
-
-                        let dataSend = {ClientTotal: dataGroupTotal.jumlahNasabah.toString(), GroupProduct: dataGroupCollect.group_Produk, HariPertemuan: dataGroupCollect.hari_Pertemuan, IDKelompok : "", ID_DK_Mobile: dataGroupCollect.kelompok_Id, LokasiPertemuan: dataGroupCollect.lokasi_Pertemuan, NamaKelompok: dataGroupCollect.kelompok, OurBranchID: dataGroupCollect.branchid, TanggalPertemuan: dataGroupCollect.tanggal_Pertama, WaktuPertemuan: dataGroupCollect.waktu_Pertemuan}
-                        for (var key in dataSend) {
-                            if (report[key] == null) {
-                                flashNotification("Alert", "Data gagal di proses")
-                                return false;
-                            }
-                        }                      
-                        try{
-                            fetch(ApiSyncPostInisiasi + "post_data_kelompok", {
-                                    method: 'POST',
-                                    headers: {
-                                        Authorization: token,
-                                        Accept: 'application/json',
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(dataSend)
-                                })
-                            .then((response) => response.json())
-                            .then((responseJson) => {
-                                console.log("second")
-            
-                                console.log(responseJson)
-                                if(responseJson.code === 200) {
-                                    flashNotification("Success", "Data berhasil di proses", "#ffbf47", "#fff")
-                                    getData(val)
-                                }else{
-                                    // flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + responseJson.message, "#ff6347", "#fff")
-                                }
-                            }).catch((error) => {
-                                flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error.message, "#ff6347", "#fff")
-                            })
-                        }catch(error){
-                            console.log("disini")
-                            flashNotification("Alert", "Data gagal di proses, Coba lagi beberapa saat. error : " + error, "#ff6347", "#fff")
-                        }
-                    }
-                }catch(error){
-                    alert(error)
-                }
-            }
 
     }
 

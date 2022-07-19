@@ -1666,7 +1666,7 @@ const DataDiri = ({route}) => {
                                     setStatusSuami(!statusSuami);
                                 }}
                             />
-                            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Suami di luar kota / tidak di tempat</Text>
+                            <Text style={{fontSize: 17, fontWeight: 'bold'}}>Suami di luar kota / tidak di tempat</Text>
                         </View>
 
                         <View style={{alignItems: 'flex-end', marginBottom: 20, marginHorizontal: 20}}>
