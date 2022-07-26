@@ -46,6 +46,7 @@ const ProdukPembiayaan = ({ route }) => {
     const [dataSosialisasiDatabase, setDataSosialisasiDatabase] = useState(false);
     const [nameProdukPembiayaan, setNameProdukPembiayaan] = useState('');
     const [nameFrekuensiPembayaran, setNameFrekuensiPembayaran] = useState('');
+    const [enableFrekuensiPembayaran, setEnableFrekuensiPembayaran] = useState(false);
 
     useEffect(() => {
         setInfo();
@@ -503,7 +504,7 @@ const ProdukPembiayaan = ({ route }) => {
         if (__DEV__) console.log('doSubmitSave loaded');
 
         if (submmitted) return true;
-        
+        if (!valueJumlahPinjaman || typeof valueJumlahPinjaman === 'undefined' || valueJumlahPinjaman === '' || valueJumlahPinjaman === 'null') return alert('Jumlah Pinjaman (*) tidak boleh kosong');
         if (valueTypePencairan === '3' && valueRekeningBank) {
             if (!valueNamaBank || typeof valueNamaBank === 'undefined' || valueNamaBank === '' || valueNamaBank === 'null') return alert('Nama Bank (*) tidak boleh kosong');
             if (!valueNoRekening || typeof valueNoRekening === 'undefined' || valueNoRekening === '' || valueNoRekening === 'null') return alert('No. Rekening (*) tidak boleh kosong');
@@ -685,6 +686,11 @@ const ProdukPembiayaan = ({ route }) => {
                     onValueChange={(itemValue, itemIndex) => {
                         setValueProdukPembiayaan(itemValue);
                         setValueJumlahPinjaman(null);
+                        setEnableFrekuensiPembayaran(true)
+                        if (itemsProdukPembiayaan[itemIndex].label.trim().substring(0, 3) === 'MM7' || itemsProdukPembiayaan[itemIndex].label.trim().substring(0, 2) === 'M1') {
+                            setEnableFrekuensiPembayaran(false)
+                            setValueFrekuensiPembayaran(2);
+                        } 
                         // setNameProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1]?.label ?? '');
                         // setSelectedProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1] ?? null);
                         // setValueTermPembiayaan(itemsProdukPembiayaan[itemIndex - 1]?.paymentTerm ?? null);
@@ -780,7 +786,7 @@ const ProdukPembiayaan = ({ route }) => {
                     }}
                 >
                     <Picker.Item key={'-1'} label={'-- Pilih --'} value={null} />
-                    {itemsTypePencairan.map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
+                    {itemsTypePencairan.filter(item => item.value != 2).map((x, i) => <Picker.Item key={i} label={x.label} value={x.value} />)}
                 </Picker>
             </View>
         </View>
@@ -791,6 +797,7 @@ const ProdukPembiayaan = ({ route }) => {
             <Text>Frekuensi Pembayaran</Text>
             <View style={{ borderWidth: 1, borderRadius: 6 }}>
                 <Picker
+                    enabled={enableFrekuensiPembayaran}
                     selectedValue={valueFrekuensiPembayaran}
                     style={{ height: 50, width: withTextInput }}
                     onValueChange={(itemValue, itemIndex) => {

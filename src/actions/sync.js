@@ -652,6 +652,9 @@ export const getSyncData = (params) => new Promise((resolve) => {
                     );
 
                     /* ============== FINISH HAPUS SOSIALISASI & UK LAMA DARI SQLITE KALAU PAS NARIK ADA ID_PROSPEK YANG SAMA ============== */
+                    AsyncStorage.setItem(`verif_tanggal_sos-${uniqueNumber}`, moment(uk_client_data[i].Tanggal_Sos).format('YYYY-MM-DD'));
+                    AsyncStorage.setItem(`verif_tanggal_verif-${uk_client_data[i].ID_Prospek}`, moment(uk_client_data[i].Tanggal_Verif).format('YYYY-MM-DD'));
+
                     if (uk_client_data[i].PostStatus === 3) {
                         let isSisipan = 2;
                         if (uk_client_data[i].Is_Sisipan === '1' || uk_client_data[i].Is_Sisipan === 1) isSisipan = 1;

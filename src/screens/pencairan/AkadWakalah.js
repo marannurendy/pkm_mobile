@@ -36,7 +36,7 @@ const AkadWakalah = ({route}) => {
     const [modalVisibleNasabah, setModalVisibleNasabah] = useState(false);
     const [signatureAO, setSignatureAO] = useState();
     const [signatureNasabah, setSignatureNasabah] = useState();
-
+    console.log('datanasabat ===============>', dataNasabah)
     useEffect(() => {
         const getUserData = () => {
             AsyncStorage.getItem('userData', (error, result) => {

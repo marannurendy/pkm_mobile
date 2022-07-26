@@ -27,13 +27,33 @@ const VerifikasiFormReview = ({ route }) => {
     const [selectedProdukPembiayaan, setSelectedProdukPembiayaan] = useState(null);
     const [loading, setLoading] = useState(false);
     const [sp, setSp] = useState('0');
+    const [dateSosialisasiDatabase, setDateSosialisasiDatabase] = useState(null)
 
     useEffect(() => {
         getUserData();
         getUKDataDiri();
         getUKProdukPembiayaan();
+        getDateSosialisasi();
         setInfo();
     }, []);
+
+    const getDateSosialisasi = () => {
+        let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE id_prospek = '` + idProspek + `';`
+        db.transaction(
+            tx => {
+                tx.executeSql(queryUKDataDiri, [], async (tx, results) => {
+                    let dataLength = results.rows.length;
+                    if (dataLength > 0) {
+                        let data = results.rows.item(0);
+                        const verifTanggalSos = await AsyncStorage.getItem(`verif_tanggal_sos-${data.idSosialisasiDatabase}`);
+                        setDateSosialisasiDatabase(verifTanggalSos);
+                    }
+                }, function(error) {
+                    if (__DEV__) console.log('SELECT * FROM Sosialisasi_Database error:', error.message);
+                })
+            }
+        )
+    }
 
     const getUKDataDiri = () => {
         let queryUKDataDiri = `SELECT * FROM Table_UK_DataDiri WHERE id_prospek = '` + idProspek + `';`
@@ -105,7 +125,6 @@ const VerifikasiFormReview = ({ route }) => {
 
     const doSave = (image = '', status = '') => {
         if (__DEV__) console.log('doSave loaded');
-
         let message = 'Approve';
         if (status === '2') message = 'Reject';
         if (status === '3') message = 'Revisi';
@@ -165,7 +184,9 @@ const VerifikasiFormReview = ({ route }) => {
     const renderButton = () => (
         <View style={[styles.FDRow, styles.M16]}>
             <TouchableOpacity
-                onPress={() => navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganApprove', onSelectSign: onSelectSign })}
+                onPress={() =>{
+                    navigation.navigate('InisiasiFormUKSignatureScreen', { key: 'tandaTanganApprove', onSelectSign: onSelectSign })
+                }}
                 style={[styles.F1]}
             >
                 <View style={[styles.P8, { backgroundColor: '#008080', borderRadius: 6 }]}>

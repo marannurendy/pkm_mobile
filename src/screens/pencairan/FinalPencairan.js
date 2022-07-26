@@ -18,7 +18,6 @@ const dimension = Dimensions.get('screen');
 var uniqueNumber = (new Date().getTime()).toString(36);
 
 const FinalPencairan = ({route}) => {
-
     const navigation = useNavigation()
     const camera = useRef(null)
     const [loading, setLoading] = useState(false)
@@ -48,7 +47,6 @@ const FinalPencairan = ({route}) => {
     var Tanggal = moment(new Date()).format('LL')
     var hariIni = moment(new Date()).format('dddd')
     var Jam = moment(new Date()).format('HH:mm')
-
 
     useEffect(() => {
         const getUserData = () => {

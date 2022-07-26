@@ -17,6 +17,7 @@ const InisiasiFormPPKelompokSubMemberVerifikasi = ({ route }) => {
     const navigation = useNavigation();
     const [date, setDate] = useState(new Date());
     const [data, setData] = useState([])
+    const [dateData, setDateData] = useState([])
     const [selectedItems, setSelectedItems] = useState([]);
 
     useEffect(() => {
@@ -63,6 +64,16 @@ const InisiasiFormPPKelompokSubMemberVerifikasi = ({ route }) => {
         }))
 
         const dataPP = await getDataPP(queryGetVerif)
+        let dateDataPP = []
+        for (let index = 0; index < dataPP.length; index++) {
+            const elementDataPP = dataPP[index];
+            const verifTanggalSos = await AsyncStorage.getItem(`verif_tanggal_verif-${elementDataPP.Nasabah_Id}`);
+            dateDataPP.push({
+                Nasabah_Id: elementDataPP.Nasabah_Id,
+                TanggalVerif: verifTanggalSos
+            })
+        }
+        setDateData(dateDataPP)
         setData(dataPP)
 
     }
@@ -81,7 +92,14 @@ const InisiasiFormPPKelompokSubMemberVerifikasi = ({ route }) => {
     const renderList = () => data.map((x, i) => (
         <TouchableOpacity
             key={i}
-            onPress={() => selectItems(x.Nasabah_Id)}
+            onPress={() => {
+                const foundNasabaId = dateData.some(el => el.Nasabah_Id === x.Nasabah_Id);
+                if (foundNasabaId) {
+                    alert('Nasabah tidak bisa ditambakan pada hari yang sama dengan Verifikasi');
+                } else {
+                    selectItems(x.Nasabah_Id)
+                }
+            }}
             style={[styles.MB16]}
         >
             <View style={[styles.FDRow, styles.P16, { borderWidth: 1, borderRadius: 8, alignItems: 'center' }]}>

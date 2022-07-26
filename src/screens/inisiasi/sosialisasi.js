@@ -112,7 +112,7 @@ const Sosialisasi = () => {
             flashNotification("Alert", "Silahkan pilih tanggal input", "#ff6347", "#fff")
         }else if(sumberDana === null || sumberDana === undefined) {
             flashNotification("Alert", "Silahkan pilih sumber informasi", "#ff6347", "#fff")
-        }else if(namaNasabah === null || namaNasabah === undefined) {
+        }else if(namaNasabah === null || namaNasabah === undefined || namaNasabah.trim() == '') {
             flashNotification("Alert", "Silahkan masukkan nama nasabah", "#ff6347", "#fff")
         }else if(statusNasabah === null || statusNasabah === undefined) {
             flashNotification("Alert", "Silahkan pilih status nasabah", "#ff6347", "#fff")
@@ -146,7 +146,7 @@ const Sosialisasi = () => {
                                         '` + uniqueNumber + `',
                                         '` + tanggalInput + `',
                                         '` + sumberDana + `',
-                                        '` + namaNasabah + `',
+                                        '` + namaNasabah.trim() + `',
                                         '` + nohp + `',
                                         '` + statusNasabah + `',
                                         '` + tanggalSos + `',

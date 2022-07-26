@@ -1127,7 +1127,21 @@ const DataDiri = ({route}) => {
                     <View style={{margin: 20}}>
                         <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Identitas ({status == '3' ? <Text>Sudah Upload</Text> : <Text>*</Text>})</Text>
                         
-                        <TouchableOpacity onPress={() => launchImagePicker('kartuIdentitas')}>
+                        <TouchableOpacity onPress={() => {status == 3 ? Alert.alert(
+                            "Caution !",
+                            "Data foto sudah ada, apakah Anda yakin melakukan upload ulang?",
+                            [
+                            {
+                                text: "Tidak",
+                            },
+                            {
+                                text: "Iya",
+                                onPress: () => {
+                                    launchImagePicker('kartuIdentitas')
+                                }           
+                            },
+                            ]           
+                        ) : launchImagePicker('kartuIdentitas')}}>
                             <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
                                 {fotokartuIdentitas === undefined ? (
                                     <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
@@ -1414,7 +1428,21 @@ const DataDiri = ({route}) => {
                     <View style={{margin: 20}}>
                         <Text style={{fontSize: 18, fontWeight: 'bold', marginBottom: 10}}>Foto Kartu Keluarga ({status == '3' ? <Text>Sudah Upload</Text> : <Text>*</Text>})</Text>
                         
-                        <TouchableOpacity onPress={() => launchImagePicker('kartuKeluarga')}>
+                        <TouchableOpacity onPress={() => {status == 3 ? Alert.alert(
+                            "Caution !",
+                            "Data foto sudah ada, apakah Anda yakin melakukan upload ulang?",
+                            [
+                            {
+                                text: "Tidak",
+                            },
+                            {
+                                text: "Iya",
+                                onPress: () => {
+                                    launchImagePicker('kartuKeluarga')
+                                }           
+                            },
+                            ]           
+                        ) : launchImagePicker('kartuKeluarga')}}>
                             <View style={{borderWidth: 1, height: dimension.width/2, marginLeft: 2, borderRadius: 10}}>
                                 {fotoKartuKeluarga === undefined ? (
                                     <View style={{ alignItems:'center', justifyContent: 'center', flex: 1 }}>
