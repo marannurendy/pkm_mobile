@@ -71,6 +71,10 @@ const ProdukPembiayaan = ({ route }) => {
                         setNameProdukPembiayaan(findData?.productName.trim() ?? '');
                         setSelectedProdukPembiayaan(findData ?? null);
                         setValueTermPembiayaan(findData?.paymentTerm ?? null);
+                        if (findData?.productName.trim().substring(0, 3) === 'MM7' || findData?.productName.trim().substring(0, 2) === 'M1') {
+                            setEnableFrekuensiPembayaran(false)
+                            setValueFrekuensiPembayaran('2');
+                        } 
                     }
                 }
             }
@@ -689,7 +693,7 @@ const ProdukPembiayaan = ({ route }) => {
                         setEnableFrekuensiPembayaran(true)
                         if (itemsProdukPembiayaan[itemIndex].label.trim().substring(0, 3) === 'MM7' || itemsProdukPembiayaan[itemIndex].label.trim().substring(0, 2) === 'M1') {
                             setEnableFrekuensiPembayaran(false)
-                            setValueFrekuensiPembayaran(2);
+                            setValueFrekuensiPembayaran('2');
                         } 
                         // setNameProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1]?.label ?? '');
                         // setSelectedProdukPembiayaan(itemsProdukPembiayaan[itemIndex - 1] ?? null);
